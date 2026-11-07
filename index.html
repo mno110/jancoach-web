@@ -1,0 +1,327 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>雀コーチ ― リアルタイムAI分析麻雀</title>
+<link rel="manifest" href="manifest.webmanifest">
+<meta name="theme-color" content="#0b3d2e">
+<meta name="build-version" content="46cb3a961eea">
+<meta name="model-version" content="a79bb03eafa1">
+<link rel="icon" type="image/png" sizes="32x32" href="icons/favicon-32.png">
+<link rel="icon" type="image/png" sizes="192x192" href="icons/icon-192.png">
+<link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div id="app">
+  <main id="table-wrap">
+    <div id="controls">
+      <!-- 2026-11-05 toolbar cleanup: model / length / start now live on the
+           start screen only. These hidden elements stay as the single
+           internal state holders (persistence + change handlers in main.js);
+           the start screen's ss-model / ss-segment / ss-start-btn forward to them. -->
+      <div id="hidden-ctl" hidden>
+        <select id="modelSel">
+          <option value="jaklab-v1">V1（自前モデル・43MB）</option>
+          <option value="jaklab-v1-light">V1 Light（軽量・5.8MB）</option>
+        </select>
+        <select id="lengthSel">
+          <option value="hanchan">半荘</option>
+          <option value="tonpuu">東風</option>
+        </select>
+        <button id="startBtn" disabled>対局開始</button>
+      </div>
+      <button id="suspendBtn" type="button" title="対局を中断してスタート画面に戻ります（スタート画面の「続きから再開」で再開できます）">中断</button>
+      <div class="chip-row" role="group" aria-label="アシスト設定（対局中もすぐ反映）">
+        <label class="chip" title="AIコーチ表示"><input type="checkbox" id="coachToggle" checked><span>コーチ</span></label>
+        <label class="chip" title="アシスト"><input type="checkbox" id="assistToggle"><span>アシスト</span></label>
+        <label class="chip" title="鳴きなし"><input type="checkbox" id="autoNoCall"><span>鳴きなし</span></label>
+        <label class="chip" title="自動和了"><input type="checkbox" id="autoWin"><span>自動和了</span></label>
+        <label class="chip" title="自動ツモ切り"><input type="checkbox" id="autoTsumogiri"><span>ツモ切り</span></label>
+      </div>
+      <span id="status"></span>
+    </div>
+    <div id="table">
+      <div id="seat-top" class="seat pos-top"></div>
+      <div id="seat-left" class="seat pos-left"></div>
+      <div id="board">
+        <div id="center"></div>
+        <div class="board-pond bp-0" id="pond-0"></div>
+        <div class="board-pond bp-1" id="pond-1"></div>
+        <div class="board-pond bp-2" id="pond-2"></div>
+        <div class="board-pond bp-3" id="pond-3"></div>
+      </div>
+      <div id="seat-right" class="seat pos-right"></div>
+      <div id="self-area">
+        <div id="actions" aria-live="polite"></div>
+        <div id="seat-bottom" class="seat pos-bottom"></div>
+        <div id="sel-chip" hidden></div>
+      </div>
+      <div id="start-screen">
+        <div class="ss-scroll">
+          <div class="ss-brand">
+            <div class="ss-mark">發</div>
+            <h1>雀コーチ</h1>
+            <div class="ss-sub">リアルタイムAI分析麻雀</div>
+          </div>
+          <div class="ss-card ss-resume" id="ss-resume" hidden>
+            <div class="ss-resume-title">前回の対局が残っています</div>
+            <div class="ss-resume-detail" id="ss-resume-detail"></div>
+            <div class="ss-resume-note">中断した局の頭から再開します（配牌は新しくなります）</div>
+            <button type="button" class="ss-btn-resume" id="ss-resume-btn">続きから再開</button>
+          </div>
+          <div class="ss-card" id="ss-stats-card" hidden>
+            <div class="ss-card-title">最近の成績（直近20対局）</div>
+            <div class="ss-mini-stats">
+              <div class="ss-cell"><div class="ss-v" id="ss-avg-rank">-</div><div class="ss-k">平均順位</div></div>
+              <div class="ss-cell"><div class="ss-v" id="ss-agree">-</div><div class="ss-k">コーチ一致率</div></div>
+              <div class="ss-cell"><div class="ss-v" id="ss-games">-</div><div class="ss-k">総対局数</div></div>
+            </div>
+          </div>
+          <div class="ss-card ss-strength-card">
+            <div class="ss-strength-row">
+              <span class="ss-k">CPUの強さ <span id="ss-model-ver" class="ss-model-ver">モデル V1</span></span>
+              <span class="ss-strength"><span id="ss-strength-label">八段相当</span></span>
+            </div>
+            <!-- CPU tier / type (src/cpu_style.mjs; options filled by main.js).
+                 Applies to the three CPUs from the next game; the AI coach is always 最上級. -->
+            <div class="ss-cpu-row">
+              <label>強さ <select id="ss-cpu-tier" title="CPUの強さ（AIコーチは常に最上級）"></select></label>
+              <label>タイプ <select id="ss-cpu-style" title="CPUのタイプ（最上級のときだけ選べます）"></select></label>
+            </div>
+          </div>
+          <div class="ss-segment" role="tablist" aria-label="対局の長さ">
+            <button type="button" data-len="tonpuu">東風</button>
+            <button type="button" data-len="hanchan">半荘</button>
+          </div>
+          <!-- Model mismatch notice (stop-gap, 2026-11-05): shown while the selected
+               model differs from the loaded one, since the app has no in-app reload.
+               main.js updateModelNotice() owns it; a future hot swap only needs to
+               update S.modelId and call it again for the notice to disappear. -->
+          <div class="ss-card ss-model-notice" id="ss-model-notice" role="status" hidden>
+            <div class="ss-model-notice-text">対局中のためモデルは変更できません。次回の対局（再読み込み後）に反映されます</div>
+            <button type="button" class="ss-btn-reload" id="ss-model-reload-btn">再読み込み</button>
+          </div>
+          <button type="button" class="ss-btn-primary" id="ss-start-btn" disabled>新しい対局を開始</button>
+          <div class="ss-link-row">
+            <button type="button" class="ss-btn-ghost" id="ss-history-btn">対局履歴</button>
+            <button type="button" class="ss-btn-ghost" id="ss-stats-btn">統計・分析</button>
+            <button type="button" class="ss-btn-ghost" id="ss-settings-btn">設定</button>
+            <button type="button" class="ss-btn-ghost" id="ss-rules-btn">ルール</button>
+          </div>
+          <div class="ss-panel" id="ss-settings-panel" hidden>
+            <label>コーチモデル <select id="ss-model">
+              <option value="jaklab-v1">V1（標準・43MB）</option>
+              <option value="jaklab-v1-light">V1 Light（軽量・5.8MB）</option>
+            </select></label>
+            <div class="ss-settings-note ss-model-help">コーチと最上級CPUが使うモデルです（上の「CPUの強さ」とは別の設定です）。V1 Light は容量が小さく推論が速いので、低スペック端末向けです。</div>
+            <label>画面の向き <select id="ss-orientation">
+              <option value="auto">自動</option>
+              <option value="portrait">縦に固定</option>
+              <option value="landscape">横に固定</option>
+            </select></label>
+            <label><input type="checkbox" id="ss-coach" checked> AIコーチ表示</label>
+            <label><input type="checkbox" id="ss-assist"> アシスト</label>
+            <label><input type="checkbox" id="ss-nocall"> 鳴きなし</label>
+            <label><input type="checkbox" id="ss-autowin"> 自動和了</label>
+            <label><input type="checkbox" id="ss-tsumogiri"> 自動ツモ切り</label>
+            <div class="ss-settings-note">コーチモデルは選ぶとすぐ切り替わります（切り替え中は開始できません）。画面の向きは端末が対応している場合のみ固定されます（未対応の端末では自動のままです）。その他の設定は対局画面のチップと同じもので、対局中に変えてもすぐ反映されます。</div>
+            <!-- Diagnostics (product/error_codes.md). Local only: nothing is sent;
+                 the copy button puts a text block on the clipboard. -->
+            <div class="ss-diag" id="ss-diag">
+              <div class="ss-diag-title">診断</div>
+              <dl>
+                <dt>アプリ版</dt><dd id="ss-diag-app">-</dd>
+                <dt>モデル</dt><dd id="ss-diag-model">-</dd>
+                <dt>成功構成</dt><dd id="ss-diag-config">-</dd>
+                <dt>最終エラー</dt><dd id="ss-diag-last">なし</dd>
+              </dl>
+              <button type="button" class="ss-diag-copy" id="ss-diag-copy">診断情報をコピー</button>
+              <span class="ss-diag-copy-status" id="ss-diag-copy-status" aria-live="polite"></span>
+              <div class="ss-settings-note">不具合のお問い合わせの際は、エラーコード（例: E-L110）と、可能ならこの診断情報を添えてください。情報は自動では送信されません。対局内容や個人情報は含みません。</div>
+            </div>
+          </div>
+        </div>
+        <div class="ss-status"><span class="ss-dot"></span><span id="ss-status-text">読み込み中…</span></div>
+        <!-- Loading popup over the start screen (2026-11-05). Hidden by default;
+             main.js shows it at once for a first download (model not cached)
+             or only after a short delay otherwise, so fast starts never show it. -->
+        <div class="ss-load" id="ss-load" role="dialog" aria-modal="true" aria-labelledby="ss-load-title" hidden>
+          <div class="ss-load-box" role="status" aria-live="polite">
+            <div class="ss-load-title" id="ss-load-title">読み込み中</div>
+            <ol class="ss-load-steps" id="ss-load-steps">
+              <li data-step="app">アプリ本体</li><li data-step="engine">推論エンジン</li><li data-step="model">AIモデル</li><li data-step="ready">準備完了</li>
+            </ol>
+            <div class="ss-load-bar" id="ss-load-bar"><i id="ss-load-bar-fill"></i></div>
+            <div class="ss-load-pct" id="ss-load-pct"></div>
+            <div class="ss-load-log" id="ss-load-log" hidden></div>
+            <div class="ss-load-note" id="ss-load-note" hidden>AIモデルを初回のみ読み込みます。以後はオフラインでも起動できます。</div>
+            <div class="ss-load-diag" id="ss-load-diag" hidden></div>
+            <button type="button" class="ss-btn-reload" id="ss-reload-btn" hidden>再読み込み</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+  <aside id="side">
+    <section id="coach"></section>
+    <section id="explain"></section>
+  </aside>
+</div>
+<div id="kyoku-result" style="display:none"></div>
+<div id="end" style="display:none"></div>
+<div id="history" style="display:none"></div>
+<div id="scene-viewer" class="scene-viewer" style="display:none"></div>
+<div id="stats-view" class="stats-view" style="display:none"></div>
+<!-- Rules view (start screen only). Text = product/rules_text.md
+     「アプリ内に表示する本文」; update both together when rule.mjs changes. -->
+<div id="rules-view" class="stats-view rules-view" role="dialog" aria-modal="true" aria-labelledby="rules-title" style="display:none">
+  <div class="stats-card rules-card">
+    <div class="st-head"><h2 id="rules-title">ルール</h2><button type="button" class="st-close" id="rules-close">閉じる</button></div>
+    <div class="rules-body">
+      <h3>基本</h3>
+      <ul>
+        <li>四人麻雀。自分＋AI 3人。制限時間なし。</li>
+        <li>対局の長さは開始時に選べます。<b>半荘</b>（既定）と<b>東風</b>。</li>
+        <li>配給原点（開始時の持ち点）は <b>25,000 点</b>。</li>
+        <li>順位は終局時の持ち点の大きい順。同点のときは起家（最初の東家）に近い席が上位。</li>
+      </ul>
+      <h3>半荘 / 東風</h3>
+      <table class="st-table rules-table">
+        <thead><tr><th></th><th>半荘（既定）</th><th>東風</th></tr></thead>
+        <tbody>
+          <tr><td>局数</td><td>東1局〜南4局</td><td>東1局〜東4局</td></tr>
+          <tr><td>延長</td><td>あり（下の「西入」）</td><td>あり（東4局終了で誰も30,000点に届かなければ「南入」）</td></tr>
+        </tbody>
+      </table>
+      <h3>返し点・ウマ・オカ（最終ポイント）</h3>
+      <ul>
+        <li>返し点は <b>30,000 点</b>（半荘・東風とも同じ）。25,000 点持ちの 30,000 点返しなので、1位にオカ <b>+20</b> が付きます。</li>
+        <li>ウマは <b>+30 / +10 / −10 / −30</b>（1位〜4位、ポイント単位）。</li>
+        <li>最終ポイント = （持ち点 − 30,000）÷ 1,000 ＋ ウマ（2〜4位）。1位は他3人の合計の符号反転（オカ込み）。小数第1位まで表示します。</li>
+        <li>終局時に場に残っているリーチ棒（供託）は <b>1位が受け取ります</b>。</li>
+      </ul>
+      <h3>赤ドラ</h3>
+      <ul>
+        <li>赤5は<b>萬子・筒子・索子に各1枚、計3枚</b>。1枚につき1翻。</li>
+      </ul>
+      <h3>鳴き・役</h3>
+      <ul>
+        <li>チー・ポン・カンあり。</li>
+        <li><b>喰いタンあり</b>。</li>
+        <li><b>喰い替えなし</b>（鳴いた牌と同じ牌、および筋になる牌は、鳴いた直後に切れません）。</li>
+        <li>連風牌（場風かつ自風）の雀頭は <b>2符ではなく 4符</b>。</li>
+      </ul>
+      <h3>和了</h3>
+      <ul>
+        <li><b>ダブロンあり</b>。同じ捨て牌（または槍槓）に2人がロンした場合は2人とも和了し、放銃者がそれぞれに支払います。本場と供託は打った人から見て先に回ってくる方（上家取り）が受け取ります。</li>
+        <li>役満の複合あり。<b>ダブル役満なし</b>（国士無双十三面待ち・四暗刻単騎・純正九蓮宝燈・大四喜も通常の役満1倍）。数え役満あり（13翻以上）。役満パオ（責任払い）あり。</li>
+        <li>切り上げ満貫なし。</li>
+        <li>本場は 1本場あたり 300 点（標準）。</li>
+      </ul>
+      <h3>リーチ関連</h3>
+      <ul>
+        <li>リーチ：門前でテンパイ時、1,000 点を供託して宣言。持ち点が 1,000 点未満、または山の残りが 4 枚未満（ツモ番なし）ではリーチできません。</li>
+        <li><b>一発あり</b>。</li>
+        <li><b>裏ドラあり</b>。</li>
+        <li><b>カンドラあり</b>、<b>カン裏あり</b>。カンドラはカンの直後ではなく、<b>打牌後にめくる（後乗せ）</b> 扱い。</li>
+        <li><b>ダブルリーチあり</b>（第一ツモ前の巡目でのリーチ。2翻。一発も有効）。</li>
+        <li><b>オープンリーチなし</b>。</li>
+        <li>リーチ後の暗槓は、<b>待ちが変わらない場合のみ可</b>。</li>
+      </ul>
+      <h3>流局</h3>
+      <ul>
+        <li><b>荒牌平局</b>（牌山を取り切る）。
+          <ul>
+            <li><b>ノーテン罰符あり</b>。場に合計 3,000 点（テンパイ者が受け取り、ノーテン者が支払う）。全員テンパイ／全員ノーテンなら点数移動なし。</li>
+            <li><b>流し満貫あり</b>：捨て牌がすべて幺九牌で、1枚も他家に鳴かれていない場合、満貫のツモ和了と同じ点数を受け取ります。流局扱いのため、親はテンパイなら連荘です。</li>
+          </ul>
+        </li>
+        <li><b>途中流局</b>（あり）。次の4種類：
+          <ol>
+            <li><b>九種九牌</b>：第一ツモで手牌に幺九牌が9種類以上あるとき、流局を宣言できます。</li>
+            <li><b>四風連打</b>：第一巡に4人全員が同じ風牌を捨てたとき。</li>
+            <li><b>四家立直</b>：4人全員がリーチしたとき。</li>
+            <li><b>四槓散了</b>：2人以上で合計4回カンが成立し、5回目に進めないとき（1人が4回槓した場合は流局にならない）。</li>
+          </ol>
+        </li>
+        <li><b>三家和あり</b>：同じ捨て牌に3人がロンした場合は和了にならず流局（点数移動なし・親の連荘・本場が増える。その捨て牌でのリーチは不成立）。</li>
+        <li>流局時、親が<b>テンパイなら連荘</b>（テンパイ連荘）。ノーテンなら親流れ。途中流局は親が連荘（本場が増える）。</li>
+      </ul>
+      <h3>連荘</h3>
+      <ul>
+        <li>親が和了したら連荘。親がテンパイで流局しても連荘。</li>
+      </ul>
+      <h3>終了条件</h3>
+      <ul>
+        <li><b>トビ終了あり</b>：誰かの持ち点が <b>0 点未満（マイナス）</b> になった時点で、その局の精算後に即終局。ちょうど 0 点なら続行。</li>
+        <li>半荘が南4局まで終わったとき：
+          <ul>
+            <li>誰かが <b>30,000 点以上</b> なら終局。</li>
+            <li>誰も 30,000 点に届いていなければ <b>西入（延長戦）</b>。</li>
+          </ul>
+        </li>
+        <li><b>西入（サドンデス）</b>：西1局から始まり、<b>各局の終了時点で誰かが 30,000 点以上になっていればそこで終局</b>。届かなければ次局へ。<b>西4局が上限</b>で、西4局の終了時点でまだ誰も届いていなくても終局します（北入りなし）。</li>
+        <li><b>東風</b>：東4局の終了時点で誰かが 30,000 点以上なら終局。誰も届いていなければ<b>南入（サドンデス）</b>：南1局から、各局の終了時点で誰かが 30,000 点以上になればそこで終局。<b>南4局が上限</b>（西入りなし）。</li>
+        <li><b>オーラス止めあり</b>：最終局（半荘＝南4局、東風＝東4局。延長に入った場合はその上限局）で、<b>親が 30,000 点以上のトップで、その局が連荘となる（親の和了、またはテンパイ流局）場合は、そこで終局</b>します。途中流局（九種九牌など）で連荘になった場合は終了せず、同じ局をやり直します。
+          <ul>
+            <li>親がトップでない場合や、親が 30,000 点未満の場合は、連荘して同じ局を続けます。</li>
+          </ul>
+        </li>
+        <li>最終局の和了や流局で連荘が止まれば、上の「30,000 点以上」判定へ（半荘は西入、東風は南入の有無で判定）。</li>
+        <li>終局時に残ったリーチ棒は1位が受け取ります（前述）。</li>
+      </ul>
+    </div>
+    <div class="rules-foot"><button type="button" class="st-close" id="rules-close2">閉じる</button></div>
+  </div>
+</div>
+<script>
+/* Self-heal for devices stuck on an old Service Worker / app cache (2026-11-05).
+   Fires when version.json disagrees with this page's build-version, or when
+   #start-screen is not position:fixed (new HTML + old CSS). Once per version per
+   session: unregister all SWs, delete only 'mahjong-local-app-*' caches (the
+   'mahjong-local-models-*' caches are kept), then reload. IndexedDB and
+   localStorage are never touched. All failures are swallowed. */
+(function () {
+  function run() {
+    try {
+      var m = document.querySelector('meta[name="build-version"]');
+      var mine = m ? m.getAttribute('content') : '';
+      if (!mine || mine.indexOf('__') === 0) return;
+      if (!(navigator.serviceWorker && window.caches)) return;
+      var heal = function (ver, reason) {
+        try {
+          var key = 'mahjong-selfheal:' + ver;
+          if (sessionStorage.getItem(key)) return;
+          sessionStorage.setItem(key, reason);
+        } catch (e) { return; }
+        var steps = [];
+        try {
+          steps.push(navigator.serviceWorker.getRegistrations().then(function (rs) {
+            return Promise.all(rs.map(function (r) { return r.unregister(); }));
+          }));
+        } catch (e) {}
+        try {
+          steps.push(caches.keys().then(function (ks) {
+            return Promise.all(ks.filter(function (k) { return k.indexOf('mahjong-local-app-') === 0; })
+              .map(function (k) { return caches.delete(k); }));
+          }));
+        } catch (e) {}
+        Promise.all(steps.map(function (p) { return p.catch(function () {}); }))
+          .then(function () { location.reload(); }, function () {});
+      };
+      var ss = document.getElementById('start-screen');
+      if (ss && getComputedStyle(ss).position !== 'fixed') { heal(mine, 'css'); return; }
+      fetch('version.json', { cache: 'no-store' }).then(function (r) { return r.json(); })
+        .then(function (v) { if (v && v.app && v.app !== mine) heal(v.app, 'version'); })
+        .catch(function () {});
+    } catch (e) {}
+  }
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', run);
+  else run();
+})();
+</script>
+<script type="module" src="js/main.bundle.js"></script>
+</body>
+</html>

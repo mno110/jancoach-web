@@ -1,0 +1,1036 @@
+* { box-sizing: border-box; }
+/* Safe area (2026-11-07 addendum): with viewport-fit=cover the page is drawn to the physical screen
+   edges, and the OS reports the camera hole / notch / rounded-corner insets through env().
+   Backgrounds (body, overlays) stay edge to edge; every control and text sits inside the padding
+   box that these four values define, so the largest non-overlapping rectangle follows the device
+   and the rotation automatically (0 on screens without cutouts). */
+:root { --sa-t: env(safe-area-inset-top, 0px); --sa-r: env(safe-area-inset-right, 0px); --sa-b: env(safe-area-inset-bottom, 0px); --sa-l: env(safe-area-inset-left, 0px); }
+html, body { margin: 0; height: 100%; height: 100dvh; font-family: system-ui, "Hiragino Sans", "Noto Sans JP", sans-serif; }
+/* The app is a game board: the page itself never scrolls. Panels
+   that need it (#side, the landscape rail, modal cards) scroll
+   internally. Height is driven by 100dvh (the actually visible
+   viewport) ONLY: on phone Chrome 100vh is the LARGE viewport
+   (URL bar hidden), and the old `min-height: 100vh` on #app
+   stretched the app past the visible area whenever the browser UI
+   was shown -- the hand fell below the fold and the page scrolled.
+   (User report, 2026-11-04.) */
+body { background: #0b3d2e; color: #eef; overflow: hidden; overscroll-behavior: none; touch-action: manipulation; }
+/* UX (theme 5): touch-action: manipulation drops double-tap-to-zoom (the coach's
+   second click on the same tile is a double tap) but keeps pinch zoom. */
+#app { display: grid; grid-template-columns: minmax(720px, 1fr) 384px; height: 100vh; height: 100dvh; padding: var(--sa-t) var(--sa-r) var(--sa-b) var(--sa-l); }
+#table-wrap { padding: 8px; display: flex; flex-direction: column; gap: 7px; min-width: 0; min-height: 0; }
+#controls { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; background: #083024; padding: 6px 10px; border-radius: 8px; font-size: 13px; }
+#controls button, #controls select { font-size: 13px; padding: 4px 10px; border-radius: 6px; border: 1px solid #2a7; background: #0e5a41; color: #eef; cursor: pointer; }
+#controls button:disabled { opacity: .4; cursor: default; }
+#status { color: #bde; font-size: 12px; }
+
+/* Start screen (案B, user-selected 2026-11-04): an overlay covering
+   #table. While it is up (pre-game) the legacy control bar is hidden
+   entirely (user direction, 2026-11-05: before a game starts, the
+   start screen is the only thing the player sees -- the mock's single
+   screen). #controls remains the source of truth for every setting:
+   the start screen's settings panel only mirrors it, and the bar
+   returns the moment a game starts (the start screen hides). The
+   :has() rule keeps the two in sync with no JS bookkeeping; a browser
+   without :has() simply keeps the bar visible (the old behaviour).
+   The overlay itself is a flex column of height 100%: the scrollable
+   content area shrinks (min-height: 0) and the status line is a fixed
+   flex child at the bottom, so the status can never fall outside the
+   frame (the landscape mock's known defect). Hidden once a game
+   starts. */
+#table { position: relative; }
+#table-wrap:has(#start-screen:not([hidden])) > #controls { display: none; }
+/* While the start screen is up, the page behind it takes the start
+   screen's bottom tone, so any area the overlay itself cannot paint
+   (overscroll, browser chrome transitions) reads as the same colour
+   all the way down (user report, 2026-11-05). */
+body:has(#start-screen:not([hidden])) { background: #06231a; }
+/* The overlay is fixed to the VIEWPORT, not absolute inside #table:
+   as a #table overlay it ended where the table ended (~3/4 of a tall
+   portrait screen), and the empty coach column below showed through
+   in a different tone, so the screen looked cut off mid-way (user
+   report with a device screenshot, 2026-11-05). Fixed inset 0 with
+   no border radius paints the gradient to every edge; the rule is
+   inert once a game starts because the element is [hidden]. */
+#start-screen { position: fixed; inset: 0; z-index: 8; display: flex; flex-direction: column;
+  background: linear-gradient(180deg, #0e4d36 0%, #093e2a 55%, #06231a 100%);
+  border-radius: 0; overflow: hidden; padding: var(--sa-t) var(--sa-r) var(--sa-b) var(--sa-l); }
+#start-screen[hidden] { display: none; }
+.ss-scroll { --ss-gap: 8px; flex: 1 1 auto; min-height: 0; overflow-y: auto; padding: 10px 16px 8px;
+  display: flex; flex-direction: column; align-items: center; gap: var(--ss-gap); }
+/* Vertical centring (2026-11-05): two zero-basis spacers share the free
+   space, so the stack sits in the middle when it fits (desktop/tablet),
+   and collapse to 0 when it does not (phones), leaving the content
+   top-aligned and scrollable — unlike justify-content:center, which
+   would push the top out of the scroll range. The negative margins
+   cancel the flex gap next to each spacer, so the overflow layout is
+   pixel-identical to the previous top-aligned one. */
+.ss-scroll::before, .ss-scroll::after { content: ''; flex: 1 0 0; }
+.ss-scroll::before { margin-bottom: calc(-1 * var(--ss-gap)); }
+.ss-scroll::after { margin-top: calc(-1 * var(--ss-gap)); }
+.ss-brand { text-align: center; }
+.ss-mark { display: inline-flex; align-items: center; justify-content: center; width: 46px; height: 58px;
+  background: #f7f3e8; color: #126a3d; border-radius: 8px; font-size: 30px; font-weight: 900;
+  font-family: 'Hiragino Mincho ProN','Yu Mincho',serif; box-shadow: 0 3px 10px rgba(0,0,0,.45); }
+.ss-brand h1 { margin: 4px 0 0; font-size: 25px; letter-spacing: .12em; }
+.ss-sub { color: #ffd97a; font-size: 12.5px; letter-spacing: .18em; margin-top: 2px; }
+.ss-card { width: min(430px, 100%); background: rgba(0,0,0,.28); border: 1px solid rgba(255,255,255,.16);
+  border-radius: 10px; padding: 10px 14px; }
+.ss-card-title { font-size: 12px; color: #bde; margin-bottom: 6px; }
+.ss-mini-stats { display: flex; gap: 8px; }
+.ss-cell { flex: 1; text-align: center; }
+.ss-v { font-size: 21px; font-weight: 800; color: #fff; }
+.ss-k { font-size: 11px; color: #bde; }
+.ss-resume { border-color: rgba(255,217,122,.6); text-align: center; }
+.ss-resume-title { font-weight: 800; color: #ffd97a; }
+.ss-resume-detail { margin-top: 4px; font-size: 14px; }
+.ss-resume-note { margin-top: 2px; font-size: 11.5px; color: #bde; }
+.ss-btn-resume { margin-top: 9px; width: 100%; padding: 11px; font-size: 16px; font-weight: 800;
+  background: linear-gradient(180deg, #ffd97a, #d9a83c); color: #231a04; border: none; border-radius: 8px; cursor: pointer; }
+.ss-btn-discard { margin-top: 6px; padding: 6px 12px; font-size: 12.5px; background: transparent;
+  color: #cfe; border: 1px solid rgba(255,255,255,.35); border-radius: 7px; cursor: pointer; }
+.ss-strength-card { display: flex; flex-direction: column; gap: 5px; }
+.ss-strength-row { display: flex; justify-content: space-between; align-items: center; }
+.ss-cpu-row { display: flex; gap: 10px; flex-wrap: wrap; font-size: 12px; color: #bde; }
+.ss-cpu-row label { display: inline-flex; align-items: center; gap: 4px; white-space: nowrap; }
+.ss-cpu-row select { font-size: 13px; }
+.ss-cpu-row { width: 100%; flex-wrap: nowrap; gap: 8px; }
+.ss-cpu-row label:first-child { flex: 1 1 auto; min-width: 0; }
+.ss-cpu-row label:last-child { flex: 0 1 auto; min-width: 0; }
+.ss-cpu-row label:last-child select { width: 92px; flex: 0 1 92px; }
+.ss-cpu-row select { flex: 1 1 auto; min-width: 0; text-overflow: ellipsis; }
+.ss-model-ver { margin-left: .5em; }
+.ss-strength { font-weight: 800; display: inline-flex; align-items: center; gap: 7px; }
+.ss-segment { display: flex; width: min(430px, 100%); background: rgba(0,0,0,.35); border-radius: 9px; padding: 3px; gap: 3px; }
+.ss-segment button { flex: 1; padding: 8px; font-size: 15px; background: transparent; color: #cfe;
+  border: none; border-radius: 7px; cursor: pointer; }
+.ss-segment button.on { background: #0e5a41; color: #fff; font-weight: 800; box-shadow: inset 0 0 0 1px #2a7; }
+.ss-btn-primary { width: min(430px, 100%); padding: 11px; font-size: 17px; font-weight: 800;
+  background: #0e7a52; color: #fff; border: 1px solid #2a7; border-radius: 9px; cursor: pointer; }
+.ss-btn-primary:disabled { opacity: .45; cursor: default; }
+.ss-load { position: absolute; inset: 0; z-index: 20; display: flex; align-items: center; justify-content: center;
+  padding: 16px; box-sizing: border-box; background: rgba(0,12,8,.62); }
+.ss-load[hidden] { display: none; }
+.ss-load-box { width: min(360px, 100%); box-sizing: border-box; padding: 16px 18px 14px; border-radius: 12px;
+  background: #0d3a2a; border: 1px solid rgba(255,255,255,.18); box-shadow: 0 8px 28px rgba(0,0,0,.5);
+  color: #dfe; font-size: 13px; text-align: center; display: flex; flex-direction: column; gap: 8px; }
+.ss-load-title { font-size: 16px; font-weight: 800; color: #fff; }
+.ss-load-steps { list-style: none; margin: 0; padding: 0; display: flex; justify-content: space-between; gap: 4px;
+  font-size: 11px; color: #8fb3a4; }
+.ss-load-steps li { flex: 1; padding: 3px 0; border-radius: 6px; background: rgba(255,255,255,.06); white-space: nowrap; }
+.ss-load-steps li.active { color: #fff; background: rgba(255,211,107,.28); font-weight: 700; }
+.ss-load-steps li.done { color: #bfe8d2; }
+.ss-load-steps li.done::before { content: '✓'; margin-right: 2px; }
+.ss-load-bar { height: 8px; border-radius: 4px; background: rgba(255,255,255,.14); overflow: hidden; }
+.ss-load-bar i { display: block; height: 100%; width: 0; background: #ffd36b; transition: width .15s linear; }
+.ss-load-bar.indeterminate i { width: 30%; animation: ss-load-slide 1.2s ease-in-out infinite; }
+@keyframes ss-load-slide { 0% { margin-left: -30%; } 100% { margin-left: 100%; } }
+.ss-load-pct { font-size: 12px; color: #eef; min-height: 1.2em; font-variant-numeric: tabular-nums; }
+.ss-load-log { font-size: 11px; color: #9cc; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; min-height: 1.2em; }
+.ss-load-note { font-size: 10.5px; color: #9bb; line-height: 1.4; }
+.ss-load-note[hidden], .ss-load-diag[hidden], .ss-load-log[hidden] { display: none; }
+.ss-load.failed .ss-load-box { background: #4a1414; border-color: rgba(255,140,140,.4); color: #fff; }
+.ss-load.failed .ss-load-steps, .ss-load.failed .ss-load-bar, .ss-load.failed .ss-load-pct,
+.ss-load.failed .ss-load-note { display: none; }
+.ss-load-diag { font: 11px/1.4 ui-monospace, monospace; text-align: left; word-break: break-all; margin: 2px 0; }
+.ss-btn-reload { padding: 6px 18px; font-size: 14px; font-weight: 800; border-radius: 8px; border: 0;
+  background: #ffd36b; color: #3a2a00; cursor: pointer; }
+.ss-model-notice { display: flex; align-items: center; justify-content: space-between; gap: 10px;
+  border-color: rgba(255,211,107,.6); font-size: 13px; color: #ffe9a8; }
+.ss-model-notice[hidden] { display: none; }
+.ss-model-notice .ss-btn-reload { flex: none; }
+.ss-link-row { display: flex; gap: 8px; width: min(430px, 100%); }
+.ss-btn-ghost { flex: 1; padding: 8px 4px; font-size: 13px; background: rgba(0,0,0,.25); color: #eef;
+  border: 1px solid rgba(255,255,255,.25); border-radius: 8px; cursor: pointer; }
+.ss-panel { width: min(430px, 100%); background: rgba(0,0,0,.28); border: 1px solid rgba(255,255,255,.16);
+  border-radius: 10px; padding: 10px 14px; font-size: 13px; display: flex; flex-direction: column; gap: 7px; }
+.ss-panel[hidden] { display: none; }
+.ss-panel label { display: flex; align-items: center; gap: 6px; min-height: 30px; }
+.ss-panel input[type="checkbox"] { width: 18px; height: 18px; margin: 0 2px 0 0; accent-color: #3c9; }
+.ss-panel select { font-size: 13px; }
+.ss-settings-note, .ss-stats-note { font-size: 11.5px; color: #bde; }
+.ss-status { flex: 0 0 auto; display: flex; align-items: center; gap: 7px; padding: 5px 14px;
+  background: rgba(0,0,0,.4); font-size: 12.5px; color: #dfe; min-width: 0; }
+#ss-status-text { min-width: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.ss-dot { width: 8px; height: 8px; border-radius: 50%; background: #7ee2a8; flex: 0 0 auto; }
+
+/* Central-board layout: a single fixed-aspect board in the middle
+   of the table holds ONLY the centre information panel and the four
+   discard ponds (Tenhou-style ring, absolutely positioned, so ponds
+   can never spill out of their player boxes). Player boxes keep
+   name / wind / score / hand / melds. The self hand is along the
+   bottom with the action bar immediately above it. */
+#table { flex: 1; min-height: 0; display: grid; gap: 5px;
+  grid-template-columns: 178px minmax(0, 1fr) 178px;
+  grid-template-rows: auto minmax(0, 1fr) auto;
+  grid-template-areas: ". top ." "left board right" "bottom bottom bottom"; }
+#seat-top { grid-area: top; }
+#seat-left { grid-area: left; display: flex; flex-direction: column; justify-content: center; }
+#seat-right { grid-area: right; display: flex; flex-direction: column; justify-content: center; }
+#self-area { grid-area: bottom; display: flex; flex-direction: column; gap: 3px; position: relative; }
+/* Selected-tile mini info chip: floats just above the selected hand
+   tile while a tile is selected (coach ON). Absolutely positioned, so
+   it never changes the layout or the board fit; pointer-events none,
+   so it never blocks tile clicks. */
+#sel-chip { position: absolute; z-index: 5; transform: translateX(-50%); display: flex; align-items: center; gap: 9px;
+  background: rgba(4, 32, 24, .93); border: 1px solid rgba(255, 217, 122, .55); border-radius: 999px;
+  padding: 3px 12px; font-size: 12.5px; color: #eef; white-space: nowrap;
+  box-shadow: 0 3px 10px rgba(0, 0, 0, .4); pointer-events: none; }
+#sel-chip[hidden] { display: none; }
+#sel-chip .sel-chip-tile { display: inline-flex; width: 20px; height: 28px; }
+#sel-chip .sel-chip-ok { color: #7ee2a8; font-weight: 800; }
+#sel-chip .sel-chip-rec { color: #ffd97a; font-weight: 800; }
+#board { grid-area: board; position: relative; justify-self: center; align-self: center;
+  /* Width is set by fitBoard() in main.js from the measured vertical
+     budget (viewport - controls - seats - self area); this CSS value
+     is only the pre-JS fallback. */
+  width: min(100%, 660px); aspect-ratio: 1 / 1;
+  background: radial-gradient(circle at center, #0d4a35 0, #07271c 78%);
+  border: 2px solid rgba(255,217,122,.28); border-radius: 14px; }
+#board #center { position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%); width: 44%; height: 44%; }
+.board-pond { position: absolute; display: flex; flex-direction: column; align-items: center; gap: 2px; padding: 3px; border-radius: 8px; }
+.board-pond .he { display: grid; grid-template-columns: repeat(6, 31px); grid-auto-rows: 43px; gap: 2px; width: max-content; }
+.bp-0 { left: 50%; top: 72.5%; transform: translateX(-50%); }
+.bp-2 { left: 50%; bottom: 72.5%; transform: translateX(-50%) rotate(180deg); }
+.bp-1 { left: 86%; top: 50%; transform: translate(-50%, -50%) rotate(-90deg); }
+.bp-3 { left: 14%; top: 50%; transform: translate(-50%, -50%) rotate(90deg); }
+.board-pond.riichi-on { background: rgba(194,39,45,.16); box-shadow: inset 0 0 0 2px rgba(255,92,82,.75); }
+/* Full ponds (a 4th row starts at 19 discards): step the tiles down
+   one notch so a 4-row pond keeps roughly the footprint of a 3-row
+   one and the side ponds stay clear of the centre panel (QA B2:
+   at 20+ discards the un-stepped side ponds overlapped the panel
+   on desktop and portrait). The trigger is the tile count (:has
+   on the 19th tile), never the form factor; the landscape and
+   portrait blocks below only refine the stepped sizes for their
+   smaller base tiles, as they already do for the base sizes. */
+/* Third row (13+ discards): first step down. A 3-row pond at base
+   size is ~149px tall, but the band between the centre panel (44%)
+   and the board edge is only 28% of the board (~125px at a 446px
+   board), so the top/bottom ponds spilled off the board and the
+   side ponds grazed the centre (night sweep 2026-11-04, 13-18
+   discards at 768x1024 and 360x640). Same count-triggered ladder
+   as the 19+ step below; sizes keep the base tile aspect ratio. */
+.board-pond:has(.he .tile:nth-child(13)) { padding: 0; gap: 0; }
+.board-pond:has(.he .tile:nth-child(13)) .he { grid-template-columns: repeat(6, 27px); grid-auto-rows: 36px; gap: 0; }
+.board-pond:has(.he .tile:nth-child(13)) .tile.discard { width: 26px; height: 35px; }
+.board-pond:has(.he .tile:nth-child(13)) .tile.discard.riichi-d { width: 35px; height: 26px; }
+.board-pond:has(.he .tile:nth-child(13)) .tile.discard.riichi-d .tile-art { width: 26px; height: 35px; }
+.board-pond:has(.he .tile:nth-child(13)) .riichi-stick { min-height: 8px; }
+.board-pond:has(.he .tile:nth-child(13)) .riichi-stick-art { width: 56px; height: 8px; }
+.board-pond:has(.he .tile:nth-child(19)) { padding: 0; gap: 0; }
+.board-pond:has(.he .tile:nth-child(19)) .he { grid-template-columns: repeat(6, 24px); grid-auto-rows: 30px; gap: 0; }
+.board-pond:has(.he .tile:nth-child(19)) .tile.discard { width: 23px; height: 29px; }
+.board-pond:has(.he .tile:nth-child(19)) .tile.discard.riichi-d { width: 29px; height: 23px; }
+.board-pond:has(.he .tile:nth-child(19)) .tile.discard.riichi-d .tile-art { width: 23px; height: 29px; }
+.board-pond:has(.he .tile:nth-child(19)) .riichi-stick { min-height: 8px; }
+.board-pond:has(.he .tile:nth-child(19)) .riichi-stick-art { width: 56px; height: 8px; }
+.seat { position: relative; background: rgba(0,0,0,.18); border-radius: 8px; padding: 5px; min-height: 0; overflow: hidden; }
+.seat-info { min-height: 24px; display: flex; align-items: center; justify-content: center; gap: 4px; font-size: 11px; margin-bottom: 4px; white-space: nowrap; }
+.seat-wind { display: inline-flex; align-items: center; justify-content: center; width: 22px; height: 22px; border-radius: 50%; background: #e8e2cf; color: #173f35; font-weight: 800; }
+.seat-score { font-variant-numeric: tabular-nums; font-weight: 700; }
+.riichi-badge { background: #d42a1e; color: #fff; border-radius: 4px; padding: 1px 5px; font-size: 10px; font-weight: 800; box-shadow: 0 0 7px rgba(255,80,60,.85); }
+.seat-info.riichi-on { color: #ffc9c0; }
+.seat.seat-riichi { box-shadow: inset 0 0 0 2px rgba(235,70,50,.9); background: rgba(120,22,10,.30); }
+.center-player.riichi-on { color: #ffb3a7; font-weight: 800; }
+.turn-badge { background: #f4c542; color: #332400; border-radius: 4px; padding: 1px 4px; font-size: 10px; font-weight: 800; }
+.riichi-stick { min-height: 15px; display: flex; align-items: center; justify-content: center; }
+.riichi-stick-art { width: 74px; height: 15px; display: block; }
+.riichi-pop { position: absolute; left: 50%; top: 36%; z-index: 6; pointer-events: none;
+  transform: translate(-50%, -50%); background: #d42a1e; color: #fff; font-weight: 900; font-size: 19px;
+  padding: 5px 14px; border-radius: 999px; box-shadow: 0 4px 14px rgba(0,0,0,.45);
+  animation: riichi-pop 1.6s ease-out forwards; }
+@keyframes riichi-pop {
+  0% { opacity: 0; transform: translate(-50%, -30%) scale(.6); }
+  15% { opacity: 1; transform: translate(-50%, -50%) scale(1.15); }
+  30% { transform: translate(-50%, -50%) scale(1); }
+  80% { opacity: 1; }
+  100% { opacity: 0; transform: translate(-50%, -60%) scale(1); }
+}
+.pos-top .hand-row, .pos-bottom .hand-row { justify-content: center; }
+.pos-left .hand-row, .pos-right .hand-row { flex-direction: column; align-items: center; }
+.pos-left .hand, .pos-right .hand { display: flex; flex-wrap: wrap; width: 50px; gap: 1px; justify-content: center; }
+.pos-left .melds, .pos-right .melds { display: flex; flex-direction: row; flex-wrap: wrap; gap: 5px; align-items: flex-start; }
+/* Side seats: each meld is a vertical strip (their meld row runs
+   along the table edge). DOM order fills the strip top-to-bottom;
+   meldHTML orders the tiles so the strip reads from the owner's
+   viewpoint (see meldArrangement). */
+.pos-left .meld, .pos-right .meld { flex-direction: column; align-items: center; }
+.hand-row { margin-top: 4px; display: flex; align-items: flex-end; gap: 10px; flex-wrap: wrap; }
+.hand { display: inline-flex; align-items: flex-end; gap: 2px; }
+.melds { display: inline-flex; align-items: flex-end; gap: 7px; flex-wrap: wrap; }
+.meld { display: inline-flex; align-items: flex-end; gap: 1px; background: rgba(255,255,255,.09); padding: 2px; border-radius: 4px; }
+
+/* Original SVG tile faces (tile_art.mjs). The .tile element is just the
+   frame/box; the artwork itself supplies body, colours and shading. */
+.tile-defs { position: absolute; width: 0; height: 0; overflow: hidden; }
+.tile { position: relative; display: inline-flex; align-items: center; justify-content: center;
+  width: 27px; height: 38px; padding: 0; background: transparent; border: 0; user-select: none; flex: 0 0 auto; }
+.tile-art { width: 100%; height: 100%; display: block; pointer-events: none; }
+.tile.discard { width: 30px; height: 42px; }
+.tile.discard.called { opacity: .48; }
+.tile.discard.last { filter: drop-shadow(0 0 4px #ffd97a); }
+.tile.discard.riichi-d { width: 42px; height: 30px; align-self: center; }
+.tile.discard.riichi-d .tile-art {
+  position: absolute; left: 50%; top: 50%; width: 30px; height: 42px;
+  transform: translate(-50%, -50%) rotate(90deg); }
+/* Meld tile rotations: meldHTML stamps mrot-{0,90,180,270} (the seat frame
+   composed with the called tile's lean, decided in JS) plus tile-side when
+   the box transposes. These rules only render the four rotations; there
+   are no per-seat or per-shape rotation overrides anywhere. */
+.tile.meld-tile.tile-side { align-self: center; }
+.tile.meld-tile.mrot-90 .tile-art, .tile.meld-tile.mrot-270 .tile-art {
+  position: absolute; left: 50%; top: 50%; width: 25px; height: 35px; }
+.tile.meld-tile.mrot-90 .tile-art { transform: translate(-50%, -50%) rotate(90deg); }
+.tile.meld-tile.mrot-270 .tile-art { transform: translate(-50%, -50%) rotate(-90deg); }
+.tile.meld-tile.mrot-180 .tile-art { transform: rotate(180deg); }
+.tile.hand { width: 46px; height: 65px; cursor: default; }
+.tile.hand.clickable { cursor: pointer; filter: drop-shadow(0 0 4px #4fc3f7); }
+@media (hover: hover) { .tile.hand.clickable:hover { transform: translateY(-5px); } }
+.tile.hand.selected { outline: 3px solid #35b6f2; outline-offset: 1px; transform: translateY(-7px); filter: drop-shadow(0 0 7px #35b6f2); }
+.tile.hand.recommended { filter: drop-shadow(0 0 6px #ffd94d); }
+.tile.hand.clickable.recommended { filter: drop-shadow(0 0 7px #ffd94d); }
+.tile.hand.drawn { margin-left: 16px; }
+.tile.hand.assist-dora { outline: 2px solid rgba(255, 190, 40, .8); outline-offset: -1px; filter: drop-shadow(0 0 5px rgba(255, 190, 40, .55)); }
+.tile.hand.assist-same { outline: 2px solid rgba(53, 182, 242, .45); outline-offset: 0; }
+.tile.hand.grp-mianzi { box-shadow: inset 0 -4px 0 rgba(87, 199, 133, .85); }
+.tile.hand.grp-head, .tile.hand.grp-pair { box-shadow: inset 0 -4px 0 rgba(255, 217, 122, .9); }
+.tile.hand.grp-taatsu { box-shadow: inset 0 -4px 0 rgba(111, 183, 255, .85); }
+/* Block boundary mark (assist): drawn INSIDE the existing inter-tile gap instead of adding a margin,
+   so turning assist on never changes the hand row's total width (the 14th tile used to be pushed off
+   screen by up to 4 x 6px; user report 2026-11-07). */
+.tile.hand.blk-gap:not(.drawn)::before { content: ""; position: absolute; left: -2px; top: 12%; bottom: 12%; width: 2px; border-radius: 1px; background: rgba(255, 255, 255, .45); pointer-events: none; }
+.tile.opp { width: 20px; height: 29px; }
+.tile.meld-tile { width: 25px; height: 35px; }
+.tile.meld-tile.tile-side { width: 35px; height: 25px; }
+.tile.dora-tile { width: 30px; height: 42px; }
+.tile.act-tile { width: 23px; height: 33px; }
+
+#center { background: radial-gradient(circle at center, #10523d 0, #083024 72%); border: 2px solid rgba(255,217,122,.35); border-radius: 12px; padding: 8px; text-align: center; align-self: stretch; display: flex; flex-direction: column; justify-content: center; gap: 4px; }
+.center-players { display: grid; grid-template-columns: 1fr 1fr; gap: 3px 8px; font-size: 10.5px; margin-bottom: 3px; }
+.center-player { display: flex; align-items: center; gap: 4px; min-height: 22px; }
+.center-player.pos-2, .center-player.pos-0 { grid-column: 1 / -1; justify-content: center; }
+.center-player.pos-3 { justify-content: flex-start; }
+.center-player.pos-1 { justify-content: flex-end; }
+.center-player.active { color: #ffd94d; font-weight: 800; }
+.cp-wind { display: inline-flex; align-items: center; justify-content: center; width: 17px; height: 17px; border-radius: 50%; background: #e8e2cf; color: #173f35; font-weight: 800; }
+#center .round { font-size: 20px; font-weight: 800; }
+#center .round span { font-size: 15px; }
+.center-meta { font-size: 13px; color: #d9efe5; }
+#center .dora { display: flex; align-items: center; justify-content: center; gap: 5px; font-size: 12px; }
+#center .turn { min-height: 1.2em; color: #d9efe5; }
+/* The result line is long (names + score deltas) and transient --
+   the kyoku-result panel follows with the full breakdown -- so it
+   floats over the centre panel's bottom-right corner instead of
+   taking flow space: as a flow item, a wrapped result line pushed
+   the centre content ~19px past the panel at the result moment
+   (QA B4). Same treatment the landscape block already used; it is
+   now the base rule for every form factor. */
+#center .result { position: absolute; right: 6px; bottom: 4px; z-index: 1;
+  color: #ffd97a; font-size: 12px; max-width: 72%; white-space: nowrap;
+  overflow: hidden; text-overflow: ellipsis; text-align: right;
+  background: rgba(8, 48, 36, .88); padding: 0 4px; border-radius: 4px; }
+
+/* Large response buttons directly above the self hand. They only carry
+   strong colours while a response is actually available. */
+#actions { min-height: 76px; display: flex; align-items: center; justify-content: center; border-radius: 10px; padding: 6px; }
+#actions.has-actions { background: rgba(0,0,0,.30); box-shadow: inset 0 0 0 2px rgba(255,217,77,.55); }
+.action-bar { display: flex; gap: 14px; align-items: center; justify-content: center; flex-wrap: wrap; }
+#actions .act { min-width: 108px; min-height: 60px; padding: 8px 16px; border-radius: 12px;
+  border: 3px solid #ffe083; background: linear-gradient(180deg, #1b9aaa, #087184); color: #fff;
+  font-size: 22px; font-weight: 900; cursor: pointer; box-shadow: 0 5px 14px rgba(0,0,0,.38);
+  display: inline-flex; align-items: center; justify-content: center; gap: 8px; }
+@media (hover: hover) { #actions .act:hover { transform: translateY(-2px); filter: brightness(1.12); } }
+#actions .act:active { transform: translateY(1px) scale(.97); filter: brightness(.9); }
+#actions .act.win { background: linear-gradient(180deg, #e34b3f, #a91f16); border-color: #ffb0a6; min-width: 126px; }
+#actions .act.riichi { background: linear-gradient(180deg, #ff9f1c, #d96c00); border-color: #ffe083; }
+#actions .act.riichi.armed { background: #b9770e; box-shadow: 0 0 0 4px rgba(255,217,77,.45); }
+#actions .act.pass { background: linear-gradient(180deg, #607080, #35424e); border-color: #c7d0d8; min-width: 96px; }
+#actions .act.minor { font-size: 17px; min-width: 104px; }
+.act-tiles { display: inline-flex; gap: 1px; align-items: center; }
+.action-status { color: #bde; font-size: 14px; text-align: center; }
+.action-status.prompt { color: #fff; background: rgba(0,0,0,.28); border: 1px solid rgba(255,255,255,.28); padding: 9px 14px; border-radius: 999px; font-size: 16px; font-weight: 700; }
+.hint { color: #bde; font-size: 13px; }
+
+#side { background: #07271c; padding: 8px; overflow-y: auto; overflow-x: hidden; }
+#side h3 { margin: 6px 0; font-size: 15px; }
+#side .ctx { color: #9db; font-size: 11px; font-weight: normal; }
+.qrow { display: grid; grid-template-columns: 1fr auto auto; gap: 10px; align-items: baseline; font-size: 13px; padding: 2px 0; }
+.prob { color: #7ee2a8; font-weight: 800; font-variant-numeric: tabular-nums; }
+.prob.big { font-size: 22px; color: #7ee2a8; }
+.q { color: #ffd97a; font-variant-numeric: tabular-nums; }
+.rec { font-size: 15px; display: flex; align-items: baseline; gap: 8px; flex-wrap: wrap; }
+table.cmp, table.standings { border-collapse: collapse; font-size: 11px; }
+table.cmp { width: 100%; table-layout: fixed; }
+/* Fixed layout (2026-11-07): the auto layout let the tile / header minimum
+   widths push the 6-column coach table past the 262px landscape panel, so
+   its right edge (推奨度) was clipped. Columns are now shares of the width. */
+table.cmp th, table.cmp td { overflow-wrap: anywhere; }
+table.cmp.sv-cmp { table-layout: auto; }
+table.cmp:not(.sv-cmp) th:nth-child(1) { width: 11%; }
+table.cmp:not(.sv-cmp) th:nth-child(2), table.cmp:not(.sv-cmp) th:nth-child(3), table.cmp:not(.sv-cmp) th:nth-child(4) { width: 10%; }
+table.cmp:not(.sv-cmp) th:nth-child(6) { width: 15%; }
+table.cmp td, table.cmp th { border: 1px solid #26594a; padding: 2px 3px; text-align: center; }
+table.cmp .outlook { white-space: normal; }
+table.cmp tr.rec-row { background: #5a4a12; }
+table.cmp tr.sel-row { background: #14425f; }
+table.cmp tr.rec-row.sel-row { background: #4a5a12; }
+table.cmp tr.cmp-extra { display: none; }
+table.cmp.expanded tr.cmp-extra { display: table-row; }
+table.cmp tr.cmp-toggle-row td { background: #123528; padding: 3px; }
+.cmp-toggle { background: none; border: none; color: #7ee2a8; font-size: 11px; font-weight: 700; cursor: pointer; text-decoration: underline; padding: 0; }
+.sel-info { margin: 4px 0 6px; font-size: 13px; color: #cfe9ff; }
+.cmp-tile { display: inline-flex; width: 23px; height: 32px; }
+.template { margin-top: 6px; font-size: 13px; color: #ffe9a8; }
+.compare { margin-top: 4px; font-size: 13px; color: #ffd9ec; }
+.floats { font-size: 11px; color: #bfe3d0; padding: 1px 2px; }
+.tenpai-hands { margin-top: 8px; text-align: left; }
+.tenpai-hand-row { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; margin: 4px 0; }
+.tenpai-hand-row .th-name { font-size: 13px; font-weight: 700; min-width: 64px; }
+.tenpai-hand-row .th-tiles { display: inline-flex; gap: 1px; }
+.tenpai-hand-row .th-tile { display: inline-flex; width: 21px; height: 29px; }
+.tenpai-hand-row .th-tile.win { outline: 2px solid #ffd94d; outline-offset: 0; filter: drop-shadow(0 0 4px #ffd94d); border-radius: 2px; }
+.tenpai-hand-row .th-meld { display: inline-flex; gap: 1px; margin-left: 8px; }
+.tenpai-hand-row .th-tile.called { width: 29px; height: 21px; align-self: center; position: relative; }
+.tenpai-hand-row .th-tile.called .tile-art { position: absolute; left: 50%; top: 50%; width: 21px; height: 29px; transform: translate(-50%, -50%) rotate(90deg); }
+/* Result panels show the owner's own viewpoint (seat frame 0): a tile
+   called from kamicha leans the other way — the same CALLED_LEAN rule
+   meldHTML applies on the table. */
+.tenpai-hand-row .th-tile.called.lean-kamicha .tile-art { transform: translate(-50%, -50%) rotate(-90deg); }
+.tenpai-hand-row .th-waits { font-size: 12px; color: #ffe9a8; }
+.stats-note { margin-top: 7px; padding: 7px 8px; border-left: 4px solid #55a7e8; background: rgba(46, 105, 158, .22); color: #dcefff; font-size: 13px; line-height: 1.45; }
+.stats-label { font-weight: 800; color: #9fd0ff; }
+.stats-source { display: block; margin-top: 2px; color: #a9c6dc; font-size: 11px; }
+#end { position: fixed; inset: 0; padding: var(--sa-t) var(--sa-r) var(--sa-b) var(--sa-l); background: rgba(0,0,0,.65); align-items: center; justify-content: center; z-index: 10; }
+.end-card { background: #0e4a36; padding: 24px 32px; border-radius: 12px; text-align: center; width: min(780px, 94vw); max-height: 92vh; max-height: 92dvh; overflow-y: auto; }
+.end-card table { margin: 10px auto; }
+.end-card td { padding: 4px 12px; font-size: 16px; }
+.end-card button, .history-card button { font-size: 14px; padding: 8px 14px; margin: 4px; border-radius: 8px; border: 1px solid #2a7; background: #0e5a41; color: #eef; cursor: pointer; }
+.save-status { color: #cfeee0; font-size: 13px; }
+.review { text-align: left; margin: 16px auto 8px; max-width: 700px; }
+.review h3 { margin: 8px 0; }
+.review-list { max-height: 290px; overflow-y: auto; border: 1px solid #26594a; }
+table.review-table { width: 100%; margin: 0; border-collapse: collapse; font-size: 12px; }
+table.review-table th, table.review-table td { border-bottom: 1px solid #26594a; padding: 5px 6px; text-align: center; font-size: 12px; }
+table.review-table th { background: #083024; position: sticky; top: 0; }
+.review-none { color: #cfeee0; font-size: 13px; }
+tr.review-row { cursor: pointer; }
+tr.review-row:hover { background: rgba(255,255,255,.07); }
+/* Post-game scene viewer: a read-only reconstruction of the table at
+   one recorded decision, folded from the saved bundle's mjai log. */
+.scene-viewer { position: fixed; inset: 0; padding: var(--sa-t) var(--sa-r) var(--sa-b) var(--sa-l); background: rgba(0,0,0,.78); align-items: center; justify-content: center; z-index: 30; }
+.sv-card { background: #0d4530; border: 2px solid rgba(255,217,122,.45); border-radius: 12px; padding: 16px 18px; width: min(1060px, 97vw); max-height: 94vh; max-height: 94dvh; overflow-y: auto; }
+.sv-head { display: flex; align-items: center; justify-content: space-between; gap: 10px; flex-wrap: wrap; }
+.sv-title { font-size: 16px; font-weight: 800; }
+.sv-nav button { font-size: 13px; padding: 6px 12px; margin-left: 4px; border-radius: 8px; border: 1px solid #2a7; background: #0e5a41; color: #eef; cursor: pointer; }
+.sv-nav button:disabled { opacity: .4; cursor: default; }
+.sv-meta { margin: 8px 0; font-size: 14px; }
+.sv-board { display: grid; gap: 8px; grid-template-columns: 1fr 1.5fr 1fr; grid-template-areas: "top top top" "left center right" "bottom bottom bottom"; }
+.sv-seat { background: rgba(0,0,0,.22); border: 1px solid #26594a; border-radius: 8px; padding: 7px 9px; }
+.sv-seat.pos-top { grid-area: top; }
+.sv-seat.pos-left { grid-area: left; }
+.sv-seat.pos-right { grid-area: right; }
+.sv-seat.pos-bottom { grid-area: bottom; }
+.sv-center { grid-area: center; background: radial-gradient(circle at center, #10523d 0, #083024 72%); border: 2px solid rgba(255,217,122,.35); border-radius: 10px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 5px; padding: 8px; text-align: center; }
+.sv-center .round { font-size: 19px; font-weight: 800; }
+.sv-dora { display: flex; align-items: center; gap: 4px; font-size: 12px; }
+.sv-pond { display: flex; flex-wrap: wrap; gap: 1px; max-width: 264px; margin: 4px auto; min-height: 31px; }
+.sv-seat.pos-bottom .sv-pond, .sv-seat.pos-top .sv-pond { max-width: 264px; }
+.sv-under { display: flex; align-items: flex-end; gap: 8px; flex-wrap: wrap; margin-top: 4px; }
+.sv-melds { display: inline-flex; gap: 5px; flex-wrap: wrap; }
+.sv-hand { display: inline-flex; gap: 1px; align-items: flex-end; flex-wrap: wrap; }
+.sv-hand .tile.hand { width: 34px; height: 48px; cursor: default; }
+.sv-hand .tile.hand.drawn { margin-left: 10px; }
+.sv-empty { color: #9fc6b4; font-size: 12px; }
+.sv-cand { margin-top: 10px; }
+table.sv-cmp { margin: 0 auto; }
+tr.sv-actual { background: rgba(255,217,122,.13); }
+#history { position: fixed; inset: 0; padding: var(--sa-t) var(--sa-r) var(--sa-b) var(--sa-l); background: rgba(0,0,0,.72); align-items: center; justify-content: center; z-index: 20; }
+.history-card { background: #0e4a36; padding: 22px 26px; border-radius: 12px; width: min(820px, 95vw); max-height: 90vh; max-height: 90dvh; overflow-y: auto; }
+.history-head { display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap; }
+.history-list { display: flex; flex-direction: column; gap: 8px; margin-top: 12px; }
+.history-item { display: grid; grid-template-columns: 1fr auto; gap: 6px 14px; align-items: center; background: rgba(0,0,0,.22); border: 1px solid #26594a; border-radius: 8px; padding: 10px 12px; text-align: left; }
+.history-meta { font-size: 13px; line-height: 1.5; }
+.history-actions { display: flex; gap: 4px; flex-wrap: wrap; justify-content: flex-end; }
+.history-empty { color: #cfeee0; }
+/* Kyoku result panel: hora / ryukyoku score breakdown, shown before
+   the game advances (auto mode holds briefly; manual mode waits for
+   the "next" button or a timeout). */
+#kyoku-result { position: fixed; inset: 0; padding: var(--sa-t) var(--sa-r) var(--sa-b) var(--sa-l); background: rgba(0,0,0,.55); align-items: center; justify-content: center; z-index: 15; }
+.result-card { background: #0e4a36; border: 2px solid rgba(255,217,122,.5); border-radius: 12px; padding: 18px 22px; width: min(580px, 94vw); max-height: 92vh; max-height: 92dvh; overflow-y: auto; text-align: center; }
+.result-head { font-size: 18px; font-weight: 800; display: flex; align-items: center; justify-content: center; gap: 8px; flex-wrap: wrap; }
+.result-win-tile, .win-tile { display: inline-flex; width: 30px; height: 42px; flex: 0 0 auto; }
+.yaku-list { margin: 10px auto 4px; width: max-content; max-width: 100%; text-align: left; }
+.yaku-row { display: flex; justify-content: space-between; gap: 28px; font-size: 14px; padding: 1px 0; }
+.yaku-fan { color: #ffd97a; font-variant-numeric: tabular-nums; }
+.result-score { font-size: 21px; font-weight: 900; color: #ffd97a; margin: 8px 0 4px; }
+.multi-ron { display: inline-block; background: #ffd97a; color: #0e4a36; border-radius: 4px; padding: 1px 10px; font-size: 13px; font-weight: 800; margin-bottom: 6px; }
+.score-label { background: #c0392b; color: #fff; border-radius: 4px; padding: 1px 8px; font-size: 14px; margin-right: 6px; }
+table.pay-table { margin: 10px auto; border-collapse: collapse; font-size: 13px; }
+table.pay-table td, table.pay-table th { border: 1px solid #26594a; padding: 3px 10px; text-align: center; }
+table.pay-table tr.winner-row { background: #5a4a12; }
+.delta-pos { color: #7ee2a8; font-weight: 700; }
+.delta-neg { color: #ff9d94; font-weight: 700; }
+.delta-total { font-weight: 800; }
+.tenpai-badge { background: #1b7a43; color: #fff; border-radius: 4px; padding: 0 6px; font-size: 11px; font-weight: 700; }
+.noten-badge { background: #5a6a72; color: #fff; border-radius: 4px; padding: 0 6px; font-size: 11px; font-weight: 700; }
+#result-next { font-size: 15px; padding: 8px 18px; min-height: 40px; margin-top: 8px; border-radius: 8px; border: 1px solid #2a7; background: #0e5a41; color: #eef; cursor: pointer; }
+.result-note { color: #bde; font-size: 12px; margin-top: 6px; }
+.final-breakdown { text-align: left; margin: 14px auto 4px; max-width: 700px; }
+.final-breakdown h3 { text-align: center; }
+table.fb-table { margin: 6px auto; border-collapse: collapse; font-size: 13px; }
+table.fb-table td, table.fb-table th { border: 1px solid #26594a; padding: 3px 10px; text-align: center; }
+.fb-note { color: #cfeee0; font-size: 12px; line-height: 1.5; }
+
+/* Explanation-layer extras: dora/yakuhai tags, waits, score outlook,
+   safe-tile line, explainability verdict, East-4 condition memo. */
+.tag { display: inline-block; border-radius: 4px; padding: 0 5px; margin: 1px 2px; font-size: 11px; background: rgba(255,255,255,.14); white-space: nowrap; }
+.tag.dora { background: #7a4d12; color: #ffe1a8; }
+.tag.yaku { background: #274b8f; color: #cfe4ff; }
+.tag.dirkill { background: #6e2430; color: #ffc9c0; }
+.dir-line { margin: 2px 0 6px; font-size: 13px; color: #d8c9f2; }
+.dir-note { margin-top: 7px; padding: 7px 8px; border-left: 4px solid #9a7ee8; background: rgba(96,72,180,.22); color: #e2d8ff; font-size: 13px; line-height: 1.5; }
+.waits { color: #bde; font-size: 11px; margin-top: 2px; }
+.outlook { color: #ffd97a; font-weight: 700; font-size: 12px; margin-top: 2px; white-space: nowrap; }
+.safe-line { margin-top: 6px; font-size: 13px; color: #bde; }
+.verdict-note { margin-top: 7px; padding: 7px 8px; border-left: 4px solid #e8b93c; background: rgba(160,120,20,.20); color: #ffe9a8; font-size: 13px; line-height: 1.5; }
+.probe-sec { margin-top: 9px; }
+.probe-btn { padding: 5px 12px; border: 1px solid #c9a23c; border-radius: 6px; background: rgba(255,217,122,.12); color: #ffe9a8; font-size: 13px; cursor: pointer; }
+.probe-btn:hover { background: rgba(255,217,122,.22); }
+.probe-progress { font-size: 13px; color: #bcd2f5; padding: 4px 0; }
+.probe-conds h4 { margin: 2px 0 4px; font-size: 13px; color: #dceaff; }
+.probe-conds ul { margin: 0; padding-left: 18px; font-size: 13px; line-height: 1.55; color: #e8eefc; }
+.probe-none { font-size: 13px; color: #ffe9a8; padding: 4px 0; }
+.probe-summary { font-size: 13px; color: #cfe3c8; padding: 4px 0; }
+.probe-dirs { margin-top: 6px; font-size: 13px; line-height: 1.55; color: #e8eefc; }
+.probe-row td { background: rgba(40,60,110,.18); padding: 6px 8px; }
+.east4-memo { margin-top: 8px; padding: 7px 8px; border-left: 4px solid #e8b93c; background: rgba(160,120,20,.20); color: #ffe9a8; font-size: 13px; line-height: 1.55; text-align: left; }
+
+@media (max-width: 1050px) {
+  #app { grid-template-columns: 1fr; }
+  #table { grid-template-columns: 148px minmax(0, 1fr) 148px; }
+  .tile.hand { width: 34px; height: 48px; }
+  .tile.hand.drawn { margin-left: 8px; }
+  #actions .act { min-width: 92px; min-height: 54px; font-size: 19px; }
+}
+/* Portrait tablet (501-1050px wide, 900px+ tall): the two grid rows used to
+   split by content, so the first tap of the 2-click discard (which fills the
+   coach panel) moved the hand up by ~350px and the second tap missed. The
+   rows now stay at the equal split the selected state already used, so the
+   hand does not move between the taps. Pre-game the start screen keeps the
+   whole height. Shorter windows keep the old behaviour. */
+@media (max-width: 1050px) and (min-width: 501px) and (min-height: 900px) and (orientation: portrait) {
+  #app { grid-template-rows: minmax(0, 1fr) minmax(0, 1fr); }
+  #app:has(#start-screen:not([hidden])) { grid-template-rows: minmax(0, 1fr) auto; }
+}
+
+/* Phone landscape (short, wide viewport -- e.g. 915x412 on a 13T
+   Pro): the desktop geometry cannot fit ~400px of height (the
+   square board is sized from the vertical budget and the ponds use
+   fixed-pixel tiles, so ponds, centre panel and seats collide and
+   the hand overflows). This block re-lays the table for short wide
+   screens only (up to 700px tall since 2026-11-07: 1024x576 tablets and small laptops also overflowed the base layout): the board becomes a rectangle filling its grid
+   cell (fitBoard defers to CSS in this mode), the chrome is
+   compacted, pond tiles shrink, and the coach panel stays a
+   fixed-width right column with its own scroll. Desktop and
+   portrait are not affected. */
+@media (orientation: landscape) and (max-height: 700px) {
+  #app { grid-template-columns: minmax(0, 1fr) 272px; }
+  #table-wrap { padding: 4px; gap: 4px; overflow: hidden; }
+  /* Start screen, compact for low landscape heights: the full-size
+     content stack is ~470px and would leave its last row clipped at
+     the scroll edge on a ~390px-tall screen, so the brand and the
+     vertical rhythm shrink while the start screen is up. */
+  .ss-scroll { padding: 6px 12px 5px; --ss-gap: 5px; }
+  .ss-mark { width: 34px; height: 43px; font-size: 22px; border-radius: 6px; }
+  .ss-brand h1 { margin-top: 2px; font-size: 19px; }
+  .ss-sub { font-size: 10.5px; margin-top: 0; }
+  .ss-card { padding: 6px 12px; }
+  .ss-segment button { padding: 5px; font-size: 13.5px; }
+  .ss-btn-primary { padding: 8px; font-size: 15px; }
+  .ss-btn-ghost { padding: 5px 4px; font-size: 12px; }
+  .ss-status { padding: 3px 12px; font-size: 11.5px; }
+  /* Plan C (user-approved mockup, 2026-11-04): the controls leave
+     the top of the table and become a fixed 98px left rail, so the
+     table gets the full viewport height. Every control stays
+     visible and one tap away; nothing is folded away. */
+  #table-wrap { flex-direction: row; }
+  #controls { flex-direction: column; flex-wrap: nowrap; flex: 0 0 98px; width: 98px;
+    align-items: stretch; gap: 5px; padding: 5px; overflow-y: auto; overflow-x: hidden; }
+  #controls label { display: flex; flex-direction: column; align-items: stretch; gap: 2px; font-size: 10px; }
+  #controls label:has(> input[type="checkbox"]) { flex-direction: row; align-items: center; gap: 4px; }
+  #controls button, #controls select { width: 100%; font-size: 10px; padding: 2px 3px; }
+  /* The rail's status line is kept deliberately thin (small type,
+     tight leading): it reports state, it does not need presence,
+     and the rail's vertical budget goes to the controls. */
+  #status { font-size: 9px; line-height: 1.25; overflow-wrap: anywhere; white-space: normal; }
+  #table { flex: 1 1 auto; min-width: 0; }
+  #table { grid-template-columns: 62px minmax(0, 1fr) 62px; gap: 3px; }
+  #board { width: 100%; height: 100%; aspect-ratio: auto; justify-self: stretch; align-self: stretch; border-radius: 10px; }
+  /* Wide, low centre panel (user direction, 2026-11-04): the panel
+     trades height for width -- 54% x 27% instead of the tall
+     42% x 38% stack -- and lays its items out as a grid: the round
+     block spans both rows on the left, remaining/kyotaku and the
+     dora sit on the top row, the turn indicator and result on the
+     bottom row. The freed vertical band moves the pond anchors up
+     (70.5% -> 67.5%), which is also what lets a full 4-row pond
+     fit at toolbar-reduced heights (~360px visible). */
+  #board #center { width: 54%; height: 27%; padding: 3px 7px; gap: 2px 8px;
+    display: grid; grid-template-columns: auto minmax(0, 1fr) auto;
+    grid-template-rows: 1fr 1fr; align-items: center; }
+  /* The round block stacks its two lines (round / honba) so its
+     cell stays narrow, and the meta line spans the remaining two
+     columns: with a one-line round and a single-column meta, the
+     meta text (91px) overflowed its ~60px cell and slid under the
+     dora tile, hiding the kyotaku count (measured, 2026-11-04). */
+  #center .round { grid-area: 1 / 1 / 3 / 2; font-size: 15px; line-height: 1.2; text-align: center; white-space: nowrap; }
+  #center .round span { display: block; font-size: 11px; }
+  .center-meta { grid-area: 1 / 2 / 2 / 4; font-size: 11px; text-align: left; white-space: nowrap; }
+  .center-players { display: none; }
+  #center .turn { grid-area: 2 / 2; font-size: 11px; min-height: 0; text-align: left; white-space: nowrap; overflow: hidden; }
+  #center .dora { grid-area: 2 / 3; font-size: 10px; gap: 3px; justify-content: flex-end; }
+  .tile.dora-tile { width: 13px; height: 18px; }
+  /* The result line is long (names + score deltas) and transient --
+     the kyoku-result panel follows with the full breakdown -- so
+     it floats over the panel's bottom-right corner instead of
+     taking grid space from the persistent items. */
+  #center .result { position: absolute; right: 5px; bottom: 2px; z-index: 1;
+    font-size: 10px; min-height: 0; max-width: 62%; white-space: nowrap;
+    overflow: hidden; text-overflow: ellipsis; text-align: right;
+    background: rgba(8, 48, 36, .88); padding: 0 4px; border-radius: 4px; }
+  .bp-0 { top: 67.5%; }
+  .bp-2 { bottom: 67.5%; }
+  .board-pond { padding: 2px; gap: 1px; }
+  .board-pond .he { grid-template-columns: repeat(6, 14px); grid-auto-rows: 18px; gap: 1px; }
+  .tile.discard { width: 14px; height: 18px; }
+  .tile.discard.riichi-d { width: 19px; height: 14px; }
+  .tile.discard.riichi-d .tile-art { width: 14px; height: 18px; }
+  /* The base (non-landscape) 13+ step-down must not leak into
+     landscape: ponds here already fit at base size, so the 13+
+     state simply restates the landscape base sizes. */
+  .board-pond:has(.he .tile:nth-child(13)) { padding: 2px; gap: 1px; }
+  .board-pond:has(.he .tile:nth-child(13)) .he { grid-template-columns: repeat(6, 14px); grid-auto-rows: 18px; gap: 1px; }
+  .board-pond:has(.he .tile:nth-child(13)) .tile.discard { width: 14px; height: 18px; }
+  .board-pond:has(.he .tile:nth-child(13)) .tile.discard.riichi-d { width: 19px; height: 14px; }
+  .board-pond:has(.he .tile:nth-child(13)) .tile.discard.riichi-d .tile-art { width: 14px; height: 18px; }
+  /* Full ponds (a 4th row starts at 19 discards): step the tiles
+     down one notch (12x16) so all 24 discards stay inside the
+     board band. The riichi stick stays in its usual place above
+     the pond (user instruction, 2026-11-04); the room comes from
+     the 38%/70.5% geometry above, zeroed pond padding/gaps, and a
+     thinner stick in this state. Detected with :has() on the tile
+     count, so no JS hook is needed. */
+  .board-pond:has(.he .tile:nth-child(19)) { padding: 0; gap: 0; }
+  .board-pond:has(.he .tile:nth-child(19)) .he { grid-template-columns: repeat(6, 12px); grid-auto-rows: 16px; gap: 0; }
+  .board-pond:has(.he .tile:nth-child(19)) .tile.discard { width: 12px; height: 16px; }
+  .board-pond:has(.he .tile:nth-child(19)) .tile.discard.riichi-d { width: 16px; height: 12px; }
+  .board-pond:has(.he .tile:nth-child(19)) .tile.discard.riichi-d .tile-art { width: 12px; height: 16px; }
+  .board-pond:has(.he .tile:nth-child(19)) .riichi-stick { min-height: 5px; }
+  .board-pond:has(.he .tile:nth-child(19)) .riichi-stick-art { width: 34px; height: 5px; }
+  .seat { padding: 3px; }
+  .seat-info { min-height: 16px; font-size: 9px; margin-bottom: 2px; gap: 2px; }
+  /* Side-seat columns are too narrow for name + wind + score on one
+     nowrap line (the score was clipped at the viewport edge); the
+     wind badge identifies the seat, so drop the name there. */
+  .pos-left .seat-name, .pos-right .seat-name { display: none; }
+  .seat-wind { width: 15px; height: 15px; }
+  .riichi-badge { font-size: 8px; padding: 0 3px; }
+  .turn-badge { font-size: 8px; padding: 0 3px; }
+  .riichi-stick { min-height: 8px; }
+  .riichi-stick-art { width: 44px; height: 8px; }
+  .tile.opp { width: 13px; height: 18px; }
+  .tile.meld-tile { width: 16px; height: 22px; }
+  .tile.meld-tile.tile-side { width: 22px; height: 16px; }
+  .tile.meld-tile.mrot-90 .tile-art, .tile.meld-tile.mrot-270 .tile-art { width: 16px; height: 22px; }
+  .hand-row { margin-top: 2px; gap: 5px; flex-wrap: nowrap; }
+  .pos-left .hand, .pos-right .hand { width: 44px; }
+  #actions { min-height: 30px; padding: 3px; }
+  #actions .act { min-width: 76px; min-height: 38px; font-size: 15px; padding: 4px 10px; border-width: 2px; }
+  #actions .act.win { min-width: 92px; }
+  #actions .act.pass { min-width: 68px; }
+  #actions .act.minor { font-size: 13px; min-width: 76px; }
+  .action-status { font-size: 12px; }
+  .action-status.prompt { font-size: 13px; padding: 5px 10px; }
+  .tile.hand { width: 33px; height: 46px; }
+  .tile.hand.drawn { margin-left: 8px; }
+  .tile.act-tile { width: 16px; height: 23px; }
+  #sel-chip { font-size: 11px; padding: 2px 8px; gap: 6px; }
+  #side { padding: 5px; }
+  #side h3 { font-size: 13px; margin: 4px 0; }
+  .rec { font-size: 13px; }
+  .prob.big { font-size: 17px; }
+}
+@media (orientation: landscape) and (max-height: 500px) and (max-width: 880px) {
+  #app { grid-template-columns: minmax(0, 1fr) 252px; }
+  /* Narrower board: pull the wide centre back a notch so a full
+     side pond still clears its left/right edges. */
+  #board #center { width: 50%; }
+  .tile.hand { width: 30px; height: 42px; }
+  .board-pond .he { grid-template-columns: repeat(6, 12px); grid-auto-rows: 16px; }
+  .tile.discard { width: 12px; height: 16px; }
+  .tile.discard.riichi-d { width: 17px; height: 12px; }
+  .tile.discard.riichi-d .tile-art { width: 12px; height: 16px; }
+  /* Same leak guard as the wider landscape block: 13+ restates
+     this block's 12x16 base sizes. */
+  .board-pond:has(.he .tile:nth-child(13)) .he { grid-template-columns: repeat(6, 12px); grid-auto-rows: 16px; }
+  .board-pond:has(.he .tile:nth-child(13)) .tile.discard { width: 12px; height: 16px; }
+  .board-pond:has(.he .tile:nth-child(13)) .tile.discard.riichi-d { width: 17px; height: 12px; }
+  .board-pond:has(.he .tile:nth-child(13)) .tile.discard.riichi-d .tile-art { width: 12px; height: 16px; }
+  /* Full-pond step-down for the narrowest landscape phones: the
+     base pond tiles here are already 12x16, so the 4-row state
+     steps down once more, to 11x15. */
+  .board-pond:has(.he .tile:nth-child(19)) .he { grid-template-columns: repeat(6, 11px); grid-auto-rows: 15px; }
+  .board-pond:has(.he .tile:nth-child(19)) .tile.discard { width: 11px; height: 15px; }
+  .board-pond:has(.he .tile:nth-child(19)) .tile.discard.riichi-d { width: 15px; height: 11px; }
+  .board-pond:has(.he .tile:nth-child(19)) .tile.discard.riichi-d .tile-art { width: 11px; height: 15px; }
+}
+
+/* Very short landscape -- the usable height when phone Chrome shows
+   its URL bar (~360-380px of the nominal 390-412). One more notch:
+   the centre panel drops to 24% high, the pond anchors rise to
+   66.5%, and the full-pond (4-row) step-down goes to 11x14 tiles,
+   so the 4th row still fits the band instead of spilling onto the
+   self area (measured failure of the previous geometry at these
+   heights, 2026-11-04). */
+@media (orientation: landscape) and (max-height: 380px) {
+  #board #center { height: 24%; }
+  .bp-0 { top: 66.5%; }
+  .bp-2 { bottom: 66.5%; }
+  .board-pond:has(.he .tile:nth-child(19)) .he { grid-template-columns: repeat(6, 11px); grid-auto-rows: 14px; }
+  .board-pond:has(.he .tile:nth-child(19)) .tile.discard { width: 11px; height: 14px; }
+  .board-pond:has(.he .tile:nth-child(19)) .tile.discard.riichi-d { width: 15px; height: 11px; }
+  .board-pond:has(.he .tile:nth-child(19)) .tile.discard.riichi-d .tile-art { width: 11px; height: 14px; }
+}
+
+/* Phone portrait (narrow, tall viewport -- e.g. 393x852 on a 13T
+   Pro, 411x914 on a Pixel 6): single column. The table takes the
+   full width (controls wrap), the board stays square sized by the
+   column width (fitBoard defers to CSS in this mode), ponds and
+   opponent tiles shrink to the narrower board, the hand is sized
+   to fit the screen width, and the coach panel sits below the
+   table with the remaining height and its own scroll. Desktop and
+   landscape are not affected. */
+@media (orientation: portrait) and (max-width: 500px) {
+  #app { display: flex; flex-direction: column; }
+  #table-wrap { flex: 0 0 auto; padding: 6px; gap: 5px; }
+  /* Pre-game the table wrap takes the whole column (the coach column
+     below is empty until a game starts), so the start-screen overlay
+     gets the full height: its content, action rows included, fits
+     without the last row being clipped at the status line -- the
+     failure seen on tall phones (412x915) where the table was only
+     as tall as the square board. In-game the wrap returns to its
+     content height exactly as before. */
+  #app:has(#start-screen:not([hidden])) #table-wrap { flex: 1 1 auto; }
+  #controls { gap: 6px 8px; padding: 5px 8px; font-size: 12px; }
+  #controls button, #controls select { font-size: 12px; padding: 3px 8px; }
+  #status { font-size: 11px; }
+  #table { grid-template-columns: 46px minmax(0, 1fr) 46px; gap: 4px; }
+  #board { width: 100%; justify-self: stretch; border-radius: 10px; }
+  #board #center { padding: 5px; gap: 3px; }
+  #center .round { font-size: 17px; }
+  #center .round span { font-size: 13px; }
+  .center-meta { font-size: 11px; }
+  /* The 4-player score grid makes the centre content taller than
+     the ~44%-of-281px box and it spilled over the ponds; the seat
+     infos carry the scores instead (same choice as landscape). */
+  .center-players { display: none; }
+  #center .dora { font-size: 10px; gap: 3px; }
+  .tile.dora-tile { width: 20px; height: 28px; }
+  #center .turn { font-size: 11px; }
+  #center .result { font-size: 11px; }
+  .board-pond { padding: 2px; gap: 1px; }
+  .board-pond .he { grid-template-columns: repeat(6, 19px); grid-auto-rows: 24px; gap: 1px; }
+  .tile.discard { width: 18px; height: 24px; }
+  .tile.discard.riichi-d { width: 24px; height: 18px; }
+  .tile.discard.riichi-d .tile-art { width: 18px; height: 24px; }
+  /* Third row (13+ discards): first step down, sized for the
+     portrait pond tiles (see the base rules). A base-size 3-row
+     pond is 87px but the centre-to-edge band at a 248px board is
+     only ~69px, so ponds spilled off the board mid-game. */
+  .board-pond:has(.he .tile:nth-child(13)) { padding: 0; gap: 0; }
+  .board-pond:has(.he .tile:nth-child(13)) .he { grid-template-columns: repeat(6, 17px); grid-auto-rows: 20px; gap: 0; }
+  .board-pond:has(.he .tile:nth-child(13)) .tile.discard { width: 16px; height: 19px; }
+  .board-pond:has(.he .tile:nth-child(13)) .tile.discard.riichi-d { width: 19px; height: 16px; }
+  .board-pond:has(.he .tile:nth-child(13)) .tile.discard.riichi-d .tile-art { width: 16px; height: 19px; }
+  .board-pond:has(.he .tile:nth-child(13)) .riichi-stick { min-height: 5px; }
+  .board-pond:has(.he .tile:nth-child(13)) .riichi-stick-art { width: 34px; height: 5px; }
+  /* Full ponds: the base count-triggered step-down, sized for the
+     portrait pond tiles (see the base rules). */
+  .board-pond:has(.he .tile:nth-child(19)) { padding: 0; gap: 0; }
+  .board-pond:has(.he .tile:nth-child(19)) .he { grid-template-columns: repeat(6, 15px); grid-auto-rows: 16px; gap: 0; }
+  .board-pond:has(.he .tile:nth-child(19)) .tile.discard { width: 14px; height: 15px; }
+  .board-pond:has(.he .tile:nth-child(19)) .tile.discard.riichi-d { width: 15px; height: 14px; }
+  .board-pond:has(.he .tile:nth-child(19)) .tile.discard.riichi-d .tile-art { width: 14px; height: 15px; }
+  .board-pond:has(.he .tile:nth-child(19)) .riichi-stick { min-height: 5px; }
+  .board-pond:has(.he .tile:nth-child(19)) .riichi-stick-art { width: 34px; height: 5px; }
+  .seat { padding: 3px; }
+  .seat-info { min-height: 16px; font-size: 9px; margin-bottom: 2px; gap: 2px; }
+  .pos-left .seat-name, .pos-right .seat-name { display: none; }
+  /* Side columns (46px) cannot fit badge + score on one line
+     either; stack them so nothing is clipped at the screen edge. */
+  .pos-left .seat-info, .pos-right .seat-info { flex-direction: column; gap: 1px; min-height: 0; }
+  .seat-wind { width: 15px; height: 15px; }
+  .riichi-badge { font-size: 8px; padding: 0 3px; }
+  .turn-badge { font-size: 8px; padding: 0 3px; }
+  .riichi-stick { min-height: 8px; }
+  .riichi-stick-art { width: 44px; height: 8px; }
+  .tile.opp { width: 11px; height: 16px; }
+  .tile.meld-tile { width: 14px; height: 20px; }
+  .tile.meld-tile.tile-side { width: 20px; height: 14px; }
+  .tile.meld-tile.mrot-90 .tile-art, .tile.meld-tile.mrot-270 .tile-art { width: 14px; height: 20px; }
+  .hand-row { margin-top: 2px; gap: 6px; }
+  .pos-left .hand, .pos-right .hand { width: 40px; gap: 1px; }
+  #actions { min-height: 56px; padding: 4px; }
+  #actions .act { min-width: 84px; min-height: 48px; font-size: 17px; padding: 5px 12px; border-width: 2px; }
+  #actions .act.win { min-width: 96px; }
+  #actions .act.pass { min-width: 76px; }
+  #actions .act.minor { font-size: 14px; min-width: 84px; }
+  .action-status { font-size: 12px; }
+  .action-status.prompt { font-size: 13px; padding: 6px 10px; }
+  #seat-bottom .hand { gap: 1px; }
+  .tile.hand { width: 24px; height: 34px; }
+  .tile.hand.drawn { margin-left: 10px; }
+  .tile.act-tile { width: 15px; height: 21px; }
+  #sel-chip { font-size: 11px; padding: 2px 8px; gap: 6px; }
+  #side { flex: 1 1 auto; min-height: 140px; padding: 6px; }
+  #side h3 { font-size: 13px; margin: 4px 0; }
+  .rec { font-size: 13px; }
+  .prob.big { font-size: 17px; }
+}
+
+/* ---- statistics / analysis view ---- */
+.stats-view { position: fixed; inset: 0; padding: var(--sa-t) var(--sa-r) var(--sa-b) var(--sa-l); background: rgba(0,0,0,.72); align-items: flex-start; justify-content: center; z-index: 25; overflow-y: auto; }
+.stats-card { background: #0e4a36; color: #eef; padding: 18px 18px 26px; border-radius: 12px; width: min(860px, 96vw); margin: 18px 0; }
+.st-head { display: flex; justify-content: space-between; align-items: center; }
+.st-head h2 { margin: 0; font-size: 20px; }
+.st-close, .st-mini-btn { font-size: 13px; padding: 6px 12px; border-radius: 8px; border: 1px solid #2a7; background: #0e5a41; color: #eef; cursor: pointer; }
+.st-filters { display: flex; gap: 14px; align-items: center; flex-wrap: wrap; margin: 12px 0 6px; }
+.st-chipset { display: inline-flex; gap: 6px; }
+.st-chip { font-size: 13px; padding: 6px 12px; border-radius: 999px; border: 1px solid #2a7; background: transparent; color: #cfe; cursor: pointer; }
+.st-chip.on { background: #1a7a56; color: #fff; }
+.st-filters select { font-size: 14px; }
+.st-scope { font-size: 12.5px; color: #bde; line-height: 1.55; margin-bottom: 8px; }
+.st-section { margin-top: 18px; }
+.st-section h3 { font-size: 15px; margin: 0 0 6px; border-left: 4px solid #2a7; padding-left: 8px; }
+.st-table { width: 100%; border-collapse: collapse; font-size: 13.5px; }
+.st-table th, .st-table td { padding: 4px 6px; border-bottom: 1px solid rgba(255,255,255,.12); text-align: left; }
+.st-table th { color: #9fd0c0; font-weight: 600; font-size: 12px; }
+.st-num { text-align: right; font-variant-numeric: tabular-nums; white-space: nowrap; }
+.st-table td.st-num, .st-table th.st-num { text-align: right; }
+.st-table td:first-child { text-wrap: balance; }
+.st-row { cursor: pointer; -webkit-tap-highlight-color: transparent; }
+.st-row:active, .st-row.open { background: rgba(255,255,255,.07); }
+.st-row:focus-visible { outline: 2px solid #6fd; outline-offset: -2px; }
+.st-chev { display: inline-block; width: 6px; height: 6px; margin-left: 7px; vertical-align: 2px; border-right: 1.5px solid #8fb8a8; border-bottom: 1.5px solid #8fb8a8; transform: rotate(45deg); transition: transform .15s; }
+.st-row.open .st-chev { transform: rotate(-135deg); vertical-align: -1px; }
+.st-desc td { background: rgba(26,122,86,.22); color: #dff; font-size: 12.5px; line-height: 1.55; padding: 6px 10px; border-left: 3px solid #2a7; }
+.st-den { color: #8fb8a8; font-size: 11px; white-space: nowrap; }
+.st-cell { display: flex; flex-direction: row-reverse; justify-content: space-between; align-items: center; gap: 4px; }
+.st-ref { display: inline-block; font-size: 10.5px; background: #8a6d1a; color: #ffe9a8; border-radius: 4px; padding: 0 5px; margin-left: 4px; vertical-align: middle; }
+.st-note { font-size: 12.5px; color: #cfe; line-height: 1.55; margin: 6px 0; }
+.st-empty { padding: 22px 0; font-size: 14px; color: #cfe; }
+.st-hero { display: flex; align-items: baseline; gap: 12px; margin: 6px 0; }
+.st-hero-v { font-size: 34px; font-weight: 800; }
+.st-hero-k { font-size: 13px; color: #bde; }
+.st-game { display: flex; justify-content: space-between; align-items: center; gap: 10px; padding: 5px 0; border-bottom: 1px solid rgba(255,255,255,.1); font-size: 13px; }
+.st-progress { margin-top: 12px; padding: 10px; border: 1px solid #26594a; border-radius: 8px; font-size: 13px; }
+.st-bar { height: 8px; background: rgba(255,255,255,.15); border-radius: 4px; margin: 8px 0; overflow: hidden; }
+.st-bar-fill { height: 100%; background: #35c48d; transition: width .2s; }
+.st-disabled { opacity: .65; cursor: default; }
+.stats-card .review-list { max-height: 340px; overflow-y: auto; }   /* explicit overflow: the (max-width:640px)/(max-height:500px) end-screen rules set overflow:visible and let rows spill over the sections below */
+.st-mm-ctl { display: flex; flex-wrap: wrap; gap: 8px 14px; align-items: center; margin: 4px 0 6px; font-size: 13px; }
+.st-mm-ctl select { font-size: 13px; }
+
+/* ---- rules view (start screen「ルール」, 2026-11-05) ---- */
+.rules-card { width: min(720px, 96vw); box-sizing: border-box; }
+.rules-body { font-size: 14px; line-height: 1.65; }
+.rules-body h3 { font-size: 15px; margin: 18px 0 6px; border-left: 4px solid #2a7; padding-left: 8px; }
+.rules-body ul, .rules-body ol { margin: 0; padding-left: 1.3em; }
+.rules-body li { margin: 3px 0; }
+.rules-body li > ul, .rules-body li > ol { margin-top: 3px; }
+.rules-body b { color: #ffd97a; }
+.rules-table { margin: 4px 0; }
+.rules-table td:first-child { white-space: nowrap; }
+.rules-foot { display: flex; justify-content: flex-end; margin-top: 18px; }
+
+/* ---- In-game toolbar (2026-11-05 cleanup) ------------------------------
+   The bar now holds only 中断 + the five assist chips (+ status line).
+   Model / length / start / history moved to the start (home) screen.
+   Chips keep a real checkbox (state source shared with the start screen's
+   settings panel) and are one tap to flip, any time during a game. */
+#controls .chip-row { display: flex; flex-wrap: wrap; gap: 4px; align-items: center; }
+#controls label.chip { display: inline-flex; flex-direction: row; align-items: center; gap: 3px;
+  padding: 2px 8px 2px 5px; border: 1px solid #2a7; border-radius: 999px; background: #0a3b2c;
+  font-size: 12px; line-height: 1.3; white-space: nowrap; cursor: pointer; user-select: none; }
+#controls label.chip input { margin: 0; width: 13px; height: 13px; accent-color: #3c9; }
+#controls label.chip:has(input:checked) { background: #1d7a57; border-color: #5d5; color: #fff; }
+#controls #suspendBtn { background: #5a3a12; border-color: #c93; }
+#status:empty { display: none; }
+@media (orientation: landscape) and (max-height: 500px) {
+  #controls .chip-row { flex-direction: column; flex-wrap: nowrap; align-items: stretch; gap: 3px; }
+  #controls label.chip { font-size: 10px; padding: 4px 4px; gap: 3px; }
+  #controls #suspendBtn { margin: 0 0 6px; padding: 4px 3px; }
+  #controls label.chip input { width: 11px; height: 11px; }
+}
+@media (orientation: portrait) and (max-width: 500px) {
+  #controls { gap: 4px 6px; padding: 4px 6px; }
+  #controls label.chip { font-size: 11px; padding: 3px 6px 3px 4px; }
+}
+
+/* ---- End screen (2026-11-05): no broken names on any viewport ----------
+   Names / numbers never wrap (nowrap + auto column widths); the table is
+   sized to its content and the card's horizontal padding shrinks on
+   narrow screens so the whole 7-column table fits without shrinking the
+   type or dropping columns. The card itself is the single vertical
+   scroller (the review list does not nest its own scroll on small
+   screens), so standings -> breakdown -> review read as one column. */
+#end { padding: 8px; box-sizing: border-box; }
+.end-card { box-sizing: border-box; overscroll-behavior: contain; -webkit-overflow-scrolling: touch; }
+.end-card .nm, .end-card .num, .end-card table.standings td, table.fb-final td { white-space: nowrap; }
+.end-card .num { font-variant-numeric: tabular-nums; }
+.end-card table.standings { border-collapse: collapse; }
+.fb-wrap { max-width: 100%; overflow-x: auto; }
+.fb-wrap table.fb-final { margin: 6px auto; width: auto; }
+table.fb-final th { white-space: normal; line-height: 1.2; vertical-align: bottom; }
+table.fb-final th.nm { white-space: nowrap; }
+table.fb-final td.nm { text-align: left; }
+@media (max-width: 640px) {
+  .end-card { width: 100%; padding: 14px 10px; }
+  .end-card h2 { margin: 4px 0 8px; }
+  .end-card td { padding: 3px 8px; }
+  table.fb-final td, table.fb-final th { padding: 3px 5px; }
+  .final-breakdown .result-note { font-size: 12px; }
+  .review { margin-top: 12px; }
+  .review-list { max-height: none; overflow: visible; }
+}
+@media (max-width: 360px) {
+  table.fb-final td, table.fb-final th { padding: 3px 3px; }
+}
+@media (max-height: 500px) {
+  #end { padding: 4px; }
+  .end-card { max-height: calc(100dvh - 8px); padding: 10px 14px; width: min(780px, 100%); }
+  .review-list { max-height: none; overflow: visible; }
+}
+
+/* Diagnostics section in settings (product/error_codes.md, 2026-11-06) */
+.ss-diag { border-top: 1px solid rgba(255,255,255,.15); margin-top: 6px; padding-top: 6px; }
+.ss-diag-title { font-weight: 600; font-size: 12.5px; margin-bottom: 2px; }
+.ss-diag dl { display: grid; grid-template-columns: auto 1fr; gap: 1px 8px; margin: 2px 0 4px; font-size: 11.5px; }
+.ss-diag dt { color: #bde; }
+.ss-diag dd { margin: 0; font-family: ui-monospace, monospace; word-break: break-all; }
+.ss-diag-copy { font-size: 12px; padding: 3px 10px; }
+.ss-diag-copy-status { font-size: 11px; margin-left: 6px; color: #bde; }
+
+/* Shared select look (2026-11-06): dark green + gold chevron, closed state only
+   (the open option list stays OS-drawn). Per-screen rules above/below only set font-size. */
+.ss-cpu-row select, .ss-panel select, .st-filters select, .st-mm-ctl select {
+  -webkit-appearance: none; appearance: none; color-scheme: dark;
+  padding: 4px 22px 4px 8px; border-radius: 6px; border: 1px solid #2a7; background-color: #0e5a41; color: #eef;
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='10' height='6' viewBox='0 0 10 6'><path d='M1 1l4 4 4-4' fill='none' stroke='%23ffd97a' stroke-width='1.6' stroke-linecap='round' stroke-linejoin='round'/></svg>");
+  background-repeat: no-repeat; background-position: right 7px center; background-size: 10px 6px; cursor: pointer; }
+.ss-cpu-row select:disabled, .ss-panel select:disabled, .st-filters select:disabled, .st-mm-ctl select:disabled {
+  opacity: .5; cursor: default; background-color: #0a3f2e; }
+.ss-cpu-row select:focus-visible, .ss-panel select:focus-visible, .st-filters select:focus-visible, .st-mm-ctl select:focus-visible { outline: 2px solid #ffd97a; outline-offset: 1px; }
+.ss-cpu-row select option, .ss-panel select option, .st-filters select option, .st-mm-ctl select option { background: #0e5a41; color: #eef; }
+
+/* Shared checkbox look (2026-11-06 addendum): dark green box, gold fill + dark check when on
+   (replaces the OS-blue accent-color). Whole <label> stays the tap target. */
+.ss-panel input[type="checkbox"], #controls label.chip input[type="checkbox"] {
+  -webkit-appearance: none; appearance: none; flex: none; box-sizing: border-box; display: inline-block; position: relative;
+  border: 1.5px solid #2a7; border-radius: 4px; background-color: #0a3b2c; cursor: pointer; vertical-align: middle; }
+.ss-panel input[type="checkbox"]:checked, #controls label.chip input[type="checkbox"]:checked {
+  background-color: #ffd97a; border-color: #ffd97a;
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 10 10'><path d='M2 5.2l2.2 2.2L8 3' fill='none' stroke='%230a3b2c' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'/></svg>");
+  background-repeat: no-repeat; background-position: center; background-size: 80% 80%; }
+.ss-panel input[type="checkbox"]:focus-visible, #controls label.chip input[type="checkbox"]:focus-visible { outline: 2px solid #ffd97a; outline-offset: 2px; }
+.ss-panel label:has(> input[type="checkbox"]) { cursor: pointer; }
+
+/* Shared button look: remaining OS-default / off-theme buttons */
+.ss-diag-copy { border-radius: 6px; border: 1px solid #2a7; background: #0e5a41; color: #eef; cursor: pointer; }
+.ss-diag-copy:focus-visible, .probe-btn:focus-visible, .cmp-toggle:focus-visible { outline: 2px solid #ffd97a; outline-offset: 1px; }
+/* Stats mismatch list rows are <button>s: dark green card rows instead of the OS grey button */
+.review-list button.review-item { display: flex; flex-direction: column; align-items: flex-start; gap: 2px; width: 100%; box-sizing: border-box;
+  margin: 0; padding: 8px 10px; text-align: left; font: inherit; font-size: 12.5px; color: #eef; background: #0e5a41; border: 0; border-bottom: 1px solid #26594a; border-radius: 0; cursor: pointer; }
+.review-list button.review-item:hover { background: #136b4e; }
+.review-list button.review-item:focus-visible { outline: 2px solid #ffd97a; outline-offset: -2px; }
+.review-list button.review-item .review-diff { color: #ffd97a; }
+
+/* ---- Fluid hand + taller landscape (2026-11-07) ----
+   The fixed-px hand steps (46/34/33/30/24) could not follow the real
+   area width: 360px portrait and the short-but-not-phone landscapes
+   (640x360 with its 272px coach rail, 1024x576) pushed the 14th tile
+   out of / under neighbouring panels. The hand tile now derives its
+   width from the self seat's own inline size (container query units),
+   capped at the desktop size and by the viewport height, and keeps the
+   tile aspect ratio. The stepped sizes above stay as the fallback for
+   browsers without container queries. --hand-reserve = the drawn-tile
+   gap + inter-tile gaps + a little slack for assist block gaps. */
+@supports (width: 1cqw) {
+  #seat-bottom { container-type: inline-size; --hand-reserve: 60px; }
+  #seat-bottom .tile.hand {
+    width: min(46px, calc((100cqw - var(--hand-reserve)) / 14), 8.6vh);
+    height: auto; aspect-ratio: 46 / 65;
+  }
+  #seat-bottom .tile.hand.drawn { margin-left: clamp(6px, 1.6cqw, 16px); }
+}
+@media (orientation: portrait) and (max-width: 500px) {
+  #seat-bottom { --hand-reserve: 40px; }
+}
+@media (orientation: portrait) and (min-width: 501px) {
+  #seat-bottom { --hand-reserve: 50px; }
+}
+@media (orientation: landscape) and (max-height: 700px) {
+  #seat-bottom { --hand-reserve: 52px; }
+}
+/* Landscape 501-700px tall (1024x576, 1280x650...): the landscape layout
+   above now applies; there is more room than on a phone, so the pond
+   tiles and centre panel step up from the 14x18 phone sizes. */
+@media (orientation: landscape) and (min-height: 501px) and (max-height: 700px) {
+  #app { grid-template-columns: minmax(0, 1fr) 320px; }
+  #board #center { width: 50%; height: 26%; padding: 4px 10px; }
+  #center .round { font-size: 20px; }
+  #center .round span { font-size: 13px; }
+  .center-meta { font-size: 13px; }
+  #center .turn { font-size: 13px; }
+  #center .dora { font-size: 12px; }
+  .tile.dora-tile { width: 18px; height: 25px; }
+  .board-pond .he { grid-template-columns: repeat(6, 22px); grid-auto-rows: 29px; gap: 1px; }
+  .tile.discard { width: 21px; height: 28px; }
+  .tile.discard.riichi-d { width: 28px; height: 21px; }
+  .tile.discard.riichi-d .tile-art { width: 21px; height: 28px; }
+  .board-pond:has(.he .tile:nth-child(13)) .he { grid-template-columns: repeat(6, 22px); grid-auto-rows: 29px; gap: 1px; }
+  .board-pond:has(.he .tile:nth-child(13)) .tile.discard { width: 21px; height: 28px; }
+  .board-pond:has(.he .tile:nth-child(13)) .tile.discard.riichi-d { width: 28px; height: 21px; }
+  .board-pond:has(.he .tile:nth-child(13)) .tile.discard.riichi-d .tile-art { width: 21px; height: 28px; }
+  .board-pond:has(.he .tile:nth-child(19)) .he { grid-template-columns: repeat(6, 19px); grid-auto-rows: 25px; gap: 0; }
+  .board-pond:has(.he .tile:nth-child(19)) .tile.discard { width: 18px; height: 24px; }
+  .board-pond:has(.he .tile:nth-child(19)) .tile.discard.riichi-d { width: 24px; height: 18px; }
+  .board-pond:has(.he .tile:nth-child(19)) .tile.discard.riichi-d .tile-art { width: 18px; height: 24px; }
+  .tile.opp { width: 15px; height: 21px; }
+  .seat-info { font-size: 11px; min-height: 20px; }
+}
+/* Narrow landscape (640x360-class): the 272px coach column and 98px rail
+   left ~260px for the table. Slimmer side panel and rail give the hand
+   and the board a usable width. */
+@media (orientation: landscape) and (max-width: 700px) {
+  #app { grid-template-columns: minmax(0, 1fr) 200px; }
+  #controls { flex-basis: 76px; width: 76px; }
+  #table { grid-template-columns: 50px minmax(0, 1fr) 50px; }
+  .pos-left .hand, .pos-right .hand { width: 36px; }
+  #seat-bottom { --hand-reserve: 40px; }
+  #board #center { width: 54%; padding: 3px 5px; gap: 2px 5px; }
+  .center-meta { font-size: 10px; letter-spacing: -.02em; }
+  #center .turn { font-size: 10px; }
+  #center .round { font-size: 14px; }
+  .board-pond .he { grid-template-columns: repeat(6, 11px); grid-auto-rows: 15px; }
+  .tile.discard { width: 11px; height: 15px; }
+  .tile.discard.riichi-d { width: 15px; height: 11px; }
+  .tile.discard.riichi-d .tile-art { width: 11px; height: 15px; }
+  .board-pond:has(.he .tile:nth-child(13)) .he,
+  .board-pond:has(.he .tile:nth-child(19)) .he { grid-template-columns: repeat(6, 11px); grid-auto-rows: 14px; }
+  .board-pond:has(.he .tile:nth-child(13)) .tile.discard,
+  .board-pond:has(.he .tile:nth-child(19)) .tile.discard { width: 11px; height: 14px; }
+  .board-pond:has(.he .tile:nth-child(13)) .tile.discard.riichi-d,
+  .board-pond:has(.he .tile:nth-child(19)) .tile.discard.riichi-d { width: 14px; height: 11px; }
+  .board-pond:has(.he .tile:nth-child(13)) .tile.discard.riichi-d .tile-art,
+  .board-pond:has(.he .tile:nth-child(19)) .tile.discard.riichi-d .tile-art { width: 11px; height: 14px; }
+}
