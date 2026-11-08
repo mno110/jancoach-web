@@ -5,7 +5,7 @@
 // forever because the cache name was a constant and this file was copied
 // verbatim, so its bytes never changed and the browser never saw an SW
 // update):
-//   - build.mjs stamps content hashes into 46cb3a961eea / a79bb03eafa1
+//   - build.mjs stamps content hashes into 668276c34ccc / bd980c22b59a
 //     below, so ANY change to the app files (or the models) changes this
 //     file's bytes and the cache names. The browser then installs the new
 //     SW, precaches into the new caches, and activate() drops old caches.
@@ -16,8 +16,8 @@
 //     controllerchange so the new layout appears without manual reopen.
 //   - Navigations are network-first (fall back to cache when offline), so
 //     the HTML shell itself can never get stuck on a stale copy.
-const APP_VER = '46cb3a961eea';
-const MODEL_VER = 'a79bb03eafa1';
+const APP_VER = '668276c34ccc';
+const MODEL_VER = 'bd980c22b59a';
 const APP_CACHE = 'mahjong-local-app-' + APP_VER;
 const MODEL_CACHE = 'mahjong-local-models-' + MODEL_VER;
 const APP_ASSETS = [
@@ -33,10 +33,14 @@ const MODEL_ASSETS = [
   './models/jaklab_v1.onnx',
   './models/jaklab_v1_light.onnx',   // CPU 六段相当以下（2026-11-06 実施順2）
 ];
+const AUDIO_ASSETS = ["./assets/9c41b7e20a6f.bin","./assets/bd7298a1cf04.bin","./assets/04fa8c9d71be.bin","./assets/e138b2a690cd.bin","./assets/7a4dc019e2b8.bin","./assets/c5803f6b2d91.bin","./assets/2f89a64ed031.bin"]; // build injects opaque asset paths
 self.addEventListener('install', (e) => {
   e.waitUntil(Promise.all([
     caches.open(APP_CACHE).then(c => c.addAll(APP_ASSETS)),
     caches.open(MODEL_CACHE).then(c => c.addAll(MODEL_ASSETS)),
+    // Optional audio must never prevent the game from installing/updating.
+    caches.open(APP_CACHE).then(c => Promise.all(AUDIO_ASSETS.map(url =>
+      c.add(url).catch(() => console.warn('[audio] optional precache failed'))))),
   ]).then(() => self.skipWaiting()));
 });
 self.addEventListener('activate', (e) => {

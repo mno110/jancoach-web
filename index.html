@@ -6,8 +6,8 @@
 <title>雀コーチ ― リアルタイムAI分析麻雀</title>
 <link rel="manifest" href="manifest.webmanifest">
 <meta name="theme-color" content="#0b3d2e">
-<meta name="build-version" content="46cb3a961eea">
-<meta name="model-version" content="a79bb03eafa1">
+<meta name="build-version" content="668276c34ccc">
+<meta name="model-version" content="bd980c22b59a">
 <link rel="icon" type="image/png" sizes="32x32" href="icons/favicon-32.png">
 <link rel="icon" type="image/png" sizes="192x192" href="icons/icon-192.png">
 <link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
@@ -32,6 +32,8 @@
         </select>
         <button id="startBtn" disabled>対局開始</button>
       </div>
+      <button id="refBtn" type="button" title="役一覧・用語辞典・牌の読み方を開きます（閉じると対局はそのまま続きます）">役・用語</button>
+      <button id="audioSettingsBtn" type="button" title="音量設定を開きます（閉じると対局に戻ります）">音量</button>
       <button id="suspendBtn" type="button" title="対局を中断してスタート画面に戻ります（スタート画面の「続きから再開」で再開できます）">中断</button>
       <div class="chip-row" role="group" aria-label="アシスト設定（対局中もすぐ反映）">
         <label class="chip" title="AIコーチ表示"><input type="checkbox" id="coachToggle" checked><span>コーチ</span></label>
@@ -68,7 +70,7 @@
           <div class="ss-card ss-resume" id="ss-resume" hidden>
             <div class="ss-resume-title">前回の対局が残っています</div>
             <div class="ss-resume-detail" id="ss-resume-detail"></div>
-            <div class="ss-resume-note">中断した局の頭から再開します（配牌は新しくなります）</div>
+            <div class="ss-resume-note">直前の安全な区切りから再開します。残りの山は混ぜ直します。</div>
             <button type="button" class="ss-btn-resume" id="ss-resume-btn">続きから再開</button>
           </div>
           <div class="ss-card" id="ss-stats-card" hidden>
@@ -82,7 +84,6 @@
           <div class="ss-card ss-strength-card">
             <div class="ss-strength-row">
               <span class="ss-k">CPUの強さ <span id="ss-model-ver" class="ss-model-ver">モデル V1</span></span>
-              <span class="ss-strength"><span id="ss-strength-label">八段相当</span></span>
             </div>
             <!-- CPU tier / type (src/cpu_style.mjs; options filled by main.js).
                  Applies to the three CPUs from the next game; the AI coach is always 最上級. -->
@@ -110,7 +111,20 @@
             <button type="button" class="ss-btn-ghost" id="ss-settings-btn">設定</button>
             <button type="button" class="ss-btn-ghost" id="ss-rules-btn">ルール</button>
           </div>
+          <div class="ss-link-row">
+            <button type="button" class="ss-btn-ghost" id="ss-guide-btn">はじめての方へ</button>
+            <button type="button" class="ss-btn-ghost" id="ss-yaku-btn">役一覧</button>
+            <button type="button" class="ss-btn-ghost" id="ss-glossary-btn">用語辞典</button>
+            <button type="button" class="ss-btn-ghost" id="ss-tiles-btn">牌の読み方</button>
+          </div>
           <div class="ss-panel" id="ss-settings-panel" hidden>
+            <fieldset class="audio-settings"><legend>音量</legend>
+              <label for="ss-bgm-volume">BGM <output data-audio-value="bgm" for="ss-bgm-volume"></output></label>
+              <input id="ss-bgm-volume" data-audio-volume="bgm" type="range" min="0" max="100" step="1">
+              <label for="ss-se-volume">効果音 <output data-audio-value="se" for="ss-se-volume"></output></label>
+              <input id="ss-se-volume" data-audio-volume="se" type="range" min="0" max="100" step="1">
+              <p>0でミュート。設定はこの端末に保存され、対局中もすぐ反映されます。</p>
+            </fieldset>
             <label>コーチモデル <select id="ss-model">
               <option value="jaklab-v1">V1（標準・43MB）</option>
               <option value="jaklab-v1-light">V1 Light（軽量・5.8MB）</option>
@@ -126,6 +140,12 @@
             <label><input type="checkbox" id="ss-nocall"> 鳴きなし</label>
             <label><input type="checkbox" id="ss-autowin"> 自動和了</label>
             <label><input type="checkbox" id="ss-tsumogiri"> 自動ツモ切り</label>
+            <label>ツモ切り暗転表示 <select id="ss-dim">
+              <option value="1">暗転表示</option>
+              <option value="0">通常表示</option>
+            </select></label>
+            <div class="ss-settings-note">ツモ切りで捨てられた牌を、河の中で少し暗く表示します（その局の間ずっと）。手出しの牌は通常の明るさのままなので、どちらで捨てたか後から見分けられます。</div>
+            <div class="ss-dim-preview" id="ss-dim-preview" aria-label="ツモ切り暗転のプレビュー"></div>
             <div class="ss-settings-note">コーチモデルは選ぶとすぐ切り替わります（切り替え中は開始できません）。画面の向きは端末が対応している場合のみ固定されます（未対応の端末では自動のままです）。その他の設定は対局画面のチップと同じもので、対局中に変えてもすぐ反映されます。</div>
             <!-- Diagnostics (product/error_codes.md). Local only: nothing is sent;
                  the copy button puts a text block on the clipboard. -->
@@ -143,7 +163,7 @@
             </div>
           </div>
         </div>
-        <div class="ss-status"><span class="ss-dot"></span><span id="ss-status-text">読み込み中…</span></div>
+        <div class="ss-status"><span class="ss-dot"></span><span id="ss-status-text" role="status" aria-live="polite">読み込み中… お待ちください</span></div>
         <!-- Loading popup over the start screen (2026-11-05). Hidden by default;
              main.js shows it at once for a first download (model not cached)
              or only after a short delay otherwise, so fast starts never show it. -->
@@ -172,14 +192,44 @@
 <div id="kyoku-result" style="display:none"></div>
 <div id="end" style="display:none"></div>
 <div id="history" style="display:none"></div>
+<div id="clips-view" class="scene-viewer" style="display:none"></div>
 <div id="scene-viewer" class="scene-viewer" style="display:none"></div>
 <div id="stats-view" class="stats-view" style="display:none"></div>
+<div id="audio-settings-view" class="stats-view" role="dialog" aria-modal="true" aria-labelledby="audio-settings-title" style="display:none">
+  <div class="stats-card rules-card">
+    <div class="st-head"><h2 id="audio-settings-title">音量設定</h2><button type="button" class="st-close" id="audio-settings-close">閉じる</button></div>
+    <fieldset class="audio-settings"><legend>音量</legend>
+      <label for="game-bgm-volume">BGM <output data-audio-value="bgm" for="game-bgm-volume"></output></label>
+      <input id="game-bgm-volume" data-audio-volume="bgm" type="range" min="0" max="100" step="1">
+      <label for="game-se-volume">効果音 <output data-audio-value="se" for="game-se-volume"></output></label>
+      <input id="game-se-volume" data-audio-volume="se" type="range" min="0" max="100" step="1">
+      <p>0でミュート。設定はこの端末に保存され、対局中もすぐ反映されます。</p>
+    </fieldset>
+  </div>
+</div>
+<!-- 初回ガイド「はじめての方へ」。本文は first_run_guide.mjs が描画。rules-view(z25) より背面(z24)。 -->
+<div id="guide-view" class="stats-view guide-view" role="dialog" aria-modal="true" aria-labelledby="guide-title" style="display:none">
+  <div class="stats-card rules-card">
+    <div class="st-head"><h2 id="guide-title">はじめての方へ ― 遊び方の基本</h2></div>
+    <p id="guide-load-status" role="status" aria-live="polite">AIモデルを読み込み中… お待ちください。このガイドは閉じられます。</p>
+    <div class="rules-body guide-body" id="guide-body"></div>
+    <div class="rules-foot guide-foot"><button type="button" class="ss-btn-primary" id="guide-start">閉じる</button></div>
+  </div>
+</div>
 <!-- Rules view (start screen only). Text = product/rules_text.md
      「アプリ内に表示する本文」; update both together when rule.mjs changes. -->
 <div id="rules-view" class="stats-view rules-view" role="dialog" aria-modal="true" aria-labelledby="rules-title" style="display:none">
   <div class="stats-card rules-card">
     <div class="st-head"><h2 id="rules-title">ルール</h2><button type="button" class="st-close" id="rules-close">閉じる</button></div>
-    <div class="rules-body">
+    <!-- 2026-11-08: ルール / 役一覧 / 用語辞典 / 牌の読み方のタブ。対局中は toolbar の「役・用語」から
+         同じ画面を開く（ルールタブは隠す）。main.js openRefView() が管理。 -->
+    <div class="ref-tabs" role="tablist" aria-label="ルール・役一覧・用語辞典・牌の読み方">
+      <button type="button" role="tab" class="ref-tab" data-ref-tab="rules">ルール</button>
+      <button type="button" role="tab" class="ref-tab" data-ref-tab="yaku">役一覧</button>
+      <button type="button" role="tab" class="ref-tab" data-ref-tab="glossary">用語辞典</button>
+      <button type="button" role="tab" class="ref-tab" data-ref-tab="tiles">牌の読み方</button>
+    </div>
+    <div class="ref-pane rules-body" id="ref-pane-rules" role="tabpanel">
       <h3>基本</h3>
       <ul>
         <li>四人麻雀。自分＋AI 3人。制限時間なし。</li>
@@ -273,6 +323,9 @@
         <li>終局時に残ったリーチ棒は1位が受け取ります（前述）。</li>
       </ul>
     </div>
+    <div class="ref-pane rules-body" id="ref-pane-yaku" role="tabpanel" hidden></div>
+    <div class="ref-pane rules-body" id="ref-pane-glossary" role="tabpanel" hidden></div>
+    <div class="ref-pane rules-body" id="ref-pane-tiles" role="tabpanel" hidden></div>
     <div class="rules-foot"><button type="button" class="st-close" id="rules-close2">閉じる</button></div>
   </div>
 </div>

@@ -1,4 +1,17 @@
 * { box-sizing: border-box; }
+/* Replay uses the live table/tiles/pond/coach presentation in its own overlay. */
+.clip-panel { position: relative; padding-right: 46px; }
+.clip-save { position: absolute; right: 2px; top: 2px; min-width: 40px; min-height: 40px; border-radius: 8px; border: 1px solid #2a7; background: #0e5a41; color: #eef; font-size: 22px; cursor: pointer; }
+.clip-status { font-size: 12px; color: #ffd97a; }
+#clips-view { z-index: 29; }
+.scene-viewer .replay-card { width: min(1100px, 98vw); padding: 10px; }
+.replay-nav { display: flex; flex-wrap: wrap; gap: 3px; margin: 6px 0; }
+.replay-table { height: min(620px, 65dvh); margin: 8px 0; }
+.replay-coach { background: #07271c; padding: 8px 48px 8px 8px; }
+.replay-coach h3 { margin: 6px 0; font-size: 15px; }
+.replay-coach .ctx { color: #9db; font-size: 11px; font-weight: normal; }
+.replay-clip-tools { min-height: 44px; }
+.replay-table .tile.hand { pointer-events: none; }
 /* Safe area (2026-11-07 addendum): with viewport-fit=cover the page is drawn to the physical screen
    edges, and the OS reports the camera hole / notch / rounded-corner insets through env().
    Backgrounds (body, overlays) stay edge to edge; every control and text sits inside the padding
@@ -14,10 +27,11 @@ html, body { margin: 0; height: 100%; height: 100dvh; font-family: system-ui, "H
    stretched the app past the visible area whenever the browser UI
    was shown -- the hand fell below the fold and the page scrolled.
    (User report, 2026-11-04.) */
+html { overflow: hidden; overscroll-behavior: none; }   /* scroll lock on the root itself too (2026-11-07 resume bug), not only via body's propagated overflow */
 body { background: #0b3d2e; color: #eef; overflow: hidden; overscroll-behavior: none; touch-action: manipulation; }
 /* UX (theme 5): touch-action: manipulation drops double-tap-to-zoom (the coach's
    second click on the same tile is a double tap) but keeps pinch zoom. */
-#app { display: grid; grid-template-columns: minmax(720px, 1fr) 384px; height: 100vh; height: 100dvh; padding: var(--sa-t) var(--sa-r) var(--sa-b) var(--sa-l); }
+#app { display: grid; grid-template-columns: minmax(720px, 1fr) 384px; height: 100vh; height: 100dvh; overflow: hidden; padding: var(--sa-t) var(--sa-r) var(--sa-b) var(--sa-l); }
 #table-wrap { padding: 8px; display: flex; flex-direction: column; gap: 7px; min-width: 0; min-height: 0; }
 #controls { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; background: #083024; padding: 6px 10px; border-radius: 8px; font-size: 13px; }
 #controls button, #controls select { font-size: 13px; padding: 4px 10px; border-radius: 6px; border: 1px solid #2a7; background: #0e5a41; color: #eef; cursor: pointer; }
@@ -38,7 +52,7 @@ body { background: #0b3d2e; color: #eef; overflow: hidden; overscroll-behavior: 
    flex child at the bottom, so the status can never fall outside the
    frame (the landscape mock's known defect). Hidden once a game
    starts. */
-#table { position: relative; }
+:is(#table, .replay-table) { position: relative; }
 #table-wrap:has(#start-screen:not([hidden])) > #controls { display: none; }
 /* While the start screen is up, the page behind it takes the start
    screen's bottom tone, so any area the overlay itself cannot paint
@@ -100,7 +114,6 @@ body:has(#start-screen:not([hidden])) { background: #06231a; }
 .ss-cpu-row label:last-child select { width: 92px; flex: 0 1 92px; }
 .ss-cpu-row select { flex: 1 1 auto; min-width: 0; text-overflow: ellipsis; }
 .ss-model-ver { margin-left: .5em; }
-.ss-strength { font-weight: 800; display: inline-flex; align-items: center; gap: 7px; }
 .ss-segment { display: flex; width: min(430px, 100%); background: rgba(0,0,0,.35); border-radius: 9px; padding: 3px; gap: 3px; }
 .ss-segment button { flex: 1; padding: 8px; font-size: 15px; background: transparent; color: #cfe;
   border: none; border-radius: 7px; cursor: pointer; }
@@ -160,14 +173,14 @@ body:has(#start-screen:not([hidden])) { background: #06231a; }
    can never spill out of their player boxes). Player boxes keep
    name / wind / score / hand / melds. The self hand is along the
    bottom with the action bar immediately above it. */
-#table { flex: 1; min-height: 0; display: grid; gap: 5px;
+:is(#table, .replay-table) { flex: 1; min-height: 0; display: grid; gap: 5px;
   grid-template-columns: 178px minmax(0, 1fr) 178px;
   grid-template-rows: auto minmax(0, 1fr) auto;
   grid-template-areas: ". top ." "left board right" "bottom bottom bottom"; }
-#seat-top { grid-area: top; }
-#seat-left { grid-area: left; display: flex; flex-direction: column; justify-content: center; }
-#seat-right { grid-area: right; display: flex; flex-direction: column; justify-content: center; }
-#self-area { grid-area: bottom; display: flex; flex-direction: column; gap: 3px; position: relative; }
+:is(#seat-top, .replay-seat-top) { grid-area: top; }
+:is(#seat-left, .replay-seat-left) { grid-area: left; display: flex; flex-direction: column; justify-content: center; }
+:is(#seat-right, .replay-seat-right) { grid-area: right; display: flex; flex-direction: column; justify-content: center; }
+:is(#self-area, .replay-self-area) { grid-area: bottom; display: flex; flex-direction: column; gap: 3px; position: relative; }
 /* Selected-tile mini info chip: floats just above the selected hand
    tile while a tile is selected (coach ON). Absolutely positioned, so
    it never changes the layout or the board fit; pointer-events none,
@@ -180,48 +193,24 @@ body:has(#start-screen:not([hidden])) { background: #06231a; }
 #sel-chip .sel-chip-tile { display: inline-flex; width: 20px; height: 28px; }
 #sel-chip .sel-chip-ok { color: #7ee2a8; font-weight: 800; }
 #sel-chip .sel-chip-rec { color: #ffd97a; font-weight: 800; }
-#board { grid-area: board; position: relative; justify-self: center; align-self: center;
+:is(#board, .replay-board) { grid-area: board; position: relative; justify-self: center; align-self: center;
   /* Width is set by fitBoard() in main.js from the measured vertical
      budget (viewport - controls - seats - self area); this CSS value
      is only the pre-JS fallback. */
   width: min(100%, 660px); aspect-ratio: 1 / 1;
   background: radial-gradient(circle at center, #0d4a35 0, #07271c 78%);
   border: 2px solid rgba(255,217,122,.28); border-radius: 14px; }
-#board #center { position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%); width: 44%; height: 44%; }
+:is(#board, .replay-board) :is(#center, .replay-center) { position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%); width: 44%; height: 44%; }
 .board-pond { position: absolute; display: flex; flex-direction: column; align-items: center; gap: 2px; padding: 3px; border-radius: 8px; }
-.board-pond .he { display: grid; grid-template-columns: repeat(6, 31px); grid-auto-rows: 43px; gap: 2px; width: max-content; }
 .bp-0 { left: 50%; top: 72.5%; transform: translateX(-50%); }
 .bp-2 { left: 50%; bottom: 72.5%; transform: translateX(-50%) rotate(180deg); }
 .bp-1 { left: 86%; top: 50%; transform: translate(-50%, -50%) rotate(-90deg); }
 .bp-3 { left: 14%; top: 50%; transform: translate(-50%, -50%) rotate(90deg); }
-.board-pond.riichi-on { background: rgba(194,39,45,.16); box-shadow: inset 0 0 0 2px rgba(255,92,82,.75); }
-/* Full ponds (a 4th row starts at 19 discards): step the tiles down
-   one notch so a 4-row pond keeps roughly the footprint of a 3-row
-   one and the side ponds stay clear of the centre panel (QA B2:
-   at 20+ discards the un-stepped side ponds overlapped the panel
-   on desktop and portrait). The trigger is the tile count (:has
-   on the 19th tile), never the form factor; the landscape and
-   portrait blocks below only refine the stepped sizes for their
-   smaller base tiles, as they already do for the base sizes. */
-/* Third row (13+ discards): first step down. A 3-row pond at base
-   size is ~149px tall, but the band between the centre panel (44%)
-   and the board edge is only 28% of the board (~125px at a 446px
-   board), so the top/bottom ponds spilled off the board and the
-   side ponds grazed the centre (night sweep 2026-11-04, 13-18
-   discards at 768x1024 and 360x640). Same count-triggered ladder
-   as the 19+ step below; sizes keep the base tile aspect ratio. */
+/* 河の枠・リーチ棒。牌寸法と行送りは末尾の刷新ブロックで一元化。 */
 .board-pond:has(.he .tile:nth-child(13)) { padding: 0; gap: 0; }
-.board-pond:has(.he .tile:nth-child(13)) .he { grid-template-columns: repeat(6, 27px); grid-auto-rows: 36px; gap: 0; }
-.board-pond:has(.he .tile:nth-child(13)) .tile.discard { width: 26px; height: 35px; }
-.board-pond:has(.he .tile:nth-child(13)) .tile.discard.riichi-d { width: 35px; height: 26px; }
-.board-pond:has(.he .tile:nth-child(13)) .tile.discard.riichi-d .tile-art { width: 26px; height: 35px; }
 .board-pond:has(.he .tile:nth-child(13)) .riichi-stick { min-height: 8px; }
 .board-pond:has(.he .tile:nth-child(13)) .riichi-stick-art { width: 56px; height: 8px; }
 .board-pond:has(.he .tile:nth-child(19)) { padding: 0; gap: 0; }
-.board-pond:has(.he .tile:nth-child(19)) .he { grid-template-columns: repeat(6, 24px); grid-auto-rows: 30px; gap: 0; }
-.board-pond:has(.he .tile:nth-child(19)) .tile.discard { width: 23px; height: 29px; }
-.board-pond:has(.he .tile:nth-child(19)) .tile.discard.riichi-d { width: 29px; height: 23px; }
-.board-pond:has(.he .tile:nth-child(19)) .tile.discard.riichi-d .tile-art { width: 23px; height: 29px; }
 .board-pond:has(.he .tile:nth-child(19)) .riichi-stick { min-height: 8px; }
 .board-pond:has(.he .tile:nth-child(19)) .riichi-stick-art { width: 56px; height: 8px; }
 .seat { position: relative; background: rgba(0,0,0,.18); border-radius: 8px; padding: 5px; min-height: 0; overflow: hidden; }
@@ -230,7 +219,8 @@ body:has(#start-screen:not([hidden])) { background: #06231a; }
 .seat-score { font-variant-numeric: tabular-nums; font-weight: 700; }
 .riichi-badge { background: #d42a1e; color: #fff; border-radius: 4px; padding: 1px 5px; font-size: 10px; font-weight: 800; box-shadow: 0 0 7px rgba(255,80,60,.85); }
 .seat-info.riichi-on { color: #ffc9c0; }
-.seat.seat-riichi { box-shadow: inset 0 0 0 2px rgba(235,70,50,.9); background: rgba(120,22,10,.30); }
+/* リーチ中の赤枠は手牌の領域(.hand-row)だけ。河・座席全体には付けない。 */
+.seat.seat-riichi .hand-row { box-shadow: 0 0 0 2px rgba(235,70,50,.9); background: rgba(120,22,10,.30); border-radius: 6px; }
 .center-player.riichi-on { color: #ffb3a7; font-weight: 800; }
 .turn-badge { background: #f4c542; color: #332400; border-radius: 4px; padding: 1px 4px; font-size: 10px; font-weight: 800; }
 .riichi-stick { min-height: 15px; display: flex; align-items: center; justify-content: center; }
@@ -266,12 +256,15 @@ body:has(#start-screen:not([hidden])) { background: #06231a; }
 .tile { position: relative; display: inline-flex; align-items: center; justify-content: center;
   width: 27px; height: 38px; padding: 0; background: transparent; border: 0; user-select: none; flex: 0 0 auto; }
 .tile-art { width: 100%; height: 100%; display: block; pointer-events: none; }
-.tile.discard { width: 30px; height: 42px; }
-.tile.discard.called { opacity: .48; }
+/* Tsumogiri dimming (pond only; meld tiles are never dimmed). Applied to the artwork so it
+   composes with the riichi rotation and with the .last glow on the tile box. The face stays legible. */
+body.dim-on .tile.discard.tsumogiri .tile-art { filter: brightness(.66) saturate(.75); }
+.ss-dim-preview { --tw: 26px; --th: 36px; --px: 26px; --py: 36px; display: flex; gap: 16px; align-items: flex-end; margin: 2px 0 8px; }
+.ss-dim-preview figure { margin: 0; display: flex; flex-direction: column; align-items: center; gap: 3px; font-size: 11px; text-align: center; }
+.ss-dim-preview .tile.discard { margin: 0; }
 .tile.discard.last { filter: drop-shadow(0 0 4px #ffd97a); }
-.tile.discard.riichi-d { width: 42px; height: 30px; align-self: center; }
 .tile.discard.riichi-d .tile-art {
-  position: absolute; left: 50%; top: 50%; width: 30px; height: 42px;
+  position: absolute; left: 50%; top: 50%; width: var(--tw); height: var(--th);
   transform: translate(-50%, -50%) rotate(90deg); }
 /* Meld tile rotations: meldHTML stamps mrot-{0,90,180,270} (the seat frame
    composed with the called tile's lean, decided in JS) plus tile-side when
@@ -305,7 +298,7 @@ body:has(#start-screen:not([hidden])) { background: #06231a; }
 .tile.dora-tile { width: 30px; height: 42px; }
 .tile.act-tile { width: 23px; height: 33px; }
 
-#center { background: radial-gradient(circle at center, #10523d 0, #083024 72%); border: 2px solid rgba(255,217,122,.35); border-radius: 12px; padding: 8px; text-align: center; align-self: stretch; display: flex; flex-direction: column; justify-content: center; gap: 4px; }
+:is(#center, .replay-center) { background: radial-gradient(circle at center, #10523d 0, #083024 72%); border: 2px solid rgba(255,217,122,.35); border-radius: 12px; padding: 8px; text-align: center; align-self: stretch; display: flex; flex-direction: column; justify-content: center; gap: 4px; }
 .center-players { display: grid; grid-template-columns: 1fr 1fr; gap: 3px 8px; font-size: 10.5px; margin-bottom: 3px; }
 .center-player { display: flex; align-items: center; gap: 4px; min-height: 22px; }
 .center-player.pos-2, .center-player.pos-0 { grid-column: 1 / -1; justify-content: center; }
@@ -313,11 +306,10 @@ body:has(#start-screen:not([hidden])) { background: #06231a; }
 .center-player.pos-1 { justify-content: flex-end; }
 .center-player.active { color: #ffd94d; font-weight: 800; }
 .cp-wind { display: inline-flex; align-items: center; justify-content: center; width: 17px; height: 17px; border-radius: 50%; background: #e8e2cf; color: #173f35; font-weight: 800; }
-#center .round { font-size: 20px; font-weight: 800; }
-#center .round span { font-size: 15px; }
+:is(#center, .replay-center) .round { font-size: 20px; font-weight: 800; }
+:is(#center, .replay-center) .round span { font-size: 15px; }
 .center-meta { font-size: 13px; color: #d9efe5; }
-#center .dora { display: flex; align-items: center; justify-content: center; gap: 5px; font-size: 12px; }
-#center .turn { min-height: 1.2em; color: #d9efe5; }
+:is(#center, .replay-center) .dora { display: flex; align-items: center; justify-content: center; gap: 5px; font-size: 12px; }
 /* The result line is long (names + score deltas) and transient --
    the kyoku-result panel follows with the full breakdown -- so it
    floats over the centre panel's bottom-right corner instead of
@@ -325,7 +317,7 @@ body:has(#start-screen:not([hidden])) { background: #06231a; }
    the centre content ~19px past the panel at the result moment
    (QA B4). Same treatment the landscape block already used; it is
    now the base rule for every form factor. */
-#center .result { position: absolute; right: 6px; bottom: 4px; z-index: 1;
+:is(#center, .replay-center) .result { position: absolute; right: 6px; bottom: 4px; z-index: 1;
   color: #ffd97a; font-size: 12px; max-width: 72%; white-space: nowrap;
   overflow: hidden; text-overflow: ellipsis; text-align: right;
   background: rgba(8, 48, 36, .88); padding: 0 4px; border-radius: 4px; }
@@ -451,6 +443,7 @@ tr.sv-actual { background: rgba(255,217,122,.13); }
 .history-item { display: grid; grid-template-columns: 1fr auto; gap: 6px 14px; align-items: center; background: rgba(0,0,0,.22); border: 1px solid #26594a; border-radius: 8px; padding: 10px 12px; text-align: left; }
 .history-meta { font-size: 13px; line-height: 1.5; }
 .history-actions { display: flex; gap: 4px; flex-wrap: wrap; justify-content: flex-end; }
+.history-import-result { margin-top: 10px; padding: 8px 12px; border-radius: 8px; background: rgba(0,0,0,.28); font-size: 13px; line-height: 1.5; white-space: pre-line; text-align: left; }
 .history-empty { color: #cfeee0; }
 /* Kyoku result panel: hora / ryukyoku score breakdown, shown before
    the game advances (auto mode holds briefly; manual mode waits for
@@ -458,6 +451,8 @@ tr.sv-actual { background: rgba(255,217,122,.13); }
 #kyoku-result { position: fixed; inset: 0; padding: var(--sa-t) var(--sa-r) var(--sa-b) var(--sa-l); background: rgba(0,0,0,.55); align-items: center; justify-content: center; z-index: 15; }
 .result-card { background: #0e4a36; border: 2px solid rgba(255,217,122,.5); border-radius: 12px; padding: 18px 22px; width: min(580px, 94vw); max-height: 92vh; max-height: 92dvh; overflow-y: auto; text-align: center; }
 .result-head { font-size: 18px; font-weight: 800; display: flex; align-items: center; justify-content: center; gap: 8px; flex-wrap: wrap; }
+#kyoku-result .result-winner { color: #ffd94d; font-weight: 800; }
+#kyoku-result .result-head.result-self-win { color: #ffd94d; }
 .result-win-tile, .win-tile { display: inline-flex; width: 30px; height: 42px; flex: 0 0 auto; }
 .yaku-list { margin: 10px auto 4px; width: max-content; max-width: 100%; text-align: left; }
 .yaku-row { display: flex; justify-content: space-between; gap: 28px; font-size: 14px; padding: 1px 0; }
@@ -471,10 +466,13 @@ table.pay-table tr.winner-row { background: #5a4a12; }
 .delta-pos { color: #7ee2a8; font-weight: 700; }
 .delta-neg { color: #ff9d94; font-weight: 700; }
 .delta-total { font-weight: 800; }
+#kyoku-result .pay-table .delta-positive { color: #ffd94d; font-weight: 800; }
+#kyoku-result .pay-table .delta-negative { color: #ff9d9d; }
 .tenpai-badge { background: #1b7a43; color: #fff; border-radius: 4px; padding: 0 6px; font-size: 11px; font-weight: 700; }
 .noten-badge { background: #5a6a72; color: #fff; border-radius: 4px; padding: 0 6px; font-size: 11px; font-weight: 700; }
 #result-next { font-size: 15px; padding: 8px 18px; min-height: 40px; margin-top: 8px; border-radius: 8px; border: 1px solid #2a7; background: #0e5a41; color: #eef; cursor: pointer; }
 .result-note { color: #bde; font-size: 12px; margin-top: 6px; }
+.history-note { color: #bde; font-size: 12px; margin: 4px 0 8px; }
 .final-breakdown { text-align: left; margin: 14px auto 4px; max-width: 700px; }
 .final-breakdown h3 { text-align: center; }
 table.fb-table { margin: 6px auto; border-collapse: collapse; font-size: 13px; }
@@ -507,7 +505,7 @@ table.fb-table td, table.fb-table th { border: 1px solid #26594a; padding: 3px 1
 
 @media (max-width: 1050px) {
   #app { grid-template-columns: 1fr; }
-  #table { grid-template-columns: 148px minmax(0, 1fr) 148px; }
+  :is(#table, .replay-table) { grid-template-columns: 148px minmax(0, 1fr) 148px; }
   .tile.hand { width: 34px; height: 48px; }
   .tile.hand.drawn { margin-left: 8px; }
   #actions .act { min-width: 92px; min-height: 54px; font-size: 19px; }
@@ -563,9 +561,9 @@ table.fb-table td, table.fb-table th { border: 1px solid #26594a; padding: 3px 1
      tight leading): it reports state, it does not need presence,
      and the rail's vertical budget goes to the controls. */
   #status { font-size: 9px; line-height: 1.25; overflow-wrap: anywhere; white-space: normal; }
-  #table { flex: 1 1 auto; min-width: 0; }
-  #table { grid-template-columns: 62px minmax(0, 1fr) 62px; gap: 3px; }
-  #board { width: 100%; height: 100%; aspect-ratio: auto; justify-self: stretch; align-self: stretch; border-radius: 10px; }
+  :is(#table, .replay-table) { flex: 1 1 auto; min-width: 0; }
+  :is(#table, .replay-table) { grid-template-columns: 62px minmax(0, 1fr) 62px; gap: 3px; }
+  :is(#board, .replay-board) { width: 100%; height: 100%; aspect-ratio: auto; justify-self: stretch; align-self: stretch; border-radius: 10px; }
   /* Wide, low centre panel (user direction, 2026-11-04): the panel
      trades height for width -- 54% x 27% instead of the tall
      42% x 38% stack -- and lays its items out as a grid: the round
@@ -574,7 +572,7 @@ table.fb-table td, table.fb-table th { border: 1px solid #26594a; padding: 3px 1
      bottom row. The freed vertical band moves the pond anchors up
      (70.5% -> 67.5%), which is also what lets a full 4-row pond
      fit at toolbar-reduced heights (~360px visible). */
-  #board #center { width: 54%; height: 27%; padding: 3px 7px; gap: 2px 8px;
+  :is(#board, .replay-board) :is(#center, .replay-center) { width: 54%; height: 27%; padding: 3px 7px; gap: 2px 8px;
     display: grid; grid-template-columns: auto minmax(0, 1fr) auto;
     grid-template-rows: 1fr 1fr; align-items: center; }
   /* The round block stacks its two lines (round / honba) so its
@@ -582,48 +580,28 @@ table.fb-table td, table.fb-table th { border: 1px solid #26594a; padding: 3px 1
      columns: with a one-line round and a single-column meta, the
      meta text (91px) overflowed its ~60px cell and slid under the
      dora tile, hiding the kyotaku count (measured, 2026-11-04). */
-  #center .round { grid-area: 1 / 1 / 3 / 2; font-size: 15px; line-height: 1.2; text-align: center; white-space: nowrap; }
-  #center .round span { display: block; font-size: 11px; }
+  :is(#center, .replay-center) .round { grid-area: 1 / 1 / 3 / 2; font-size: 15px; line-height: 1.2; text-align: center; white-space: nowrap; }
+  :is(#center, .replay-center) .round span { display: block; font-size: 11px; }
   .center-meta { grid-area: 1 / 2 / 2 / 4; font-size: 11px; text-align: left; white-space: nowrap; }
   .center-players { display: none; }
-  #center .turn { grid-area: 2 / 2; font-size: 11px; min-height: 0; text-align: left; white-space: nowrap; overflow: hidden; }
-  #center .dora { grid-area: 2 / 3; font-size: 10px; gap: 3px; justify-content: flex-end; }
+  :is(#center, .replay-center) .dora { grid-area: 2 / 3; font-size: 10px; gap: 3px; justify-content: flex-end; }
   .tile.dora-tile { width: 13px; height: 18px; }
   /* The result line is long (names + score deltas) and transient --
      the kyoku-result panel follows with the full breakdown -- so
      it floats over the panel's bottom-right corner instead of
      taking grid space from the persistent items. */
-  #center .result { position: absolute; right: 5px; bottom: 2px; z-index: 1;
+  :is(#center, .replay-center) .result { position: absolute; right: 5px; bottom: 2px; z-index: 1;
     font-size: 10px; min-height: 0; max-width: 62%; white-space: nowrap;
     overflow: hidden; text-overflow: ellipsis; text-align: right;
     background: rgba(8, 48, 36, .88); padding: 0 4px; border-radius: 4px; }
   .bp-0 { top: 67.5%; }
   .bp-2 { bottom: 67.5%; }
   .board-pond { padding: 2px; gap: 1px; }
-  .board-pond .he { grid-template-columns: repeat(6, 14px); grid-auto-rows: 18px; gap: 1px; }
-  .tile.discard { width: 14px; height: 18px; }
-  .tile.discard.riichi-d { width: 19px; height: 14px; }
-  .tile.discard.riichi-d .tile-art { width: 14px; height: 18px; }
   /* The base (non-landscape) 13+ step-down must not leak into
      landscape: ponds here already fit at base size, so the 13+
      state simply restates the landscape base sizes. */
   .board-pond:has(.he .tile:nth-child(13)) { padding: 2px; gap: 1px; }
-  .board-pond:has(.he .tile:nth-child(13)) .he { grid-template-columns: repeat(6, 14px); grid-auto-rows: 18px; gap: 1px; }
-  .board-pond:has(.he .tile:nth-child(13)) .tile.discard { width: 14px; height: 18px; }
-  .board-pond:has(.he .tile:nth-child(13)) .tile.discard.riichi-d { width: 19px; height: 14px; }
-  .board-pond:has(.he .tile:nth-child(13)) .tile.discard.riichi-d .tile-art { width: 14px; height: 18px; }
-  /* Full ponds (a 4th row starts at 19 discards): step the tiles
-     down one notch (12x16) so all 24 discards stay inside the
-     board band. The riichi stick stays in its usual place above
-     the pond (user instruction, 2026-11-04); the room comes from
-     the 38%/70.5% geometry above, zeroed pond padding/gaps, and a
-     thinner stick in this state. Detected with :has() on the tile
-     count, so no JS hook is needed. */
   .board-pond:has(.he .tile:nth-child(19)) { padding: 0; gap: 0; }
-  .board-pond:has(.he .tile:nth-child(19)) .he { grid-template-columns: repeat(6, 12px); grid-auto-rows: 16px; gap: 0; }
-  .board-pond:has(.he .tile:nth-child(19)) .tile.discard { width: 12px; height: 16px; }
-  .board-pond:has(.he .tile:nth-child(19)) .tile.discard.riichi-d { width: 16px; height: 12px; }
-  .board-pond:has(.he .tile:nth-child(19)) .tile.discard.riichi-d .tile-art { width: 12px; height: 16px; }
   .board-pond:has(.he .tile:nth-child(19)) .riichi-stick { min-height: 5px; }
   .board-pond:has(.he .tile:nth-child(19)) .riichi-stick-art { width: 34px; height: 5px; }
   .seat { padding: 3px; }
@@ -663,25 +641,9 @@ table.fb-table td, table.fb-table th { border: 1px solid #26594a; padding: 3px 1
   #app { grid-template-columns: minmax(0, 1fr) 252px; }
   /* Narrower board: pull the wide centre back a notch so a full
      side pond still clears its left/right edges. */
-  #board #center { width: 50%; }
+  :is(#board, .replay-board) :is(#center, .replay-center) { width: 50%; }
   .tile.hand { width: 30px; height: 42px; }
-  .board-pond .he { grid-template-columns: repeat(6, 12px); grid-auto-rows: 16px; }
-  .tile.discard { width: 12px; height: 16px; }
-  .tile.discard.riichi-d { width: 17px; height: 12px; }
-  .tile.discard.riichi-d .tile-art { width: 12px; height: 16px; }
-  /* Same leak guard as the wider landscape block: 13+ restates
-     this block's 12x16 base sizes. */
-  .board-pond:has(.he .tile:nth-child(13)) .he { grid-template-columns: repeat(6, 12px); grid-auto-rows: 16px; }
-  .board-pond:has(.he .tile:nth-child(13)) .tile.discard { width: 12px; height: 16px; }
-  .board-pond:has(.he .tile:nth-child(13)) .tile.discard.riichi-d { width: 17px; height: 12px; }
-  .board-pond:has(.he .tile:nth-child(13)) .tile.discard.riichi-d .tile-art { width: 12px; height: 16px; }
-  /* Full-pond step-down for the narrowest landscape phones: the
-     base pond tiles here are already 12x16, so the 4-row state
-     steps down once more, to 11x15. */
-  .board-pond:has(.he .tile:nth-child(19)) .he { grid-template-columns: repeat(6, 11px); grid-auto-rows: 15px; }
-  .board-pond:has(.he .tile:nth-child(19)) .tile.discard { width: 11px; height: 15px; }
-  .board-pond:has(.he .tile:nth-child(19)) .tile.discard.riichi-d { width: 15px; height: 11px; }
-  .board-pond:has(.he .tile:nth-child(19)) .tile.discard.riichi-d .tile-art { width: 11px; height: 15px; }
+
 }
 
 /* Very short landscape -- the usable height when phone Chrome shows
@@ -692,13 +654,9 @@ table.fb-table td, table.fb-table th { border: 1px solid #26594a; padding: 3px 1
    self area (measured failure of the previous geometry at these
    heights, 2026-11-04). */
 @media (orientation: landscape) and (max-height: 380px) {
-  #board #center { height: 24%; }
+  :is(#board, .replay-board) :is(#center, .replay-center) { height: 24%; }
   .bp-0 { top: 66.5%; }
   .bp-2 { bottom: 66.5%; }
-  .board-pond:has(.he .tile:nth-child(19)) .he { grid-template-columns: repeat(6, 11px); grid-auto-rows: 14px; }
-  .board-pond:has(.he .tile:nth-child(19)) .tile.discard { width: 11px; height: 14px; }
-  .board-pond:has(.he .tile:nth-child(19)) .tile.discard.riichi-d { width: 15px; height: 11px; }
-  .board-pond:has(.he .tile:nth-child(19)) .tile.discard.riichi-d .tile-art { width: 11px; height: 14px; }
 }
 
 /* Phone portrait (narrow, tall viewport -- e.g. 393x852 on a 13T
@@ -723,43 +681,30 @@ table.fb-table td, table.fb-table th { border: 1px solid #26594a; padding: 3px 1
   #controls { gap: 6px 8px; padding: 5px 8px; font-size: 12px; }
   #controls button, #controls select { font-size: 12px; padding: 3px 8px; }
   #status { font-size: 11px; }
-  #table { grid-template-columns: 46px minmax(0, 1fr) 46px; gap: 4px; }
-  #board { width: 100%; justify-self: stretch; border-radius: 10px; }
-  #board #center { padding: 5px; gap: 3px; }
-  #center .round { font-size: 17px; }
-  #center .round span { font-size: 13px; }
+  :is(#table, .replay-table) { grid-template-columns: 46px minmax(0, 1fr) 46px; gap: 4px; }
+  :is(#board, .replay-board) { width: 100%; justify-self: stretch; border-radius: 10px; }
+  :is(#board, .replay-board) :is(#center, .replay-center) { padding: 5px; gap: 3px; }
+  :is(#center, .replay-center) .round { font-size: 17px; }
+  :is(#center, .replay-center) .round span { font-size: 13px; }
   .center-meta { font-size: 11px; }
   /* The 4-player score grid makes the centre content taller than
      the ~44%-of-281px box and it spilled over the ponds; the seat
      infos carry the scores instead (same choice as landscape). */
   .center-players { display: none; }
-  #center .dora { font-size: 10px; gap: 3px; }
+  :is(#center, .replay-center) .dora { font-size: 10px; gap: 3px; }
   .tile.dora-tile { width: 20px; height: 28px; }
-  #center .turn { font-size: 11px; }
-  #center .result { font-size: 11px; }
+  :is(#center, .replay-center) .result { font-size: 11px; }
   .board-pond { padding: 2px; gap: 1px; }
-  .board-pond .he { grid-template-columns: repeat(6, 19px); grid-auto-rows: 24px; gap: 1px; }
-  .tile.discard { width: 18px; height: 24px; }
-  .tile.discard.riichi-d { width: 24px; height: 18px; }
-  .tile.discard.riichi-d .tile-art { width: 18px; height: 24px; }
   /* Third row (13+ discards): first step down, sized for the
      portrait pond tiles (see the base rules). A base-size 3-row
      pond is 87px but the centre-to-edge band at a 248px board is
      only ~69px, so ponds spilled off the board mid-game. */
   .board-pond:has(.he .tile:nth-child(13)) { padding: 0; gap: 0; }
-  .board-pond:has(.he .tile:nth-child(13)) .he { grid-template-columns: repeat(6, 17px); grid-auto-rows: 20px; gap: 0; }
-  .board-pond:has(.he .tile:nth-child(13)) .tile.discard { width: 16px; height: 19px; }
-  .board-pond:has(.he .tile:nth-child(13)) .tile.discard.riichi-d { width: 19px; height: 16px; }
-  .board-pond:has(.he .tile:nth-child(13)) .tile.discard.riichi-d .tile-art { width: 16px; height: 19px; }
   .board-pond:has(.he .tile:nth-child(13)) .riichi-stick { min-height: 5px; }
   .board-pond:has(.he .tile:nth-child(13)) .riichi-stick-art { width: 34px; height: 5px; }
   /* Full ponds: the base count-triggered step-down, sized for the
      portrait pond tiles (see the base rules). */
   .board-pond:has(.he .tile:nth-child(19)) { padding: 0; gap: 0; }
-  .board-pond:has(.he .tile:nth-child(19)) .he { grid-template-columns: repeat(6, 15px); grid-auto-rows: 16px; gap: 0; }
-  .board-pond:has(.he .tile:nth-child(19)) .tile.discard { width: 14px; height: 15px; }
-  .board-pond:has(.he .tile:nth-child(19)) .tile.discard.riichi-d { width: 15px; height: 14px; }
-  .board-pond:has(.he .tile:nth-child(19)) .tile.discard.riichi-d .tile-art { width: 14px; height: 15px; }
   .board-pond:has(.he .tile:nth-child(19)) .riichi-stick { min-height: 5px; }
   .board-pond:has(.he .tile:nth-child(19)) .riichi-stick-art { width: 34px; height: 5px; }
   .seat { padding: 3px; }
@@ -786,7 +731,7 @@ table.fb-table td, table.fb-table th { border: 1px solid #26594a; padding: 3px 1
   #actions .act.minor { font-size: 14px; min-width: 84px; }
   .action-status { font-size: 12px; }
   .action-status.prompt { font-size: 13px; padding: 6px 10px; }
-  #seat-bottom .hand { gap: 1px; }
+  :is(#seat-bottom, .replay-seat-bottom) .hand { gap: 1px; }
   .tile.hand { width: 24px; height: 34px; }
   .tile.hand.drawn { margin-left: 10px; }
   .tile.act-tile { width: 15px; height: 21px; }
@@ -965,46 +910,33 @@ table.fb-final td.nm { text-align: left; }
    browsers without container queries. --hand-reserve = the drawn-tile
    gap + inter-tile gaps + a little slack for assist block gaps. */
 @supports (width: 1cqw) {
-  #seat-bottom { container-type: inline-size; --hand-reserve: 60px; }
-  #seat-bottom .tile.hand {
+  :is(#seat-bottom, .replay-seat-bottom) { container-type: inline-size; --hand-reserve: 60px; }
+  :is(#seat-bottom, .replay-seat-bottom) .tile.hand {
     width: min(46px, calc((100cqw - var(--hand-reserve)) / 14), 8.6vh);
     height: auto; aspect-ratio: 46 / 65;
   }
-  #seat-bottom .tile.hand.drawn { margin-left: clamp(6px, 1.6cqw, 16px); }
+  :is(#seat-bottom, .replay-seat-bottom) .tile.hand.drawn { margin-left: clamp(6px, 1.6cqw, 16px); }
 }
 @media (orientation: portrait) and (max-width: 500px) {
-  #seat-bottom { --hand-reserve: 40px; }
+  :is(#seat-bottom, .replay-seat-bottom) { --hand-reserve: 40px; }
 }
 @media (orientation: portrait) and (min-width: 501px) {
-  #seat-bottom { --hand-reserve: 50px; }
+  :is(#seat-bottom, .replay-seat-bottom) { --hand-reserve: 50px; }
 }
 @media (orientation: landscape) and (max-height: 700px) {
-  #seat-bottom { --hand-reserve: 52px; }
+  :is(#seat-bottom, .replay-seat-bottom) { --hand-reserve: 52px; }
 }
 /* Landscape 501-700px tall (1024x576, 1280x650...): the landscape layout
    above now applies; there is more room than on a phone, so the pond
    tiles and centre panel step up from the 14x18 phone sizes. */
 @media (orientation: landscape) and (min-height: 501px) and (max-height: 700px) {
   #app { grid-template-columns: minmax(0, 1fr) 320px; }
-  #board #center { width: 50%; height: 26%; padding: 4px 10px; }
-  #center .round { font-size: 20px; }
-  #center .round span { font-size: 13px; }
+  :is(#board, .replay-board) :is(#center, .replay-center) { width: 50%; height: 26%; padding: 4px 10px; }
+  :is(#center, .replay-center) .round { font-size: 20px; }
+  :is(#center, .replay-center) .round span { font-size: 13px; }
   .center-meta { font-size: 13px; }
-  #center .turn { font-size: 13px; }
-  #center .dora { font-size: 12px; }
+  :is(#center, .replay-center) .dora { font-size: 12px; }
   .tile.dora-tile { width: 18px; height: 25px; }
-  .board-pond .he { grid-template-columns: repeat(6, 22px); grid-auto-rows: 29px; gap: 1px; }
-  .tile.discard { width: 21px; height: 28px; }
-  .tile.discard.riichi-d { width: 28px; height: 21px; }
-  .tile.discard.riichi-d .tile-art { width: 21px; height: 28px; }
-  .board-pond:has(.he .tile:nth-child(13)) .he { grid-template-columns: repeat(6, 22px); grid-auto-rows: 29px; gap: 1px; }
-  .board-pond:has(.he .tile:nth-child(13)) .tile.discard { width: 21px; height: 28px; }
-  .board-pond:has(.he .tile:nth-child(13)) .tile.discard.riichi-d { width: 28px; height: 21px; }
-  .board-pond:has(.he .tile:nth-child(13)) .tile.discard.riichi-d .tile-art { width: 21px; height: 28px; }
-  .board-pond:has(.he .tile:nth-child(19)) .he { grid-template-columns: repeat(6, 19px); grid-auto-rows: 25px; gap: 0; }
-  .board-pond:has(.he .tile:nth-child(19)) .tile.discard { width: 18px; height: 24px; }
-  .board-pond:has(.he .tile:nth-child(19)) .tile.discard.riichi-d { width: 24px; height: 18px; }
-  .board-pond:has(.he .tile:nth-child(19)) .tile.discard.riichi-d .tile-art { width: 18px; height: 24px; }
   .tile.opp { width: 15px; height: 21px; }
   .seat-info { font-size: 11px; min-height: 20px; }
 }
@@ -1014,23 +946,354 @@ table.fb-final td.nm { text-align: left; }
 @media (orientation: landscape) and (max-width: 700px) {
   #app { grid-template-columns: minmax(0, 1fr) 200px; }
   #controls { flex-basis: 76px; width: 76px; }
-  #table { grid-template-columns: 50px minmax(0, 1fr) 50px; }
+  :is(#table, .replay-table) { grid-template-columns: 50px minmax(0, 1fr) 50px; }
   .pos-left .hand, .pos-right .hand { width: 36px; }
-  #seat-bottom { --hand-reserve: 40px; }
-  #board #center { width: 54%; padding: 3px 5px; gap: 2px 5px; }
+  :is(#seat-bottom, .replay-seat-bottom) { --hand-reserve: 40px; }
+  :is(#board, .replay-board) :is(#center, .replay-center) { width: 54%; padding: 3px 5px; gap: 2px 5px; }
   .center-meta { font-size: 10px; letter-spacing: -.02em; }
-  #center .turn { font-size: 10px; }
-  #center .round { font-size: 14px; }
-  .board-pond .he { grid-template-columns: repeat(6, 11px); grid-auto-rows: 15px; }
-  .tile.discard { width: 11px; height: 15px; }
-  .tile.discard.riichi-d { width: 15px; height: 11px; }
-  .tile.discard.riichi-d .tile-art { width: 11px; height: 15px; }
-  .board-pond:has(.he .tile:nth-child(13)) .he,
-  .board-pond:has(.he .tile:nth-child(19)) .he { grid-template-columns: repeat(6, 11px); grid-auto-rows: 14px; }
-  .board-pond:has(.he .tile:nth-child(13)) .tile.discard,
-  .board-pond:has(.he .tile:nth-child(19)) .tile.discard { width: 11px; height: 14px; }
-  .board-pond:has(.he .tile:nth-child(13)) .tile.discard.riichi-d,
-  .board-pond:has(.he .tile:nth-child(19)) .tile.discard.riichi-d { width: 14px; height: 11px; }
-  .board-pond:has(.he .tile:nth-child(13)) .tile.discard.riichi-d .tile-art,
-  .board-pond:has(.he .tile:nth-child(19)) .tile.discard.riichi-d .tile-art { width: 11px; height: 14px; }
+  :is(#center, .replay-center) .round { font-size: 14px; }
+}
+
+/* ---- 役一覧・用語辞典（2026-11-08）: #rules-view のタブ式 ---- */
+.ref-tabs { display: flex; gap: 6px; margin: 12px 0 4px; position: sticky; top: 0; z-index: 2; background: #0e4a36; padding: 4px 0; }
+.ref-tab { flex: 1; font-size: 14px; padding: 8px 6px; border-radius: 8px; border: 1px solid #2a7; background: #0b3a2b; color: #cfe; cursor: pointer; }
+.ref-tab.on { background: #1d7a57; border-color: #5d5; color: #fff; font-weight: 700; }
+.ref-pane[hidden], .ref-tab[hidden] { display: none; }
+.yaku-table td, .yaku-table th { vertical-align: top; }
+.yaku-table th { white-space: nowrap; }
+.yaku-table td.yk-name { font-weight: 600; color: #ffd97a; }
+.yk-yomi { display: block; font-size: 10.5px; font-weight: 400; color: #9fd0c0; }
+.yaku-table th, .yaku-table td { padding-left: 4px; padding-right: 4px; }
+.yaku-table td.yk-han { text-align: center; white-space: nowrap; }
+.yaku-table td.yk-no { color: #f0a090; }
+.yk-no-note { display: block; font-size: 10px; line-height: 1.2; }
+.ref-note { margin: 14px 0 0; font-size: 13px; color: #cfe; }
+.gl-list { margin: 4px 0 0; }
+.gl-list dt { font-weight: 700; color: #ffd97a; margin-top: 10px; }
+.gl-list dd { margin: 2px 0 0 1em; }
+.gl-yomi { font-weight: 400; font-size: 11px; color: #9fd0c0; margin-left: 8px; }
+/* 参照牌は打牌用 .tile を使わず、固定比率の tile_art を組単位で折り返す。 */
+.ref-link { color: #bfeaff; background: #0b3a2b; border: 1px solid #4a9; border-radius: 6px; padding: 6px 8px; cursor: pointer; font: inherit; }
+.tile-reading-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(92px, 1fr)); gap: 10px 6px; }
+.tile-reading-item { display: flex; flex-direction: column; align-items: center; gap: 3px; text-align: center; font-size: 12px; padding: 8px 2px; background: #0b3a2b; border-radius: 8px; }
+.tile-reading-item .tile-art { display: block; width: 48px; height: 67.2px; flex: none; }
+.tile-reading-name { font-weight: 700; color: #ffd97a; }
+.yk-example { margin: 2px 0 8px; padding: 8px; border: 1px dashed #5b9b85; border-radius: 8px; background: #0b3a2b; }
+.yk-example figcaption { font-size: 12px; color: #cfe; margin-bottom: 6px; }
+.yk-example-groups { display: flex; flex-wrap: wrap; align-items: flex-end; gap: 8px; }
+.yk-example-group { display: inline-flex; flex: none; position: relative; gap: 1px; }
+.yk-example-group .tile-art { display: block; width: 28px; height: 39.2px; flex: none; }
+.yk-meld-label { position: absolute; bottom: 100%; left: 0; font-size: 10px; line-height: 16px; color: #ffd97a; }
+.yk-example-group:has(.yk-meld-label) { margin-top: 16px; }
+.yk-example p { margin: 6px 0 0; font-size: 12px; }
+/* 対局中に開く場合: 対局の盤面より前面（#kyoku-result:15 / #end:10 の上）、全画面で入力を遮る */
+#rules-view.in-game { z-index: 40; }
+#audio-settings-view { z-index: 40; }
+#audio-settings-view .stats-card { width: min(440px, 100%); }
+.audio-settings { min-width: 0; border: 1px solid #4a9; border-radius: 8px; padding: 12px; margin: 8px 0; }
+.audio-settings label { display: flex; justify-content: space-between; gap: 12px; }
+.audio-settings input[type="range"] { display: block; width: 100%; min-height: 36px; margin: 4px 0 12px; accent-color: #6db; }
+.audio-settings p { font-size: 12px; line-height: 1.5; color: #cfe; margin: 4px 0; }
+#controls #refBtn { background: #0e4a6a; border-color: #4ad; }
+@media (max-width: 480px) {
+  .yaku-table { font-size: 12px; }
+  .ref-tab { font-size: 13px; }
+}
+@media (max-height: 500px) {
+  .ref-tabs { margin: 6px 0 2px; }
+  .ref-tab { padding: 5px 4px; }
+}
+
+/* ---- 初回ガイド「はじめての方へ」（2026-11-08）: 参照画面(#rules-view z25)の背面に置く ---- */
+#guide-view { z-index: 24; }
+#guide-load-status { position: sticky; top: 0; z-index: 1; padding: 8px; background: #0e4a36; border: 1px solid #2a7; border-radius: 8px; font-size: 13px; line-height: 1.5; }
+#guide-load-status[hidden] { display: none; }
+.guide-sec { margin-bottom: 6px; }
+.guide-sec p { margin: 6px 0; }
+.guide-example { margin: 10px 0; }
+.guide-example-label { display: block; margin-bottom: 4px; font-size: 12px; color: #9fd0c0; }
+.guide-example-groups { display: flex; flex-wrap: wrap; gap: 8px; }
+.guide-example-group { display: inline-flex; gap: 1px; }
+.tile.guide-tile { width: 24px; height: 34px; }
+.guide-links { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 8px; }
+.guide-link { font-size: 13px; padding: 6px 12px; border-radius: 8px; border: 1px solid #2a7; background: #0b3a2b; color: #cfe; cursor: pointer; }
+.guide-foot { justify-content: center; margin-top: 22px; }
+.guide-foot .ss-btn-primary { width: min(320px, 100%); }
+
+/* ================================================================
+   盤面レイアウト刷新 (2026-11-08, モック v11 承認済み)
+   寸法の正本: pc-migration/mock_v11/{report.md,proposal_v11.css}
+   このブロックは style.css の最後に置く (上の media ブロックより後勝ち)。
+   - 手番テキスト(中央パネル)は廃止 (JS 側で出力しない)。
+   - 河: タイル寸法は変数 (--tw/--th = 牌, --px/--py = 送り幅) で持つ。
+     枚数 13 枚〜 / 19 枚〜 の段階は行数 --r (2/3/4) だけを差し替える。
+     リーチ宣言牌(横向き)は flex の行内で自分の幅 (th) を取るので隣の牌に
+     重ならず、宣言牌がある河だけ .he が (th-tw) 広がる。
+   - スマホ(縦・横)の河は #board の寸法 (container query) から、
+     河が中央パネル・盤面端・隣の河に触れない最大の送り幅を求め、
+     モック値 (横 20x27 / 縦 24x32,19x26,18x24) を上限にする。
+   - スマホの左右 seat は手牌を縦 1 列の帯 (平面のまま) にし、副露を縦積み。
+     副露は13x19を下限とし、seat高に応じた副露内の重ね幅と牌裏の縮小で収める。
+   ================================================================ */
+.pos-left.seat, .pos-right.seat {
+  --sg: 4px; --Mw0: 14; --Mh0: 20; --Bw0: 21; --Bh0: 14;
+  --cpon: 48; --ckan: 14; --cback: 14; --info-space: 40px;
+  --mw: 14px; --mh: 20px; --bw: 21px; --bh: 14px;
+}
+.pos-left .hand-row, .pos-right .hand-row { flex-wrap: nowrap; gap: var(--sg); }
+.board-pond { --tw: 30px; --th: 42px; --px: 33px; --py: 45px; }
+.board-pond:has(.he .tile:nth-child(13)) { --tw: 26px; --th: 35px; --px: 27px; --py: 36px; }
+.board-pond:has(.he .tile:nth-child(19)) { --tw: 23px; --th: 29px; --px: 24px; --py: 30px; }
+.board-pond .he { display: flex; flex-wrap: wrap; align-content: flex-start; width: calc(var(--px) * 6); }
+.board-pond .he:has(.riichi-d) { width: calc(var(--px) * 6 + var(--th) - var(--tw)); }
+.tile.discard { width: var(--tw); height: var(--th); margin: 0 calc(var(--px) - var(--tw)) calc(var(--py) - var(--th)) 0; }
+.tile.discard.riichi-d { width: var(--th); height: var(--tw); align-self: center; }
+
+/* ---------- 縦画面（タブレットの中間帯まで同じ河・手牌構造） ---------- */
+@media (orientation: portrait) and (max-width: 1050px) {
+  /* v11承認値: 左右36px、中央パネル36%。 */
+  :is(#table, .replay-table) { grid-template-columns: 36px minmax(0, 1fr) 36px; }
+  :is(#board, .replay-board) :is(#center, .replay-center) { width: 36%; height: 36%; }
+  .bp-0 { top: 68.6%; }
+  .bp-2 { bottom: 68.6%; }
+  .bp-1 { left: 83.5%; }
+  .bp-3 { left: 16.5%; }
+  /* 河 (container query 非対応時はモック値そのまま): 基準 24x32 / 13枚〜 19x26 / 19枚〜 18x24 */
+  .board-pond { --tw: 24px; --th: 32px; --px: 26px; --py: 34px; }
+  .board-pond:has(.he .tile:nth-child(13)) { --tw: 19px; --th: 26px; --px: 20px; --py: 27px; }
+  .board-pond:has(.he .tile:nth-child(19)) { --tw: 18px; --th: 24px; --px: 19px; --py: 25px; }
+  .tile.opp { width: 9px; height: 13px; }
+  /* 左右 seat: 手牌は縦 1 列の帯。牌裏は横倒し (17x12 の箱に 12x17 の絵を 90° 回転) */
+  .pos-left.seat, .pos-right.seat { padding: 3px 1px; --sg: 4px; --Mw0: 14; --Mh0: 20; --Bw0: 17; --Bh0: 12; --cpon: 48; --ckan: 14; --cback: 12; --info-space: 60px;
+    --mw: 14px; --mh: 20px; --bw: 17px; --bh: 12px; }
+  .pos-left .seat-info, .pos-right .seat-info { align-items: center; }
+  .pos-left .seat-score, .pos-right .seat-score { font-size: 7.5px; }
+  .pos-left .hand-row, .pos-right .hand-row { gap: var(--sg); }
+}
+
+/* ---------- 横画面 (landscape, 高さ <=700px) ---------- */
+@media (orientation: landscape) and (max-height: 700px) {
+  /* 右コーチ列 272 -> 232px、左レール 98 -> 84px */
+  #app { grid-template-columns: minmax(0, 1fr) 232px; }
+  #controls { flex: 0 0 84px; width: 84px; }
+  /* 左右 seat 60px = padding 3+3 + 情報列 28 + gap 3 + 手牌列 23 */
+  :is(#table, .replay-table) { grid-template-columns: 60px minmax(0, 1fr) 60px; }
+  :is(#board, .replay-board) :is(#center, .replay-center) { width: 42%; height: 24%; }
+  .bp-0 { top: 62.5%; }
+  .bp-2 { bottom: 62.5%; }
+  /* 20x27 の3段と宣言牌を保つため、河の外枠の余白を牌の間隔へ集約。
+     棒は5px。13枚段階の旧padding/8px棒が計算外で場所を取らない。 */
+  .board-pond, .board-pond:has(.he .tile:nth-child(13)), .board-pond:has(.he .tile:nth-child(19)) { padding: 0; gap: 0; }
+  .board-pond .riichi-stick, .board-pond:has(.he .tile:nth-child(13)) .riichi-stick, .board-pond:has(.he .tile:nth-child(19)) .riichi-stick { min-height: 5px; }
+  .board-pond .riichi-stick-art, .board-pond:has(.he .tile:nth-child(13)) .riichi-stick-art, .board-pond:has(.he .tile:nth-child(19)) .riichi-stick-art { height: 5px; }
+  /* 河 (container query 非対応時): 20x27 を 18 枚まで、19 枚〜 15x21 */
+  .board-pond, .board-pond:has(.he .tile:nth-child(13)) { --tw: 20px; --th: 27px; --px: 21px; --py: 28px; }
+  .board-pond:has(.he .tile:nth-child(19)) { --tw: 15px; --th: 21px; --px: 16px; --py: 22px; }
+  /* 左右 seat の 2 列構成: 左家 [情報列][手牌列] / 右家 [手牌列][情報列] */
+  :is(#seat-left, .replay-seat-left) { flex-direction: row; justify-content: flex-start; align-items: stretch; }
+  :is(#seat-right, .replay-seat-right) { flex-direction: row-reverse; justify-content: flex-start; align-items: stretch; }
+  .pos-left.seat, .pos-right.seat { padding: 3px; gap: 3px; --sg: 3px; --Mw0: 13; --Mh0: 19; --Bw0: 21; --Bh0: 14; --cpon: 45; --ckan: 13; --cback: 14; --info-space: 0px;
+    --mw: 13px; --mh: 19px; --bw: 21px; --bh: 14px; }
+  .pos-left .seat-info, .pos-right .seat-info { flex: 0 0 28px; width: 28px; flex-direction: column; gap: 2px; min-height: 0; align-items: center; justify-content: center; margin-bottom: 0; }
+  .pos-left .seat-score, .pos-right .seat-score { font-size: 7px; }
+  .pos-left .hand-row, .pos-right .hand-row { flex: 1 1 auto; min-width: 0; flex-direction: column; flex-wrap: nowrap; align-items: center; justify-content: center; gap: var(--sg); margin-top: 0; }
+}
+
+/* 狭い横画面: 中央パネルは 42% だと内容が収まらない (幅 880px 以下 50%、700px 以下 54% は従来どおり) */
+@media (orientation: landscape) and (max-height: 700px) and (max-width: 880px) { :is(#board, .replay-board) :is(#center, .replay-center) { width: 50%; } }
+@media (orientation: landscape) and (max-height: 700px) and (max-width: 700px) { :is(#board, .replay-board) :is(#center, .replay-center) { width: 54%; } }
+
+/* ---------- スマホ縦横共通: 左右 seat の手牌帯と副露 ---------- */
+@media all {
+  .pos-left .hand, .pos-right .hand { display: flex; flex-direction: column; flex-wrap: nowrap; width: auto; gap: 1px; align-items: center; }
+  .pos-left .tile.opp, .pos-right .tile.opp { width: var(--bw); height: var(--bh); }
+  .pos-left .tile.opp .tile-art, .pos-right .tile.opp .tile-art { position: absolute; left: 50%; top: 50%; width: var(--bh); height: var(--bw); transform: translate(-50%, -50%) rotate(90deg); }
+  .pos-left .melds, .pos-right .melds { display: flex; flex-direction: column; flex-wrap: nowrap; gap: var(--sg); align-items: center; }
+  .pos-left .melds:empty, .pos-right .melds:empty { display: none; }
+  /* 副露タイル: 横向き牌 (strip 幅 = 高さ + padding 4px) が手牌列に収まる */
+  .pos-left .tile.meld-tile, .pos-right .tile.meld-tile { width: var(--mw); height: var(--mh); }
+  .pos-left .tile.meld-tile.tile-side, .pos-right .tile.meld-tile.tile-side { width: var(--mh); height: var(--mw); }
+  .pos-left .tile.meld-tile.mrot-90 .tile-art, .pos-left .tile.meld-tile.mrot-270 .tile-art,
+  .pos-right .tile.meld-tile.mrot-90 .tile-art, .pos-right .tile.meld-tile.mrot-270 .tile-art { width: var(--mw); height: var(--mh); }
+}
+
+/* ---------- container query (非対応ブラウザは上のモック固定値のまま) ---------- */
+@supports (width: 1cqh) {
+  @media all {
+    :is(#board, .replay-board) { container-type: size; }
+    .board-pond { --cap: 43px; }
+    .board-pond:has(.he .tile:nth-child(13)) { --cap: 36px; }
+    .board-pond:has(.he .tile:nth-child(19)) { --cap: 30px; }
+    .board-pond, .board-pond:has(.he .tile:nth-child(13)), .board-pond:has(.he .tile:nth-child(19)) {
+      --py: min(var(--cap), calc((27.5cqh - 12px) / var(--r)), calc((36cqw - 11px) / (var(--r) / 2 + 2.25)), calc((28cqw - 4px) / var(--r)));
+    }
+    .board-pond { --r: 2; }
+    .board-pond:has(.he .tile:nth-child(13)) { --r: 3; }
+    .board-pond:has(.he .tile:nth-child(19)) { --r: 4; }
+    .board-pond, .board-pond:has(.he .tile:nth-child(13)), .board-pond:has(.he .tile:nth-child(19)) {
+      --th: calc(var(--py) - 1px);
+      --tw: calc(var(--th) * 0.74);
+      --px: calc(var(--tw) + 1px);
+    }
+    /* 13x19 を下限にする。3副露から枠と間隔を詰め、さらに必要な
+       高さだけ同じ副露内の隣接牌を最大4px重ねる（副露間は重ねない）。
+       牌の回転により通常の左右ポンは 2*13+19=45px、槓は +13px。
+       手牌裏は0.6〜1倍。n は打牌前の上限14-3mを使う。 */
+    .pos-left.seat, .pos-right.seat { container-type: size; --m: 0; --k: 0; --n: 14; --on: 0; --mpad: 2px; }
+    .pos-left.seat:has(.meld:nth-child(1)), .pos-right.seat:has(.meld:nth-child(1)) { --m: 1; --n: 11; --on: 1; }
+    .pos-left.seat:has(.meld:nth-child(2)), .pos-right.seat:has(.meld:nth-child(2)) { --m: 2; --n: 8; --sg: 2px; }
+    .pos-left.seat:has(.meld:nth-child(3)), .pos-right.seat:has(.meld:nth-child(3)) { --m: 3; --n: 5; --sg: 1px; --mpad: 1px; --Mw0: 13; --Mh0: 19; --cpon: 45; --ckan: 13; }
+    .pos-left.seat:has(.meld:nth-child(4)), .pos-right.seat:has(.meld:nth-child(4)) { --m: 4; --n: 2; }
+    .pos-left.seat:has(.meld-kan), .pos-right.seat:has(.meld-kan) { --k: 1; }
+    .pos-left.seat:has(.meld-kan ~ .meld-kan),
+    .pos-right.seat:has(.meld-kan ~ .meld-kan) { --k: 2; }
+    .pos-left.seat:has(.meld-kan ~ .meld-kan ~ .meld-kan),
+    .pos-right.seat:has(.meld-kan ~ .meld-kan ~ .meld-kan) { --k: 3; }
+    .pos-left.seat:has(.meld-kan ~ .meld-kan ~ .meld-kan ~ .meld-kan),
+    .pos-right.seat:has(.meld-kan ~ .meld-kan ~ .meld-kan ~ .meld-kan) { --k: 4; }
+    .pos-left .hand-row, .pos-right .hand-row {
+      --available: calc(100cqh - var(--info-space));
+      --mfix: calc(var(--m) * 2 * var(--mpad) + var(--m) * var(--sg));
+      --meld-height: calc(var(--cpon) * var(--m) * 1px + var(--ckan) * var(--k) * 1px);
+      --lap: clamp(0px, calc((var(--meld-height) + var(--mfix) + var(--n) * var(--cback) * 0.6px + (var(--n) - 1) * 1px - var(--available)) / max(1, 2 * var(--m) + var(--k))), 4px);
+      --Sb: clamp(0.6px, calc((var(--available) - var(--meld-height) + (2 * var(--m) + var(--k)) * var(--lap) - var(--mfix) - (var(--n) - 1) * 1px) / (var(--cback) * var(--n))), 1px);
+      --mw: calc(var(--Mw0) * 1px); --mh: calc(var(--Mh0) * 1px);
+      --bw: calc(var(--Bw0) * var(--Sb)); --bh: calc(var(--Bh0) * var(--Sb));
+    }
+    .pos-left .meld, .pos-right .meld { padding: var(--mpad) 0; gap: 0; flex: 0 0 auto; }
+    .pos-left .meld .tile + .tile, .pos-right .meld .tile + .tile { margin-top: calc(-1 * var(--lap)); }
+  }
+  /* 河の送り幅の上限 = min(モック値, 縦: 中央パネル下端〜盤面端（棒と枠の余白込み）,
+     四隅: 左右の河と上下の河の水平間隔, 横: 左右の河が中央パネルに届かない) */
+  @media (orientation: landscape) and (max-height: 700px) {
+    .board-pond, .board-pond:has(.he .tile:nth-child(13)), .board-pond:has(.he .tile:nth-child(19)) {
+      --py: min(28px, calc((37.5cqh - 6px) / var(--r)), calc((36cqw - 11px) / (var(--r) / 2 + 2.25)), calc((var(--center-clear, 30cqw) - 4px) / var(--r)));
+    }
+  }
+  @media (orientation: portrait) and (max-width: 1050px) {
+    .board-pond { --cap: 34px; }
+    .board-pond:has(.he .tile:nth-child(13)) { --cap: 27px; }
+    .board-pond:has(.he .tile:nth-child(19)) { --cap: 25px; }
+    .board-pond, .board-pond:has(.he .tile:nth-child(13)), .board-pond:has(.he .tile:nth-child(19)) {
+      --py: min(var(--cap), calc((31.4cqh - 14px) / var(--r)), calc((33.5cqw - 8px) / (var(--r) / 2 + 2.25)), calc((31cqw - 4px) / var(--r)));
+    }
+  }
+}
+
+/* 対面の情報と手牌を並べ、横画面の盤面の高さを確保する。 */
+@media (orientation: landscape) and (max-height: 700px) {
+  :is(#seat-top, .replay-seat-top) { display: flex; align-items: center; justify-content: center; gap: 6px; padding: 2px; }
+  :is(#seat-top, .replay-seat-top) .seat-info, :is(#seat-top, .replay-seat-top) .hand-row { margin: 0; }
+  :is(#seat-top, .replay-seat-top) .seat-info { flex-wrap: wrap; white-space: normal; }
+  :is(#seat-top, .replay-seat-top) .hand-row { min-width: 0; }
+  :is(#seat-top, .replay-seat-top) .hand { flex-shrink: 0; }
+  :is(#seat-top, .replay-seat-top) .melds { flex-wrap: nowrap; gap: 3px; }
+}
+@media (orientation: portrait) and (max-width: 1050px) {
+  :is(#seat-left, .replay-seat-left), :is(#seat-right, .replay-seat-right) { margin-top: -32px; }
+  .pos-left .seat-info, .pos-right .seat-info { flex-shrink: 0; }
+}
+/* 700px以下は右パネルと操作レールも詰め、盤面の最小幅を守る。 */
+@media (orientation: landscape) and (max-width: 700px) {
+  #app { grid-template-columns: minmax(0, 1fr) 168px; }
+  #controls { flex-basis: 64px; width: 64px; }
+}
+
+@media (orientation: landscape) and (max-height: 700px) and (max-width: 880px) {
+  :is(#seat-top, .replay-seat-top) { display: block; }
+  :is(#seat-top, .replay-seat-top) .tile.opp { width: 9px; height: 13px; }
+  :is(#seat-top, .replay-seat-top) .melds { gap: 3px; }
+  :is(#seat-left, .replay-seat-left), :is(#seat-right, .replay-seat-right) { margin-top: -24px; }
+  .board-pond { --center-clear: 22cqw; }
+}
+@media (orientation: landscape) and (max-height: 700px) and (max-width: 700px) {
+  .board-pond { --center-clear: 18cqw; }
+}
+/* 中間の縦幅でも盤面を正方形のまま、下のコーチ領域から分離する。 */
+@media (orientation: portrait) and (min-width: 501px) and (max-width: 1050px) {
+  #app { display: flex; flex-direction: column; }
+  #table-wrap { flex: 0 0 auto; padding: 6px; gap: 5px; }
+  :is(#table, .replay-table) { grid-template-columns: 36px minmax(0, 1fr) 36px; }
+  :is(#board, .replay-board) { width: min(100%, 440px, calc(100dvh - 340px)); height: auto; aspect-ratio: 1; }
+  #side { flex: 1; min-height: 0; overflow-y: auto; }
+  :is(#board, .replay-board) :is(#center, .replay-center) { padding: 5px; gap: 3px; }
+  :is(#center, .replay-center) .round { font-size: 17px; }
+  :is(#center, .replay-center) .round span { font-size: 13px; }
+  .center-meta { font-size: 11px; }
+  .center-players { display: none; }
+  :is(#center, .replay-center) .dora { font-size: 10px; gap: 3px; }
+  .tile.dora-tile { width: 20px; height: 28px; }
+  .pos-left .seat-name, .pos-right .seat-name { display: none; }
+  .pos-left .seat-info, .pos-right .seat-info { flex-direction: column; gap: 1px; min-height: 0; }
+  .seat-wind { width: 15px; height: 15px; }
+  .riichi-badge, .turn-badge { font-size: 8px; padding: 0 3px; }
+  .seat-info { min-height: 16px; font-size: 9px; margin-bottom: 2px; gap: 2px; }
+  :is(#seat-top, .replay-seat-top):has(.meld:nth-child(3)) .melds { gap: 3px; }
+  :is(#seat-top, .replay-seat-top):has(.meld:nth-child(3)) .meld-tile { width: 13px; height: 19px; }
+  :is(#seat-top, .replay-seat-top):has(.meld:nth-child(3)) .meld-tile.tile-side { width: 19px; height: 13px; }
+  :is(#seat-top, .replay-seat-top):has(.meld:nth-child(3)) .meld-tile.tile-side .tile-art { width: 13px; height: 19px; }
+}
+@media (orientation: landscape) and (max-width: 880px) and (max-height: 700px) {
+  :is(#seat-top, .replay-seat-top):has(.meld:nth-child(3)) .meld { padding: 0; gap: 0; }
+  :is(#seat-top, .replay-seat-top):has(.meld:nth-child(3)) .melds { gap: 2px; }
+}
+
+@media all {
+  :is(#seat-top, .replay-seat-top):has(.meld:nth-child(2)) .meld-tile { width: 14px; height: 20px; }
+  :is(#seat-top, .replay-seat-top):has(.meld:nth-child(2)) .meld-tile.tile-side { width: 20px; height: 14px; }
+  :is(#seat-top, .replay-seat-top):has(.meld:nth-child(2)) .meld-tile.tile-side .tile-art { width: 14px; height: 20px; }
+  :is(#seat-top, .replay-seat-top):has(.meld:nth-child(3)) .meld-tile { width: 13px; height: 19px; }
+  :is(#seat-top, .replay-seat-top):has(.meld:nth-child(3)) .meld-tile.tile-side { width: 19px; height: 13px; }
+  :is(#seat-top, .replay-seat-top):has(.meld:nth-child(3)) .meld-tile.tile-side .tile-art { width: 13px; height: 19px; }
+}
+
+/* ================================================================
+   横画面: CPU 3人の手牌タイルのサイズを対面に揃える (2026-11-08)
+   左右の手牌(横倒しの牌裏)を対面の手牌と同じ寸法にする
+   (長辺 Bw0 x 短辺 Bh0 = 対面の 高さ x 幅)。副露は手牌より大きいまま。
+   - 対面: 高さ<=700px 13x18 / 幅<=880px 9x13 / 高さ501-700px 15x21
+   - 左右: 上記の 90 度回転 (18x13 / 13x9 / 21x15)。縮小は 0.6 倍までの
+     Sb 係数が引き続き掛かるので、満員の副露でも対面より大きくはならない。
+   ================================================================ */
+@media (orientation: landscape) and (max-height: 700px) {
+  .pos-left.seat, .pos-right.seat { --Bw0: 18; --Bh0: 13; --cback: 13; --bw: 18px; --bh: 13px; }
+}
+@media (orientation: landscape) and (max-height: 700px) and (max-width: 880px) {
+  .pos-left.seat, .pos-right.seat { --Bw0: 13; --Bh0: 9; --cback: 9; --bw: 13px; --bh: 9px; }
+}
+/* 高さ501-700px: 対面の手牌は 15x21。副露は 16x22 に揃えて手牌より大きくする
+   (従来は 2 副露以降 14x20 / 13x19 で手牌より小さくなっていた)。 */
+@media (orientation: landscape) and (min-height: 501px) and (max-height: 700px) {
+  .pos-left.seat, .pos-right.seat,
+  .pos-left.seat:has(.meld:nth-child(3)), .pos-right.seat:has(.meld:nth-child(3)) {
+    --Bw0: 21; --Bh0: 15; --cback: 15; --bw: 21px; --bh: 15px;
+    --Mw0: 16; --Mh0: 22; --cpon: 54; --ckan: 16; --mw: 16px; --mh: 22px;
+  }
+  :is(#seat-top, .replay-seat-top) .meld-tile,
+  :is(#seat-top, .replay-seat-top):has(.meld:nth-child(2)) .meld-tile, :is(#seat-top, .replay-seat-top):has(.meld:nth-child(3)) .meld-tile { width: 16px; height: 22px; }
+  :is(#seat-top, .replay-seat-top) .meld-tile.tile-side,
+  :is(#seat-top, .replay-seat-top):has(.meld:nth-child(2)) .meld-tile.tile-side, :is(#seat-top, .replay-seat-top):has(.meld:nth-child(3)) .meld-tile.tile-side { width: 22px; height: 16px; }
+  :is(#seat-top, .replay-seat-top) .meld-tile.tile-side .tile-art,
+  :is(#seat-top, .replay-seat-top):has(.meld:nth-child(2)) .meld-tile.tile-side .tile-art, :is(#seat-top, .replay-seat-top):has(.meld:nth-child(3)) .meld-tile.tile-side .tile-art { width: 16px; height: 22px; }
+}
+
+/* Own sizing budget: the underlying live fitBoard() never touches replay. */
+#scene-viewer .replay-table { grid-template-columns: 110px minmax(0, 1fr) 110px; }
+#scene-viewer .replay-board { height: 100%; width: auto; max-width: 100%; max-height: 100%; container-type: size; }
+#scene-viewer .replay-seat-bottom { container-type: inline-size; --hand-reserve: 60px; }
+#scene-viewer .replay-seat-bottom .tile.hand { width: clamp(8px, calc((100cqw - var(--hand-reserve)) / 14), 46px); height: auto; aspect-ratio: 46 / 65; }
+@media (orientation: portrait) and (max-width: 1050px) {
+  #scene-viewer .replay-table { grid-template-columns: 36px minmax(0, 1fr) 36px; height: min(520px, calc(100vw - 40px), 60dvh); }
+  #scene-viewer .replay-board { width: 100%; height: auto; }
+}
+@media (orientation: landscape) and (max-height: 700px) {
+  #scene-viewer .replay-table { grid-template-columns: 60px minmax(0, 1fr) 60px; height: max(230px, 70dvh); }
+  #scene-viewer .replay-board { width: 100%; height: 100%; aspect-ratio: auto; }
+}
+
+@media (orientation: portrait) and (max-width: 1050px) {
+  #scene-viewer :is(#board, .replay-board) :is(#center, .replay-center) { width: 40%; height: 40%; }
+  #scene-viewer .replay-center .round { white-space: nowrap; font-size: 13px; }
+  #scene-viewer .replay-center .round span { font-size: 11px; }
+  #scene-viewer .replay-center .center-meta { font-size: 10px; white-space: nowrap; }
 }

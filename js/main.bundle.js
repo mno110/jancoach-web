@@ -15,9 +15,9 @@ var __commonJS = (cb2, mod) => function __require2() {
 };
 var __copyProps = (to2, from, except, desc) => {
   if (from && typeof from === "object" || typeof from === "function") {
-    for (let key of __getOwnPropNames(from))
-      if (!__hasOwnProp.call(to2, key) && key !== except)
-        __defProp(to2, key, { get: () => from[key], enumerable: !(desc = __getOwnPropDesc(from, key)) || desc.enumerable });
+    for (let key2 of __getOwnPropNames(from))
+      if (!__hasOwnProp.call(to2, key2) && key2 !== except)
+        __defProp(to2, key2, { get: () => from[key2], enumerable: !(desc = __getOwnPropDesc(from, key2)) || desc.enumerable });
   }
   return to2;
 };
@@ -30,9 +30,9 @@ var __toESM = (mod, isNodeMode, target) => (target = mod != null ? __create(__ge
   mod
 ));
 
-// ../node_modules/@kobalab/majiang-core/lib/rule.js
+// app/node_modules/@kobalab/majiang-core/lib/rule.js
 var require_rule = __commonJS({
-  "../node_modules/@kobalab/majiang-core/lib/rule.js"(exports, module) {
+  "app/node_modules/@kobalab/majiang-core/lib/rule.js"(exports, module) {
     "use strict";
     module.exports = function(param = {}) {
       let rule = {
@@ -76,17 +76,17 @@ var require_rule = __commonJS({
         "\u5F79\u6E80\u30D1\u30AA\u3042\u308A": true,
         "\u5207\u308A\u4E0A\u3052\u6E80\u8CAB\u3042\u308A": false
       };
-      for (let key of Object.keys(param)) {
-        rule[key] = param[key];
+      for (let key2 of Object.keys(param)) {
+        rule[key2] = param[key2];
       }
       return rule;
     };
   }
 });
 
-// ../node_modules/@kobalab/majiang-core/lib/shoupai.js
+// app/node_modules/@kobalab/majiang-core/lib/shoupai.js
 var require_shoupai = __commonJS({
-  "../node_modules/@kobalab/majiang-core/lib/shoupai.js"(exports, module) {
+  "app/node_modules/@kobalab/majiang-core/lib/shoupai.js"(exports, module) {
     "use strict";
     module.exports = class Shoupai {
       static valid_pai(p) {
@@ -433,14 +433,14 @@ var require_shoupai = __commonJS({
   }
 });
 
-// ../node_modules/@kobalab/majiang-core/lib/shan.js
+// app/node_modules/@kobalab/majiang-core/lib/shan.js
 var require_shan = __commonJS({
-  "../node_modules/@kobalab/majiang-core/lib/shan.js"(exports, module) {
+  "app/node_modules/@kobalab/majiang-core/lib/shan.js"(exports, module) {
     "use strict";
-    var Majiang6 = { Shoupai: require_shoupai() };
+    var Majiang7 = { Shoupai: require_shoupai() };
     module.exports = class Shan {
       static zhenbaopai(p) {
-        if (!Majiang6.Shoupai.valid_pai(p)) throw new Error(p);
+        if (!Majiang7.Shoupai.valid_pai(p)) throw new Error(p);
         let s = p[0], n = +p[1] || 5;
         return s == "z" ? n < 5 ? s + (n % 4 + 1) : s + ((n - 4) % 3 + 5) : s + (n % 9 + 1);
       }
@@ -506,24 +506,24 @@ var require_shan = __commonJS({
   }
 });
 
-// ../node_modules/@kobalab/majiang-core/lib/he.js
+// app/node_modules/@kobalab/majiang-core/lib/he.js
 var require_he = __commonJS({
-  "../node_modules/@kobalab/majiang-core/lib/he.js"(exports, module) {
+  "app/node_modules/@kobalab/majiang-core/lib/he.js"(exports, module) {
     "use strict";
-    var Majiang6 = { Shoupai: require_shoupai() };
+    var Majiang7 = { Shoupai: require_shoupai() };
     module.exports = class He {
       constructor() {
         this._pai = [];
         this._find = {};
       }
       dapai(p) {
-        if (!Majiang6.Shoupai.valid_pai(p)) throw new Error(p);
+        if (!Majiang7.Shoupai.valid_pai(p)) throw new Error(p);
         this._pai.push(p.replace(/[\+\=\-]$/, ""));
         this._find[p[0] + (+p[1] || 5)] = true;
         return this;
       }
       fulou(m) {
-        if (!Majiang6.Shoupai.valid_mianzi(m)) throw new Error(m);
+        if (!Majiang7.Shoupai.valid_mianzi(m)) throw new Error(m);
         let p = m[0] + m.match(/\d(?=[\+\=\-])/), d = m.match(/[\+\=\-]/);
         if (!d) throw new Error(m);
         if (this._pai[this._pai.length - 1].slice(0, 2) != p)
@@ -538,11 +538,11 @@ var require_he = __commonJS({
   }
 });
 
-// ../node_modules/@kobalab/majiang-core/lib/board.js
+// app/node_modules/@kobalab/majiang-core/lib/board.js
 var require_board = __commonJS({
-  "../node_modules/@kobalab/majiang-core/lib/board.js"(exports, module) {
+  "app/node_modules/@kobalab/majiang-core/lib/board.js"(exports, module) {
     "use strict";
-    var Majiang6 = {
+    var Majiang7 = {
       Shoupai: require_shoupai(),
       He: require_he()
     };
@@ -595,8 +595,8 @@ var require_board = __commonJS({
         this.shan = new Shan(qipai.baopai);
         for (let l = 0; l < 4; l++) {
           let paistr = qipai.shoupai[l] || "_".repeat(13);
-          this.shoupai[l] = Majiang6.Shoupai.fromString(paistr);
-          this.he[l] = new Majiang6.He();
+          this.shoupai[l] = Majiang7.Shoupai.fromString(paistr);
+          this.he[l] = new Majiang7.He();
           this.player_id[l] = (this.qijia + this.jushu + l) % 4;
           this.defen[this.player_id[l]] = qipai.defen[l];
         }
@@ -681,9 +681,9 @@ var require_board = __commonJS({
   }
 });
 
-// ../node_modules/@kobalab/majiang-core/lib/xiangting.js
+// app/node_modules/@kobalab/majiang-core/lib/xiangting.js
 var require_xiangting = __commonJS({
-  "../node_modules/@kobalab/majiang-core/lib/xiangting.js"(exports, module) {
+  "app/node_modules/@kobalab/majiang-core/lib/xiangting.js"(exports, module) {
     "use strict";
     function _xiangting(m, d, g, j) {
       let n = j ? 4 : 5;
@@ -850,11 +850,11 @@ var require_xiangting = __commonJS({
   }
 });
 
-// ../node_modules/@kobalab/majiang-core/lib/hule.js
+// app/node_modules/@kobalab/majiang-core/lib/hule.js
 var require_hule = __commonJS({
-  "../node_modules/@kobalab/majiang-core/lib/hule.js"(exports, module) {
+  "app/node_modules/@kobalab/majiang-core/lib/hule.js"(exports, module) {
     "use strict";
-    var Majiang6 = {
+    var Majiang7 = {
       Shan: require_shan(),
       rule: require_rule()
     };
@@ -1308,7 +1308,7 @@ var require_hule = __commonJS({
       let suitstr = paistr.match(/[mpsz][^mpsz,]*/g);
       let n_baopai = 0;
       for (let p of baopai) {
-        p = Majiang6.Shan.zhenbaopai(p);
+        p = Majiang7.Shan.zhenbaopai(p);
         const regexp = new RegExp(p[1], "g");
         for (let m of suitstr) {
           if (m[0] != p[0]) continue;
@@ -1324,7 +1324,7 @@ var require_hule = __commonJS({
       if (n_hongpai) post_hupai.push({ name: "\u8D64\u30C9\u30E9", fanshu: n_hongpai });
       let n_fubaopai = 0;
       for (let p of fubaopai || []) {
-        p = Majiang6.Shan.zhenbaopai(p);
+        p = Majiang7.Shan.zhenbaopai(p);
         const regexp = new RegExp(p[1], "g");
         for (let m of suitstr) {
           if (m[0] != p[0]) continue;
@@ -1426,7 +1426,7 @@ var require_hule = __commonJS({
     }
     function hule_param(param = {}) {
       let rv2 = {
-        rule: param.rule ?? Majiang6.rule(),
+        rule: param.rule ?? Majiang7.rule(),
         zhuangfeng: param.zhuangfeng ?? 0,
         menfeng: param.menfeng ?? 1,
         hupai: {
@@ -1454,11 +1454,11 @@ var require_hule = __commonJS({
   }
 });
 
-// ../node_modules/@kobalab/majiang-core/lib/game.js
+// app/node_modules/@kobalab/majiang-core/lib/game.js
 var require_game = __commonJS({
-  "../node_modules/@kobalab/majiang-core/lib/game.js"(exports, module) {
+  "app/node_modules/@kobalab/majiang-core/lib/game.js"(exports, module) {
     "use strict";
-    var Majiang6 = {
+    var Majiang7 = {
       rule: require_rule(),
       Shoupai: require_shoupai(),
       Shan: require_shan(),
@@ -1473,7 +1473,7 @@ var require_game = __commonJS({
         this._players = players;
         this._callback = callback || (() => {
         });
-        this._rule = rule || Majiang6.rule();
+        this._rule = rule || Majiang7.rule();
         this._model = {
           title: title || "\u96FB\u8133\u9EBB\u5C06\n" + (/* @__PURE__ */ new Date()).toLocaleString(),
           player: ["\u79C1", "\u4E0B\u5BB6", "\u5BFE\u9762", "\u4E0A\u5BB6"],
@@ -1644,14 +1644,14 @@ var require_game = __commonJS({
       }
       qipai(shan) {
         let model = this._model;
-        model.shan = shan || new Majiang6.Shan(this._rule);
+        model.shan = shan || new Majiang7.Shan(this._rule);
         for (let l = 0; l < 4; l++) {
           let qipai = [];
           for (let i = 0; i < 13; i++) {
             qipai.push(model.shan.zimo());
           }
-          model.shoupai[l] = new Majiang6.Shoupai(qipai);
-          model.he[l] = new Majiang6.He();
+          model.shoupai[l] = new Majiang7.Shoupai(qipai);
+          model.he[l] = new Majiang7.He();
           model.player_id[l] = (model.qijia + model.jushu + l) % 4;
         }
         model.lunban = -1;
@@ -1724,7 +1724,7 @@ var require_game = __commonJS({
           this._lizhi[model.lunban] = this._diyizimo ? 2 : 1;
           this._yifa[model.lunban] = this._rule["\u4E00\u767A\u3042\u308A"];
         }
-        if (Majiang6.Util.xiangting(model.shoupai[model.lunban]) == 0 && Majiang6.Util.tingpai(model.shoupai[model.lunban]).find((p) => model.he[model.lunban].find(p))) {
+        if (Majiang7.Util.xiangting(model.shoupai[model.lunban]) == 0 && Majiang7.Util.tingpai(model.shoupai[model.lunban]).find((p) => model.he[model.lunban].find(p))) {
           this._neng_rong[model.lunban] = false;
         }
         this._dapai = dapai;
@@ -1835,7 +1835,7 @@ var require_game = __commonJS({
             lizhibang: model.lizhibang
           }
         };
-        let hule = Majiang6.Util.hule(shoupai, rongpai, param);
+        let hule = Majiang7.Util.hule(shoupai, rongpai, param);
         if (this._rule["\u9023\u8358\u65B9\u5F0F"] > 0 && menfeng == 0) this._lianzhuang = true;
         if (this._rule["\u5834\u6570"] == 0) this._lianzhuang = false;
         this._fenpei = hule.fenpei;
@@ -1853,8 +1853,8 @@ var require_game = __commonJS({
             fenpei: hule.fenpei
           }
         };
-        for (let key of ["fu", "fanshu", "damanguan"]) {
-          if (!paipu.hule[key]) delete paipu.hule[key];
+        for (let key2 of ["fu", "fanshu", "damanguan"]) {
+          if (!paipu.hule[key2]) delete paipu.hule[key2];
         }
         this.add_paipu(paipu);
         let msg = [];
@@ -1873,7 +1873,7 @@ var require_game = __commonJS({
             if (this._rule["\u30CE\u30FC\u30C6\u30F3\u5BA3\u8A00\u3042\u308A"] && !shoupai[l] && !model.shoupai[l].lizhi) continue;
             if (!this._rule["\u30CE\u30FC\u30C6\u30F3\u7F70\u3042\u308A"] && (this._rule["\u9023\u8358\u65B9\u5F0F"] != 2 || l != 0) && !model.shoupai[l].lizhi) {
               shoupai[l] = "";
-            } else if (Majiang6.Util.xiangting(model.shoupai[l]) == 0 && Majiang6.Util.tingpai(model.shoupai[l]).length > 0) {
+            } else if (Majiang7.Util.xiangting(model.shoupai[l]) == 0 && Majiang7.Util.tingpai(model.shoupai[l]).length > 0) {
               n_tingpai++;
               shoupai[l] = model.shoupai[l].toString();
               if (this._rule["\u9023\u8358\u65B9\u5F0F"] == 2 && l == 0)
@@ -2054,7 +2054,7 @@ var require_game = __commonJS({
             this._hule.push(l2);
           } else {
             let shoupai = model.shoupai[l2].clone().zimo(this._dapai);
-            if (Majiang6.Util.xiangting(shoupai) == -1)
+            if (Majiang7.Util.xiangting(shoupai) == -1)
               this._neng_rong[l2] = false;
           }
         }
@@ -2152,7 +2152,7 @@ var require_game = __commonJS({
           } else {
             let p = this._gang[0] + this._gang.slice(-1);
             let shoupai = model.shoupai[l].clone().zimo(p);
-            if (Majiang6.Util.xiangting(shoupai) == -1)
+            if (Majiang7.Util.xiangting(shoupai) == -1)
               this._neng_rong[l] = false;
           }
         }
@@ -2299,21 +2299,21 @@ var require_game = __commonJS({
           else if (rule["\u30EA\u30FC\u30C1\u5F8C\u6697\u69D3\u8A31\u53EF\u30EC\u30D9\u30EB"] == 1) {
             let new_shoupai, n_hule1 = 0, n_hule2 = 0;
             new_shoupai = shoupai.clone().dapai(shoupai._zimo);
-            for (let p2 of Majiang6.Util.tingpai(new_shoupai)) {
-              n_hule1 += Majiang6.Util.hule_mianzi(new_shoupai, p2).length;
+            for (let p2 of Majiang7.Util.tingpai(new_shoupai)) {
+              n_hule1 += Majiang7.Util.hule_mianzi(new_shoupai, p2).length;
             }
             new_shoupai = shoupai.clone().gang(mianzi[0]);
-            for (let p2 of Majiang6.Util.tingpai(new_shoupai)) {
-              n_hule2 += Majiang6.Util.hule_mianzi(new_shoupai, p2).length;
+            for (let p2 of Majiang7.Util.tingpai(new_shoupai)) {
+              n_hule2 += Majiang7.Util.hule_mianzi(new_shoupai, p2).length;
             }
             if (n_hule1 > n_hule2) return [];
           } else {
             let new_shoupai;
             new_shoupai = shoupai.clone().dapai(shoupai._zimo);
-            let n_tingpai1 = Majiang6.Util.tingpai(new_shoupai).length;
+            let n_tingpai1 = Majiang7.Util.tingpai(new_shoupai).length;
             new_shoupai = shoupai.clone().gang(mianzi[0]);
-            if (Majiang6.Util.xiangting(new_shoupai) > 0) return [];
-            let n_tingpai2 = Majiang6.Util.tingpai(new_shoupai).length;
+            if (Majiang7.Util.xiangting(new_shoupai) > 0) return [];
+            let n_tingpai2 = Majiang7.Util.tingpai(new_shoupai).length;
             if (n_tingpai1 > n_tingpai2) return [];
           }
         }
@@ -2325,15 +2325,15 @@ var require_game = __commonJS({
         if (!shoupai.menqian) return false;
         if (!rule["\u30C4\u30E2\u756A\u306A\u3057\u30EA\u30FC\u30C1\u3042\u308A"] && paishu < 4) return false;
         if (rule["\u30C8\u30D3\u7D42\u4E86\u3042\u308A"] && defen < 1e3) return false;
-        if (Majiang6.Util.xiangting(shoupai) > 0) return false;
+        if (Majiang7.Util.xiangting(shoupai) > 0) return false;
         if (p) {
           let new_shoupai = shoupai.clone().dapai(p);
-          return Majiang6.Util.xiangting(new_shoupai) == 0 && Majiang6.Util.tingpai(new_shoupai).length > 0;
+          return Majiang7.Util.xiangting(new_shoupai) == 0 && Majiang7.Util.tingpai(new_shoupai).length > 0;
         } else {
           let dapai = [];
           for (let p2 of Game.get_dapai(rule, shoupai)) {
             let new_shoupai = shoupai.clone().dapai(p2);
-            if (Majiang6.Util.xiangting(new_shoupai) == 0 && Majiang6.Util.tingpai(new_shoupai).length > 0) {
+            if (Majiang7.Util.xiangting(new_shoupai) == 0 && Majiang7.Util.tingpai(new_shoupai).length > 0) {
               dapai.push(p2);
             }
           }
@@ -2344,7 +2344,7 @@ var require_game = __commonJS({
         if (p && !neng_rong) return false;
         let new_shoupai = shoupai.clone();
         if (p) new_shoupai.zimo(p);
-        if (Majiang6.Util.xiangting(new_shoupai) != -1) return false;
+        if (Majiang7.Util.xiangting(new_shoupai) != -1) return false;
         if (hupai) return true;
         let param = {
           rule,
@@ -2354,7 +2354,7 @@ var require_game = __commonJS({
           baopai: [],
           jicun: { changbang: 0, lizhibang: 0 }
         };
-        let hule = Majiang6.Util.hule(shoupai, p, param);
+        let hule = Majiang7.Util.hule(shoupai, p, param);
         return hule.hupai != null;
       }
       static allow_pingju(rule, shoupai, diyizimo) {
@@ -2374,17 +2374,17 @@ var require_game = __commonJS({
         if (paishu > 0 || shoupai._zimo) return false;
         if (!rule["\u30CE\u30FC\u30C6\u30F3\u5BA3\u8A00\u3042\u308A"]) return false;
         if (shoupai.lizhi) return false;
-        return Majiang6.Util.xiangting(shoupai) == 0 && Majiang6.Util.tingpai(shoupai).length > 0;
+        return Majiang7.Util.xiangting(shoupai) == 0 && Majiang7.Util.tingpai(shoupai).length > 0;
       }
     };
   }
 });
 
-// ../node_modules/@kobalab/majiang-core/lib/player.js
+// app/node_modules/@kobalab/majiang-core/lib/player.js
 var require_player = __commonJS({
-  "../node_modules/@kobalab/majiang-core/lib/player.js"(exports, module) {
+  "app/node_modules/@kobalab/majiang-core/lib/player.js"(exports, module) {
     "use strict";
-    var Majiang6 = {
+    var Majiang7 = {
       Shoupai: require_shoupai(),
       He: require_he(),
       Game: require_game(),
@@ -2396,7 +2396,7 @@ var require_player = __commonJS({
     };
     module.exports = class Player {
       constructor() {
-        this._model = new Majiang6.Board();
+        this._model = new Majiang7.Board();
       }
       action(msg, callback) {
         this._callback = callback;
@@ -2422,7 +2422,7 @@ var require_player = __commonJS({
         return this._model.shan;
       }
       get hulepai() {
-        return Majiang6.Util.xiangting(this.shoupai) == 0 && Majiang6.Util.tingpai(this.shoupai) || [];
+        return Majiang7.Util.xiangting(this.shoupai) == 0 && Majiang7.Util.tingpai(this.shoupai) || [];
       }
       get model() {
         return this._model;
@@ -2510,10 +2510,10 @@ var require_player = __commonJS({
         if (this._callback) this.action_jieju(paipu);
       }
       get_dapai(shoupai) {
-        return Majiang6.Game.get_dapai(this._rule, shoupai);
+        return Majiang7.Game.get_dapai(this._rule, shoupai);
       }
       get_chi_mianzi(shoupai, p) {
-        return Majiang6.Game.get_chi_mianzi(
+        return Majiang7.Game.get_chi_mianzi(
           this._rule,
           shoupai,
           p,
@@ -2521,7 +2521,7 @@ var require_player = __commonJS({
         );
       }
       get_peng_mianzi(shoupai, p) {
-        return Majiang6.Game.get_peng_mianzi(
+        return Majiang7.Game.get_peng_mianzi(
           this._rule,
           shoupai,
           p,
@@ -2529,7 +2529,7 @@ var require_player = __commonJS({
         );
       }
       get_gang_mianzi(shoupai, p) {
-        return Majiang6.Game.get_gang_mianzi(
+        return Majiang7.Game.get_gang_mianzi(
           this._rule,
           shoupai,
           p,
@@ -2538,7 +2538,7 @@ var require_player = __commonJS({
         );
       }
       allow_lizhi(shoupai, p) {
-        return Majiang6.Game.allow_lizhi(
+        return Majiang7.Game.allow_lizhi(
           this._rule,
           shoupai,
           p,
@@ -2548,7 +2548,7 @@ var require_player = __commonJS({
       }
       allow_hule(shoupai, p, hupai) {
         hupai = hupai || shoupai.lizhi || this.shan.paishu == 0;
-        return Majiang6.Game.allow_hule(
+        return Majiang7.Game.allow_hule(
           this._rule,
           shoupai,
           p,
@@ -2559,14 +2559,14 @@ var require_player = __commonJS({
         );
       }
       allow_pingju(shoupai) {
-        return Majiang6.Game.allow_pingju(
+        return Majiang7.Game.allow_pingju(
           this._rule,
           shoupai,
           this._diyizimo
         );
       }
       allow_no_daopai(shoupai) {
-        return Majiang6.Game.allow_no_daopai(
+        return Majiang7.Game.allow_no_daopai(
           this._rule,
           shoupai,
           this.shan.paishu
@@ -2576,9 +2576,9 @@ var require_player = __commonJS({
   }
 });
 
-// ../node_modules/@kobalab/majiang-core/lib/index.js
+// app/node_modules/@kobalab/majiang-core/lib/index.js
 var require_lib = __commonJS({
-  "../node_modules/@kobalab/majiang-core/lib/index.js"(exports, module) {
+  "app/node_modules/@kobalab/majiang-core/lib/index.js"(exports, module) {
     "use strict";
     module.exports = {
       rule: require_rule(),
@@ -2596,10 +2596,10 @@ var require_lib = __commonJS({
   }
 });
 
-// src/main.js
-var import_majiang_core5 = __toESM(require_lib(), 1);
+// app/web/src/main.js
+var import_majiang_core6 = __toESM(require_lib(), 1);
 
-// ../src/rule.mjs
+// app/src/rule.mjs
 var import_majiang_core = __toESM(require_lib(), 1);
 function specRule(opts = {}) {
   const hanchan = opts.length === "hanchan";
@@ -2650,7 +2650,7 @@ function specRule(opts = {}) {
   });
 }
 
-// ../src/mjai.mjs
+// app/src/mjai.mjs
 var HONOR_TO_MJAI = { 1: "E", 2: "S", 3: "W", 4: "N", 5: "P", 6: "F", 7: "C" };
 var HONOR_FROM_MJAI = { E: "z1", S: "z2", W: "z3", N: "z4", P: "z5", F: "z6", C: "z7" };
 function tileToMjai(p) {
@@ -2732,9 +2732,9 @@ var PaipuConverter = class {
   // end_kyoku is emitted only after the last hora.
   feed(paipuEvent, opts = {}) {
     const out = [];
-    const [key] = Object.keys(paipuEvent);
-    const d = paipuEvent[key];
-    switch (key) {
+    const [key2] = Object.keys(paipuEvent);
+    const d = paipuEvent[key2];
+    switch (key2) {
       case "qipai": {
         this.cum = d.zhuangfeng * 4 + d.jushu;
         this.lastDraw = {};
@@ -2845,7 +2845,7 @@ var PaipuConverter = class {
   }
 };
 
-// ../src/bridge.mjs
+// app/src/bridge.mjs
 function maskEvent(ev2, viewer) {
   if (ev2.type === "start_game") return { ...ev2, id: viewer };
   if (ev2.type === "start_kyoku") {
@@ -2923,10 +2923,10 @@ var MjaiBridge = class {
   }
 };
 
-// ../src/mortal_player.mjs
+// app/src/mortal_player.mjs
 var import_majiang_core3 = __toESM(require_lib(), 1);
 
-// ../src/base_player.mjs
+// app/src/base_player.mjs
 var import_majiang_core2 = __toESM(require_lib(), 1);
 var BasePlayer = class extends import_majiang_core2.default.Player {
   _reply(r) {
@@ -2961,15 +2961,16 @@ var BasePlayer = class extends import_majiang_core2.default.Player {
   }
 };
 
-// ../src/mortal_player.mjs
+// app/src/mortal_player.mjs
 var MortalPlayer = class extends BasePlayer {
-  constructor(playerId, bridge2, ai2, coach2 = null, decisionLog = null) {
+  constructor(playerId, bridge2, ai2, coach2 = null, decisionLog = null, onInferFail2 = null) {
     super();
     this._pid = playerId;
     this.bridge = bridge2;
     this.ai = ai2;
     this._coach = coach2;
     this._decisionLog = decisionLog;
+    this._onInferFail = onInferFail2;
     this.stats = { decisions: 0, fallbacks: 0, errors: 0, byAction: {} };
   }
   get actor() {
@@ -2995,15 +2996,26 @@ var MortalPlayer = class extends BasePlayer {
     if (!mjaiName) return null;
     const mj = tileFromMjai(mjaiName);
     const legal = this._validDapai();
-    const tile = legal.includes(mj) ? mj : legal.includes(mj + "_") ? mj + "_" : null;
-    if (!tile) return null;
-    return { dapai: riichi ? tile + "*" : tile };
+    const tile2 = legal.includes(mj) ? mj : legal.includes(mj + "_") ? mj + "_" : null;
+    if (!tile2) return null;
+    return { dapai: riichi ? tile2 + "*" : tile2 };
   }
   async _inferPending(context) {
     const brain = this.brain;
     if (!brain || !brain.pending) return null;
     brain.consume();
-    const res = await this.ai.infer(brain);
+    let res;
+    for (; ; ) {
+      try {
+        res = await this.ai.infer(brain);
+        break;
+      } catch (e) {
+        if (!this._onInferFail) throw e;
+        this.stats.errors++;
+        this.stats.inferFailures = (this.stats.inferFailures || 0) + 1;
+        await this._onInferFail(e, context);
+      }
+    }
     if (res.emptyMask) {
       this.stats.emptyMask = (this.stats.emptyMask || 0) + 1;
       return null;
@@ -3176,7 +3188,7 @@ var MortalPlayer = class extends BasePlayer {
   }
 };
 
-// ../src/coach.mjs
+// app/src/coach.mjs
 var Coach = class {
   constructor(bridge2, ai2) {
     this.bridge = bridge2;
@@ -3191,7 +3203,14 @@ var Coach = class {
     if (!brain || !brain.pending) return null;
     brain.consume();
     const res = await this.ai.infer(brain);
-    if (res.emptyMask || !(res.qAll || []).length) return null;
+    if (res.emptyMask || !(res.qAll || []).length) {
+      if (context === "zimo" || context === "fulou") {
+        const err = new Error(`coach: no candidate actions at a ${context} decision`);
+        err.code = "E-I203";
+        throw err;
+      }
+      return null;
+    }
     let shantenAfter = null;
     if (this.shantenProvider) {
       try {
@@ -3264,7 +3283,40 @@ var Coach = class {
   }
 };
 
-// node_modules/onnxruntime-web/dist/ort.all.bundle.min.mjs
+// app/web/src/action_label.mjs
+var SUIT = { m: "\u842C", p: "\u7B52", s: "\u7D22" };
+var START = { "chi-L": 0, "chi-M": -1, "chi-R": -2 };
+function chiRunText(name2, calledTile) {
+  const off = START[name2];
+  if (off === void 0 || !calledTile || !SUIT[calledTile[0]]) return null;
+  const n = +(calledTile[1] === "0" ? "5" : calledTile[1]);
+  const lo2 = n + off;
+  if (!(lo2 >= 1 && lo2 + 2 <= 9)) return null;
+  return `${lo2}${lo2 + 1}${lo2 + 2}${SUIT[calledTile[0]]}`;
+}
+function chiCallInfo(name2, rec, events) {
+  if (!rec || rec.context !== "dapai") return null;
+  const same = (rec.callNotes || []).filter((n) => n && n.action === name2 && n.mianzi);
+  if (same.length) {
+    const { tiles, calledIdx } = parseMianzi(same[0].mianzi);
+    if (calledIdx < 0) return null;
+    const red = same.length === 1 && tiles.some((t) => t[1] === "0");
+    return { tile: tiles[calledIdx], red };
+  }
+  const ev2 = events && rec.mjaiEventCount != null ? events[rec.mjaiEventCount - 1] : null;
+  if (ev2 && ev2.type === "dahai" && ev2.pai) {
+    const tile2 = tileFromMjai(ev2.pai);
+    return { tile: tile2, red: tile2[1] === "0" };
+  }
+  return null;
+}
+function chiLabel(name2, rec, events) {
+  const info = chiCallInfo(name2, rec, events);
+  const run = info && chiRunText(name2, info.tile);
+  return run ? `\u30C1\u30FC ${run}${info.red ? "\uFF08\u8D64\uFF09" : ""}` : "\u30C1\u30FC";
+}
+
+// app/web/node_modules/onnxruntime-web/dist/ort.all.bundle.min.mjs
 var B2 = Object.create;
 var yi = Object.defineProperty;
 var V2 = Object.getOwnPropertyDescriptor;
@@ -28099,7 +28151,7 @@ var zf = "1.31.1";
 }
 Object.defineProperty(me.versions, "web", { value: zf, enumerable: true });
 
-// ../src/obsjs/tile.mjs
+// app/src/obsjs/tile.mjs
 var TILE_NAMES = [
   "1m",
   "2m",
@@ -28214,7 +28266,7 @@ function cmpDiscardPriority(a, b) {
   return b - a;
 }
 
-// ../src/obsjs/shanten.mjs
+// app/src/obsjs/shanten.mjs
 var BIG = 100;
 var MEMO_LIMIT = 12e4;
 var SLACK = 64;
@@ -28232,14 +28284,14 @@ var SuitMemo = class {
     }
   }
   // offset into pool of the cost table for `key`
-  get(key) {
-    const v = this.idx[key];
+  get(key2) {
+    const v = this.idx[key2];
     if (v !== 0) return (v - 1) * 10;
-    return this.fill(key);
+    return this.fill(key2);
   }
-  fill(key) {
+  fill(key2) {
     const c = new Array(9).fill(0);
-    let kk = key;
+    let kk = key2;
     for (let i = this.n - 1; i >= 0; i--) {
       c[i] = kk % 5;
       kk = (kk - c[i]) / 5;
@@ -28247,7 +28299,7 @@ var SuitMemo = class {
     const out = costSuit(c, this.n === 7);
     const slot = this.count++;
     this.pool.set(out, slot * 10);
-    this.idx[key] = slot + 1;
+    this.idx[key2] = slot + 1;
     return slot * 10;
   }
 };
@@ -28293,9 +28345,9 @@ function costSuit(c, isHonor) {
 }
 function suitInfo(tiles, off, isHonor) {
   const n = isHonor ? 7 : 9;
-  let key = 0;
-  for (let i = 0; i < n; i++) key = key * 5 + tiles[off + i];
-  return (isHonor ? honorMemo : suitMemo).get(key);
+  let key2 = 0;
+  for (let i = 0; i < n; i++) key2 = key2 * 5 + tiles[off + i];
+  return (isHonor ? honorMemo : suitMemo).get(key2);
 }
 var bufA = new Int16Array(10);
 var bufB = new Int16Array(10);
@@ -28469,9 +28521,9 @@ var Ctx = class {
     const m = this.m, t = this.t;
     const s = tid < 27 ? tid / 9 | 0 : 3;
     const off = s * 9, n = s === 3 ? 7 : 9;
-    const key = this.keys[s] + delta * POW5[n - 1 - (tid - off)];
+    const key2 = this.keys[s] + delta * POW5[n - 1 - (tid - off)];
     const memo = s === 3 ? honorMemo : suitMemo;
-    const io2 = memo.get(key), pool = memo.pool;
+    const io2 = memo.get(key2), pool = memo.pool;
     const eb2 = this.exclOk[s] ? s * 10 : this._excl(s);
     const ex2 = this.excl;
     let best = BIG;
@@ -28561,7 +28613,7 @@ function handAfter(tiles, lenDiv3, delta) {
   return o;
 }
 
-// ../src/obsjs/agari.mjs
+// app/src/obsjs/agari.mjs
 var Agari = class _Agari {
   // kind 'n': normal (fu, han); kind 'y': yakuman (n multiples)
   constructor(kind, a, b) {
@@ -28607,9 +28659,9 @@ var tsumoTotal = (p, isOya) => isOya ? p.tsumoKo * 3 : p.tsumoKo * 2 + p.tsumoOy
 var divCache = /* @__PURE__ */ new Map();
 var isYao = (t) => t >= 27 || t % 9 === 0 || t % 9 === 8;
 function divisions(tehai) {
-  let key = "";
-  for (let i = 0; i < 34; i++) key += tehai[i];
-  const hit = divCache.get(key);
+  let key2 = "";
+  for (let i = 0; i < 34; i++) key2 += tehai[i];
+  const hit = divCache.get(key2);
   if (hit) return hit;
   const out = [];
   const total = tehai.reduce((a, b) => a + b, 0);
@@ -28666,7 +28718,7 @@ function divisions(tehai) {
     if (pairs === 7) out.push({ chitoi: true, pair: -1, kotsu: [], shuntsu: [], ittsuu: false, ryanpeikou: false, ipeikou: false, chuuren: false });
   }
   if (divCache.size > 2e4) divCache.clear();
-  divCache.set(key, out);
+  divCache.set(key2, out);
   return out;
 }
 function makeDiv(pair, kotsu, shuntsu, total) {
@@ -28955,7 +29007,7 @@ var AgariCalculator = class {
   }
 };
 
-// ../src/obsjs/sp.mjs
+// app/src/obsjs/sp.mjs
 var fr2 = Math.fround;
 var SHANTEN_THRES = 3;
 var MAX_TILES_LEFT = 34 * 4 - 1 - 13;
@@ -28978,8 +29030,8 @@ function totalCmp(a, b) {
   return a < b ? -1 : a > b ? 1 : 0;
 }
 var Candidate = class {
-  constructor(tile, tenpai, win, ev2, required, shantenDown) {
-    this.tile = tile;
+  constructor(tile2, tenpai, win, ev2, required, shantenDown) {
+    this.tile = tile2;
     this.tenpaiProbs = Float32Array.from(tenpai, (p) => Math.min(1, Math.max(0, p)));
     this.winProbs = Float32Array.from(win, (p) => Math.min(1, Math.max(0, p)));
     this.expValues = Float32Array.from(ev2, (v) => Math.max(0, v));
@@ -29092,23 +29144,23 @@ var SState = class {
     }
     return h;
   }
-  discard(tile) {
-    this.tehai[deaka(tile)]--;
-    if (tile >= 34) this.akasInHand[tile - 34] = false;
+  discard(tile2) {
+    this.tehai[deaka(tile2)]--;
+    if (tile2 >= 34) this.akasInHand[tile2 - 34] = false;
   }
-  undoDiscard(tile) {
-    this.tehai[deaka(tile)]++;
-    if (tile >= 34) this.akasInHand[tile - 34] = true;
+  undoDiscard(tile2) {
+    this.tehai[deaka(tile2)]++;
+    if (tile2 >= 34) this.akasInHand[tile2 - 34] = true;
   }
-  deal(tile) {
-    this.wall[deaka(tile)]--;
-    if (tile >= 34) this.akasInWall[tile - 34] = false;
-    this.undoDiscard(tile);
+  deal(tile2) {
+    this.wall[deaka(tile2)]--;
+    if (tile2 >= 34) this.akasInWall[tile2 - 34] = false;
+    this.undoDiscard(tile2);
   }
-  undoDeal(tile) {
-    this.discard(tile);
-    this.wall[deaka(tile)]++;
-    if (tile >= 34) this.akasInWall[tile - 34] = true;
+  undoDeal(tile2) {
+    this.discard(tile2);
+    this.wall[deaka(tile2)]++;
+    if (tile2 >= 34) this.akasInWall[tile2 - 34] = true;
   }
   // Fills f.tile/f.diff with the discard candidates (ascending tile kind); returns their number.
   discardTiles(shanten, lenDiv3, f) {
@@ -29118,9 +29170,9 @@ var SState = class {
     for (let tid = 0; tid < 34; tid++) {
       if (th[tid] === 0) continue;
       const after = afterVals[ao2 + tid];
-      let tile = tid;
-      if ((tid === 4 || tid === 13 || tid === 22) && this.akasInHand[(tid - 4) / 9] && th[tid] === 1) tile = tid === 4 ? 34 : tid === 13 ? 35 : 36;
-      f.tile[n] = tile;
+      let tile2 = tid;
+      if ((tid === 4 || tid === 13 || tid === 22) && this.akasInHand[(tid - 4) / 9] && th[tid] === 1) tile2 = tid === 4 ? 34 : tid === 13 ? 35 : 36;
+      f.tile[n] = tile2;
       f.diff[n] = after - shanten;
       n++;
     }
@@ -29282,14 +29334,14 @@ var SPRun = class {
     const tiles = Array.from(f.tile.subarray(0, n)), diffs = Array.from(f.diff.subarray(0, n));
     for (let x = 0; x < n; x++) {
       if (diffs[x] !== 0) continue;
-      const tile = tiles[x];
-      st2.discard(tile);
+      const tile2 = tiles[x];
+      st2.discard(tile2);
       const required = st2.requiredTiles(L);
       const vo2 = this.draw(shanten);
-      st2.undoDiscard(tile);
+      st2.undoDiscard(tile2);
       const v = SLAB.buf.subarray(vo2, vo2 + 3 * M);
       const tenpai = shanten === 0 ? new Float32Array(M).fill(1) : v.subarray(0, M);
-      out.push(new Candidate(tile, tenpai, v.subarray(M, 2 * M), v.subarray(2 * M, 3 * M), required, false));
+      out.push(new Candidate(tile2, tenpai, v.subarray(M, 2 * M), v.subarray(2 * M, 3 * M), required, false));
     }
     this.dep--;
     return out;
@@ -29310,11 +29362,11 @@ var SPRun = class {
     this.dep--;
     const out = [];
     for (let x = 0; x < n; x++) {
-      const tile = tiles[x];
-      st2.discard(tile);
+      const tile2 = tiles[x];
+      st2.discard(tile2);
       const required = st2.requiredTiles(L);
-      st2.undoDiscard(tile);
-      out.push(new Candidate(tile, [], [], [], required, diffs[x] === 1));
+      st2.undoDiscard(tile2);
+      out.push(new Candidate(tile2, [], [], [], required, diffs[x] === 1));
     }
     return out;
   }
@@ -29366,18 +29418,18 @@ var SPRun = class {
     const dr2 = assume && sup.calcDoubleRiichi, hai = sup.calcHaitei;
     for (let x = 0; x < n; x++) {
       if (f.diff[x] !== -1) continue;
-      const tile = f.tile[x], count = f.count[x];
-      st2.deal(tile);
+      const tile2 = f.tile[x], count = f.count[x];
+      st2.deal(tile2);
       let scores = null, next = 0;
       if (shanten > 0) next = this.discard(shanten - 1);
       else {
-        scores = this.getScore(tile);
+        scores = this.getScore(tile2);
         if (scores === null) {
-          st2.undoDeal(tile);
+          st2.undoDeal(tile2);
           continue;
         }
       }
-      st2.undoDeal(tile);
+      st2.undoDeal(tile2);
       const PC2 = count === 1 ? P : this.probMat(count, sumReq).P;
       const B = SLAB.buf, r02 = ro, r1 = ro + M, r2 = ro + 2 * M;
       if (scores !== null) {
@@ -29445,19 +29497,19 @@ var SPRun = class {
     const n = st2.discardTiles(shanten, L, f);
     for (let x = 0; x < n; x++) {
       if (f.diff[x] !== 0) continue;
-      const tile = f.tile[x];
-      st2.discard(tile);
+      const tile2 = f.tile[x];
+      st2.discard(tile2);
       const v = this.draw(shanten);
-      st2.undoDiscard(tile);
+      st2.undoDiscard(tile2);
       const B = SLAB.buf;
       for (let i = 0; i < M; i++) {
         const value = toI32(B[v + 2 * M + i]);
-        if (value > maxVals[i] || value === maxVals[i] && cmpDiscardPriority(tile, maxTiles[i]) > 0) {
+        if (value > maxVals[i] || value === maxVals[i] && cmpDiscardPriority(tile2, maxTiles[i]) > 0) {
           B[ro + i] = B[v + i];
           B[ro + M + i] = B[v + M + i];
           B[ro + 2 * M + i] = B[v + 2 * M + i];
           maxVals[i] = value;
-          maxTiles[i] = tile;
+          maxTiles[i] = tile2;
         }
       }
     }
@@ -29537,7 +29589,7 @@ function stableSort(arr, cmp) {
   arr.sort(cmp);
 }
 
-// ../src/obsjs/state.mjs
+// app/src/obsjs/state.mjs
 var ActionCandidate = class {
   constructor(targetActor = 0) {
     this.canDiscard = false;
@@ -29699,6 +29751,10 @@ var PlayerState = class {
     return this._update(ev2);
   }
   _update(ev2) {
+    if (ev2.type === "dora") {
+      this._addDoraIndicator(ev2.doraMarker);
+      return this.lastCans;
+    }
     const a = eventActor(ev2);
     this.lastCans = new ActionCandidate(a === null ? this.playerId : a);
     this.ankanCandidates = [];
@@ -30047,9 +30103,9 @@ var PlayerState = class {
   }
   _ankan(actor, consumed) {
     const actorRel = this.rel(actor);
-    const tile = deaka(consumed[0]);
-    this.ankanOverview[actorRel].push(tile);
-    this.intermediateKan.push(tile);
+    const tile2 = deaka(consumed[0]);
+    this.ankanOverview[actorRel].push(tile2);
+    this.intermediateKan.push(tile2);
     this.kansOnBoard++;
     this.canWRiichi = false;
     this.atIppatsu = false;
@@ -30063,7 +30119,7 @@ var PlayerState = class {
     this.atRinshan = true;
     this.tehaiLenDiv3--;
     for (const t of consumed) this._moveTile(t, "fuuro");
-    this.ankans.push(tile);
+    this.ankans.push(tile2);
     if (!this.riichiAccepted[0]) {
       this._updateShanten();
       this._updateWaitsAndFuriten();
@@ -30086,32 +30142,32 @@ var PlayerState = class {
     if (r === 0) this.atIppatsu = true;
   }
   // ---- helpers ----
-  _witness(tile) {
-    if (isUnknown(tile)) throw new Error("rule violation: attempt to witness an unknown tile");
-    const id2 = deaka(tile);
-    if (!(this.tilesSeen[id2] < 4)) throw new Error(`rule violation: attempt to witness the fifth ${TILE_NAMES[tile]}`);
+  _witness(tile2) {
+    if (isUnknown(tile2)) throw new Error("rule violation: attempt to witness an unknown tile");
+    const id2 = deaka(tile2);
+    if (!(this.tilesSeen[id2] < 4)) throw new Error(`rule violation: attempt to witness the fifth ${TILE_NAMES[tile2]}`);
     this.tilesSeen[id2]++;
     this.dorasSeen += this.doraFactor[id2];
-    if (isAka(tile)) {
-      this.akasSeen[tile - 34] = true;
+    if (isAka(tile2)) {
+      this.akasSeen[tile2 - 34] = true;
       this.dorasSeen++;
     }
   }
-  _moveTile(tile, kind) {
-    const id2 = deaka(tile);
+  _moveTile(tile2, kind) {
+    const id2 = deaka(tile2);
     if (kind === "tsumo") {
       this.tehai[id2]++;
       this.dorasOwned[0] += this.doraFactor[id2];
     } else if (kind === "discard") {
-      if (!(this.tehai[id2] > 0)) throw new Error(`rule violation: attempt to discard ${TILE_NAMES[tile]} from void`);
+      if (!(this.tehai[id2] > 0)) throw new Error(`rule violation: attempt to discard ${TILE_NAMES[tile2]} from void`);
       this.tehai[id2]--;
       this.dorasOwned[0] -= this.doraFactor[id2];
     } else {
-      if (!(this.tehai[id2] > 0)) throw new Error(`rule violation: attempt to consume ${TILE_NAMES[tile]} from void`);
+      if (!(this.tehai[id2] > 0)) throw new Error(`rule violation: attempt to consume ${TILE_NAMES[tile2]} from void`);
       this.tehai[id2]--;
     }
-    if (isAka(tile)) {
-      const i = tile - 34;
+    if (isAka(tile2)) {
+      const i = tile2 - 34;
       if (kind === "tsumo") {
         this.akasInHand[i] = true;
         this.dorasOwned[0]++;
@@ -30121,11 +30177,11 @@ var PlayerState = class {
       } else this.akasInHand[i] = false;
     }
   }
-  _addDoraIndicator(tile) {
+  _addDoraIndicator(tile2) {
     if (this.doraIndicators.length >= 5) throw new Error("too many dora indicators");
-    this.doraIndicators.push(tile);
-    this._witness(tile);
-    const next = nextTile(tile);
+    this.doraIndicators.push(tile2);
+    this._witness(tile2);
+    const next = nextTile(tile2);
     this.doraFactor[next]++;
     this.dorasOwned[0] += this.tehai[next];
     for (let i = 0; i < 4; i++) {
@@ -30143,10 +30199,10 @@ var PlayerState = class {
       i = (i + 1) % 4;
     }
   }
-  _setCanChiFromTile(tile) {
+  _setCanChiFromTile(tile2) {
     const c = this.lastCans;
     c.canChiLow = c.canChiMid = c.canChiHigh = false;
-    const id2 = deaka(tile);
+    const id2 = deaka(tile2);
     const num = id2 % 9 + 1;
     const th = this.tehai;
     const any = (arr) => arr.some((v) => v > 0);
@@ -30206,9 +30262,9 @@ var PlayerState = class {
       }
     }
   }
-  _updateDorasOwned(actorRel, tile) {
-    this.dorasOwned[actorRel] += this.doraFactor[deaka(tile)];
-    if (isAka(tile)) this.dorasOwned[actorRel]++;
+  _updateDorasOwned(actorRel, tile2) {
+    this.dorasOwned[actorRel] += this.doraFactor[deaka(tile2)];
+    if (isAka(tile2)) this.dorasOwned[actorRel]++;
   }
   // NOTE: the legacy encoder this module replaces always reports rank 0 (its rank
   // refresh is not wired in), so the rank feature is a constant. Kept identical on
@@ -30396,7 +30452,7 @@ var PlayerState = class {
   }
 };
 
-// ../src/obsjs/f32math.mjs
+// app/src/obsjs/f32math.mjs
 var fr3 = Math.fround;
 var view = new DataView(new ArrayBuffer(4));
 var bitsOf = (x) => {
@@ -30440,7 +30496,7 @@ function expf(xIn) {
   return fr3(y * 2 ** k2);
 }
 
-// ../src/obsjs/encode.mjs
+// app/src/obsjs/encode.mjs
 var OBS_ROWS = 1012;
 var OBS_COLS = 34;
 var ACTION_SPACE = 46;
@@ -30496,10 +30552,10 @@ function encodeObs(state, atKanSelect = false) {
   rescale((state.bakaze - 27 > 0 ? 1 : 0) * 4 + state.kyoku, 7);
   const tileSet = (tiles) => {
     const counts = new Array(34).fill(0);
-    for (const tile of tiles) {
-      const id2 = deaka(tile);
+    for (const tile2 of tiles) {
+      const id2 = deaka(tile2);
       g.assign(idx + counts[id2]++, id2, 1);
-      if (isAka(tile)) g.fill(idx + 4 + (tile - 34), 1);
+      if (isAka(tile2)) g.fill(idx + 4 + (tile2 - 34), 1);
     }
     idx += 7;
   };
@@ -30565,19 +30621,19 @@ function encodeObs(state, atKanSelect = false) {
   for (const ov2 of state.kawaOverview) tileSet(ov2);
   for (const fuuro of state.fuuroOverview) {
     for (const f of fuuro) {
-      for (const tile of f) {
-        const id2 = deaka(tile);
+      for (const tile2 of f) {
+        const id2 = deaka(tile2);
         let i = 0;
         while (i < 4 && g.get(idx + i, id2) !== 0) i++;
         g.assign(idx + i, id2, 1);
-        if (isAka(tile)) g.fill(idx + 4, 1);
+        if (isAka(tile2)) g.fill(idx + 4, 1);
       }
       idx += 5;
     }
     idx += (4 - fuuro.length) * 5;
   }
   for (const ank of state.ankanOverview) {
-    for (const tile of ank) g.assign(idx, tile, 1);
+    for (const tile2 of ank) g.assign(idx, tile2, 1);
     idx += 1;
   }
   for (let t = 0; t < 34; t++) g.assign(idx, t, fr4(state.tilesSeen[t] / 4));
@@ -30607,11 +30663,11 @@ function encodeObs(state, atKanSelect = false) {
   if (atKanSelect) g.fill(idx, 1);
   idx++;
   if (cans.canPass) {
-    const tile = state.lastKawaTile;
-    if (tile === null) throw new Error("building chi/pon/daiminkan/ron feature without any kawa tile");
-    const id2 = deaka(tile);
+    const tile2 = state.lastKawaTile;
+    if (tile2 === null) throw new Error("building chi/pon/daiminkan/ron feature without any kawa tile");
+    const id2 = deaka(tile2);
     g.assign(idx, id2, 1);
-    if (isAka(tile)) g.fill(idx + 1, 1);
+    if (isAka(tile2)) g.fill(idx + 1, 1);
     if (state.doraFactor[id2] > 0) g.fill(idx + 2, 1);
     if (!atKanSelect) mask[ACTION_SPACE - 1] = 1;
     else if (cans.canDaiminkan) mask[id2] = 1;
@@ -30732,7 +30788,7 @@ function encodeObs(state, atKanSelect = false) {
   return { obs: g.a, mask, obs_rows: OBS_ROWS, obs_cols: OBS_COLS, action_space: ACTION_SPACE };
 }
 
-// ../src/obsjs/engine.mjs
+// app/src/obsjs/engine.mjs
 var JsReviewEngine = class {
   constructor(playerId, version = 4) {
     if (version !== 4) throw new Error(`unsupported obs version ${version}`);
@@ -30760,7 +30816,7 @@ var JsReviewEngine = class {
   }
 };
 
-// src/infer_guard.mjs
+// app/web/src/infer_guard.mjs
 var InferTimeoutError = class extends Error {
   constructor(ms2) {
     super(`inference timed out after ${ms2}ms`);
@@ -30789,7 +30845,7 @@ async function guardedRun(ctx, feeds, timeoutMs, onlog = () => {
   }
 }
 
-// src/error_codes.mjs
+// app/web/src/error_codes.mjs
 var ERROR_CODES = {
   "E-L101": "\u30E2\u30C7\u30EB\u53D6\u5F97\u306B\u5931\u6557\uFF08\u521D\u56DE\uFF09",
   "E-L102": "\u30E2\u30C7\u30EB\u53D6\u5F97\u306E\u518D\u8A66\u884C\u3082\u5931\u6557",
@@ -30797,6 +30853,7 @@ var ERROR_CODES = {
   "E-L120": "\u8AAD\u307F\u8FBC\u307F\u304C\u9577\u6642\u9593\u5316",
   "E-I201": "\u63A8\u8AD6\u306E\u5B9F\u884C\u6642\u30A8\u30E9\u30FC",
   "E-I202": "\u63A8\u8AD6\u30BF\u30A4\u30E0\u30A2\u30A6\u30C8",
+  "E-I203": "\u30B3\u30FC\u30C1\u8A55\u4FA1\u304C\u5019\u88DC\u306A\u3057\u3067\u7D42\u4E86\uFF08\u6253\u724C\u5224\u65AD\u306E\u72B6\u614B\u4E0D\u6574\u5408\uFF09",
   "E-D301": "\u5BFE\u5C40\u30C7\u30FC\u30BF\u306E\u4FDD\u5B58\u306B\u5931\u6557",
   "E-D302": "\u518D\u958B\u30C7\u30FC\u30BF\u304C\u58CA\u308C\u3066\u3044\u308B",
   "E-S401": "\u30A2\u30D7\u30EA\u66F4\u65B0\u306E\u9069\u7528\u306B\u5931\u6557",
@@ -30876,7 +30933,7 @@ function buildDiagnostics(info) {
   return lines.join("\n");
 }
 
-// ../src/probability.mjs
+// app/src/probability.mjs
 var MORTAL_SOFTMAX_TEMPERATURE = 0.3;
 function softmaxProbabilities(values, temperature = MORTAL_SOFTMAX_TEMPERATURE) {
   if (!values.length) return [];
@@ -30906,7 +30963,7 @@ function formatPercent(prob) {
   return `${pct.toFixed(1)}%`;
 }
 
-// src/ai_runtime_web.mjs
+// app/web/src/ai_runtime_web.mjs
 var ACTION_NAMES = [
   "1m",
   "2m",
@@ -31217,6 +31274,37 @@ var AiRuntime = class _AiRuntime {
   async inferCpu(brain, policy) {
     return this._infer(brain, null, policy);
   }
+  // Backend settling run (2026-11-08): one dummy inference through the same
+  // guard as real decisions, so a hung WebGPU device (60 s timeout) and the
+  // switch to wasm are resolved BEFORE the game can start. Rejects when no
+  // backend can run the model; the caller then keeps the game gated.
+  async warmup() {
+    if (this.released) throw new Error("AiRuntime released (model swapped)");
+    const meta = this.session?.inputMetadata;
+    const dims = (name2) => {
+      const m = Array.isArray(meta) ? meta.find((x) => x.name === name2) : meta?.[name2];
+      const sh = m?.shape;
+      if (!sh || sh.length < 2 || !sh.slice(1).every(Number.isInteger)) return null;
+      return [1, ...sh.slice(1)];
+    };
+    const od2 = dims("obs"), md = dims("mask");
+    if (!od2 || !md) {
+      this.warmedUp = false;
+      return false;
+    }
+    const size = (d) => d.reduce((a, b) => a * b, 1);
+    const feeds = {
+      obs: new At("float32", new Float32Array(size(od2)), od2),
+      mask: new At("float32", new Float32Array(size(md)).fill(1), md)
+    };
+    const run = () => guardedRun(this, feeds, this.runTimeoutMs, this.onlog);
+    const p = this._queue.then(run, run);
+    this._queue = p.catch(() => {
+    });
+    await p;
+    this.warmedUp = true;
+    return true;
+  }
   async _infer(brain, zeroRows, policy = null) {
     if (this.released) throw new Error("AiRuntime released (model swapped)");
     const t02 = performance.now();
@@ -31312,7 +31400,7 @@ var AiRuntime = class _AiRuntime {
   }
 };
 
-// src/cpu_style.mjs
+// app/web/src/cpu_style.mjs
 var CPU_TIERS = [
   { id: "top", label: "\u6700\u4E0A\u7D1A\uFF08\u516B\u6BB5\u76F8\u5F53\uFF09", short: "\u516B\u6BB5\u76F8\u5F53", model: "v1", tau: null, bars: 5 },
   // dan7 = V1 Light greedy (no temperature). Measured arena avg rank 2.5905 (2,000 games, 2026-11-07)
@@ -31466,7 +31554,7 @@ var CpuPolicy = class {
   }
 };
 
-// src/human_player.mjs
+// app/web/src/human_player.mjs
 var HumanPlayer = class extends BasePlayer {
   constructor(ui2, coach2 = null, settingsFn = null) {
     super();
@@ -31509,6 +31597,10 @@ var HumanPlayer = class extends BasePlayer {
       }
     } catch (e) {
       this.stats.errors++;
+      try {
+        this.ui.onCoachMissing?.(context, e);
+      } catch (_) {
+      }
     }
   }
   _countAgreement(userAction) {
@@ -31536,7 +31628,7 @@ var HumanPlayer = class extends BasePlayer {
     return this.get_dapai(this.shoupai);
   }
   // --- own draw: dahai / reach / kan / hora / ryukyoku
-  action_zimo(zimo) {
+  action_zimo(zimo, gangzimo) {
     const reply = this._capture();
     if (zimo.l !== this._menfeng) return reply({});
     (async () => {
@@ -31546,7 +31638,7 @@ var HumanPlayer = class extends BasePlayer {
         const dapaiList = this._validDapai();
         const riichiTiles = dapaiList.filter((p) => this.allow_lizhi(this.shoupai, p));
         const gangMianzi = this.get_gang_mianzi(this.shoupai) || [];
-        const canHule = !!this.allow_hule(this.shoupai);
+        const canHule = !!this.allow_hule(this.shoupai, null, gangzimo);
         const canPingju = !!this.allow_pingju(this.shoupai);
         if (canHule && st2.autoWin) {
           this._markAuto("autowin");
@@ -31574,8 +31666,8 @@ var HumanPlayer = class extends BasePlayer {
         else if (r.daopai) this._countAgreement("ryukyoku");
         else if (r.dapai) {
           const isRiichi = r.dapai.endsWith("*");
-          const tile = isRiichi ? r.dapai.slice(0, -1) : r.dapai;
-          this._countAgreement(isRiichi ? "reach" : tileToMjai(tile));
+          const tile2 = isRiichi ? r.dapai.slice(0, -1) : r.dapai;
+          this._countAgreement(isRiichi ? "reach" : tileToMjai(tile2));
         }
         reply(r);
       } catch (e) {
@@ -31589,16 +31681,22 @@ var HumanPlayer = class extends BasePlayer {
   action_dapai(dapai) {
     const reply = this._capture();
     if (dapai.l === this._menfeng) return reply({});
+    const p = dapai.p.replace(/\*$/, "");
+    const dir = ["", "-", "=", "+"][(this._menfeng - dapai.l + 4) % 4];
+    const pd = p + dir;
+    let canHule = false, ponMianzi = [], chiMianzi = [], gangMianzi = [];
+    try {
+      canHule = !!this.allow_hule(this.shoupai, pd);
+      ponMianzi = this.get_peng_mianzi(this.shoupai, pd) || [];
+      chiMianzi = this.get_chi_mianzi(this.shoupai, pd) || [];
+      gangMianzi = this.get_gang_mianzi(this.shoupai, pd) || [];
+    } catch (e) {
+      this.stats.errors++;
+      return reply({});
+    }
     (async () => {
       try {
         await this._coachFirst("dapai");
-        const p = dapai.p.replace(/\*$/, "");
-        const dir = ["", "-", "=", "+"][(this._menfeng - dapai.l + 4) % 4];
-        const pd = p + dir;
-        const canHule = !!this.allow_hule(this.shoupai, pd);
-        const ponMianzi = this.get_peng_mianzi(this.shoupai, pd) || [];
-        const chiMianzi = this.get_chi_mianzi(this.shoupai, pd) || [];
-        const gangMianzi = this.get_gang_mianzi(this.shoupai, pd) || [];
         const st2 = this._settings();
         if (canHule && st2.autoWin) {
           this._markAuto("autowin");
@@ -31637,6 +31735,7 @@ var HumanPlayer = class extends BasePlayer {
   action_fulou(fulou) {
     const reply = this._capture();
     if (fulou.l !== this._menfeng) return reply({});
+    if (String(fulou.m || "").replace(/\D/g, "").length === 4) return reply({});
     (async () => {
       try {
         await this._coachFirst("fulou");
@@ -31647,7 +31746,7 @@ var HumanPlayer = class extends BasePlayer {
       } catch (e) {
         this.stats.errors++;
         const l = this._validDapai();
-        reply(l.length ? { dapai: l[l.length - 1] } : {});
+        reply(l?.length ? { dapai: l[l.length - 1] } : {});
       }
     })();
   }
@@ -31679,15 +31778,20 @@ var HumanPlayer = class extends BasePlayer {
   action_gang(gang) {
     const reply = this._capture();
     if (gang.l === this._menfeng) return reply({});
+    let canHule = false;
+    try {
+      if (/^[mpsz]\d{3}[+\=\-]\d$/.test(gang.m)) {
+        const p = gang.m[0] + gang.m.slice(-1);
+        const dir = ["", "-", "=", "+"][(this._menfeng - gang.l + 4) % 4];
+        canHule = !!this.allow_hule(this.shoupai, p + dir, true);
+      }
+    } catch (e) {
+      this.stats.errors++;
+      return reply({});
+    }
     (async () => {
       try {
         await this._coachFirst("gang");
-        let canHule = false;
-        if (/^[mpsz]\d{3}[+\=\-]\d$/.test(gang.m)) {
-          const p = gang.m[0] + gang.m.slice(-1);
-          const dir = ["", "-", "=", "+"][(this._menfeng - gang.l + 4) % 4];
-          canHule = !!this.allow_hule(this.shoupai, p + dir);
-        }
         if (!canHule) {
           this._countAgreement("none");
           return reply({});
@@ -31708,7 +31812,7 @@ var HumanPlayer = class extends BasePlayer {
   }
 };
 
-// src/explain.mjs
+// app/web/src/explain.mjs
 var import_majiang_core4 = __toESM(require_lib(), 1);
 function outsideCounts(model) {
   const counts = { m: Array(10).fill(0), p: Array(10).fill(0), s: Array(10).fill(0), z: Array(8).fill(0) };
@@ -31725,18 +31829,18 @@ function outsideCounts(model) {
   for (const b of model.shan.baopai) add(b);
   return counts;
 }
-function remainingCopies(shoupaiAfter, outside, tile) {
-  const s = tile[0], n = +(tile[1] === "0" ? "5" : tile[1]);
+function remainingCopies(shoupaiAfter, outside, tile2) {
+  const s = tile2[0], n = +(tile2[1] === "0" ? "5" : tile2[1]);
   const inHand = shoupaiAfter._bingpai[s][n] + (n === 5 && s !== "z" ? shoupaiAfter._bingpai[s][0] : 0);
   return Math.max(0, 4 - inHand - outside[s][n]);
 }
-function safetyTag(tile, riichiHeLists) {
+function safetyTag(tile2, riichiHeLists) {
   if (!riichiHeLists.length) return "-";
-  const s = tile[0], n = +(tile[1] === "0" ? "5" : tile[1]);
-  const key = s + n;
+  const s = tile2[0], n = +(tile2[1] === "0" ? "5" : tile2[1]);
+  const key2 = s + n;
   const perOpp = riichiHeLists.map((he) => {
     const norm = he.map((p) => p[0] + +(p[1] === "0" ? "5" : p[1]));
-    if (norm.includes(key)) return "genbutsu";
+    if (norm.includes(key2)) return "genbutsu";
     if (s !== "z") {
       const suji = norm.some((h) => h[0] === s && Math.abs(+h.slice(1) - n) === 3);
       if (suji) return "suji";
@@ -31781,19 +31885,19 @@ function yakuhaiTiles(shoupai, model) {
   }
   return set;
 }
-function tileCount(shoupai, tile) {
-  const s = tile[0], n = +(tile[1] === "0" ? "5" : tile[1]);
+function tileCount(shoupai, tile2) {
+  const s = tile2[0], n = +(tile2[1] === "0" ? "5" : tile2[1]);
   return shoupai._bingpai[s][n] + (n === 5 && s !== "z" ? shoupai._bingpai[s][0] : 0);
 }
-function tileLabelJa(tile) {
+function tileLabelJa(tile2) {
   const honors = ["", "\u6771", "\u5357", "\u897F", "\u5317", "\u767D", "\u767C", "\u4E2D"];
-  const s = tile[0], n = +(tile[1] === "0" ? "5" : tile[1]);
-  if (s === "z") return honors[n] || tile;
+  const s = tile2[0], n = +(tile2[1] === "0" ? "5" : tile2[1]);
+  if (s === "z") return honors[n] || tile2;
   return n + { m: "\u842C", p: "\u7B52", s: "\u7D22" }[s];
 }
-function pairRoles(tile, shoupai, model) {
-  if (tile[0] !== "z") return [];
-  const n = +tile[1];
+function pairRoles(tile2, shoupai, model) {
+  if (tile2[0] !== "z") return [];
+  const n = +tile2[1];
   if (n >= 5) return ["\u4E09\u5143\u724C"];
   const roles = [];
   const menfeng = menfengOf(shoupai, model);
@@ -31801,9 +31905,9 @@ function pairRoles(tile, shoupai, model) {
   if (menfeng >= 0 && n === menfeng + 1) roles.push("\u81EA\u98A8");
   return roles;
 }
-function doraOnCopies(tile, shoupai, doraSet) {
-  const s = tile[0], n = +(tile[1] === "0" ? "5" : tile[1]);
-  const copies = tileCount(shoupai, tile);
+function doraOnCopies(tile2, shoupai, doraSet) {
+  const s = tile2[0], n = +(tile2[1] === "0" ? "5" : tile2[1]);
+  const copies = tileCount(shoupai, tile2);
   if (!copies) return 0;
   let v = 0;
   if (doraSet.has(s + n)) v += copies;
@@ -31816,15 +31920,15 @@ function handPairs(shoupai, model, doraSet) {
   for (const s of ["m", "p", "s", "z"]) {
     const max = s === "z" ? 7 : 9;
     for (let n = 1; n <= max; n++) {
-      const tile = s + n;
-      const count = tileCount(shoupai, tile);
+      const tile2 = s + n;
+      const count = tileCount(shoupai, tile2);
       if (count >= 2) {
         out.push({
-          tile,
+          tile: tile2,
           count,
-          roles: pairRoles(tile, shoupai, model),
-          dora: doraOnCopies(tile, shoupai, doraSet),
-          yakuhai: yakuhai.has(tile)
+          roles: pairRoles(tile2, shoupai, model),
+          dora: doraOnCopies(tile2, shoupai, doraSet),
+          yakuhai: yakuhai.has(tile2)
         });
       }
     }
@@ -32169,8 +32273,8 @@ function safeTileInfo(shoupai, model) {
     for (const n of ranks) {
       const count = bp[n] + (n === 5 && s !== "z" ? bp[0] : 0);
       if (!count) continue;
-      const key = s + n;
-      if (riichiHes.every((he) => he.includes(key))) tiles.push({ tile: key, count });
+      const key2 = s + n;
+      if (riichiHes.every((he) => he.includes(key2))) tiles.push({ tile: key2, count });
     }
   }
   return { count: tiles.reduce((a, t) => a + t.count, 0), tiles };
@@ -32182,6 +32286,15 @@ function displayShanten(shoupai, rule, model, context) {
     if (rows.length) return Math.min(...rows.map((r) => r.shanten));
   }
   return import_majiang_core4.default.Util.xiangting(shoupai);
+}
+function reachDeclareAction(rec) {
+  const legal = rec?.riichiTiles;
+  if (!Array.isArray(legal) || !legal.length) return null;
+  let hit = null;
+  for (const c of rec.qValues || []) {
+    if (legal.includes(c.action) && (!hit || c.q > hit.q)) hit = c;
+  }
+  return hit ? hit.action : null;
 }
 function classifyWaits(shoupaiAfter) {
   const waits = import_majiang_core4.default.Util.tingpai(shoupaiAfter) || [];
@@ -32581,8 +32694,8 @@ function decomposeCounts(counts, fulouCount) {
     }
     let shanten = 8 - 2 * m - t - h;
     if (m + t > 4) shanten += m + t - 4;
-    const key = [shanten, -m, -t, -h, -q4];
-    if (!best || keyLexLess(key, best.key)) best = { key, shanten, groups: cur.slice() };
+    const key2 = [shanten, -m, -t, -h, -q4];
+    if (!best || keyLexLess(key2, best.key)) best = { key: key2, shanten, groups: cur.slice() };
   };
   const keyLexLess = (a, b) => {
     for (let i = 0; i < a.length; i++) {
@@ -32692,7 +32805,7 @@ function decomposeHand(shoupai) {
   return { groups: regular.groups, shanten: regular.shanten, form: "regular" };
 }
 
-// src/probe.mjs
+// app/web/src/probe.mjs
 function maskEventForProbe(ev2, viewer) {
   if (ev2.type === "start_game") return { ...ev2, id: viewer };
   if (ev2.type === "start_kyoku") {
@@ -32905,7 +33018,7 @@ async function runProbes({ events, upto, actor, baseRecommended, makeBrain, infe
   return { at: (/* @__PURE__ */ new Date()).toISOString(), baseline, variants };
 }
 
-// src/oras_memo.mjs
+// app/web/src/oras_memo.mjs
 var ceil1002 = (v) => Math.ceil(v / 100) * 100;
 var above100 = (v) => Math.floor(v / 100) * 100 + 100;
 function reversalTargets(diff, tieWins) {
@@ -32916,7 +33029,7 @@ function winsTie(meId, otherId, qijia) {
   return (meId - qijia + 4) % 4 < (otherId - qijia + 4) % 4;
 }
 
-// src/settlement.mjs
+// app/web/src/settlement.mjs
 function horaBreakdown({ fenpei, pid, winnerL, baojia, honba, kyotaku }) {
   const isTsumo = baojia == null;
   const deltasById = [0, 0, 0, 0], baseById = [0, 0, 0, 0];
@@ -32955,7 +33068,18 @@ function resultLineFor(evs, names, qijia) {
   return "";
 }
 
-// src/tile_art.mjs
+// app/web/src/result_presentation.mjs
+function horaHeadingHTML(r, names, winTileHTML = "") {
+  const suffix = r.isTsumo ? "\u30C4\u30E2" : `\u30ED\u30F3\uFF08${names[r.targetId]}\u304B\u3089\uFF09`;
+  const particle = r.winnerId === 0 ? "\u306E" : " \u306E";
+  return `<div class="result-head${r.winnerId === 0 ? " result-self-win" : ""}"><span class="result-title"><strong class="result-winner">${r.winnerName}</strong>${particle}${suffix}</span>
+        ${winTileHTML}</div>`;
+}
+function deltaTotalClass(value) {
+  return "delta-total" + (value > 0 ? " delta-positive" : value < 0 ? " delta-negative" : "");
+}
+
+// app/web/src/tile_art.mjs
 var BODY = `
   <rect x="5" y="4" width="52" height="79" rx="9" fill="#a99f88"/>
   <rect x="3" y="2" width="52" height="77" rx="9" fill="url(#tileBody)" stroke="#8b8171" stroke-width="1.4"/>
@@ -32970,7 +33094,7 @@ var LAYOUTS = {
   4: [[-11, -15], [11, -15], [-11, 15], [11, 15]],
   5: [[-11, -15], [11, -15], [0, 0], [-11, 15], [11, 15]],
   6: [[-11, -19], [11, -19], [-11, 0], [11, 0], [-11, 19], [11, 19]],
-  7: [[-13, -19], [0, -19], [13, -19], [-11, 3], [11, 3], [-11, 20], [11, 20]],
+  7: [[-12, -23.5], [-1, -16], [10.5, -6.5], [-9.5, 8], [8, 8], [-9.5, 22.5], [8, 22.5]],
   8: [[-11, -22], [11, -22], [-11, -7], [11, -7], [-11, 7], [11, 7], [-11, 22], [11, 22]],
   9: [[-12, -19], [0, -19], [12, -19], [-12, 0], [0, 0], [12, 0], [-12, 19], [0, 19], [12, 19]]
 };
@@ -33190,7 +33314,7 @@ function tileSVG(p, label = "") {
   return `<svg class="tile-art" viewBox="0 0 60 84" role="img" aria-label="${label}"><use href="#tile-${id2}"></use></svg>`;
 }
 
-// src/stats.mjs
+// app/web/src/stats.mjs
 var SUMMARY_SCHEMA = 1;
 var RED = { "5mr": "5m", "5pr": "5p", "5sr": "5s" };
 var baseTile2 = (t) => RED[t] || t;
@@ -33374,8 +33498,8 @@ var KyokuFold = class {
     return countsOf(all);
   }
 };
-function safetyClass(tile, riichiPonds) {
-  const b = baseTile2(tile);
+function safetyClass(tile2, riichiPonds) {
+  const b = baseTile2(tile2);
   for (const pond of riichiPonds) {
     if (pond.some((t) => baseTile2(t) === b)) return "genbutsu";
   }
@@ -33896,8 +34020,8 @@ function aggregateMetrics(summaries) {
   }
   const K4 = c.kyoku;
   const M = {};
-  const put = (key, v, n) => {
-    M[key] = { v, n };
+  const put = (key2, v, n) => {
+    M[key2] = { v, n };
   };
   put("games", games, games);
   put("avgRank", mean(rankSum, rankN), rankN);
@@ -33996,7 +34120,7 @@ function aggregatePosthoc(summaries) {
   return agg;
 }
 
-// src/posthoc.mjs
+// app/web/src/posthoc.mjs
 var MELD_OPEN = ["chi", "pon", "daiminkan"];
 function chiName(consumed, pai) {
   const called = +pai[0];
@@ -34146,14 +34270,351 @@ function trimPosthocRecords(records) {
   });
 }
 
-// src/resume_snapshot.mjs
+// app/web/src/log_import.mjs
+var MAX_IMPORT_BYTES = 200 * 1024 * 1024;
+var GAME_ID_RE = /^[A-Za-z0-9._-]{1,80}$/;
+var isObj = (v) => v && typeof v === "object" && !Array.isArray(v);
+function validateBundle(b) {
+  if (!isObj(b)) return "\u5BFE\u5C40\u30C7\u30FC\u30BF\u306E\u5F62\u5F0F\u3067\u306F\u3042\u308A\u307E\u305B\u3093";
+  if (b.schemaVersion !== 1) return `\u672A\u5BFE\u5FDC\u306E\u30B9\u30AD\u30FC\u30DE\u3067\u3059 (schemaVersion=${b.schemaVersion ?? "\u7121\u3057"})`;
+  const m = b.meta;
+  if (!isObj(m)) return "meta \u304C\u3042\u308A\u307E\u305B\u3093";
+  if (typeof m.gameId !== "string" || !GAME_ID_RE.test(m.gameId)) return "gameId \u304C\u4E0D\u6B63\u3067\u3059";
+  if (typeof m.savedAt !== "string" || Number.isNaN(Date.parse(m.savedAt))) return "savedAt \u304C\u4E0D\u6B63\u3067\u3059";
+  if (m.status !== "finished" && m.status !== "partial") return `status \u304C\u4E0D\u6B63\u3067\u3059 (${m.status})`;
+  if (m.mode !== void 0 && m.mode !== "manual" && m.mode !== "auto") return `mode \u304C\u4E0D\u6B63\u3067\u3059 (${m.mode})`;
+  if (m.qijia !== void 0 && ![0, 1, 2, 3].includes(m.qijia)) return "qijia \u304C\u4E0D\u6B63\u3067\u3059";
+  const d = m.final?.defen;
+  if (d != null && !(Array.isArray(d) && d.length === 4 && d.every(Number.isFinite))) return "\u6700\u7D42\u70B9\u6570\u304C\u4E0D\u6B63\u3067\u3059";
+  if (!Array.isArray(b.mjai) || !b.mjai.length) return "mjai \u30ED\u30B0\u304C\u3042\u308A\u307E\u305B\u3093";
+  if (!b.mjai.every((e) => isObj(e) && typeof e.type === "string")) return "mjai \u30ED\u30B0\u306E\u5F62\u5F0F\u304C\u4E0D\u6B63\u3067\u3059";
+  if (!Array.isArray(b.coach)) return "coach \u8A18\u9332\u304C\u3042\u308A\u307E\u305B\u3093";
+  if (!(Array.isArray(b.results) || isObj(b.results))) return "results \u304C\u3042\u308A\u307E\u305B\u3093";
+  try {
+    const { facts, horaConsistent } = buildKyokuFacts(b);
+    const starts = b.mjai.filter((e) => e.type === "start_kyoku").length;
+    if (facts.length !== starts) return "Replay \u6574\u5408\u30A8\u30E9\u30FC\uFF08\u5C40\u6570\u304C\u4E00\u81F4\u3057\u307E\u305B\u3093\uFF09";
+    if (b.meta.status === "finished" && b.mjai.filter((e) => e.type === "hora").length !== resultsByType(b.results).hora.length) return "Replay \u6574\u5408\u30A8\u30E9\u30FC\uFF08\u548C\u4E86\u7D50\u679C\u304C mjai \u3068\u4E00\u81F4\u3057\u307E\u305B\u3093\uFF09";
+    if (!horaConsistent) return "Replay \u6574\u5408\u30A8\u30E9\u30FC\uFF08mjai \u3068\u7D50\u679C\u306E\u548C\u4E86\u6570\u304C\u4E00\u81F4\u3057\u307E\u305B\u3093\uFF09";
+  } catch (e) {
+    return "Replay \u6574\u5408\u30A8\u30E9\u30FC\uFF08\u30ED\u30B0\u3092\u518D\u751F\u3067\u304D\u307E\u305B\u3093\uFF09";
+  }
+  return null;
+}
+function looksLikeMjaiJsonl(text) {
+  const lines = text.split("\n").map((l) => l.trim()).filter(Boolean);
+  if (lines.length < 2) return false;
+  try {
+    return lines.every((l) => typeof JSON.parse(l)?.type === "string");
+  } catch (_) {
+    return false;
+  }
+}
+function planImport(text, existingIds) {
+  const out = { fileError: null, accepted: [], duplicates: 0, rejected: [] };
+  if (typeof text !== "string" || text.length > MAX_IMPORT_BYTES) {
+    out.fileError = "\u30D5\u30A1\u30A4\u30EB\u304C\u5927\u304D\u3059\u304E\u307E\u3059";
+    return out;
+  }
+  let data;
+  try {
+    data = JSON.parse(text);
+  } catch (_) {
+    out.fileError = looksLikeMjaiJsonl(text) ? "mjai\u30ED\u30B0\uFF08.jsonl\uFF09\u306F\u8AAD\u307F\u8FBC\u3081\u307E\u305B\u3093\u3002\u5BFE\u5C40\u5C65\u6B74\u306E\u300C\u30C0\u30A6\u30F3\u30ED\u30FC\u30C9\u300D\u300C\u4E00\u62EC\u30C0\u30A6\u30F3\u30ED\u30FC\u30C9\u300D\u3067\u4FDD\u5B58\u3057\u305F .json \u30D5\u30A1\u30A4\u30EB\u3092\u9078\u3093\u3067\u304F\u3060\u3055\u3044" : "JSON \u3068\u3057\u3066\u8AAD\u307F\u8FBC\u3081\u307E\u305B\u3093\uFF08\u30C0\u30A6\u30F3\u30ED\u30FC\u30C9\u3057\u305F\u5C65\u6B74\u30D5\u30A1\u30A4\u30EB\u3092\u9078\u3093\u3067\u304F\u3060\u3055\u3044\uFF09";
+    return out;
+  }
+  const items = Array.isArray(data) ? data : [data];
+  if (!items.length) {
+    out.fileError = "\u5BFE\u5C40\u30C7\u30FC\u30BF\u304C\u542B\u307E\u308C\u3066\u3044\u307E\u305B\u3093";
+    return out;
+  }
+  const seen = new Set(existingIds || []);
+  items.forEach((b, i) => {
+    const reason = validateBundle(b);
+    if (reason) {
+      const id2 = typeof b?.meta?.gameId === "string" ? b.meta.gameId.slice(0, 40) : "";
+      out.rejected.push({ label: id2 || `${i + 1}\u4EF6\u76EE`, reason });
+    } else if (seen.has(b.meta.gameId)) out.duplicates++;
+    else {
+      seen.add(b.meta.gameId);
+      out.accepted.push(b);
+    }
+  });
+  return out;
+}
+function importResultText(n) {
+  if (n.fileError) return `\u8AAD\u307F\u8FBC\u3081\u307E\u305B\u3093\u3067\u3057\u305F: ${n.fileError}`;
+  const head = `\u53D6\u308A\u8FBC\u307F ${n.imported}\u4EF6 / \u91CD\u8907\u3067\u30B9\u30AD\u30C3\u30D7 ${n.duplicates}\u4EF6 / \u62D2\u5426 ${n.rejected.length}\u4EF6`;
+  const why = n.rejected.slice(0, 5).map((r) => `\u30FB${r.label}: ${r.reason}`).join("\n");
+  return why ? `${head}
+${why}${n.rejected.length > 5 ? `
+\u2026\u307B\u304B${n.rejected.length - 5}\u4EF6` : ""}` : head;
+}
+
+// app/web/src/resume_snapshot.mjs
 var isInt = (v, lo2, hi) => Number.isInteger(v) && v >= lo2 && v <= hi;
 var isCount = (v) => Number.isFinite(v) && v >= 0;
 function isValidResumeSnapshot(s) {
   return !!s && s.v === 1 && Array.isArray(s.defen) && s.defen.length === 4 && s.defen.every(Number.isFinite) && isInt(s.zhuangfeng, 0, 3) && isInt(s.jushu, 0, 3) && isInt(s.qijia, 0, 3) && isInt(s.kyokuIndex, -1, 1e4) && isCount(s.changbang) && isCount(s.lizhibang);
 }
 
-// src/orientation.mjs
+// app/web/src/midhand_resume.mjs
+var import_majiang_core5 = __toESM(require_lib(), 1);
+var copy = (value) => JSON.parse(JSON.stringify(value));
+var equal = (a, b) => JSON.stringify(a) === JSON.stringify(b);
+var tile = (p) => typeof p === "string" && /^(?:[mps][0-9]|z[1-7])$/.test(p);
+var engineKeys = [
+  "_diyizimo",
+  "_fengpai",
+  "_dapai",
+  "_gang",
+  "_lizhi",
+  "_yifa",
+  "_n_gang",
+  "_neng_rong",
+  "_hule",
+  "_hule_option",
+  "_no_game",
+  "_lianzhuang",
+  "_changbang",
+  "_fenpei"
+];
+var playerKeys = ["_model", "_menfeng", "_diyizimo", "_n_gang", "_neng_rong"];
+function isSafeHandPhase(type, model) {
+  return ["qipai", "zimo", "gangzimo"].includes(type) || type === "fulou" && (model.shoupai[model.lunban]._zimo?.match(/\d/g) || []).length === 3;
+}
+function handPosition(game2) {
+  const m = game2.model;
+  return {
+    defen: m.defen.slice(),
+    zhuangfeng: m.zhuangfeng,
+    jushu: m.jushu,
+    changbang: m.changbang,
+    lizhibang: m.lizhibang,
+    lunban: m.lunban,
+    shoupai: m.shoupai.map((s) => s.toString()),
+    he: m.he.map((h) => h._pai.slice()),
+    baopai: m.shan.baopai.slice(),
+    paishu: m.shan.paishu
+  };
+}
+function captureMidhand(game2, phase) {
+  if (!isSafeHandPhase(phase, game2.model)) return null;
+  return {
+    v: 1,
+    engine: "majiang-core-1.4.1",
+    phase,
+    position: handPosition(game2),
+    log: copy(game2._paipu.log.at(-1))
+  };
+}
+function resumePrefixPlan(prev, resume, prepared) {
+  const mjai = prev.mjai || [];
+  const starts = mjai.flatMap((e, i) => e.type === "start_kyoku" ? [i] : []);
+  const latest = prev.meta?.resumeSnapshot?.kyokuIndex;
+  const offset = Number.isInteger(latest) ? latest - starts.length + 1 : 0;
+  const cut = starts[resume.kyokuIndex - offset] ?? mjai.findIndex((e) => e.type === "end_game");
+  const prefix = mjai.slice(0, cut < 0 ? mjai.length : cut).filter((e) => e.type !== "start_game" && e.type !== "end_game");
+  const conv = new PaipuConverter(resume.qijia);
+  if (prepared) for (const e of prepared.log) conv.feed(e);
+  const checkpointCount = prefix.length + 1 + conv.events.length;
+  return copy({
+    prefix,
+    completed: prefix.filter((e) => e.type === "start_kyoku").length,
+    records: (prev.coach || []).filter((r) => (r.kyokuIndex ?? -1) < resume.kyokuIndex || prepared && r.kyokuIndex === resume.kyokuIndex && r.mjaiEventCount < checkpointCount),
+    results: (prev.results || []).filter((r) => (r.kyokuIndex ?? -1) < resume.kyokuIndex)
+  });
+}
+function reshuffleRemainingWall(model, rule, historicalWall, random = Math.random) {
+  const rest = [];
+  for (const s of "mpsz") for (let n = 1; n <= (s === "z" ? 7 : 9); n++) {
+    for (let i = 0; i < 4; i++) rest.push(s + (n === 5 && i < (rule["\u8D64\u724C"][s] || 0) ? 0 : n));
+  }
+  const take = (p) => {
+    const i = rest.indexOf(p);
+    if (i < 0) throw new Error("checkpoint tile inventory: " + p);
+    rest.splice(i, 1);
+  };
+  for (const hand of model.shoupai) {
+    if (hand._bingpai._) throw new Error("unknown checkpoint hand");
+    for (const s of "mpsz") for (let n = 0; n < hand._bingpai[s].length; n++) {
+      const count2 = hand._bingpai[s][n] - (s !== "z" && n === 5 ? hand._bingpai[s][0] : 0);
+      for (let i = 0; i < count2; i++) take(s + n);
+    }
+    for (const meld of hand._fulou) for (const n of meld.match(/\d/g)) take(meld[0] + n);
+  }
+  for (const river of model.he) for (const p of river._pai) if (!/[+=-]$/.test(p)) take(p.slice(0, 2));
+  for (const p of historicalWall.baopai) take(p);
+  const count = historicalWall.paishu + 14;
+  if (rest.length + historicalWall.baopai.length !== count) throw new Error("checkpoint wall count");
+  for (let i = rest.length - 1; i > 0; i--) {
+    const j = Math.floor(random() * (i + 1));
+    [rest[i], rest[j]] = [rest[j], rest[i]];
+  }
+  const wall = new import_majiang_core5.default.Shan(rule);
+  wall._pai = Array(count);
+  const kans = historicalWall.kans;
+  historicalWall.baopai.forEach((p, i) => {
+    wall._pai[4 - kans + i] = p;
+  });
+  for (let i = 0; i < count; i++) if (!wall._pai[i]) wall._pai[i] = rest.pop();
+  wall._baopai = historicalWall.baopai.slice();
+  wall._fubaopai = rule["\u88CF\u30C9\u30E9\u3042\u308A"] ? Array.from({ length: rule["\u30AB\u30F3\u88CF\u3042\u308A"] ? wall.baopai.length : 1 }, (_, i) => wall._pai[9 - kans + i]) : null;
+  wall._weikaigang = historicalWall._weikaigang;
+  return wall;
+}
+var HistoricalWall = class {
+  constructor(log2, rule) {
+    const q4 = log2[0].qipai;
+    this.rule = rule;
+    this.draws = q4.shoupai.flatMap((s) => [...s.matchAll(/([mpsz])(\d+)/g)].flatMap(([, suit, ns2]) => [...ns2].map((n) => suit + n)));
+    this.draws.push(...log2.filter((e) => e.zimo).map((e) => e.zimo.p));
+    this.rinshan = log2.filter((e) => e.gangzimo).map((e) => e.gangzimo.p);
+    this.indicators = log2.filter((e) => e.kaigang).map((e) => e.kaigang.baopai);
+    if (![...this.draws, ...this.rinshan, q4.baopai, ...this.indicators].every(tile)) throw new Error("invalid tile");
+    this._baopai = [q4.baopai];
+    this.paishu = 122;
+    this.kans = 0;
+    this._weikaigang = false;
+  }
+  get baopai() {
+    return this._baopai.slice();
+  }
+  zimo() {
+    if (!this.draws.length || !this.paishu || this._weikaigang) throw new Error("invalid draw");
+    this.paishu--;
+    return this.draws.shift();
+  }
+  gangzimo() {
+    if (!this.rinshan.length || !this.paishu || this._weikaigang || this.kans === 4) throw new Error("invalid rinshan");
+    this.paishu--;
+    this.kans++;
+    this._weikaigang = this.rule["\u30AB\u30F3\u30C9\u30E9\u3042\u308A"];
+    return this.rinshan.shift();
+  }
+  kaigang() {
+    if (!this._weikaigang || !this.indicators.length) throw new Error("invalid dora");
+    this._baopai.push(this.indicators.shift());
+    this._weikaigang = false;
+  }
+};
+function prepareMidhand(resume, rule) {
+  try {
+    const h = resume.midhand;
+    if (!h || h.v !== 1 || h.engine !== "majiang-core-1.4.1" || !Array.isArray(h.log) || !h.log.length || h.log.length > 500 || !h.log[0].qipai) return null;
+    const q4 = h.log[0].qipai;
+    if (q4.zhuangfeng !== resume.zhuangfeng || q4.jushu !== resume.jushu || q4.changbang !== resume.changbang || q4.lizhibang !== resume.lizhibang || !Array.isArray(q4.shoupai) || q4.shoupai.length !== 4) return null;
+    for (const s of q4.shoupai) {
+      if (typeof s !== "string" || import_majiang_core5.default.Shoupai.fromString(s).toString() !== s || s.includes(",") || import_majiang_core5.default.Shoupai.fromString(s)._zimo) return null;
+    }
+    const players = Array.from({ length: 4 }, () => new import_majiang_core5.default.Player());
+    const replay = new import_majiang_core5.default.Game(players, null, rule);
+    replay._sync = true;
+    replay.delay = () => {
+    };
+    replay.call_players = function(type, msgs) {
+      this._status = type;
+      this._reply = [{}, {}, {}, {}];
+      for (let l = 0; l < 4; l++) players[this.model.player_id[l]].action(msgs[l]);
+    };
+    replay.notify_players = function(type, msgs) {
+      for (let l = 0; l < 4; l++) players[this.model.player_id[l]].action(msgs[l]);
+    };
+    Object.assign(replay.model, {
+      defen: resume.defen.slice(),
+      zhuangfeng: resume.zhuangfeng,
+      jushu: resume.jushu,
+      changbang: resume.changbang,
+      lizhibang: resume.lizhibang
+    });
+    replay.kaiju(resume.qijia);
+    const wall = new HistoricalWall(h.log, rule);
+    replay.qipai(wall);
+    if (!equal(replay._paipu.log[0][0], h.log[0])) return null;
+    let i = 1;
+    while (i < h.log.length) {
+      const e = h.log[i], keys = Object.keys(e);
+      if (keys.length !== 1) return null;
+      const type = keys[0], d = e[type], phase = replay._status;
+      if (phase === "dapai") replay.reply_dapai();
+      if (phase === "gang") replay.reply_gang();
+      if (type === "zimo" && ["qipai", "dapai"].includes(phase)) replay.zimo();
+      else if (type === "dapai" && isSafeHandPhase(phase, replay.model) && replay.get_dapai().includes(d.p.replace(/\*$/, "")) && (!d.p.endsWith("*") || replay.allow_lizhi(d.p.replace(/\*$/, "")))) replay.dapai(d.p);
+      else if (type === "fulou" && phase === "dapai" && [...replay.get_chi_mianzi(d.l), ...replay.get_peng_mianzi(d.l), ...replay.get_gang_mianzi(d.l)].includes(d.m)) replay.fulou(d.m);
+      else if (type === "gang" && ["zimo", "gangzimo"].includes(phase) && replay.get_gang_mianzi().includes(d.m)) replay.gang(d.m);
+      else if (type === "gangzimo" && (phase === "gang" || phase === "fulou" && replay._gang)) replay.gangzimo();
+      else return null;
+      const generated = replay._paipu.log[0];
+      const next = generated.length;
+      if (next <= i || !equal(generated.slice(i), h.log.slice(i, next))) return null;
+      i = next;
+    }
+    if (wall.draws.length || wall.rinshan.length || wall.indicators.length || replay._status !== h.phase || !isSafeHandPhase(h.phase, replay.model) || !equal(handPosition(replay), h.position)) return null;
+    replay.model.shan = reshuffleRemainingWall(replay.model, rule, wall);
+    return { replay, players, phase: h.phase, log: copy(h.log) };
+  } catch (_) {
+    return null;
+  }
+}
+function installMidhand(game2, prepared, bridge2) {
+  const { replay, players, phase, log: log2 } = prepared;
+  Object.assign(replay.model, { title: game2.model.title, player: game2.model.player });
+  game2._model = replay.model;
+  for (const key2 of engineKeys) game2[key2] = copy(replay[key2]);
+  game2._paipu.log.push(copy(log2));
+  game2._paipu.defen = game2.model.defen.slice();
+  for (const key2 of playerKeys) for (let id2 = 0; id2 < 4; id2++) game2._players[id2][key2] = players[id2][key2];
+  for (const p of game2._players) {
+    p.model.player = game2.model.player;
+    p.model.title = game2.model.title;
+  }
+  for (const e of log2) {
+    if (bridge2 && !e.kaigang) {
+      for (const b of bridge2.brains.values()) b.resetPending();
+      bridge2.coachBrain?.resetPending();
+    }
+    bridge2?.feedPaipu(e);
+  }
+  game2._status = phase;
+  game2._reply = [];
+  const d = log2.findLast((e) => e[phase])?.[phase];
+  for (let id2 = 0; id2 < 4; id2++) {
+    const p = game2._players[id2];
+    p._callback = (r) => game2.reply(id2, r);
+    setTimeout(() => p[phase === "gangzimo" ? "action_zimo" : "action_" + phase](d, phase === "gangzimo"), 0);
+  }
+}
+
+// app/web/src/pond_view.mjs
+function parseHeEntry(raw) {
+  let face = String(raw);
+  const called = /[+\-=]$/.test(face);
+  if (called) face = face.slice(0, -1);
+  const riichi = face.endsWith("*");
+  if (riichi) face = face.slice(0, -1);
+  const tsumogiri = face.endsWith("_");
+  if (tsumogiri) face = face.slice(0, -1);
+  return { face, called, riichi, tsumogiri };
+}
+function riverTiles(he) {
+  const out = [];
+  let carryRiichi = false;
+  (he || []).forEach((raw, index) => {
+    const e = parseHeEntry(raw);
+    if (e.called) {
+      if (e.riichi) carryRiichi = true;
+      return;
+    }
+    if (carryRiichi) {
+      e.riichi = true;
+      carryRiichi = false;
+    }
+    out.push({ ...e, index });
+  });
+  return out;
+}
+
+// app/web/src/orientation.mjs
 var ORIENTATION_KEY = "ml-orientation";
 var ORIENTATION_VALUES = ["auto", "portrait", "landscape"];
 function normalizeOrientation(v) {
@@ -34199,10 +34660,1076 @@ async function applyOrientation(value, scr, bridge2) {
   }
 }
 
-// src/main.js
+// app/web/src/glossary_data.mjs
+var YAKU_GROUPS = [
+  {
+    "title": "1\u7FFB",
+    "rows": [
+      {
+        "name": "\u7ACB\u76F4\uFF08\u30EA\u30FC\u30C1\uFF09",
+        "closed": "1",
+        "open": null,
+        "desc": "\u30C6\u30F3\u30D1\u30A4\u3067\u300C\u30EA\u30FC\u30C1\u300D\u3068\u5BA3\u8A00\u3059\u308B\u3068\u4ED8\u304F\u30021,000\u70B9\u3092\u4F9B\u8A17\u306B\u51FA\u3059"
+      },
+      {
+        "name": "\u4E00\u767A\uFF08\u30A4\u30C3\u30D1\u30C4\uFF09",
+        "closed": "1",
+        "open": null,
+        "desc": "\u30EA\u30FC\u30C1\u5F8C\u30011\u5DE1\u4EE5\u5185\u306B\u548C\u4E86\u3059\u308B\u3068\u4ED8\u304F"
+      },
+      {
+        "name": "\u9580\u524D\u6E05\u81EA\u6478\u548C\uFF08\u30C4\u30E2\uFF09",
+        "closed": "1",
+        "open": null,
+        "desc": "\u9CF4\u304B\u305A\u306B\u3001\u81EA\u5206\u3067\u5F15\u3044\u305F\u724C\u3067\u548C\u4E86\u3059\u308B"
+      },
+      {
+        "name": "\u65AD\u30E4\u30AA\u4E5D\uFF08\u30BF\u30F3\u30E4\u30AA\uFF09",
+        "closed": "1",
+        "open": "1",
+        "desc": "2\u301C8\u306E\u6570\u724C\u3060\u3051\u3067\u4F5C\u308B\u30021\u30FB9\u30FB\u5B57\u724C\u3092\u4F7F\u308F\u306A\u3044"
+      },
+      {
+        "name": "\u5E73\u548C\uFF08\u30D4\u30F3\u30D5\uFF09",
+        "closed": "1",
+        "open": null,
+        "desc": "\u9806\u5B50\u3060\u3051\u3067\u4F5C\u308A\u3001\u5F85\u3061\u304C\u4E21\u9762\u3067\u3001\u96C0\u982D\u304C\u5F79\u724C\u3067\u306A\u3044\u5F62"
+      },
+      {
+        "name": "\u4E00\u76C3\u53E3\uFF08\u30A4\u30FC\u30DA\u30FC\u30B3\u30FC\uFF09",
+        "closed": "1",
+        "open": null,
+        "desc": "\u540C\u3058\u9806\u5B50\u30922\u7D44\u305D\u308D\u3048\u308B"
+      },
+      {
+        "name": "\u5F79\u724C\uFF08\u30E4\u30AF\u30CF\u30A4\uFF09",
+        "closed": "1",
+        "open": "1",
+        "desc": "\u4E09\u5143\u724C\uFF08\u767D\u30FB\u767C\u30FB\u4E2D\uFF09\u3001\u5834\u98A8\u3001\u81EA\u98A8\u306E\u523B\u5B50\uFF08\u307E\u305F\u306F\u69D3\u5B50\uFF09\u30021\u7D44\u3054\u3068\u306B1\u7FFB"
+      },
+      {
+        "name": "\u5DBA\u4E0A\u958B\u82B1\uFF08\u30EA\u30F3\u30B7\u30E3\u30F3\uFF09",
+        "closed": "1",
+        "open": "1",
+        "desc": "\u30AB\u30F3\u306E\u3042\u3068\u306B\u5F15\u3044\u305F\u5DBA\u4E0A\u724C\u3067\u30C4\u30E2\u548C\u4E86\u3059\u308B"
+      },
+      {
+        "name": "\u69CD\u69D3\uFF08\u30C1\u30E3\u30F3\u30AB\u30F3\uFF09",
+        "closed": "1",
+        "open": "1",
+        "desc": "\u76F8\u624B\u306E\u52A0\u69D3\u3057\u305F\u724C\u3067\u30ED\u30F3\u548C\u4E86\u3059\u308B"
+      },
+      {
+        "name": "\u6D77\u5E95\u6478\u6708\uFF08\u30CF\u30A4\u30C6\u30A4\uFF09",
+        "closed": "1",
+        "open": "1",
+        "desc": "\u6700\u5F8C\u306E\u30C4\u30E2\u724C\u3067\u548C\u4E86\u3059\u308B"
+      },
+      {
+        "name": "\u6CB3\u5E95\u6488\u9B5A\uFF08\u30DB\u30A6\u30C6\u30A4\uFF09",
+        "closed": "1",
+        "open": "1",
+        "desc": "\u6700\u5F8C\u306E\u6368\u3066\u724C\u3067\u30ED\u30F3\u548C\u4E86\u3059\u308B"
+      }
+    ]
+  },
+  {
+    "title": "2\u7FFB",
+    "rows": [
+      {
+        "name": "\u30C0\u30D6\u30EB\u7ACB\u76F4",
+        "closed": "2",
+        "open": null,
+        "desc": "\u6700\u521D\u306E\u6253\u724C\u3067\u30EA\u30FC\u30C1\u3092\u5BA3\u8A00\u3057\u6210\u7ACB\u3059\u308B"
+      },
+      {
+        "name": "\u4E03\u5BFE\u5B50\uFF08\u30C1\u30FC\u30C8\u30A4\u30C4\uFF09",
+        "closed": "2",
+        "open": null,
+        "desc": "\u5BFE\u5B50\u30927\u7D44\u305D\u308D\u3048\u308B\u7279\u6B8A\u306A\u5F62"
+      },
+      {
+        "name": "\u5BFE\u3005\u548C\uFF08\u30C8\u30A4\u30C8\u30A4\uFF09",
+        "closed": "2",
+        "open": "2",
+        "desc": "\u523B\u5B50\uFF08\u307E\u305F\u306F\u69D3\u5B50\uFF094\u7D44\u3068\u96C0\u982D\u3067\u4F5C\u308B"
+      },
+      {
+        "name": "\u4E09\u8272\u540C\u523B",
+        "closed": "2",
+        "open": "2",
+        "desc": "\u842C\u30FB\u7B52\u30FB\u7D22\u3067\u540C\u3058\u6570\u5B57\u306E\u523B\u5B50\u3092\u305D\u308D\u3048\u308B"
+      },
+      {
+        "name": "\u4E09\u69D3\u5B50\uFF08\u30B5\u30F3\u30AB\u30F3\u30C4\uFF09",
+        "closed": "2",
+        "open": "2",
+        "desc": "\u30AB\u30F3\u30923\u56DE\u3059\u308B"
+      },
+      {
+        "name": "\u5C0F\u4E09\u5143\uFF08\u30B7\u30E7\u30A6\u30B9\u30FC\u30B2\u30F3\uFF09",
+        "closed": "2",
+        "open": "2",
+        "desc": "\u4E09\u5143\u724C\u306E\u3046\u30612\u7A2E\u3092\u523B\u5B50\u30011\u7A2E\u3092\u96C0\u982D\u306B\u3059\u308B"
+      },
+      {
+        "name": "\u6DF7\u8001\u982D\uFF08\u30DB\u30F3\u30ED\u30A6\u30C8\u30A6\uFF09",
+        "closed": "2",
+        "open": "2",
+        "desc": "1\u30FB9\u30FB\u5B57\u724C\u3060\u3051\u3002\u5FC5\u305A\u5BFE\u3005\u548C\u304B\u4E03\u5BFE\u5B50\u3068\u8907\u5408\u3059\u308B\u306E\u3067\u5B9F\u8CEA4\u7FFB\u306B\u306A\u308B"
+      },
+      {
+        "name": "\u4E09\u8272\u540C\u9806",
+        "closed": "2",
+        "open": "1",
+        "desc": "\u842C\u30FB\u7B52\u30FB\u7D22\u3067\u540C\u3058\u6570\u5B57\u306E\u4E26\u3073\u306E\u9806\u5B50\u3092\u305D\u308D\u3048\u308B"
+      },
+      {
+        "name": "\u4E00\u6C17\u901A\u8CAB\uFF08\u30A4\u30C3\u30AD\u30C4\u30A6\u30AB\u30F3\uFF09",
+        "closed": "2",
+        "open": "1",
+        "desc": "\u540C\u3058\u8272\u3067123\u30FB456\u30FB789\u306E\u9806\u5B50\u3092\u305D\u308D\u3048\u308B"
+      },
+      {
+        "name": "\u6DF7\u5168\u5E2F\u30E4\u30AA\u4E5D\uFF08\u30C1\u30E3\u30F3\u30BF\uFF09",
+        "closed": "2",
+        "open": "1",
+        "desc": "\u5168\u3066\u306E\u7D44\u306B1\u30FB9\u30FB\u5B57\u724C\u304C\u304B\u3089\u3080"
+      }
+    ]
+  },
+  {
+    "title": "3\u7FFB",
+    "rows": [
+      {
+        "name": "\u4E8C\u76C3\u53E3\uFF08\u30EA\u30E3\u30F3\u30DA\u30FC\u30B3\u30FC\uFF09",
+        "closed": "3",
+        "open": null,
+        "desc": "\u4E00\u76C3\u53E3\u30922\u7D44\u3002\u4E03\u5BFE\u5B50\u3068\u306F\u91CD\u306A\u3089\u306A\u3044"
+      },
+      {
+        "name": "\u7D14\u5168\u5E2F\u30E4\u30AA\u4E5D\uFF08\u30B8\u30E5\u30F3\u30C1\u30E3\u30F3\uFF09",
+        "closed": "3",
+        "open": "2",
+        "desc": "\u5168\u3066\u306E\u7D44\u306B1\u30FB9\u306E\u6570\u724C\u304C\u304B\u3089\u3080\uFF08\u5B57\u724C\u306A\u3057\uFF09"
+      },
+      {
+        "name": "\u6DF7\u4E00\u8272\uFF08\u30DB\u30F3\u30A4\u30C4\uFF09",
+        "closed": "3",
+        "open": "2",
+        "desc": "1\u7A2E\u985E\u306E\u6570\u724C\u3068\u5B57\u724C\u3060\u3051\u3067\u4F5C\u308B"
+      }
+    ]
+  },
+  {
+    "title": "6\u7FFB",
+    "rows": [
+      {
+        "name": "\u6E05\u4E00\u8272\uFF08\u30C1\u30F3\u30A4\u30C4\uFF09",
+        "closed": "6",
+        "open": "5",
+        "desc": "1\u7A2E\u985E\u306E\u6570\u724C\u3060\u3051\u3067\u4F5C\u308B\uFF08\u5B57\u724C\u306A\u3057\uFF09"
+      }
+    ]
+  },
+  {
+    "title": "\u5F79\u6E80",
+    "rows": [
+      {
+        "name": "\u56FD\u58EB\u7121\u53CC",
+        "desc": "1\u30FB9\u30FB\u5B57\u724C\u306E13\u7A2E\u30921\u679A\u305A\u3064\u305D\u308D\u3048\u308B\u7279\u6B8A\u306A\u5F62"
+      },
+      {
+        "name": "\u56DB\u6697\u523B",
+        "desc": "\u6697\u523B\uFF08\u9CF4\u304B\u305A\u306B\u305D\u308D\u3048\u305F\u523B\u5B50\uFF09\u30924\u7D44\u4F5C\u308B"
+      },
+      {
+        "name": "\u5927\u4E09\u5143",
+        "desc": "\u767D\u30FB\u767C\u30FB\u4E2D\u3092\u5168\u3066\u523B\u5B50\u306B\u3059\u308B"
+      },
+      {
+        "name": "\u5B57\u4E00\u8272",
+        "desc": "\u5B57\u724C\u3060\u3051\u3067\u4F5C\u308B"
+      },
+      {
+        "name": "\u5C0F\u56DB\u559C",
+        "desc": "\u98A8\u724C\u306E\u3046\u30613\u7A2E\u3092\u523B\u5B50\u30011\u7A2E\u3092\u96C0\u982D\u306B\u3059\u308B"
+      },
+      {
+        "name": "\u5927\u56DB\u559C",
+        "desc": "\u98A8\u724C4\u7A2E\u3092\u5168\u3066\u523B\u5B50\u306B\u3059\u308B"
+      },
+      {
+        "name": "\u7DD1\u4E00\u8272",
+        "desc": "\u7DD1\u8272\u306E\u724C\uFF08\u7D22\u5B50\u306E2\u30FB3\u30FB4\u30FB6\u30FB8\u3068\u767C\uFF09\u3060\u3051\u3067\u4F5C\u308B"
+      },
+      {
+        "name": "\u6E05\u8001\u982D",
+        "desc": "1\u30FB9\u306E\u6570\u724C\u3060\u3051\u3067\u4F5C\u308B"
+      },
+      {
+        "name": "\u56DB\u69D3\u5B50",
+        "desc": "\u30AB\u30F3\u30924\u56DE\u3059\u308B"
+      },
+      {
+        "name": "\u4E5D\u84EE\u5B9D\u71C8",
+        "desc": "\u540C\u3058\u8272\u30671112345678999\u306B\u540C\u8272\u306E1\u724C\u3092\u52A0\u3048\u305F\u5F62"
+      },
+      {
+        "name": "\u5929\u548C",
+        "desc": "\u89AA\u304C\u914D\u724C\u3067\u305D\u306E\u307E\u307E\u548C\u4E86\u3057\u3066\u3044\u308B"
+      },
+      {
+        "name": "\u5730\u548C",
+        "desc": "\u5B50\u304C\u6700\u521D\u306E\u30C4\u30E2\u3067\u548C\u4E86\u3059\u308B"
+      }
+    ]
+  }
+];
+var YAKU_NOTE = "\u88DC\u8DB3: \u3053\u306E\u30A2\u30D7\u30EA\u3067\u306F\u30C0\u30D6\u30EB\u5F79\u6E80\u306F\u63A1\u7528\u3057\u3066\u3044\u306A\u3044\uFF08\u5F79\u6E80\u304C\u91CD\u306A\u3063\u3066\u30821\u500D\u5F79\u6E80\uFF09\u3002\u30C9\u30E9\u306F\u5F79\u3067\u306F\u306A\u3044\u304C1\u679A\u306B\u3064\u304D1\u7FFB\u5897\u3048\u308B\u3002";
+var GLOSSARY_TERMS = [
+  {
+    "term": "\u5B89\u5168\u724C\uFF08\u3042\u3093\u305C\u3093\u3071\u3044\uFF09",
+    "yomi": "\u3042\u3093\u305C\u3093\u3071\u3044",
+    "desc": "\u76F8\u624B\u306B\u7D76\u5BFE\u306B\u30ED\u30F3\u3055\u308C\u306A\u3044\u724C\u3002\u30EA\u30FC\u30C1\u3057\u3066\u3044\u308B\u4EBA\u306E\u6368\u3066\u724C\uFF08\u73FE\u7269\uFF09\u306A\u3069"
+  },
+  {
+    "term": "\u4E00\u767A\uFF08\u3044\u3063\u3071\u3064\uFF09",
+    "yomi": "\u3044\u3063\u3071\u3064",
+    "desc": "\u30EA\u30FC\u30C1\u3057\u305F\u3042\u30681\u5DE1\u4EE5\u5185\u306B\u548C\u4E86\u3059\u308B\u3068\u4ED8\u304F\u5F79"
+  },
+  {
+    "term": "\u53D7\u3051\u5165\u308C\uFF08\u3046\u3051\u3044\u308C\uFF09",
+    "yomi": "\u3046\u3051\u3044\u308C",
+    "desc": "\u305D\u306E\u724C\u3092\u5F15\u304F\u3068\u624B\u304C\u9032\u3080\uFF08\u5411\u8074\u304C\u6E1B\u308B\uFF09\u724C\u306E\u3053\u3068\u3002\u679A\u6570\u304C\u591A\u3044\u307B\u3069\u6709\u5229"
+  },
+  {
+    "term": "\u30AA\u30FC\u30E9\u30B9",
+    "yomi": "\u304A\u30FC\u3089\u3059",
+    "desc": "\u534A\u8358\u306E\u6700\u5F8C\u306E\u5C40\uFF08\u53574\u5C40\uFF09\u306E\u3053\u3068"
+  },
+  {
+    "term": "\u89AA\uFF08\u304A\u3084\uFF09",
+    "yomi": "\u304A\u3084",
+    "desc": "\u305D\u306E\u5C40\u306E\u6700\u521D\u306E\u4EBA\u3002\u548C\u4E86\u70B9\u304C1.5\u500D\u306B\u306A\u308A\u3001\u548C\u4E86\u3084\u30C6\u30F3\u30D1\u30A4\u3067\u9023\u8358\u3059\u308B"
+  },
+  {
+    "term": "\u30AB\u30F3",
+    "yomi": "\u304B\u3093",
+    "desc": "\u540C\u3058\u724C4\u679A\u3092\u305D\u308D\u3048\u3066\u5BA3\u8A00\u3059\u308B\u3053\u3068\u3002\u30C9\u30E9\u304C\u5897\u3048\u308B\u3002\u660E\u69D3\u30FB\u6697\u69D3\u30FB\u52A0\u69D3\u306E3\u7A2E\u304C\u3042\u308B"
+  },
+  {
+    "term": "\u5171\u8A17\uFF08\u304D\u3087\u3046\u305F\u304F\uFF09",
+    "yomi": "\u304D\u3087\u3046\u305F\u304F",
+    "desc": "\u30EA\u30FC\u30C1\u68D2\u306A\u3069\u3001\u5834\u306B\u51FA\u3055\u308C\u3066\u3044\u3066\u6B21\u306E\u548C\u4E86\u8005\u304C\u307E\u3068\u3081\u3066\u3082\u3089\u3046\u70B9\u68D2"
+  },
+  {
+    "term": "\u73FE\u7269\uFF08\u3052\u3093\u3076\u3064\uFF09",
+    "yomi": "\u3052\u3093\u3076\u3064",
+    "desc": "\u305D\u306E\u76F8\u624B\u304C\u3059\u3067\u306B\u6368\u3066\u3066\u3044\u308B\u724C\u3002\u305D\u306E\u4EBA\u306B\u306F\u7D76\u5BFE\u306B\u30ED\u30F3\u3055\u308C\u306A\u3044"
+  },
+  {
+    "term": "\u5411\u8074\uFF08\u30B7\u30E3\u30F3\u30C6\u30F3\uFF09",
+    "yomi": "\u3057\u3083\u3093\u3066\u3093",
+    "desc": "\u3042\u3068\u4F55\u679A\u3067\u30C6\u30F3\u30D1\u30A4\u306B\u306A\u308B\u304B\u306E\u6570\u3002\u300C\u5411\u80741\u300D\u306F\u3042\u30681\u679A\u6709\u52B9\u306A\u724C\u3092\u5F15\u3051\u3070\u30C6\u30F3\u30D1\u30A4"
+  },
+  {
+    "term": "\u63A8\u5968\u5EA6\uFF08\u3059\u3044\u3057\u3087\u3046\u3069\uFF09",
+    "yomi": "\u3059\u3044\u3057\u3087\u3046\u3069",
+    "desc": "AI\u30B3\u30FC\u30C1\u306E\u8A55\u4FA1\u3092\u5019\u88DC\u5168\u4F53\u306B\u5BFE\u3059\u308B\u5272\u5408\uFF08%\uFF09\u3067\u8868\u3057\u305F\u3082\u306E\u3002\u52DD\u7387\u3067\u306F\u306A\u3044"
+  },
+  {
+    "term": "\u30C4\u30E2",
+    "yomi": "\u3064\u3082",
+    "desc": "\u81EA\u5206\u3067\u5C71\u304B\u3089\u724C\u3092\u5F15\u304F\u3053\u3068\u3002\u305D\u306E\u724C\u3067\u548C\u4E86\u3059\u308B\u3053\u3068\u3082\u300C\u30C4\u30E2\u300D\u3068\u3044\u3046"
+  },
+  {
+    "term": "\u30C4\u30E2\u5207\u308A",
+    "yomi": "\u3064\u3082\u304E\u308A",
+    "desc": "\u5F15\u3044\u305F\u724C\u3092\u305D\u306E\u307E\u307E\u6368\u3066\u308B\u3053\u3068\u3002\u3053\u306E\u30A2\u30D7\u30EA\u3067\u306F\u3001\u30C4\u30E2\u5207\u308A\u3067\u6368\u3066\u3089\u308C\u305F\u724C\u306F\u6CB3\u306E\u4E2D\u3067\u5C11\u3057\u6697\u304F\u8868\u793A\u3055\u308C\u308B\uFF08\u624B\u51FA\u3057\u306F\u901A\u5E38\u306E\u660E\u308B\u3055\u3002\u8A2D\u5B9A\u3067\u901A\u5E38\u8868\u793A\u306B\u623B\u305B\u308B\uFF09"
+  },
+  {
+    "term": "\u30C6\u30F3\u30D1\u30A4\uFF08\u8074\u724C\uFF09",
+    "yomi": "\u3066\u3093\u3071\u3044",
+    "desc": "\u3042\u30681\u679A\u3067\u548C\u4E86\u3067\u304D\u308B\u72B6\u614B"
+  },
+  {
+    "term": "\u30C9\u30E9",
+    "yomi": "\u3069\u3089",
+    "desc": "\u6301\u3063\u3066\u3044\u308B\u3060\u3051\u30671\u679A1\u7FFB\u5897\u3048\u308B\u30DC\u30FC\u30CA\u30B9\u724C\u3002\u30C9\u30E9\u8868\u793A\u724C\u306E\u6B21\u306E\u724C\u304C\u30C9\u30E9\u306B\u306A\u308B"
+  },
+  {
+    "term": "\u9CF4\u304D\uFF08\u306A\u304D\uFF09",
+    "yomi": "\u306A\u304D",
+    "desc": "\u30DD\u30F3\u30FB\u30C1\u30FC\u30FB\u30AB\u30F3\u3067\u4ED6\u4EBA\u306E\u6368\u3066\u724C\u3092\u4F7F\u3063\u3066\u7D44\u3092\u4F5C\u308B\u3053\u3068"
+  },
+  {
+    "term": "\u30CE\u30FC\u30C6\u30F3",
+    "yomi": "\u306E\u30FC\u3066\u3093",
+    "desc": "\u30C6\u30F3\u30D1\u30A4\u3057\u3066\u3044\u306A\u3044\u72B6\u614B\u3002\u6D41\u5C40\u6642\u306B\u30CE\u30FC\u30C6\u30F3\u3060\u3068\u7F70\u7B26\u3092\u6255\u3046"
+  },
+  {
+    "term": "\u526F\u9732\uFF08\u3075\u3046\u308D\uFF09",
+    "yomi": "\u3075\u3046\u308D",
+    "desc": "\u9CF4\u3044\u305F\u72B6\u614B\u306E\u3053\u3068\u3002\u9CF4\u304F\u3068\u4ED8\u3051\u306A\u3044\u5F79\u3084\u3001\u7FFB\u304C\u4E0B\u304C\u308B\u5F79\u304C\u3042\u308B"
+  },
+  {
+    "term": "\u30D5\u30EA\u30C6\u30F3",
+    "yomi": "\u3075\u308A\u3066\u3093",
+    "desc": "\u81EA\u5206\u306E\u5F85\u3061\u724C\u3092\u81EA\u5206\u3067\u6368\u3066\u3066\u3044\u308B\u306A\u3069\u306E\u7406\u7531\u3067\u3001\u30ED\u30F3\u3067\u304D\u306A\u3044\u72B6\u614B"
+  },
+  {
+    "term": "\u672C\u5834\uFF08\u307B\u3093\u3070\uFF09",
+    "yomi": "\u307B\u3093\u3070",
+    "desc": "\u9023\u8358\u3084\u6D41\u5C40\u3067\u7A4D\u307F\u4E0A\u304C\u3063\u305F\u30AB\u30A6\u30F3\u30BF\u30021\u672C\u5834\u306B\u3064\u304D\u548C\u4E86\u70B9\u306B300\u70B9\u304C\u52A0\u308F\u308B"
+  },
+  {
+    "term": "\u30DD\u30F3",
+    "yomi": "\u307D\u3093",
+    "desc": "\u4ED6\u4EBA\u306E\u6368\u3066\u724C\u3067\u523B\u5B50\uFF08\u540C\u3058\u724C3\u679A\uFF09\u3092\u4F5C\u308B\u9CF4\u304D\u65B9"
+  },
+  {
+    "term": "\u5F85\u3061\uFF08\u307E\u3061\uFF09",
+    "yomi": "\u307E\u3061",
+    "desc": "\u30C6\u30F3\u30D1\u30A4\u3067\u5F85\u3063\u3066\u3044\u308B\u548C\u4E86\u724C\u3002\u5F62\u306B\u3088\u3063\u3066\u4E21\u9762\u30FB\u5358\u9A0E\u306A\u3069\u306E\u7A2E\u985E\u304C\u3042\u308B"
+  },
+  {
+    "term": "\u9580\u524D\uFF08\u30E1\u30F3\u30BC\u30F3\uFF09",
+    "yomi": "\u3081\u3093\u305C\u3093",
+    "desc": "\u4E00\u5EA6\u3082\u9CF4\u3044\u3066\u3044\u306A\u3044\u72B6\u614B"
+  },
+  {
+    "term": "\u5F79\uFF08\u3084\u304F\uFF09",
+    "yomi": "\u3084\u304F",
+    "desc": "\u548C\u4E86\u3059\u308B\u305F\u3081\u306E\u6761\u4EF6\u3002\u6700\u4F4E1\u3064\u5FC5\u8981\u3002\u30C9\u30E9\u3060\u3051\u3067\u306F\u548C\u4E86\u3067\u304D\u306A\u3044"
+  },
+  {
+    "term": "\u5F79\u6E80\uFF08\u3084\u304F\u30DE\u30F3\uFF09",
+    "yomi": "\u3084\u304F\u307E\u3093",
+    "desc": "\u6700\u3082\u9AD8\u3044\u5F79\u306E\u30B0\u30EB\u30FC\u30D7\u3002\u548C\u4E86\u70B9\u306F\u5B50\u306E32,000\u70B9\u30FB\u89AA\u306E48,000\u70B9"
+  },
+  {
+    "term": "\u30EA\u30FC\u30C1",
+    "yomi": "\u308A\u30FC\u3061",
+    "desc": "\u30C6\u30F3\u30D1\u30A4\u30671,000\u70B9\u3092\u51FA\u3057\u3066\u5BA3\u8A00\u3059\u308B\u3053\u3068\u3002\u5F79\u304C\u4ED8\u304D\u3001\u548C\u4E86\u70B9\u304C\u4E0A\u304C\u308A\u3084\u3059\u3044\u3002\u5BA3\u8A00\u5F8C\u306F\u57FA\u672C\u7684\u306B\u30C4\u30E2\u5207\u308A\u306B\u306A\u308B"
+  },
+  {
+    "term": "\u6D41\u5C40\uFF08\u308A\u3085\u3046\u304D\u3087\u304F\uFF09",
+    "yomi": "\u308A\u3085\u3046\u304D\u3087\u304F",
+    "desc": "\u8AB0\u3082\u548C\u4E86\u305B\u305A\u724C\u304C\u5C3D\u304D\u3066\u5C40\u304C\u7D42\u308F\u308B\u3053\u3068"
+  },
+  {
+    "term": "\u30ED\u30F3",
+    "yomi": "\u308D\u3093",
+    "desc": "\u4ED6\u4EBA\u306E\u6368\u3066\u724C\u3067\u548C\u4E86\u3059\u308B\u3053\u3068"
+  },
+  {
+    "term": "\u548C\u4E86\uFF08\u3042\u304C\u308A\uFF09",
+    "yomi": "\u3042\u304C\u308A",
+    "desc": "\u5FC5\u8981\u306A\u5F62\u3068\u5F79\u3092\u305D\u308D\u3048\u3066\u5C40\u3092\u7D42\u3048\u308B\u3053\u3068"
+  },
+  {
+    "term": "\u30AB\u30F3\u30C1\u30E3\u30F3\u5F85\u3061",
+    "yomi": "\u304B\u3093\u3061\u3083\u3093\u307E\u3061",
+    "desc": "\u9806\u5B50\u306E\u771F\u3093\u4E2D\u3092\u5F85\u3064\u5F62\uFF08\u4F8B: 2\u30FB4\u3092\u6301\u3063\u30663\u5F85\u3061\uFF09"
+  },
+  {
+    "term": "\u30B7\u30E3\u30F3\u30DD\u30F3\u5F85\u3061",
+    "yomi": "\u3057\u3083\u3093\u307D\u3093\u307E\u3061",
+    "desc": "\u5BFE\u5B50\u30922\u7D44\u6301\u3061\u3001\u3069\u3061\u3089\u304B\u306E3\u679A\u76EE\u3092\u5F85\u3064\u5F62"
+  },
+  {
+    "term": "\u5358\u9A0E\uFF08\u30BF\u30F3\u30AD\uFF09\u5F85\u3061",
+    "yomi": "\u305F\u3093\u304D\u307E\u3061",
+    "desc": "\u96C0\u982D\u306B\u306A\u308B1\u679A\u3060\u3051\u3092\u5F85\u3064\u5F62"
+  },
+  {
+    "term": "\u30DA\u30F3\u30C1\u30E3\u30F3\u5F85\u3061",
+    "yomi": "\u307A\u3093\u3061\u3083\u3093\u307E\u3061",
+    "desc": "\u9806\u5B50\u306E\u7AEF\u3092\u5F85\u3064\u5F62\uFF08\u4F8B: 1\u30FB2\u3092\u6301\u3063\u30663\u5F85\u3061\uFF09"
+  },
+  {
+    "term": "\u4E21\u9762\uFF08\u30EA\u30E3\u30F3\u30E1\u30F3\uFF09\u5F85\u3061",
+    "yomi": "\u308A\u3083\u3093\u3081\u3093\u307E\u3061",
+    "desc": "\u9806\u5B50\u306E\u4E21\u7AEF\u3092\u5F85\u3064\u5F62\uFF08\u4F8B: 3\u30FB4\u3092\u6301\u3063\u30662\u30685\u5F85\u3061\uFF09\u3002\u6700\u3082\u5F85\u3061\u304C\u5E83\u3044"
+  },
+  {
+    "term": "\u653E\u9283\uFF08\u307B\u3046\u3058\u3085\u3046\uFF09",
+    "yomi": "\u307B\u3046\u3058\u3085\u3046",
+    "desc": "\u4ED6\u4EBA\u306B\u30ED\u30F3\u3055\u308C\u308B\u724C\u3092\u6368\u3066\u3066\u3057\u307E\u3046\u3053\u3068\u3002\u305D\u306E\u5206\u306E\u70B9\u6570\u3092\u6255\u3046"
+  },
+  {
+    "term": "\u62BC\u3057\u5F15\u304D\uFF08\u304A\u3057\u3072\u304D\uFF09",
+    "yomi": "\u304A\u3057\u3072\u304D",
+    "desc": "\u76F8\u624B\u306E\u30EA\u30FC\u30C1\u306A\u3069\u306B\u5BFE\u3057\u3001\u653B\u3081\u308B\u304B\u5B89\u5168\u306B\u964D\u308A\u308B\u304B\u306E\u5224\u65AD"
+  },
+  {
+    "term": "\u30C0\u30DE\uFF08\u30C0\u30DE\u30C6\u30F3\uFF09",
+    "yomi": "\u3060\u307E",
+    "desc": "\u30EA\u30FC\u30C1\u3092\u304B\u3051\u305A\u306B\u30C6\u30F3\u30D1\u30A4\u3057\u3066\u3044\u308B\u72B6\u614B\u3002\u30ED\u30F3\u3060\u3051\u304C\u53EF\u80FD"
+  }
+];
+
+// app/web/src/tile_reference.mjs
+var numbers = ["\u4E00", "\u4E8C", "\u4E09", "\u56DB", "\u4E94", "\u516D", "\u4E03", "\u516B", "\u4E5D"];
+var readings = ["\u30A4\u30FC", "\u30EA\u30E3\u30F3", "\u30B5\u30F3", "\u30B9\u30FC", "\u30A6\u30FC", "\u30ED\u30FC", "\u30C1\u30FC", "\u30D1\u30FC", "\u30AD\u30E5\u30FC"];
+var TILE_FAMILIES = [
+  ...[["m", "\u842C", "\u842C\u5B50\uFF08\u30DE\u30F3\u30BA\uFF09", "\u30DE\u30F3"], ["p", "\u7B52", "\u7B52\u5B50\uFF08\u30D4\u30F3\u30BA\uFF09", "\u30D4\u30F3"], ["s", "\u7D22", "\u7D22\u5B50\uFF08\u30BD\u30FC\u30BA\uFF09", "\u30BD\u30FC"]].map(([suit, kanji, title, suffix]) => ({
+    title,
+    note: suit === "m" ? "\u842C\u5B50\u306F\u300C\u30EF\u30F3\u300D\u3068\u3082\u8AAD\u307F\u307E\u3059\uFF08\u4F8B\uFF1A\u4E00\u842C\uFF1D\u30A4\u30FC\u30EF\u30F3\uFF09\u3002" : suit === "s" ? "\u4E00\u7D22\u306F\u7AF9\u3067\u306F\u306A\u304F\u3001\u9CE5\u306E\u7D75\u67C4\u3067\u3059\u3002" : "\u4E38\u3044\u6A21\u69D8\u306E\u6570\u3067\u898B\u5206\u3051\u307E\u3059\u3002",
+    tiles: numbers.map((n, i) => ({ code: suit + (i + 1), name: n + kanji, alias: i + 1 + kanji, reading: readings[i] + suffix }))
+  })),
+  {
+    title: "\u5B57\u724C\uFF08\u3058\u306F\u3044\uFF09\u30FB\u98A8\u724C\uFF08\u3075\u3046\u3071\u3044\uFF09",
+    note: "\u98A8\u724C\u306F\u6771\u30FB\u5357\u30FB\u897F\u30FB\u5317\u306E4\u7A2E\u985E\u3067\u3059\u3002",
+    tiles: ["\u6771", "\u5357", "\u897F", "\u5317"].map((name2, i) => ({ code: "z" + (i + 1), name: name2, reading: ["\u30C8\u30F3", "\u30CA\u30F3", "\u30B7\u30E3\u30FC", "\u30DA\u30FC\uFF08\u30DA\u30A4\uFF09"][i] }))
+  },
+  {
+    title: "\u5B57\u724C\uFF08\u3058\u306F\u3044\uFF09\u30FB\u4E09\u5143\u724C\uFF08\u3055\u3093\u3052\u3093\u3071\u3044\uFF09",
+    note: "\u4E09\u5143\u724C\u306F\u767D\u30FB\u767C\u30FB\u4E2D\u306E3\u7A2E\u985E\u3002\u767D\u306F\u6A21\u69D8\u304C\u306A\u3044\u724C\u3067\u3059\u3002",
+    tiles: ["\u767D", "\u767C", "\u4E2D"].map((name2, i) => ({ code: "z" + (i + 5), name: name2, reading: ["\u30CF\u30AF", "\u30CF\u30C4", "\u30C1\u30E5\u30F3"][i] }))
+  }
+];
+var RED_TILES = ["m", "p", "s"].map((suit, i) => ({ code: suit + "0", name: "\u8D64\u4E94" + ["\u842C", "\u7B52", "\u7D22"][i], reading: "\u30A2\u30AB\u30A6\u30FC" + ["\u30DE\u30F3", "\u30D4\u30F3", "\u30BD\u30FC"][i] }));
+var TILE_NAMES2 = Object.fromEntries([...TILE_FAMILIES.flatMap((f) => f.tiles), ...RED_TILES].map((t) => [t.code, `${t.name}\uFF08${t.reading}\uFF09`]));
+var expandGroup = (group) => [...group.slice(1)].map((n) => group[0] + n);
+var YAKU_EXAMPLES = {
+  "\u4E00\u6C17\u901A\u8CAB": { groups: ["m123", "m456", "m789", "p234", "s55"] },
+  "\u4E09\u8272\u540C\u9806": { groups: ["m123", "p123", "s123", "p789", "s55"] },
+  "\u4E09\u8272\u540C\u523B": { groups: ["m222", "p222", "s222", "m678", "p55"] },
+  "\u4E03\u5BFE\u5B50": { groups: ["m11", "m44", "p22", "p88", "s33", "s66", "z77"] },
+  "\u4E8C\u76C3\u53E3": { groups: ["m123", "m123", "p456", "p456", "s77"] },
+  "\u6DF7\u5168\u5E2F\u30E4\u30AA\u4E5D": { groups: ["m123", "p789", "s111", "z777", "z11"] },
+  "\u7D14\u5168\u5E2F\u30E4\u30AA\u4E5D": { groups: ["m123", "m789", "p123", "s999", "p99"] },
+  "\u6DF7\u4E00\u8272": { groups: ["m123", "m456", "m789", "z777", "z11"] },
+  "\u6E05\u4E00\u8272": { groups: ["p123", "p345", "p567", "p789", "p22"] },
+  "\u5BFE\u3005\u548C": { groups: ["m111", "p333", "s777", "z555", "z22"], openGroup: 0, note: "\u4E00\u842C\u306E3\u679A\u306F\u30DD\u30F3\u3057\u305F\u7D44\u3002\u6B8B\u308A\u306F\u624B\u306E\u4E2D\u306E\u724C\u3067\u3059\u3002" },
+  "\u5C0F\u4E09\u5143": { groups: ["m123", "s789", "z555", "z666", "z77"] },
+  "\u56DB\u6697\u523B": { groups: ["m111", "p333", "s777", "z555", "z22"], winTile: "s7", note: "\u9CF4\u304B\u305A\u306B4\u7D44\u306E\u523B\u5B50\u3092\u305D\u308D\u3048\u3066\u30C4\u30E2\u548C\u4E86\u3057\u305F\u4F8B\u3067\u3059\u3002" },
+  "\u56FD\u58EB\u7121\u53CC": { groups: ["m19", "p19", "s19", "z1234567", "m1"], winTile: "z7", note: "1\u30FB9\u30FB\u5B57\u724C\u306E13\u7A2E\u985E\u30921\u679A\u305A\u3064\uFF0B\u4E00\u842C\u3092\u3082\u30461\u679A\uFF08\u96C0\u982D\uFF09\u3002" }
+};
+
+// app/web/src/glossary.mjs
+var esc = (s) => String(s).replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" })[c]);
+var collator = new Intl.Collator("ja");
+var key = (t) => t.yomi.replace(/ー/g, "");
+function sortTermsByYomi(terms = GLOSSARY_TERMS) {
+  return terms.map((t, i) => ({ t, i })).sort((a, b) => collator.compare(key(a.t), key(b.t)) || a.i - b.i).map((x) => x.t);
+}
+var nameHtml = (n) => {
+  const m = String(n).match(/^(.+?)（(.+)）$/);
+  return m ? `${esc(m[1])}<span class="yk-yomi">${esc(m[2])}</span>` : esc(n);
+};
+function exampleHtml(row, cols) {
+  const name2 = row.name.split("\uFF08")[0], example = YAKU_EXAMPLES[name2];
+  if (!example) return "";
+  const groups = example.groups.map((g, i) => `<span class="yk-example-group">${example.openGroup === i ? '<span class="yk-meld-label">\u30DD\u30F3</span>' : ""}${expandGroup(g).map((p) => tileSVG(p, esc(TILE_NAMES2[p]))).join("")}</span>`).join("");
+  return `<tr class="yk-example-row"><td colspan="${cols}"><figure class="yk-example" data-yaku-example="${esc(name2)}"><figcaption>\u4F8B\uFF1A${esc(name2)}\uFF08\u5B8C\u6210\u5F6214\u679A\uFF09</figcaption><div class="yk-example-groups">${groups}</div>${example.note ? `<p>${esc(example.note)}</p>` : ""}</figure></td></tr>`;
+}
+function renderYakuHtml(groups = YAKU_GROUPS, note = YAKU_NOTE) {
+  const parts = groups.map((g) => {
+    if (g.title === "\u5F79\u6E80") {
+      const rows2 = g.rows.map((r) => `<tr><td class="yk-name">${nameHtml(r.name)}</td><td>${esc(r.desc)}</td></tr>${exampleHtml(r, 2)}`).join("");
+      return `<h3>${esc(g.title)}</h3><table class="st-table yaku-table yaku-yakuman"><thead><tr><th>\u5F79</th><th>\u8AAC\u660E</th></tr></thead><tbody>${rows2}</tbody></table>`;
+    }
+    const rows = g.rows.map((r) => {
+      const open = r.open == null ? '<td class="yk-han yk-no" title="\u9CF4\u304F\u3068\u4E0D\u53EF">\u2015<span class="yk-no-note">\u9CF4\u304F\u3068\u4E0D\u53EF</span></td>' : `<td class="yk-han">${esc(r.open)}</td>`;
+      return `<tr><td class="yk-name">${nameHtml(r.name)}</td><td class="yk-han">${esc(r.closed)}</td>${open}<td>${esc(r.desc)}</td></tr>${exampleHtml(r, 4)}`;
+    }).join("");
+    return `<h3>${esc(g.title)}</h3><table class="st-table yaku-table"><thead><tr><th>\u5F79</th><th>\u9580\u524D</th><th>\u526F\u9732</th><th>\u8AAC\u660E</th></tr></thead><tbody>${rows}</tbody></table>`;
+  });
+  return '<p class="ref-note">\u724C\u753B\u50CF\u306F\u8AAC\u660E\u7528\u306E\u4F8B\u3067\u3059\u3002\u548C\u4E86\u724C\u3092\u542B\u3080\u5B8C\u6210\u5F6214\u679A\u3092\u3001\u7D44\u3054\u3068\u306B\u533A\u5207\u3063\u3066\u3044\u307E\u3059\u3002\u7279\u8A18\u306E\u306A\u3044\u4F8B\u306F\u9CF4\u304B\u305A\u306B\u30C4\u30E2\u548C\u4E86\u3057\u305F\u5F62\u3067\u3001\u307B\u304B\u306E\u5F79\u304C\u91CD\u306A\u308B\u5834\u5408\u3082\u3042\u308A\u307E\u3059\u3002</p>' + parts.join("") + `<p class="ref-note">${esc(note)}</p>`;
+}
+function renderGlossaryHtml(terms = GLOSSARY_TERMS) {
+  const items = sortTermsByYomi(terms).map((t) => `<dt>${esc(t.term)}<span class="gl-yomi">${esc(t.yomi)}</span></dt><dd>${esc(t.desc)}</dd>`).join("");
+  return `<p>\u724C\u306E\u540D\u524D\u304C\u5206\u304B\u3089\u306A\u3044\u3068\u304D\u306F <button type="button" class="ref-link" data-ref-link="tiles">\u724C\u306E\u8AAD\u307F\u65B9\u3092\u898B\u308B \u203A</button></p><dl class="gl-list">${items}</dl>`;
+}
+function renderTileReadingHtml() {
+  const cards = (tiles) => `<div class="tile-reading-grid">${tiles.map((t) => `<div class="tile-reading-item">${tileSVG(t.code, esc(TILE_NAMES2[t.code]))}<span class="tile-reading-name">${esc(t.name)}${t.alias ? `\uFF08${esc(t.alias)}\uFF09` : ""}</span><span>${esc(t.reading)}</span></div>`).join("")}</div>`;
+  return "<p>AI\u30B3\u30FC\u30C1\u306E\u300C3\u7D22\u300D\u306F\u4E09\u7D22\uFF08\u30B5\u30F3\u30BD\u30FC\uFF09\u3001\u300C\u767C\u300D\u306F\u30CF\u30C4\u306E\u724C\u3067\u3059\u3002\u3053\u3053\u3067\u306F\u5BFE\u5C40\u3068\u540C\u3058\u7D75\u67C4\u3067\u3001\u724C\u306E\u540D\u524D\u3068\u8AAD\u307F\u65B9\u3092\u78BA\u8A8D\u3067\u304D\u307E\u3059\u3002</p>" + TILE_FAMILIES.map((f) => `<section><h3>${esc(f.title)}</h3><p>${esc(f.note)}</p>${cards(f.tiles)}</section>`).join("") + `<section><h3>\u8D64\u30C9\u30E9\uFF08\u8D64\u30445\u306E\u724C\uFF09</h3><p>\u8D64\u3044\u4E94\u842C\u30FB\u4E94\u7B52\u30FB\u4E94\u7D22\u3082\u3001\u5F62\u3092\u4F5C\u308B\u3068\u304D\u306F\u666E\u901A\u306E5\u3068\u540C\u3058\u724C\u3067\u3059\u3002\u6301\u3063\u3066\u548C\u4E86\u3059\u308B\u30681\u679A\u306B\u3064\u304D1\u7FFB\u5897\u3048\u307E\u3059\u304C\u3001\u30C9\u30E9\u81EA\u4F53\u306F\u5F79\u3067\u306F\u3042\u308A\u307E\u305B\u3093\u3002</p>${cards(RED_TILES)}</section><p><button type="button" class="ref-link" data-ref-link="glossary">\u7528\u8A9E\u8F9E\u5178\u3092\u898B\u308B \u203A</button> <button type="button" class="ref-link" data-ref-link="yaku">\u5F79\u4E00\u89A7\u3092\u898B\u308B \u203A</button></p>`;
+}
+
+// app/web/src/first_run_guide.mjs
+var GUIDE_SEEN_KEY = "ml-first-guide-seen";
+var LINK_LABEL = { yaku: "\u5F79\u4E00\u89A7\u3092\u898B\u308B", glossary: "\u7528\u8A9E\u8F9E\u5178\u3092\u898B\u308B" };
+var GUIDE_SECTIONS = [
+  { title: "1. \u76EE\u7684", paras: [
+    "4\u4EBA\u3067\u724C\u3092\u305D\u308D\u3048\u3001\u3044\u3061\u3070\u3093\u65E9\u304F\u300C\u3042\u304C\u308A\u300D\u306E\u5F62\u3092\u4F5C\u3063\u305F\u4EBA\u304C\u70B9\u3092\u5F97\u307E\u3059\u3002",
+    "\u5F62\u306F\u300C3\u679A\u306E\u7D44\xD74 \uFF0B \u540C\u3058\u724C2\u679A\u300D\u3067\u3059\u3002"
+  ], tileGroups: [
+    ["m3", "m4", "m5"],
+    ["m6", "m7", "m8"],
+    ["p2", "p3", "p4"],
+    ["p6", "p7", "p8"],
+    ["p9", "p9"]
+  ] },
+  { title: "2. \u9032\u307F\u65B9", paras: [
+    "\u81EA\u5206\u306E\u756A\u306F\u300C1\u679A\u5F15\u3044\u3066\u30011\u679A\u6368\u3066\u308B\u300D\u306E\u7E70\u308A\u8FD4\u3057\u3002",
+    "\u4ED6\u4EBA\u306E\u6368\u3066\u724C\u306F\u3001\u30DD\u30F3\u30FB\u30C1\u30FC\u3067\u81EA\u5206\u306E\u7D44\u306B\u3067\u304D\u307E\u3059\u3002"
+  ] },
+  { title: "3. \u5F79\u3068\u30C9\u30E9", links: ["yaku"], paras: [
+    "\u5F62\u3060\u3051\u3067\u306F\u4E0A\u304C\u308C\u307E\u305B\u3093\u3002\u300C\u5F79\u300D\u304C1\u3064\u5FC5\u8981\u3067\u3059\u3002",
+    "\u30C9\u30E9\u306F\u6301\u3064\u3068\u70B9\u304C\u5897\u3048\u308B\u30DC\u30FC\u30CA\u30B9\u724C\u3002\u3042\u30681\u679A\u3067\u30C6\u30F3\u30D1\u30A4\u3001\u5BA3\u8A00\u3059\u308C\u3070\u30EA\u30FC\u30C1\u3067\u5F79\u304C\u4ED8\u304D\u307E\u3059\u3002"
+  ] },
+  { title: "4. AI\u30B3\u30FC\u30C1", links: ["glossary"], paras: [
+    "\u8FF7\u3063\u305F\u3089\u3001\u30B3\u30FC\u30C1\u306E\u63A8\u5968\u3069\u304A\u308A\u306B\u5207\u308C\u3070\u5927\u4E08\u592B\u3067\u3059\u3002",
+    "\u624B\u724C\u30921\u56DE\u30BF\u30C3\u30D7\u3067\u8A55\u4FA1\u8868\u793A\u3001\u3082\u30461\u56DE\u3067\u5207\u308A\u307E\u3059\u3002"
+  ] },
+  { title: "5. \u307E\u305A\u306F1\u5C40", paras: [
+    "\u70B9\u6570\u8A08\u7B97\u306F\u6C17\u306B\u3057\u306A\u304F\u3066\u5927\u4E08\u592B\u3002\u30B3\u30FC\u30C1\u3068\u4E00\u7DD2\u306B\u6700\u5F8C\u307E\u3067\u6253\u3063\u3066\u307F\u3066\u304F\u3060\u3055\u3044\u3002",
+    "\u3053\u306E\u30AC\u30A4\u30C9\u306F\u3001\u30B9\u30BF\u30FC\u30C8\u753B\u9762\u306E\u300C\u30EB\u30FC\u30EB\u300D\u304B\u3089\u3044\u3064\u3067\u3082\u8AAD\u307F\u76F4\u305B\u307E\u3059\u3002"
+  ] }
+];
+var esc2 = (s) => String(s).replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" })[c]);
+function renderGuideHtml(tileHTML2, sections = GUIDE_SECTIONS) {
+  return sections.map((s) => {
+    const links = (s.links || []).map((k2) => `<button type="button" class="guide-link" data-guide-link="${k2}">${esc2(LINK_LABEL[k2])} \u203A</button>`).join("");
+    const example = s.tileGroups ? '<div class="guide-example"><span class="guide-example-label">\u4F8B</span><div class="guide-example-groups">' + s.tileGroups.map((group) => `<span class="guide-example-group">${group.map((p) => tileHTML2(p, "guide-tile")).join("")}</span>`).join("") + "</div></div>" : "";
+    return `<section class="guide-sec"><h3>${esc2(s.title)}</h3>${s.paras.map((p) => `<p>${esc2(p)}</p>`).join("")}` + example + (links ? `<div class="guide-links">${links}</div>` : "") + "</section>";
+  }).join("");
+}
+function shouldShowFirstRunGuide({ historyCount, seen, hasResume }) {
+  if (seen || hasResume) return false;
+  return Number.isInteger(historyCount) && historyCount === 0;
+}
+function loadGuideSeen(storage) {
+  try {
+    return storage.getItem(GUIDE_SEEN_KEY) === "1";
+  } catch (_) {
+    return false;
+  }
+}
+function saveGuideSeen(storage) {
+  try {
+    storage.setItem(GUIDE_SEEN_KEY, "1");
+    return true;
+  } catch (_) {
+    return false;
+  }
+}
+
+// app/web/src/audio_assets.mjs
+var SOUND_FILES = Object.freeze({
+  bgm: "assets/9c41b7e20a6f.bin",
+  tile1: "assets/bd7298a1cf04.bin",
+  tile2: "assets/04fa8c9d71be.bin",
+  tile3: "assets/e138b2a690cd.bin",
+  stick1: "assets/7a4dc019e2b8.bin",
+  stick2: "assets/c5803f6b2d91.bin",
+  stick3: "assets/2f89a64ed031.bin"
+});
+function cuesForMessage(msg) {
+  if (msg?.zimo || msg?.gangzimo || msg?.fulou || msg?.gang) return [{ sound: "tile1", delay: 0 }];
+  if (msg?.dapai) return [
+    { sound: "tile1", delay: 0 },
+    ...msg.dapai.p?.endsWith("*") ? [{ sound: "stick1", delay: 0.09 }] : []
+  ];
+  if (msg?.hule) return [
+    ...msg.hule.baojia != null ? [{ sound: "tile2", delay: 0 }] : [],
+    { sound: "tile3", delay: msg.hule.baojia != null ? 0.18 : 0 },
+    ...msg.hule.fenpei?.some((n) => n !== 0) ? [{ sound: "stick3", delay: 0.4 }] : []
+  ];
+  if (msg?.pingju) return [
+    ...msg.pingju.shoupai?.some(Boolean) ? [{ sound: "tile3", delay: 0 }] : [],
+    ...msg.pingju.fenpei?.some((n) => n !== 0) ? [{ sound: "stick2", delay: 0.3 }] : []
+  ];
+  return [];
+}
+
+// app/web/src/audio.mjs
+var AUDIO_SETTINGS_KEY = "ml-audio-v1";
+var DEFAULT_AUDIO_SETTINGS = Object.freeze({ bgm: 0.15, se: 0.35 });
+function normalizeAudioSettings(value) {
+  return Object.fromEntries(Object.entries(DEFAULT_AUDIO_SETTINGS).map(([key2, fallback]) => [
+    key2,
+    typeof value?.[key2] === "number" && Number.isFinite(value[key2]) ? Math.max(0, Math.min(1, value[key2])) : fallback
+  ]));
+}
+function loadAudioSettings(storage) {
+  try {
+    return normalizeAudioSettings(JSON.parse((storage ?? globalThis.localStorage).getItem(AUDIO_SETTINGS_KEY)));
+  } catch (_) {
+    return { ...DEFAULT_AUDIO_SETTINGS };
+  }
+}
+function saveAudioSettings(value, storage) {
+  const settings = normalizeAudioSettings(value);
+  try {
+    (storage ?? globalThis.localStorage).setItem(AUDIO_SETTINGS_KEY, JSON.stringify(settings));
+  } catch (_) {
+  }
+  return settings;
+}
+var GameAudio = class {
+  constructor({
+    settings = loadAudioSettings(),
+    createContext = () => new globalThis.AudioContext(),
+    fetchFile = (...args) => fetch(...args),
+    diagnose = () => {
+    }
+  } = {}) {
+    this.settings = normalizeAudioSettings(settings);
+    this.createContext = createContext;
+    this.fetchFile = fetchFile;
+    this.diagnose = diagnose;
+    this.buffers = /* @__PURE__ */ new Map();
+    this.sources = /* @__PURE__ */ new Set();
+    this.active = false;
+    this.visible = true;
+    this.unlocked = false;
+    this.reported = /* @__PURE__ */ new Set();
+  }
+  report(stage, error) {
+    if (this.reported.has(stage)) return;
+    this.reported.add(stage);
+    try {
+      this.diagnose(`[audio] ${stage}: ${String(error?.message || error).slice(0, 180)}`);
+    } catch (_) {
+    }
+  }
+  prepare() {
+    if (this.preparing) return this.preparing;
+    this.preparing = Promise.resolve().then(async () => {
+      this.context = this.createContext();
+      this.bgmGain = this.context.createGain();
+      this.seGain = this.context.createGain();
+      this.bgmGain.connect(this.context.destination);
+      this.seGain.connect(this.context.destination);
+      this.context.onstatechange = () => this.syncMusic();
+      this.setSettings(this.settings);
+      await Promise.all(Object.entries(SOUND_FILES).map(async ([key2, url]) => {
+        const abort = new AbortController();
+        const timer = setTimeout(() => abort.abort(), 15e3);
+        try {
+          const response = await this.fetchFile(url, { signal: abort.signal });
+          if (!response.ok) throw new Error(`HTTP ${response.status}`);
+          const buffer = await this.context.decodeAudioData(await response.arrayBuffer());
+          this.buffers.set(key2, buffer);
+          if (key2 === "bgm") this.syncMusic();
+        } catch (e) {
+          this.report(`load/${key2}`, e);
+        } finally {
+          clearTimeout(timer);
+        }
+      }));
+    }).catch((e) => this.report("prepare", e));
+    return this.preparing;
+  }
+  // Must be called directly in an input handler (before its first await).
+  unlock() {
+    try {
+      if (!this.context) {
+        this.prepare();
+        return;
+      }
+      this.unlocked = true;
+      Promise.resolve(this.context.resume()).then(() => this.syncMusic()).catch((e) => this.report("resume", e));
+    } catch (e) {
+      this.report("resume", e);
+    }
+  }
+  startGame(userGesture = false) {
+    this.active = true;
+    if (userGesture) this.unlock();
+    this.syncMusic();
+  }
+  stopGame() {
+    this.active = false;
+    this.stopSources();
+  }
+  setVisible(visible) {
+    this.visible = visible;
+    if (!visible) this.stopSources();
+    else this.syncMusic();
+  }
+  stopSources() {
+    for (const source of [...this.sources]) {
+      try {
+        source.stop();
+        source.disconnect();
+      } catch (e) {
+        this.report("stop", e);
+      }
+    }
+    this.sources.clear();
+    this.music = null;
+  }
+  setSettings(value) {
+    this.settings = normalizeAudioSettings(value);
+    try {
+      if (this.bgmGain) this.bgmGain.gain.value = this.settings.bgm;
+      if (this.seGain) this.seGain.gain.value = this.settings.se;
+      this.syncMusic();
+    } catch (e) {
+      this.report("volume", e);
+    }
+  }
+  canPlay() {
+    return this.active && this.visible && this.unlocked && this.context?.state === "running";
+  }
+  source(key2, gain, delay = 0, loop = false) {
+    let source;
+    try {
+      if (!this.buffers.has(key2)) {
+        this.report(`not-ready/${key2}`, "buffer unavailable; cue skipped");
+        return null;
+      }
+      source = this.context.createBufferSource();
+      source.buffer = this.buffers.get(key2);
+      source.loop = loop;
+      source.connect(gain);
+      source.onended = () => {
+        this.sources.delete(source);
+        try {
+          source.disconnect();
+        } catch (_) {
+        }
+      };
+      this.sources.add(source);
+      source.start(this.context.currentTime + delay);
+      return source;
+    } catch (e) {
+      this.sources.delete(source);
+      try {
+        source?.disconnect();
+      } catch (_) {
+      }
+      this.report(`play/${key2}`, e);
+      return null;
+    }
+  }
+  syncMusic() {
+    try {
+      if (!this.canPlay() || this.settings.bgm === 0) {
+        if (this.music) {
+          this.music.stop();
+          this.music.disconnect();
+          this.sources.delete(this.music);
+          this.music = null;
+        }
+        return;
+      }
+      if (!this.music && this.buffers.has("bgm")) this.music = this.source("bgm", this.bgmGain, 0, true);
+    } catch (e) {
+      this.report("bgm", e);
+    }
+  }
+  handleMessage(msg) {
+    try {
+      if (!this.canPlay() || this.settings.se === 0) return;
+      for (const cue of cuesForMessage(msg)) this.source(cue.sound, this.seGain, cue.delay);
+    } catch (e) {
+      this.report("event", e);
+    }
+  }
+};
+
+// app/web/src/replay.mjs
+function replaySteps(bundle) {
+  const coached = new Set((bundle.coach || []).map((r) => r.mjaiEventCount));
+  let kyokuIndex = -1;
+  return (bundle.mjai || []).flatMap((e, i) => {
+    if (e.type === "start_kyoku") kyokuIndex++;
+    if (kyokuIndex < 0 || !coached.has(i + 1) && ["start_game", "end_game", "end_kyoku", "reach", "reach_accepted"].includes(e.type)) return [];
+    return [{ eventCount: i + 1, kyokuIndex, type: e.type }];
+  });
+}
+function replayPosition(bundle, eventCount) {
+  return {
+    scene: foldMjaiScene(bundle.mjai, eventCount),
+    record: (bundle.coach || []).find((r) => r.mjaiEventCount === eventCount) || null
+  };
+}
+function resolveClip(clip, bundles) {
+  const bundle = bundles.find((b) => b.meta?.gameId === clip.gameId);
+  if (bundle && bundle.mjai?.length >= clip.eventCount) {
+    const position = replayPosition(bundle, clip.eventCount);
+    if (JSON.stringify(position.scene) === JSON.stringify(clip.scene)) return { bundle, ...position, record: clip.record };
+  }
+  return { bundle: null, scene: clip.scene, record: clip.record };
+}
+function sceneSnapshot(st2, qijia) {
+  const sortKey2 = (p) => "mpsz".indexOf(p[0]) * 100 + (p[1] === "0" ? 5 : +p[1]) * 10 + (p[1] === "0" ? 0 : 1);
+  const seats = st2.players.map((p, actor) => {
+    const id2 = (actor + qijia) % 4, l = (actor - st2.oya + 4) % 4;
+    const closed = p.hand.map(tileFromMjai).sort((a, b) => sortKey2(a) - sortKey2(b));
+    const drawnTile = p.drawn ? tileFromMjai(p.drawn) : null;
+    if (drawnTile) {
+      const i = closed.indexOf(drawnTile);
+      if (i >= 0) closed.push(...closed.splice(i, 1));
+    }
+    return {
+      l,
+      id: id2,
+      pos: id2,
+      name: ["\u3042\u306A\u305F", "AI-1", "AI-2", "AI-3"][id2],
+      defen: st2.scores[actor],
+      wind: "\u6771\u5357\u897F\u5317"[l],
+      dealer: l === 0,
+      closed,
+      drawnTile,
+      closedEntries: closed.map((pai, i) => ({ pai, drawn: !!drawnTile && i === closed.length - 1, action: pai })),
+      fulou: p.melds,
+      lizhi: p.riichi,
+      he: p.pond.map((d) => tileFromMjai(d.pai) + (d.tsumogiri ? "_" : "") + (d.riichi ? "*" : "") + (d.called ? "+" : ""))
+    };
+  });
+  return { seats, center: {
+    zhuangfeng: "ESWN".indexOf(st2.bakaze),
+    jushu: st2.kyoku - 1,
+    changbang: st2.honba,
+    lizhibang: st2.kyotaku,
+    paishu: st2.paishu,
+    baopai: st2.doraMarkers.map(tileFromMjai),
+    lunban: (st2.turnActor - st2.oya + 4) % 4
+  } };
+}
+function foldMjaiScene(events, upto) {
+  const fresh = () => ({ hand: [], melds: [], pond: [], riichi: false, drawn: null });
+  const st2 = {
+    bakaze: "E",
+    kyoku: 1,
+    honba: 0,
+    kyotaku: 0,
+    oya: 0,
+    scores: [25e3, 25e3, 25e3, 25e3],
+    doraMarkers: [],
+    paishu: 70,
+    turn: 0,
+    turnActor: -1,
+    kyokuIndex: -1,
+    players: [fresh(), fresh(), fresh(), fresh()],
+    lastDapai: null
+  };
+  let reachPending = -1;
+  const removeFromHand = (actor, tile2) => {
+    const h = st2.players[actor].hand;
+    let i = h.indexOf(tile2);
+    if (i < 0) {
+      const base = tile2.replace("r", "");
+      i = h.findIndex((t) => t.replace("r", "") === base);
+    }
+    if (i >= 0) h.splice(i, 1);
+  };
+  const mianziFor = (ev2) => {
+    const sym = ["", "-", "=", "+"][(ev2.actor - ev2.target + 4) % 4];
+    const conv = ev2.consumed.map((t) => tileFromMjai(t));
+    const suit = conv[0][0];
+    if (ev2.type === "ankan") return suit + conv.map((c) => c[1]).join("");
+    if (ev2.type === "chi") {
+      const called2 = tileFromMjai(ev2.pai);
+      const digs2 = conv.map((c) => c[1]);
+      digs2.push(called2[1] + "-");
+      const val = (d) => d[0] === "0" ? 5 : +d[0];
+      digs2.sort((a, b) => val(a) - val(b));
+      return suit + digs2.join("");
+    }
+    const digs = conv.map((c) => c[1]).sort();
+    const called = tileFromMjai(ev2.pai)[1];
+    if (ev2.type === "pon") return suit + digs.join("") + called + sym;
+    if (ev2.type === "daiminkan") return suit + digs.join("") + called + sym;
+    return "";
+  };
+  const n = Math.min(upto, events.length);
+  for (let i = 0; i < n; i++) {
+    const ev2 = events[i];
+    switch (ev2.type) {
+      case "start_kyoku":
+        st2.kyokuIndex++;
+        st2.paishu = 70;
+        st2.turn = 0;
+        st2.turnActor = ev2.oya;
+        st2.bakaze = ev2.bakaze;
+        st2.kyoku = ev2.kyoku;
+        st2.honba = ev2.honba;
+        st2.kyotaku = ev2.kyotaku;
+        st2.oya = ev2.oya;
+        st2.scores = ev2.scores.slice();
+        st2.doraMarkers = [ev2.dora_marker];
+        st2.players = ev2.tehais.map((t) => ({ hand: t.slice(), melds: [], pond: [], riichi: false, drawn: null }));
+        reachPending = -1;
+        st2.lastDapai = null;
+        break;
+      case "tsumo":
+        st2.paishu--;
+        st2.turnActor = ev2.actor;
+        st2.players[ev2.actor].hand.push(ev2.pai);
+        st2.players[ev2.actor].drawn = ev2.pai;
+        break;
+      case "reach":
+        reachPending = ev2.actor;
+        break;
+      case "reach_accepted":
+        st2.scores[ev2.actor] -= 1e3;
+        st2.kyotaku += 1;
+        st2.players[ev2.actor].riichi = true;
+        break;
+      case "dahai": {
+        const pl = st2.players[ev2.actor];
+        st2.turn++;
+        st2.turnActor = ev2.actor;
+        if (reachPending === ev2.actor) pl.riichi = true;
+        removeFromHand(ev2.actor, ev2.pai);
+        pl.pond.push({ pai: ev2.pai, tsumogiri: !!ev2.tsumogiri && pl.drawn !== null, riichi: reachPending === ev2.actor, called: false });
+        if (reachPending === ev2.actor) reachPending = -1;
+        pl.drawn = null;
+        st2.lastDapai = { actor: ev2.actor, pai: ev2.pai };
+        break;
+      }
+      case "chi":
+      case "pon":
+      case "daiminkan": {
+        st2.turnActor = ev2.actor;
+        const pl = st2.players[ev2.actor];
+        ev2.consumed.forEach((t) => removeFromHand(ev2.actor, t));
+        const tp = st2.players[ev2.target].pond;
+        if (tp.length) tp[tp.length - 1].called = true;
+        pl.melds.push(mianziFor(ev2));
+        break;
+      }
+      case "ankan":
+        ev2.consumed.forEach((t) => removeFromHand(ev2.actor, t));
+        st2.players[ev2.actor].melds.push(mianziFor(ev2));
+        st2.players[ev2.actor].drawn = null;
+        break;
+      case "kakan": {
+        const pl = st2.players[ev2.actor];
+        removeFromHand(ev2.actor, ev2.pai);
+        const c = tileFromMjai(ev2.pai);
+        const rank = (n2) => n2 === "0" ? "5" : n2;
+        const idx = pl.melds.findIndex((m) => m[0] === c[0] && rank(m[1]) === rank(c[1]) && m.length === 5 && /[+\-=]$/.test(m));
+        if (idx >= 0) pl.melds[idx] += c[1];
+        pl.drawn = null;
+        break;
+      }
+      case "dora":
+        st2.doraMarkers.push(ev2.dora_marker);
+        break;
+      case "hora":
+      case "ryukyoku":
+        if (ev2.type === "hora") st2.kyotaku = 0;
+        if (Array.isArray(ev2.deltas)) ev2.deltas.forEach((d, a) => {
+          st2.scores[a] += d;
+        });
+        break;
+      default:
+        break;
+    }
+  }
+  return st2;
+}
+
+// app/web/src/clips.mjs
+var CLIP_LIMIT = 100;
+var CLIP_DB = "mahjong-local-clips";
+var STORE = "clips";
+var copy2 = (x) => JSON.parse(JSON.stringify(x));
+function clipCoachRecord(record) {
+  if (!record) return null;
+  const keys = [
+    "kyokuIndex",
+    "kyoku",
+    "junme",
+    "turn",
+    "mjaiEventCount",
+    "context",
+    "recommended",
+    "actual",
+    "qBest",
+    "pBest",
+    "qActual",
+    "pActual",
+    "qDiff",
+    "probDiff",
+    "agreement",
+    "probabilityMethod",
+    "softmaxTemperature",
+    "shanten",
+    "shantenAfter",
+    "top3",
+    "qValues",
+    "callNotes"
+  ];
+  return copy2(Object.fromEntries(keys.filter((k2) => record[k2] !== void 0).map((k2) => [k2, record[k2]])));
+}
+function makeClip({ meta, eventCount, scene, record = null }, id2 = globalThis.crypto.randomUUID()) {
+  if (!meta?.gameId || !scene?.players || !Number.isInteger(eventCount) || eventCount < 1) throw new Error("\u5C40\u9762\u304C\u3042\u308A\u307E\u305B\u3093");
+  return copy2({
+    v: 1,
+    id: id2,
+    savedAt: (/* @__PURE__ */ new Date()).toISOString(),
+    gameId: meta.gameId,
+    gameDate: meta.startedAt || meta.savedAt,
+    qijia: meta.qijia ?? 0,
+    eventCount,
+    scene,
+    record: clipCoachRecord(record)
+  });
+}
+function clipLabel(clip) {
+  const s = clip.scene;
+  const date = clip.gameDate ? new Date(clip.gameDate).toLocaleString("ja-JP") : "\u65E5\u6642\u4E0D\u660E";
+  const actor = s.turnActor >= 0 ? ` \uFF0F ${["\u3042\u306A\u305F", "AI-1", "AI-2", "AI-3"][(s.turnActor + clip.qijia) % 4]}\u306E\u624B\u756A` : "";
+  return `${date} \uFF0F ${{ E: "\u6771", S: "\u5357", W: "\u897F", N: "\u5317" }[s.bakaze]}${s.kyoku}\u5C40 ${s.honba}\u672C\u5834 \uFF0F ${s.turn ?? 0}\u624B\u76EE${actor}`;
+}
+function checkClipCapacity(count) {
+  if (count >= CLIP_LIMIT) throw new Error("\u30AF\u30EA\u30C3\u30D7\u306F100\u4EF6\u307E\u3067\u3067\u3059\u3002\u4E00\u89A7\u304B\u3089\u524A\u9664\u3057\u3066\u304B\u3089\u767B\u9332\u3057\u3066\u304F\u3060\u3055\u3044\u3002");
+}
+function createClipStore(indexedDB2 = globalThis.indexedDB) {
+  async function transaction(mode, action) {
+    const db2 = await new Promise((resolve, reject) => {
+      const r = indexedDB2.open(CLIP_DB, 1);
+      r.onupgradeneeded = () => r.result.createObjectStore(STORE, { keyPath: "id" });
+      r.onsuccess = () => resolve(r.result);
+      r.onerror = () => reject(r.error);
+    });
+    return new Promise((resolve, reject) => {
+      const tx2 = db2.transaction(STORE, mode), store = tx2.objectStore(STORE);
+      let result, failure;
+      const fail = (e) => {
+        failure = e;
+        tx2.abort();
+      };
+      tx2.oncomplete = () => {
+        db2.close();
+        resolve(result);
+      };
+      tx2.onabort = tx2.onerror = () => {
+        db2.close();
+        reject(failure || tx2.error || new Error("\u30AF\u30EA\u30C3\u30D7\u3092\u4FDD\u5B58\u3067\u304D\u307E\u305B\u3093\u3067\u3057\u305F"));
+      };
+      try {
+        action(store, (value) => {
+          result = value;
+        }, fail);
+      } catch (e) {
+        fail(e);
+      }
+    });
+  }
+  return {
+    list: () => transaction("readonly", (s, done) => {
+      s.getAll().onsuccess = (e) => done(e.target.result.sort((a, b) => b.savedAt.localeCompare(a.savedAt)));
+    }),
+    add: (clip) => transaction("readwrite", (s, done, fail) => {
+      s.count().onsuccess = (e) => {
+        try {
+          checkClipCapacity(e.target.result);
+          s.add(copy2(clip));
+          done(clip.id);
+        } catch (err) {
+          fail(err);
+        }
+      };
+    }),
+    delete: (id2) => transaction("readwrite", (s) => s.delete(id2))
+  };
+}
+
+// app/web/src/main.js
 var NAMES = ["\u3042\u306A\u305F", "AI-1", "AI-2", "AI-3"];
 var MODELS = [
-  { id: "jaklab-v1", version: "V1", label: "V1", name: "V1\uFF08\u81EA\u524D\u30E2\u30C7\u30EB\u30FB43MB\uFF09", file: "models/jaklab_v1.onnx", displayTemperature: 2 },
+  { id: "jaklab-v1", version: "V1", label: "V1", name: "V1\uFF08\u81EA\u524D\u30E2\u30C7\u30EB\u30FB43MB\uFF09", file: "models/jaklab_v1.onnx", displayTemperature: 0.725 },
   // 2026-11-07: 低スペック端末向けに V1 Light もコーチモデルとして選べる（5.8MB・推論が速い）。
   { id: "jaklab-v1-light", version: "V1 Light", label: "V1 Light", name: "V1 Light\uFF08\u8EFD\u91CF\u30FB5.8MB\uFF09", file: "models/jaklab_v1_light.onnx", displayTemperature: 1 }
   // 2026-11-06: 他モデル（VoidShine 高精度／mortal_best 標準／mortal_small 軽量）は
@@ -34218,11 +35745,11 @@ var MODEL_KEY = "ml-model";
 var CPU_TIER_KEY = "ml-cpu-tier";
 var CPU_STYLE_KEY = "ml-cpu-style";
 var LIGHT_MODEL_FILE = "models/jaklab_v1_light.onnx";
-function cpuSetting(param, key, list) {
+function cpuSetting(param, key2, list) {
   const q4 = param ? new URLSearchParams(location.search).get(param) : null;
   if (q4 && list.some((x) => x.id === q4)) return q4;
   try {
-    const v = localStorage.getItem(key);
+    const v = localStorage.getItem(key2);
     if (v && list.some((x) => x.id === v)) return v;
   } catch (_) {
   }
@@ -34298,6 +35825,20 @@ var log = (m) => {
   if (el2) el2.textContent = m;
   console.log("[stage2]", m);
 };
+var audio = new GameAudio({ diagnose: (line) => {
+  diagLogPush(line);
+  console.warn(line);
+} });
+S.audioStatus = () => ({
+  settings: { ...audio.settings },
+  active: audio.active,
+  unlocked: audio.unlocked,
+  state: audio.context?.state,
+  loaded: audio.buffers.size,
+  music: !!audio.music,
+  sources: audio.sources.size,
+  diagnostics: [...audio.reported]
+});
 var HONOR = ["", "\u6771", "\u5357", "\u897F", "\u5317", "\u767D", "\u767C", "\u4E2D"];
 function tileLabel(p) {
   if (!p || p === "_") return "";
@@ -34359,7 +35900,7 @@ function meldHTML(m, rel = 0) {
     const rotCls = ` mrot-${rot}${rot === 90 || rot === 270 ? " tile-side" : ""}`;
     return t.back ? tileHTML("_", `meld-tile${rotCls}`) : tileHTML(t.pai, `meld-tile${t.called ? " called-tile" : ""}${rotCls}`);
   }).join("");
-  return `<span class="meld" data-mianzi="${m}"${src ? ` data-src="${src}"` : ""}>${html}</span>`;
+  return `<span class="meld${tiles.length === 4 ? " meld-kan" : ""}" data-mianzi="${m}"${src ? ` data-src="${src}"` : ""}>${html}</span>`;
 }
 function kyokuText(k2) {
   const x = /^([ESWN])(\d)\.(\d+)$/.exec(k2 || "");
@@ -34372,22 +35913,31 @@ function contextLabel(context) {
 function actionTilesHTML(tiles) {
   return `<span class="act-tiles">${tiles.map((p) => tileHTML(p, "act-tile")).join("")}</span>`;
 }
-function actionLabel(name2, qValues) {
+function labelEventsFor(rec) {
+  if (!rec) return null;
+  if (coach?.records?.includes(rec)) return bridge?.events || null;
+  if (sceneViewer?.bundle?.coach?.includes(rec)) return sceneViewer.bundle.mjai || null;
+  return null;
+}
+function actionLabel(name2, rec) {
   if (!name2) return "-";
   if (name2 === "reach") {
-    const best = (qValues || []).find((c) => /^[1-9][mps]$/.test(c.action) || /^[ESWNPCF]$/.test(c.action) || /5[mps]r/.test(c.action));
-    return "\u30EA\u30FC\u30C1" + (best ? ` (${tileLabel(tileFromMjai(best.action))})` : "");
+    const decl = reachDeclareAction(rec);
+    return "\u30EA\u30FC\u30C1" + (decl ? ` (${tileLabel(tileFromMjai(decl))})` : "");
   }
   const map = { pon: "\u30DD\u30F3", kan: "\u30AB\u30F3", hora: "\u548C\u4E86", none: "\u898B\u9001\u308A", ryukyoku: "\u6D41\u5C40\u5BA3\u8A00" };
   if (map[name2]) return map[name2];
-  if (name2.startsWith("chi")) return "\u30C1\u30FC";
+  if (name2.startsWith("chi")) {
+    const rec0 = rec?.rec || rec;
+    return chiLabel(name2, rec0, labelEventsFor(rec0));
+  }
   return tileLabel(tileFromMjai(name2));
 }
 function recommendedTileMajiang(rec) {
   if (!rec) return null;
   if (rec.recommended === "reach") {
-    const best = (rec.qValues || []).find((c) => c.action !== "reach" && !["chi-L", "chi-M", "chi-R", "pon", "kan", "hora", "ryukyoku", "none"].includes(c.action));
-    return best ? tileFromMjai(best.action) : null;
+    const decl = reachDeclareAction(rec);
+    return decl ? tileFromMjai(decl) : null;
   }
   if (/^[1-9][mps]$/.test(rec.recommended) || /^[ESWNPCF]$/.test(rec.recommended) || /5[mps]r/.test(rec.recommended)) {
     return tileFromMjai(rec.recommended);
@@ -34400,10 +35950,12 @@ var coach = null;
 var seat0 = null;
 var game = null;
 var pending = null;
+var preparingDecision = null;
 var riichiArmed = false;
 var selectedAction = null;
 var selectedIdx = null;
 var currentCoach = null;
+var coachMissing = null;
 var coachEnabled = true;
 var assistEnabled = false;
 var explainCache = null;
@@ -34428,10 +35980,40 @@ var HISTORY_STORE = "games";
 var SUMMARY_STORE = "summaries";
 var HISTORY_LIMIT = 50;
 var $ = (id2) => document.getElementById(id2);
+function resetCoachDisplay(kind = null) {
+  preparingDecision = kind;
+  currentCoach = null;
+  coachMissing = null;
+  S.coachMissing = null;
+  riichiArmed = false;
+  selectedAction = S.selectedAction = null;
+  selectedIdx = S.selectedIdx = null;
+  explainCache = null;
+}
 var ui = {
   onCoach(rec, context) {
     currentCoach = { record: rec, context };
+    coachMissing = null;
     explainCache = null;
+    render();
+  },
+  // The coach produced no evaluation for this decision (inference failed, or
+  // no candidates at a discard decision): drop the previous decision's
+  // recommendation so it cannot be mistaken for this one's, and leave a
+  // trace in the local diagnostics (ml-last-error). Inference exceptions were
+  // already recorded (E-I201/E-I202) by the runtime; only coded coach errors
+  // are recorded here.
+  onCoachMissing(context, err) {
+    currentCoach = null;
+    coachMissing = { context, message: String(err?.message || err) };
+    S.coachMissing = coachMissing;
+    explainCache = null;
+    if (err?.code) {
+      try {
+        recordError(err.code, err, { stage: "coach", context });
+      } catch (_) {
+      }
+    }
     render();
   },
   // Hold the game on the kyoku-result panel (manual mode): resolves
@@ -34448,6 +36030,7 @@ var ui = {
     });
   },
   requestDecision(kind, options) {
+    preparingDecision = null;
     S.decisionPending = true;
     S.pendingKind = kind;
     S.pendingOptions = options;
@@ -34457,7 +36040,6 @@ var ui = {
     selectedIdx = null;
     S.selectedIdx = null;
     explainCache = null;
-    render();
     return new Promise((resolve) => {
       pending = {
         kind,
@@ -34628,13 +36210,13 @@ function capturePingju(p) {
     if (p.shoupai && p.shoupai[l]) {
       let waits = [];
       try {
-        const sp = import_majiang_core5.default.Shoupai.fromString(p.shoupai[l]);
+        const sp = import_majiang_core6.default.Shoupai.fromString(p.shoupai[l]);
         for (const s of ["m", "p", "s", "z"]) {
           const max = s === "z" ? 7 : 9;
           for (let n = 1; n <= max; n++) {
             try {
               const probe = sp.clone().zimo(s + n);
-              if (import_majiang_core5.default.Util.xiangting(probe) === -1) waits.push(s + n);
+              if (import_majiang_core6.default.Util.xiangting(probe) === -1) waits.push(s + n);
             } catch (_) {
             }
           }
@@ -34703,16 +36285,22 @@ var resumeSnapshot = null;
 var resumeAvailable = null;
 var resumeRequest = null;
 var resumedFrom = null;
-function storeResumeSnapshot() {
-  if (!bridge || AUTO) return;
+function storeResumeSnapshot(phase) {
+  if (!bridge || !game || AUTO) return;
+  const midhand = captureMidhand(game, phase);
+  if (!midhand) return;
   const evs = bridge.events || [];
   let sk2 = null;
   for (let i = evs.length - 1; i >= 0; i--) if (evs[i].type === "start_kyoku") {
     sk2 = evs[i];
     break;
   }
-  const defen = seat0?.model?.defen;
-  if (!sk2 || !defen) return;
+  const q4 = midhand.log[0]?.qipai;
+  if (!sk2 || !q4) return;
+  const defen = [0, 0, 0, 0];
+  game.model.player_id.forEach((id2, l) => {
+    defen[id2] = q4.defen[l];
+  });
   if (!currentGameId) currentGameId = makeGameId((/* @__PURE__ */ new Date()).toISOString());
   resumeSnapshot = {
     v: 1,
@@ -34729,7 +36317,8 @@ function storeResumeSnapshot() {
     bakaze: sk2.bakaze,
     kyoku: sk2.kyoku,
     oyaActor: sk2.oya,
-    savedAt: (/* @__PURE__ */ new Date()).toISOString()
+    savedAt: (/* @__PURE__ */ new Date()).toISOString(),
+    midhand
   };
   try {
     localStorage.setItem(RESUME_KEY, JSON.stringify(resumeSnapshot));
@@ -34746,6 +36335,11 @@ function loadResumeSnapshot() {
     if (!isValidResumeSnapshot(s)) {
       recordError("E-D302", "resume snapshot invalid", { stage: "resume-load" });
       return null;
+    }
+    if (s.midhand && !prepareMidhand(s, specRule({ length: s.gameLength }))) {
+      delete s.midhand;
+      s.midhandFallback = true;
+      recordError("E-D302", "midhand snapshot invalid; resume at kyoku head", { stage: "resume-load" });
     }
     return s;
   } catch (e) {
@@ -34770,7 +36364,6 @@ function noteKyokuStart() {
   if (kyokuScoresStart) verifyKyokuSettlement(kyokuScoresStart, pendingCheckResults, now);
   pendingCheckResults = [];
   kyokuScoresStart = now;
-  guarded("noteKyokuStart/resumeSnapshot", storeResumeSnapshot);
 }
 var fmtDelta = (v) => (v > 0 ? "+" : "") + v.toLocaleString();
 function resultPanelHTML(r) {
@@ -34781,11 +36374,10 @@ function resultPanelHTML(r) {
         <td>${NAMES[id2]}</td><td>${fmtDelta(r.baseById[id2])}</td>
         ${r.honba ? `<td>${fmtDelta(r.honbaById[id2])}</td>` : ""}
         ${r.kyotaku ? `<td>${fmtDelta(r.kyotakuById[id2])}</td>` : ""}
-        <td class="delta-total">${fmtDelta(r.deltasById[id2])}</td></tr>`).join("");
+        <td class="${deltaTotalClass(r.deltasById[id2])}">${fmtDelta(r.deltasById[id2])}</td></tr>`).join("");
     return `<div class="result-card">
       ${r.ronCount > 1 ? `<div class="multi-ron">\u30C0\u30D6\u30ED\u30F3 ${r.ronSeq}\u4EF6\u76EE\uFF0F\u5168${r.ronCount}\u4EF6${r.ronSeq === 1 && (r.honba || r.kyotaku) ? "\uFF08\u672C\u5834\u30FB\u4F9B\u8A17\u306F\u3053\u3061\u3089\u306B\uFF09" : ""}</div>` : ""}
-      <div class="result-head">${r.winnerName} ${r.isTsumo ? "\u30C4\u30E2" : `\u30ED\u30F3\uFF08${NAMES[r.targetId]}\uFF09`}
-        ${r.winTile ? `<span class="win-tile">${tileSVG(r.winTile, tileLabel(r.winTile))}</span>` : ""}</div>
+      ${horaHeadingHTML(r, NAMES, r.winTile ? `<span class="win-tile">${tileSVG(r.winTile, tileLabel(r.winTile))}</span>` : "")}
       <div class="yaku-list">${yakuRows}</div>
       ${horaHandByKyoku.has(horaHandKey(r)) ? `<div class="tenpai-hands"><div class="tenpai-hand-row">
         <span class="th-name">${r.winnerName} \u306E\u624B\u724C</span>${shoupaiStringHTML(horaHandByKyoku.get(horaHandKey(r)), true)}
@@ -34842,8 +36434,8 @@ function renderResultPanel() {
 var normPai = (p) => p[0] + (p[1] === "0" ? "5" : p[1]);
 var assistCache = { key: null, kindByIdx: /* @__PURE__ */ new Map(), starts: /* @__PURE__ */ new Set() };
 function assistInfo(seat) {
-  const key = seat.closed.join("") + "|" + seat.fulou.length;
-  if (assistCache.key !== key) {
+  const key2 = seat.closed.join("") + "|" + seat.fulou.length;
+  if (assistCache.key !== key2) {
     const kindByIdx = /* @__PURE__ */ new Map(), starts = /* @__PURE__ */ new Set();
     let groups = null;
     try {
@@ -34866,7 +36458,7 @@ function assistInfo(seat) {
         if (first > 0) starts.add(first);
       }
     }
-    assistCache = { key, kindByIdx, starts };
+    assistCache = { key: key2, kindByIdx, starts };
   }
   return { dora: doraSetFromIndicators(seat0.model), kindByIdx: assistCache.kindByIdx, starts: assistCache.starts };
 }
@@ -34883,15 +36475,15 @@ function assistClass(assist, seat, entry, i) {
   if (assist.starts.has(i)) cls.push("blk-gap");
   return cls.length ? " " + cls.join(" ") : "";
 }
-function seatHTML(seat, isSelf) {
+function seatHTML(seat, isSelf, readOnly = false, turnL = snapshotTurnL) {
   const melds = seat.fulou.map((m) => meldHTML(m, seat.pos)).join("");
-  const rec = recommendedTileMajiang(currentCoach?.record);
-  const assist = isSelf && assistEnabled ? assistInfo(seat) : null;
+  const rec = readOnly ? null : recommendedTileMajiang(currentCoach?.record);
+  const assist = isSelf && !readOnly && assistEnabled ? assistInfo(seat) : null;
   const hand = isSelf ? seat.closedEntries.map((entry, i) => {
     const p = entry.pai;
-    const clickable = pending && (pending.kind === "zimo" || pending.kind === "fulou") && pending.options.dapaiList.includes(entry.action) ? " clickable" : "";
+    const clickable = !readOnly && pending && (pending.kind === "zimo" || pending.kind === "fulou") && pending.options.dapaiList.includes(entry.action) ? " clickable" : "";
     const hl = rec && rec === p && coachEnabled && selectedAction ? " recommended" : "";
-    const sel = i === selectedIdx ? " selected" : "";
+    const sel = !readOnly && i === selectedIdx ? " selected" : "";
     const ast = assist ? assistClass(assist, seat, entry, i) : "";
     return `<button type="button" class="tile hand${p[1] === "0" ? " red" : ""}${clickable}${hl}${sel}${ast}${entry.drawn ? " drawn" : ""}"
           data-tile="${entry.action}" data-pai="${p}" data-idx="${i}" data-drawn="${entry.drawn ? "1" : "0"}"
@@ -34902,22 +36494,16 @@ function seatHTML(seat, isSelf) {
       <span class="seat-wind">${seat.wind}</span>
       <span class="seat-score">${seat.defen.toLocaleString()}\u70B9</span>
       ${seat.lizhi ? '<span class="riichi-badge">\u30EA\u30FC\u30C1</span>' : ""}
-      ${seat.l === snapshotTurnL ? '<span class="turn-badge">\u756A</span>' : ""}
+      ${seat.l === turnL ? '<span class="turn-badge">\u756A</span>' : ""}
     </div>`;
   const handZone = `<div class="hand-row"><span class="hand">${hand}</span><span class="melds">${melds}</span></div>`;
   if (seat.pos === 2) return `${handZone}${head}`;
   return `${head}${handZone}`;
 }
-function pondHTML(seat) {
-  const heTiles = seat.he.map((raw, i) => {
-    let face = raw;
-    const called = /[+\-=]$/.test(face);
-    if (called) face = face.slice(0, -1);
-    const riichi = face.endsWith("*");
-    if (riichi) face = face.slice(0, -1);
-    face = face.replace(/_$/, "");
-    const last = seat.l === lastDapaiL && i === seat.he.length - 1 ? " last" : "";
-    return tileHTML(face, `discard${called ? " called" : ""}${riichi ? " riichi-d" : ""}${last}`);
+function pondHTML(seat, discardL = lastDapaiL) {
+  const heTiles = riverTiles(seat.he).map((t) => {
+    const last = seat.l === discardL && t.index === seat.he.length - 1 ? " last" : "";
+    return tileHTML(t.face, `discard${t.tsumogiri ? " tsumogiri" : ""}${t.riichi ? " riichi-d" : ""}${last}`);
   }).join("");
   const stick = seat.lizhi ? `<span class="riichi-stick" role="img" aria-label="\u30EA\u30FC\u30C1\u68D2"><svg class="riichi-stick-art" viewBox="0 0 64 12"><rect x="1" y="1.5" width="62" height="9" rx="4.5" fill="#f7f2df" stroke="#9a917c"/><circle cx="32" cy="6" r="3.4" fill="#c0272d"/></svg></span>` : "";
   return `${stick}<div class="he">${heTiles}</div>`;
@@ -34926,6 +36512,10 @@ var lastDapaiL = -1;
 var snapshotTurnL = -1;
 function decisionButtonsHTML() {
   if (AUTO) return '<div class="action-status">\u30AA\u30FC\u30C8\u30E2\u30FC\u30C9\u5B9F\u884C\u4E2D\uFF08\u5168\u5E2DAI\uFF09</div>';
+  if (!pending && preparingDecision) {
+    const hint = preparingDecision === "fulou" ? "\u9CF4\u304D\u307E\u3057\u305F\u3002\u624B\u724C\u304B\u3089\u5207\u308B\u724C\u3092\u9078\u3093\u3067\u304F\u3060\u3055\u3044" : "\u724C\u3092\u30BF\u30C3\u30D7\u3067\u9078\u629E\uFF08\u3082\u3046\u4E00\u5EA6\u30BF\u30C3\u30D7\u3067\u6253\u724C\uFF09";
+    return `<div class="action-bar" data-kind="${preparingDecision}"><div class="action-status prompt">${hint}</div></div>`;
+  }
   if (!pending) return '<div class="action-status waiting">\u76F8\u624B\u306E\u756A\u3067\u3059</div>';
   const o = pending.options;
   const b = [];
@@ -34960,33 +36550,35 @@ function decisionButtonsHTML() {
   }
   return `<div class="action-bar" data-kind="${pending.kind}">${b.join("")}</div>`;
 }
-function coachHTML() {
-  if (!coachEnabled) return '<h3>AI\u30B3\u30FC\u30C1</h3><div class="hint">AI\u30B3\u30FC\u30C1 OFF\uFF08\u5B9F\u6226\u5F62\u5F0F\uFF09</div>';
-  let rec = currentCoach?.record;
-  if (AUTO && coach?.records?.length) rec = coach.records[coach.records.length - 1];
-  if (!rec) return '<h3>AI\u30B3\u30FC\u30C1</h3><div class="hint">\u3042\u306A\u305F\u306E\u624B\u756A\u3067\u63A8\u5968\u3092\u8868\u793A\u3057\u307E\u3059</div>';
-  if (!AUTO && pending && (pending.kind === "zimo" || pending.kind === "fulou") && !selectedAction) {
+function coachHTML(replayRec) {
+  const replay = arguments.length > 0;
+  if (!replay && !coachEnabled) return '<h3>AI\u30B3\u30FC\u30C1</h3><div class="hint">AI\u30B3\u30FC\u30C1 OFF\uFF08\u5B9F\u6226\u5F62\u5F0F\uFF09</div>';
+  let rec = replay ? replayRec : currentCoach?.record;
+  if (!replay && AUTO && coach?.records?.length) rec = coach.records[coach.records.length - 1];
+  if (!replay && !rec && coachMissing && (pending || preparingDecision)) return '<h3>AI\u30B3\u30FC\u30C1</h3><div class="hint">\u3053\u306E\u624B\u756A\u306F\u30B3\u30FC\u30C1\u306E\u8A55\u4FA1\u3092\u53D6\u5F97\u3067\u304D\u307E\u305B\u3093\u3067\u3057\u305F\uFF08\u63A8\u5968\u306A\u3057\uFF09\u3002</div>';
+  if (!replay && !AUTO && (preparingDecision || pending?.kind === "zimo" || pending?.kind === "fulou") && !selectedAction) {
     const memo0 = east4Memo();
     S.east4Memo = memo0;
     return `<h3>AI\u30B3\u30FC\u30C1</h3><div class="hint">\u724C\u3092\u9078\u3076\u3068\u8A55\u4FA1\u3092\u8868\u793A\u3057\u307E\u3059\uFF08\u9078\u629E\u3057\u305F\u724C\u3092\u3082\u3046\u4E00\u5EA6\u30BF\u30C3\u30D7\u3067\u6253\u724C\uFF09\u3002</div>${memo0 ? `<div class="east4-memo">${memo0}</div>` : ""}`;
   }
+  if (!rec) return '<h3>AI\u30B3\u30FC\u30C1</h3><div class="hint">\u3042\u306A\u305F\u306E\u624B\u756A\u3067\u63A8\u5968\u3092\u8868\u793A\u3057\u307E\u3059</div>';
   const best = rec.top3?.[0];
   const isReaction = rec.context === "dapai" || rec.context === "gang";
   const subs = (isReaction ? (rec.qValues || []).map((c, i) => ({ ...c, rank: i + 1 })) : (rec.top3 || []).map((c, i) => ({ ...c, rank: i + 1 }))).filter((c) => c.action !== best?.action).slice(0, isReaction ? 8 : 2);
-  const top3 = subs.map((c) => `<div class="qrow"><span class="qname">${c.rank}\u4F4D ${actionLabel(c.action, rec.qValues)}</span><span class="prob">${formatPercent(c.prob)}</span></div>`).join("");
-  const callNotes = (rec.callNotes || []).map((n) => `<div class="hint">${actionLabel(n.action, rec.qValues)}\u5F8C: \u6700\u826F\u306E\u6253\u724C\u3067${n.shanten === 0 ? "\u30C6\u30F3\u30D1\u30A4" : `${n.shanten}\u5411\u8074`}\u30FB\u53D7\u3051\u5165\u308C${n.ukeire}\u679A</div>`).join("");
+  const top3 = subs.map((c) => `<div class="qrow"><span class="qname">${c.rank}\u4F4D ${actionLabel(c.action, rec)}</span><span class="prob">${formatPercent(c.prob)}</span></div>`).join("");
+  const callNotes = (rec.callNotes || []).map((n) => `<div class="hint">${actionLabel(n.action, rec)}\u5F8C: \u6700\u826F\u306E\u6253\u724C\u3067${n.shanten === 0 ? "\u30C6\u30F3\u30D1\u30A4" : `${n.shanten}\u5411\u8074`}\u30FB\u53D7\u3051\u5165\u308C${n.ukeire}\u679A</div>`).join("");
   let agr = "";
-  if (!AUTO && seat0?.agreement) {
+  if (!replay && !AUTO && seat0?.agreement) {
     const a = seat0.agreement;
     agr = a.total ? `<div class="hint">AI\u3068\u306E\u4E00\u81F4: ${a.agree}/${a.total} (${Math.round(a.agree / a.total * 100)}%)</div>` : '<div class="hint">AI\u3068\u306E\u4E00\u81F4: -</div>';
   }
-  const memo = east4Memo();
-  S.east4Memo = memo;
-  return `<h3>AI\u30B3\u30FC\u30C1 <span class="ctx">${kyokuText(rec.kyoku)} / ${contextLabel(currentCoach?.context || rec.context)}</span></h3>
-    <div class="rec">\u63A8\u5968: <b>${actionLabel(rec.recommended, rec.qValues)}</b>
+  const memo = replay ? null : east4Memo();
+  if (!replay) S.east4Memo = memo;
+  return `<h3>AI\u30B3\u30FC\u30C1 <span class="ctx">${kyokuText(rec.kyoku)} / ${contextLabel(replay ? rec.context : currentCoach?.context || rec.context)}</span></h3>
+    <div class="rec">\u63A8\u5968: <b>${actionLabel(rec.recommended, rec)}</b>
       <span class="prob big">${formatPercent(best?.prob ?? rec.pBest)}</span></div>
     ${subs.length ? `<div class="top3"><div class="hint">${isReaction ? "\u5168\u5019\u88DC" : "\u6B21\u70B9\u5019\u88DC"}</div>${top3}</div>` : ""}${callNotes}
-    <div class="hint">\u63A8\u5968\u5EA6\u306F\u3001AI\u30B3\u30FC\u30C1\u306E\u8A55\u4FA1\u3092\u5019\u88DC\u5168\u4F53\u306B\u5BFE\u3059\u308B\u5272\u5408\uFF08\uFF05\uFF09\u3067\u8868\u3057\u305F\u3082\u306E\u3067\u3059\u3002\u5411\u8074: ${rec.shantenAfter != null ? rec.shantenAfter : rec.shanten != null ? rec.shanten : "-"}</div>${agr}${memo ? `<div class="east4-memo">${memo}</div>` : ""}`;
+    <div class="hint">\u63A8\u5968\u5EA6\u306F\u3001AI\u30B3\u30FC\u30C1\u306E\u8A55\u4FA1\u3092\u5019\u88DC\u5168\u4F53\u306B\u5BFE\u3059\u308B\u5272\u5408\uFF08\uFF05\uFF09\u3067\u8868\u3057\u305F\u3082\u306E\u3067\u3059\u3002\u5411\u8074\uFF08\u6700\u826F\u306E\u6253\u724C\u5F8C\uFF09: ${rec.shantenAfter != null ? rec.shantenAfter : rec.shanten != null ? rec.shanten : "-"}</div>${agr}${memo ? `<div class="east4-memo">${memo}</div>` : ""}`;
 }
 function isFinalKyokuContext() {
   const m = (bridge.kyokuLabel || "").match(/^([ESWN])(\d)/);
@@ -35016,13 +36608,13 @@ function explainHTML() {
   if (!selectedAction) return "";
   const rec = currentCoach?.record;
   if (!rec) return "";
-  const key = bridge.events.length + ":" + pending.kind;
-  if (!explainCache || explainCache.key !== key) {
+  const key2 = bridge.events.length + ":" + pending.kind;
+  if (!explainCache || explainCache.key !== key2) {
     try {
       const rows2 = analyzeDiscards(seat0.shoupai, seat0._rule, seat0.model);
       const recPai2 = recommendedTileMajiang(rec);
       explainCache = {
-        key,
+        key: key2,
         rows: rows2,
         template: templateComment(rows2, recPai2),
         recPai: recPai2,
@@ -35032,7 +36624,7 @@ function explainHTML() {
         doraNow: countDora(seat0.shoupai, doraSetFromIndicators(seat0.model))
       };
     } catch (e) {
-      explainCache = { key, rows: [], template: null, recPai: null, statisticalNote: null, safeInfo: null, directions: [], doraNow: 0 };
+      explainCache = { key: key2, rows: [], template: null, recPai: null, statisticalNote: null, safeInfo: null, directions: [], doraNow: 0 };
     }
   }
   const { rows, template, recPai, statisticalNote, safeInfo, directions, doraNow } = explainCache;
@@ -35100,7 +36692,7 @@ function explainHTML() {
       outlook: r.scoreOutlook
     }))
   };
-  const cmpExpanded = cmpExpandKey === key;
+  const cmpExpanded = cmpExpandKey === key2;
   const cmpVisible = (r, i) => i < 4 || (r.candidate?.prob ?? 0) >= 0.01 || r.actionPai === selectedAction;
   const hiddenCount = sorted.filter((r, i) => !cmpVisible(r, i)).length;
   const body = sorted.map((r, i) => {
@@ -35110,7 +36702,7 @@ function explainHTML() {
       <td><span class="cmp-tile">${tileSVG(r.pai, tileLabel(r.pai))}</span></td><td>${r.shanten}</td><td>${r.ukeire}</td>
       <td>${r.safety}</td><td>${rowTags(r)}</td><td><span class="prob">${formatPercent(r.candidate?.prob)}</span></td></tr>`;
   }).join("") + (hiddenCount ? `
-    <tr class="cmp-toggle-row"><td colspan="6"><button type="button" class="cmp-toggle" data-cmp-toggle="${key}">${cmpExpanded ? `\u4ED6${hiddenCount}\u4EF6\u3092\u7573\u3080` : `\u4ED6${hiddenCount}\u4EF6\u3092\u8868\u793A`}</button></td></tr>` : "");
+    <tr class="cmp-toggle-row"><td colspan="6"><button type="button" class="cmp-toggle" data-cmp-toggle="${key2}">${cmpExpanded ? `\u4ED6${hiddenCount}\u4EF6\u3092\u7573\u3080` : `\u4ED6${hiddenCount}\u4EF6\u3092\u8868\u793A`}</button></td></tr>` : "");
   const selIdx = sorted.findIndex((r) => r.actionPai === selectedAction);
   const selRow = selIdx >= 0 ? sorted[selIdx] : null;
   const selInfo = selRow ? `<div class="sel-info">\u9078\u629E\u4E2D: <b>${tileLabel(selRow.pai)}</b> \u2014 \u63A8\u5968\u5EA6 <span class="prob">${formatPercent(selRow.candidate?.prob)}</span> / \u5019\u88DC\u4E2D ${selIdx + 1} \u4F4D\uFF08\u5411\u8074 ${selRow.shanten}\u30FB\u53D7\u3051\u5165\u308C ${selRow.ukeire}\u679A\uFF09</div>` : "";
@@ -35133,7 +36725,7 @@ function probeFlipLines(rec) {
   for (const v of Object.values(rec.probe?.variants || {})) {
     if (v.status !== "flip") continue;
     const vp = v.top3?.[0]?.prob;
-    out.push(`${v.label}: \u63A8\u5968\u306F ${actionLabel(v.recommended, rec.qValues)} \u306B\u5909\u308F\u308B${vp != null ? `\uFF08\u305D\u306E\u6761\u4EF6\u3067\u306E\u63A8\u5968\u5EA6 ${formatPercent(vp)}\uFF09` : ""}`);
+    out.push(`${v.label}: \u63A8\u5968\u306F ${actionLabel(v.recommended, rec)} \u306B\u5909\u308F\u308B${vp != null ? `\uFF08\u305D\u306E\u6761\u4EF6\u3067\u306E\u63A8\u5968\u5EA6 ${formatPercent(vp)}\uFF09` : ""}`);
   }
   return out;
 }
@@ -35162,34 +36754,34 @@ function probeResultHTML(rec) {
   }
   return h;
 }
-function probeInnerHTML(rec, key) {
+function probeInnerHTML(rec, key2) {
   let h = "";
   const showResults = !!rec.probe || probeOpened.has(rec) || (rec.explainability?.conditions || []).length > 0;
   if (showResults) h += probeResultHTML(rec);
   if (probeRunning === rec) {
     h += '<div class="probe-progress">\u8A08\u7B97\u4E2D\u2026\uFF08\u5C40\u9762\u306E\u8981\u7D20\u3092\u5909\u3048\u3066\u63A8\u8AD6\u3057\u76F4\u3057\u3066\u3044\u307E\u3059\uFF09</div>';
   } else if (!rec.probe) {
-    h += `<button type="button" class="probe-btn" data-probe-btn="${key}">\u306A\u305C\uFF1F\uFF08\u63A8\u5968\u306E\u6839\u62E0\u3092\u691C\u8A3C\uFF09</button>`;
+    h += `<button type="button" class="probe-btn" data-probe-btn="${key2}">\u306A\u305C\uFF1F\uFF08\u63A8\u5968\u306E\u6839\u62E0\u3092\u691C\u8A3C\uFF09</button>`;
   }
   return h;
 }
-function probeSectionHTML(rec, key) {
+function probeSectionHTML(rec, key2) {
   if (!rec || rec.context !== "zimo" && rec.context !== "fulou") return "";
-  probeTargets.set(key, { rec });
-  return `<div class="probe-sec"><div class="probe-body" id="probe-body-${key.replace(/:/g, "-")}">${probeInnerHTML(rec, key)}</div></div>`;
+  probeTargets.set(key2, { rec });
+  return `<div class="probe-sec"><div class="probe-body" id="probe-body-${key2.replace(/:/g, "-")}">${probeInnerHTML(rec, key2)}</div></div>`;
 }
 function refreshProbeBodies(rec) {
-  for (const [key, t] of probeTargets) {
+  for (const [key2, t] of probeTargets) {
     if (t.rec !== rec) continue;
-    const el2 = document.getElementById("probe-body-" + key.replace(/:/g, "-"));
-    if (el2) el2.innerHTML = probeInnerHTML(rec, key);
+    const el2 = document.getElementById("probe-body-" + key2.replace(/:/g, "-"));
+    if (el2) el2.innerHTML = probeInnerHTML(rec, key2);
   }
 }
-async function executeProbe(rec, key) {
+async function executeProbe(rec, key2) {
   if (!rec || rec.probe || probeRunning) return;
   probeOpened.add(rec);
   probeRunning = rec;
-  S.probe = { running: true, key, lastResult: null, error: null };
+  S.probe = { running: true, key: key2, lastResult: null, error: null };
   render();
   refreshProbeBodies(rec);
   try {
@@ -35204,7 +36796,7 @@ async function executeProbe(rec, key) {
       nameOfActor: (a) => NAMES[(QIJIA + a) % 4]
     });
     rec.probe = result;
-    S.probe = { running: false, key, lastResult: result, error: null };
+    S.probe = { running: false, key: key2, lastResult: result, error: null };
     try {
       if (lastBundle && coach?.records?.includes(rec)) {
         lastBundle.coach = JSON.parse(JSON.stringify(coach.records));
@@ -35217,7 +36809,7 @@ async function executeProbe(rec, key) {
       S.errors.push("probe save: " + (e.message || e));
     }
   } catch (err) {
-    S.probe = { running: false, key, lastResult: null, error: String(err?.message || err) };
+    S.probe = { running: false, key: key2, lastResult: null, error: String(err?.message || err) };
   } finally {
     probeRunning = null;
     render();
@@ -35283,6 +36875,7 @@ function buildReviewRows(records) {
       pActual: r.pActual ?? r.probActual ?? null,
       probDiff,
       qValues: r.qValues || [],
+      riichiTiles: r.riichiTiles || null,
       recIndex: i,
       rec: r
     };
@@ -35298,8 +36891,8 @@ function reviewHTML(records) {
   }
   const body = rows.map((r) => `<tr class="review-row" data-rec-index="${r.recIndex}" title="\u30BF\u30C3\u30D7\u3067\u5834\u9762\u3092\u8868\u793A">
       <td>${kyokuText(r.kyoku) || "-"} / ${r.junme ?? "-"}\u5DE1\u76EE</td><td>${contextLabel(r.context)}</td>
-      <td>${actionLabel(r.recommended, r.qValues)}<br><span class="prob">${formatPercent(r.pBest)}</span></td>
-      <td>${actionLabel(r.actual, r.qValues)}<br><span class="prob">${formatPercent(r.pActual)}</span></td>
+      <td>${actionLabel(r.recommended, r)}<br><span class="prob">${formatPercent(r.pBest)}</span></td>
+      <td>${actionLabel(r.actual, r)}<br><span class="prob">${formatPercent(r.pActual)}</span></td>
       <td><span class="prob">${formatPercent(r.probDiff)}</span></td>
     </tr>${r.context === "zimo" || r.context === "fulou" ? `<tr class="probe-row"><td colspan="5">${probeSectionHTML(r.rec, `review:${r.recIndex}`)}</td></tr>` : ""}`).join("");
   return `<div class="review"><h3>\u632F\u308A\u8FD4\u308A\uFF08AI\u3068\u5916\u3057\u305F\u5224\u65AD\uFF1A${rows.length}\u4EF6\uFF09</h3>
@@ -35309,132 +36902,217 @@ function reviewHTML(records) {
     <div class="hint">\u5404\u884C\u3092\u30BF\u30C3\u30D7\u3059\u308B\u3068\u3001\u305D\u306E\u5224\u65AD\u6642\u70B9\u306E\u5834\u9762\u3092\u8868\u793A\u3057\u307E\u3059\uFF08\u5834\u9762\u30D3\u30E5\u30FC\u30A2\uFF09\u3002</div></div>`;
 }
 var sceneViewer = null;
-function foldMjaiScene(events, upto, qijia) {
-  const fresh = () => ({ hand: [], melds: [], pond: [], riichi: false, drawn: null });
-  const st2 = {
-    bakaze: "E",
-    kyoku: 1,
-    honba: 0,
-    kyotaku: 0,
-    oya: 0,
-    scores: [25e3, 25e3, 25e3, 25e3],
-    doraMarkers: [],
-    players: [fresh(), fresh(), fresh(), fresh()],
-    lastDapai: null
-  };
-  let reachPending = -1;
-  const removeFromHand = (actor, tile) => {
-    const h = st2.players[actor].hand;
-    let i = h.indexOf(tile);
-    if (i < 0) {
-      const base = tile.replace("r", "");
-      i = h.findIndex((t) => t.replace("r", "") === base);
-    }
-    if (i >= 0) h.splice(i, 1);
-  };
-  const mianziFor = (ev2) => {
-    const sym = ["", "-", "=", "+"][(ev2.actor - ev2.target + 4) % 4];
-    const conv = ev2.consumed.map((t) => tileFromMjai(t));
-    const suit = conv[0][0];
-    if (ev2.type === "ankan") return suit + conv.map((c) => c[1]).join("");
-    if (ev2.type === "chi") {
-      const called = tileFromMjai(ev2.pai);
-      const digs = conv.map((c) => c[1]);
-      digs.push(called[1] + "-");
-      const val = (d2) => d2[0] === "0" ? 5 : +d2[0];
-      digs.sort((a, b) => val(a) - val(b));
-      return suit + digs.join("");
-    }
-    const d = conv[0][1];
-    if (ev2.type === "pon") return suit + d + d + d + sym;
-    if (ev2.type === "daiminkan") return suit + d + d + d + sym + d;
-    return "";
-  };
-  const n = Math.min(upto, events.length);
-  for (let i = 0; i < n; i++) {
-    const ev2 = events[i];
-    switch (ev2.type) {
-      case "start_kyoku":
-        st2.bakaze = ev2.bakaze;
-        st2.kyoku = ev2.kyoku;
-        st2.honba = ev2.honba;
-        st2.kyotaku = ev2.kyotaku;
-        st2.oya = ev2.oya;
-        st2.scores = ev2.scores.slice();
-        st2.doraMarkers = [ev2.dora_marker];
-        st2.players = ev2.tehais.map((t) => ({ hand: t.slice(), melds: [], pond: [], riichi: false, drawn: null }));
-        reachPending = -1;
-        st2.lastDapai = null;
-        break;
-      case "tsumo":
-        st2.players[ev2.actor].hand.push(ev2.pai);
-        st2.players[ev2.actor].drawn = ev2.pai;
-        break;
-      case "reach":
-        reachPending = ev2.actor;
-        break;
-      case "reach_accepted":
-        st2.scores[ev2.actor] -= 1e3;
-        st2.kyotaku += 1;
-        st2.players[ev2.actor].riichi = true;
-        break;
-      case "dahai": {
-        const pl = st2.players[ev2.actor];
-        removeFromHand(ev2.actor, ev2.pai);
-        pl.pond.push({ pai: ev2.pai, tsumogiri: !!ev2.tsumogiri, riichi: reachPending === ev2.actor, called: false });
-        if (reachPending === ev2.actor) reachPending = -1;
-        pl.drawn = null;
-        st2.lastDapai = { actor: ev2.actor, pai: ev2.pai };
-        break;
-      }
-      case "chi":
-      case "pon":
-      case "daiminkan": {
-        const pl = st2.players[ev2.actor];
-        ev2.consumed.forEach((t) => removeFromHand(ev2.actor, t));
-        const tp = st2.players[ev2.target].pond;
-        if (tp.length) tp[tp.length - 1].called = true;
-        pl.melds.push(mianziFor(ev2));
-        break;
-      }
-      case "ankan":
-        ev2.consumed.forEach((t) => removeFromHand(ev2.actor, t));
-        st2.players[ev2.actor].melds.push(mianziFor(ev2));
-        st2.players[ev2.actor].drawn = null;
-        break;
-      case "kakan": {
-        const pl = st2.players[ev2.actor];
-        removeFromHand(ev2.actor, ev2.consumed[0]);
-        const c = tileFromMjai(ev2.consumed[0]);
-        const idx = pl.melds.findIndex((m) => m[0] === c[0] && m[1] === c[1] && m.length === 5 && /[+\-=]$/.test(m));
-        if (idx >= 0) pl.melds[idx] += c[1];
-        pl.drawn = null;
-        break;
-      }
-      case "dora":
-        st2.doraMarkers.push(ev2.dora_marker);
-        break;
-      case "hora":
-      case "ryukyoku":
-        if (Array.isArray(ev2.deltas)) ev2.deltas.forEach((d, a) => {
-          st2.scores[a] += d;
-        });
-        break;
-      default:
-        break;
-    }
-  }
-  return st2;
+var clips = createClipStore();
+var replayTimer = null;
+var clipMessage = "";
+var clipSaving = false;
+function clipButtonHTML() {
+  return '<button type="button" class="clip-save" data-clip-save aria-label="\u4ECA\u306E\u5C40\u9762\u3092\u30AF\u30EA\u30C3\u30D7" title="\u4ECA\u306E\u5C40\u9762\u3092\u30AF\u30EA\u30C3\u30D7">\u{1F4CE}</button>';
 }
+function stopReplay() {
+  if (replayTimer !== null) clearInterval(replayTimer);
+  replayTimer = null;
+}
+function openReplay(bundle, eventCount = null, savedRecord = void 0) {
+  stopReplay();
+  const steps = replaySteps(bundle);
+  if (!steps.length) return;
+  if (eventCount && !steps.some((s) => s.eventCount === eventCount)) {
+    const scene = foldMjaiScene(bundle.mjai, eventCount);
+    steps.push({ eventCount, kyokuIndex: scene.kyokuIndex, type: bundle.mjai[eventCount - 1]?.type });
+    steps.sort((a, b) => a.eventCount - b.eventCount);
+  }
+  sceneViewer = {
+    replay: true,
+    bundle,
+    steps,
+    index: eventCount ? steps.findIndex((s) => s.eventCount === eventCount) : 0,
+    savedRecord,
+    savedEventCount: eventCount
+  };
+  clipMessage = "";
+  renderSceneViewer();
+}
+function replayCurrent() {
+  const v = sceneViewer;
+  if (v.clip) return { scene: v.clip.scene, record: v.clip.record, eventCount: v.clip.eventCount };
+  const eventCount = v.steps[v.index].eventCount;
+  const position = replayPosition(v.bundle, eventCount);
+  if (eventCount === v.savedEventCount && v.savedRecord !== void 0) position.record = v.savedRecord;
+  return { ...position, eventCount };
+}
+function moveReplay(delta) {
+  const v = sceneViewer;
+  if (!v?.replay || !v.bundle) return;
+  v.index = Math.max(0, Math.min(v.index + delta, v.steps.length - 1));
+  if (v.index === v.steps.length - 1) stopReplay();
+  clipMessage = "";
+  renderSceneViewer();
+}
+function toggleReplay() {
+  const v = sceneViewer;
+  if (!v?.replay || !v.bundle) return;
+  if (replayTimer !== null) stopReplay();
+  else if (v.index < v.steps.length - 1) replayTimer = setInterval(() => moveReplay(1), 1e3);
+  renderSceneViewer();
+}
+function jumpReplayKyoku(delta) {
+  stopReplay();
+  const v = sceneViewer;
+  if (!v?.steps) return;
+  const kyoku = v.steps[v.index].kyokuIndex + delta;
+  const index = v.steps.findIndex((s) => s.kyokuIndex === kyoku);
+  if (index >= 0) {
+    v.index = index;
+    clipMessage = "";
+  }
+  renderSceneViewer();
+}
+function renderReplayViewer() {
+  const v = sceneViewer, { scene, record } = replayCurrent();
+  const qijia = v.bundle?.meta?.qijia ?? v.clip?.qijia ?? 0;
+  const snap = sceneSnapshot(scene, qijia), c = snap.center;
+  const byPos = Object.fromEntries(snap.seats.map((s) => [s.pos, s]));
+  const round = `${"\u6771\u5357\u897F\u5317"[c.zhuangfeng]}${c.jushu + 1}\u5C40 ${c.changbang}\u672C\u5834`;
+  const seat = (pos) => `<div class="seat replay-seat-${["bottom", "right", "top", "left"][pos]} pos-${["bottom", "right", "top", "left"][pos]}${byPos[pos].lizhi ? " seat-riichi" : ""}">${seatHTML(byPos[pos], pos === 0, true, c.lunban)}</div>`;
+  const mini = (s) => `<div class="center-player pos-${s.pos}${s.l === c.lunban ? " active" : ""}"><span class="cp-wind">${s.wind}</span><span class="cp-name">${s.name}</span><b>${s.defen.toLocaleString()}</b></div>`;
+  const nav = !!v.bundle, index = v.index ?? 0;
+  const currentKyoku = v.steps?.[index].kyokuIndex;
+  $("scene-viewer").innerHTML = `<div class="sv-card replay-card" role="dialog" aria-modal="true" aria-label="\u5BFE\u5C40\u306E\u518D\u751F">
+    <div class="sv-head"><div class="sv-title">\u5BFE\u5C40\u306E\u518D\u751F \u2015 ${round} \uFF0F ${scene.turn}\u624B\u76EE${record ? ` \u30FB ${contextLabel(record.context)}` : ""}</div>
+    <div class="sv-nav"><button type="button" data-scene-close>\u9589\u3058\u308B</button></div></div>
+    <div class="sv-nav replay-nav">
+      <button type="button" data-replay-prev-kyoku ${!nav || !v.steps.some((s) => s.kyokuIndex < currentKyoku) ? "disabled" : ""}>\u524D\u306E\u5C40</button>
+      <button type="button" data-scene-prev ${!nav || index <= 0 ? "disabled" : ""}>\u2190 \u524D\u306E\u624B</button>
+      <button type="button" data-replay-play ${!nav || index >= v.steps.length - 1 ? "disabled" : ""}>${replayTimer !== null ? "\u505C\u6B62" : "\u81EA\u52D5\u518D\u751F"}</button>
+      <button type="button" data-scene-next ${!nav || index >= v.steps.length - 1 ? "disabled" : ""}>\u6B21\u306E\u624B \u2192</button>
+      <button type="button" data-replay-next-kyoku ${!nav || !v.steps.some((s) => s.kyokuIndex > currentKyoku) ? "disabled" : ""}>\u6B21\u306E\u5C40</button>
+    </div>
+    <div class="hint">${nav ? `\u5C40\u9762 ${index + 1} / ${v.steps.length} \u30FB \u95B2\u89A7\u5C02\u7528` : "\u5143\u306E\u5BFE\u5C40\u30D0\u30F3\u30C9\u30EB\u304C\u306A\u3044\u305F\u3081\u3001\u4FDD\u5B58\u3057\u305F\u5C40\u9762\u3060\u3051\u3092\u8868\u793A\u3057\u3066\u3044\u307E\u3059\u3002"}</div>
+    <div class="replay-table">${seat(2)}${seat(3)}
+      <div class="replay-board"><div class="replay-center">
+        <div class="center-players">${[2, 3, 1, 0].map((p) => mini(byPos[p])).join("")}</div>
+        <div class="round">${"\u6771\u5357\u897F\u5317"[c.zhuangfeng]}${c.jushu + 1}\u5C40 <span>${c.changbang}\u672C\u5834</span></div><div class="center-meta">\u6B8B\u308A ${c.paishu}\u679A\u3000\u4F9B\u8A17 ${c.lizhibang}</div>
+        <div class="dora"><span>\u30C9\u30E9</span>${c.baopai.map((p) => tileHTML(p, "dora-tile")).join("")}</div></div>
+      ${snap.seats.map((s) => `<div class="board-pond bp-${s.pos}${s.lizhi ? " riichi-on" : ""}">${pondHTML(s, scene.lastDapai ? (scene.lastDapai.actor - scene.oya + 4) % 4 : -1)}</div>`).join("")}</div>
+      ${seat(1)}<div class="replay-self-area">${seat(0)}</div></div>
+    ${record ? `<section class="replay-coach clip-panel">${clipButtonHTML()}${coachHTML(record)}<div class="clip-status" role="status"></div></section>` : ""}
+    ${!record ? `<div class="replay-clip-tools clip-panel">${clipButtonHTML()}<div class="clip-status" role="status"></div></div>` : ""}
+    </div>`;
+  $("scene-viewer").style.display = "flex";
+  $("scene-viewer").querySelector(".clip-status").textContent = clipMessage;
+  fitReplayBoard();
+}
+function fitReplayBoard() {
+  const table = $("scene-viewer")?.querySelector(".replay-table");
+  if (!table) return;
+  const board = table.querySelector(".replay-board");
+  if (matchMedia("(orientation: landscape) and (max-height: 700px)").matches) {
+    board.style.width = "100%";
+    board.style.height = "100%";
+  } else {
+    const css = getComputedStyle(table);
+    const width = parseFloat(css.gridTemplateColumns.split(" ")[1]);
+    const height = parseFloat(css.gridTemplateRows.split(" ")[1]);
+    const side = Math.max(1, Math.min(width, height));
+    board.style.width = side + "px";
+    board.style.height = side + "px";
+  }
+}
+window.addEventListener("resize", fitReplayBoard);
+async function saveSceneClip() {
+  if (clipSaving) return;
+  clipSaving = true;
+  let message;
+  try {
+    let input;
+    if (sceneViewer?.replay) {
+      const { scene, record, eventCount } = replayCurrent();
+      const meta = sceneViewer.bundle?.meta || { gameId: sceneViewer.clip.gameId, startedAt: sceneViewer.clip.gameDate, qijia: sceneViewer.clip.qijia };
+      input = { meta, scene, record, eventCount };
+    } else {
+      if (!bridge?.events?.length || !currentGameId) throw new Error("\u5BFE\u5C40\u4E2D\u306B\u767B\u9332\u3067\u304D\u307E\u3059\u3002");
+      const eventCount = bridge.events.length;
+      const { scene, record } = replayPosition({ mjai: bridge.events, coach: coach?.records || [] }, eventCount);
+      input = { meta: { gameId: currentGameId, startedAt: gameStartedAt, qijia: QIJIA }, scene, record, eventCount };
+    }
+    await clips.add(makeClip(input));
+    message = "\u30AF\u30EA\u30C3\u30D7\u3092\u767B\u9332\u3057\u307E\u3057\u305F\u3002";
+  } catch (e) {
+    message = e.message || "\u30AF\u30EA\u30C3\u30D7\u3092\u4FDD\u5B58\u3067\u304D\u307E\u305B\u3093\u3067\u3057\u305F\u3002";
+  } finally {
+    clipSaving = false;
+  }
+  clipMessage = message;
+  const root = sceneViewer?.replay ? $("scene-viewer") : $("coach");
+  root.querySelectorAll(".clip-status").forEach((el2) => {
+    el2.textContent = message;
+  });
+}
+async function openClips() {
+  const el2 = $("clips-view");
+  let items = [], error = "";
+  try {
+    items = await clips.list();
+  } catch (_) {
+    error = "\u30AF\u30EA\u30C3\u30D7\u3092\u8AAD\u307F\u8FBC\u3081\u307E\u305B\u3093\u3067\u3057\u305F\u3002";
+  }
+  el2.innerHTML = `<div class="history-card"><div class="history-head"><h2>\u5C40\u9762\u30AF\u30EA\u30C3\u30D7\uFF08${items.length} / 100\u4EF6\uFF09</h2><button type="button" data-clips-close>\u9589\u3058\u308B</button></div>
+    <div class="history-list">${items.map((_, i) => `<div class="history-item"><div class="history-meta" data-clip-label="${i}"></div><div class="history-actions"><button type="button" data-clip-open="${i}">\u958B\u304F</button><button type="button" data-clip-delete="${i}">\u524A\u9664</button></div></div>`).join("") || '<div class="history-empty">\u30AF\u30EA\u30C3\u30D7\u306F\u3042\u308A\u307E\u305B\u3093\u3002</div>'}</div><div class="clips-error" role="alert"></div></div>`;
+  el2.querySelector(".clips-error").textContent = error;
+  el2.querySelectorAll("[data-clip-label]").forEach((node) => {
+    node.textContent = clipLabel(items[Number(node.dataset.clipLabel)]);
+  });
+  el2.querySelector("[data-clips-close]").onclick = () => {
+    el2.style.display = "none";
+  };
+  el2.querySelectorAll("[data-clip-delete]").forEach((btn) => {
+    btn.onclick = async () => {
+      btn.disabled = true;
+      try {
+        await clips.delete(items[Number(btn.dataset.clipDelete)].id);
+        await openClips();
+      } catch (_) {
+        el2.querySelector(".clips-error").textContent = "\u524A\u9664\u3067\u304D\u307E\u305B\u3093\u3067\u3057\u305F\u3002";
+        btn.disabled = false;
+      }
+    };
+  });
+  el2.querySelectorAll("[data-clip-open]").forEach((btn) => {
+    btn.onclick = async () => {
+      const clip = items[Number(btn.dataset.clipOpen)];
+      let bundles = [];
+      try {
+        bundles = await idbGetAllBundles();
+      } catch (_) {
+      }
+      const resolved = resolveClip(clip, bundles);
+      if (resolved.bundle) openReplay(resolved.bundle, clip.eventCount, clip.record);
+      else {
+        stopReplay();
+        sceneViewer = { replay: true, clip };
+        clipMessage = "";
+        renderSceneViewer();
+      }
+    };
+  });
+  el2.style.display = "flex";
+}
+document.addEventListener("visibilitychange", () => {
+  if (document.hidden) {
+    stopReplay();
+    if (sceneViewer?.replay) renderSceneViewer();
+  }
+});
 function sceneSeatHTML(st2, seat, qijia) {
   const actor = (seat - qijia + 4) % 4;
   const pl = st2.players[actor];
   const dealerSeat = (st2.oya + qijia) % 4;
   const wind = "\u6771\u5357\u897F\u5317"[(seat - dealerSeat + 4) % 4];
   const posName = ["pos-bottom", "pos-right", "pos-top", "pos-left"][seat];
-  const pond = pl.pond.map((d) => tileHTML(
+  const pond = pl.pond.filter((d) => !d.called).map((d) => tileHTML(
     tileFromMjai(d.pai),
-    `discard${d.called ? " called" : ""}${d.riichi ? " riichi-d" : ""}`
+    `discard${d.tsumogiri ? " tsumogiri" : ""}${d.riichi ? " riichi-d" : ""}`
   )).join("");
   const melds = pl.melds.map((m) => meldHTML(m, seat)).join("");
   let hand;
@@ -35449,8 +37127,8 @@ function sceneSeatHTML(st2, seat, qijia) {
         drawnPai = dp;
       }
     }
-    const key = (p) => "mpsz".indexOf(p[0]) * 100 + (p[1] === "0" ? 5 : +p[1]) * 10 + (p[1] === "0" ? 1 : 0);
-    tiles.sort((a, b) => key(a) - key(b));
+    const key2 = (p) => "mpsz".indexOf(p[0]) * 100 + (p[1] === "0" ? 5 : +p[1]) * 10 + (p[1] === "0" ? 1 : 0);
+    tiles.sort((a, b) => key2(a) - key2(b));
     hand = tiles.map((p) => tileHTML(p, "hand sv-tile")).join("") + (drawnPai ? tileHTML(drawnPai, "hand sv-tile drawn") : "");
   } else {
     hand = pl.hand.map(() => tileHTML("_", "opp")).join("");
@@ -35478,7 +37156,7 @@ function sceneCandidateHTML(rec) {
   const rows = qs2.map((c, i) => {
     if (!expanded && !keep.has(i)) return "";
     const mark = [i === ri2 ? "\u63A8\u5968" : "", i === ai2 ? "\u5B9F\u6253" : ""].filter(Boolean).join("\u30FB");
-    return `<tr${i === ai2 ? ' class="sv-actual"' : ""}><td>${actionLabel(c.action, qs2)}</td>
+    return `<tr${i === ai2 ? ' class="sv-actual"' : ""}><td>${actionLabel(c.action, rec)}</td>
       <td>${formatPercent(c.prob)}</td><td>${mark}</td></tr>`;
   }).join("");
   const hidden = qs2.length - keep.size;
@@ -35486,11 +37164,13 @@ function sceneCandidateHTML(rec) {
   return `<table class="cmp sv-cmp"><thead><tr><th>\u5019\u88DC</th><th>\u63A8\u5968\u5EA6</th><th></th></tr></thead><tbody>${rows}${toggle}</tbody></table>`;
 }
 function openSceneViewer(recIndex, bundle = lastBundle) {
+  stopReplay();
   if (!bundle?.coach?.length || !bundle?.mjai?.length) return;
   sceneViewer = { bundle, index: Math.max(0, Math.min(recIndex, bundle.coach.length - 1)), expanded: false };
   renderSceneViewer();
 }
 function closeSceneViewer() {
+  stopReplay();
   sceneViewer = null;
   const el2 = $("scene-viewer");
   if (el2) {
@@ -35499,6 +37179,11 @@ function closeSceneViewer() {
   }
 }
 function stepSceneViewer(delta) {
+  if (sceneViewer?.replay) {
+    stopReplay();
+    moveReplay(delta);
+    return;
+  }
   if (!sceneViewer) return;
   const next = sceneViewer.index + delta;
   if (next < 0 || next >= sceneViewer.bundle.coach.length) return;
@@ -35507,6 +37192,10 @@ function stepSceneViewer(delta) {
   renderSceneViewer();
 }
 function renderSceneViewer() {
+  if (sceneViewer?.replay) {
+    renderReplayViewer();
+    return;
+  }
   const el2 = $("scene-viewer");
   if (!el2 || !sceneViewer) return;
   const { bundle, index } = sceneViewer;
@@ -35525,11 +37214,11 @@ function renderSceneViewer() {
         <button type="button" data-scene-close>\u9589\u3058\u308B</button>
       </div>
     </div>
-    <div class="sv-meta">\u63A8\u5968: <b>${actionLabel(rec.recommended, rec.qValues)}</b>
+    <div class="sv-meta">\u63A8\u5968: <b>${actionLabel(rec.recommended, rec)}</b>
       <span class="prob">${formatPercent(rec.pBest)}</span>
-      \uFF0F \u5B9F\u6253: <b>${actionLabel(rec.actual, rec.qValues)}</b>
+      \uFF0F \u5B9F\u6253: <b>${actionLabel(rec.actual, rec)}</b>
       <span class="prob">${formatPercent(rec.pActual)}</span>
-      ${rec.shantenAfter != null ? `\uFF0F \u5411\u8074 ${rec.shantenAfter}` : ""}</div>
+      ${rec.shantenAfter != null ? `\uFF0F \u5411\u8074\uFF08\u6700\u826F\u306E\u6253\u724C\u5F8C\uFF09 ${rec.shantenAfter}` : ""}</div>
     <div class="sv-board">${seats}
       <div class="sv-center"><div class="round">${round}</div>
         <div class="sv-dora">\u30C9\u30E9\u8868\u793A ${dora}</div>
@@ -35741,12 +37430,35 @@ async function saveSummaryForBundle(bundle) {
     S.errors.push("summary save: " + (e.message || e));
   }
 }
+function saveTextFile(filename, text, mime) {
+  const nb2 = globalThis.JanLabNative;
+  if (nb2 && typeof nb2.saveTextFile === "function") {
+    try {
+      if (nb2.saveTextFile(filename, mime, text)) return true;
+    } catch (e) {
+      S.errors.push("native save: " + (e.message || e));
+    }
+  }
+  try {
+    const url = URL.createObjectURL(new Blob([text], { type: mime }));
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = filename;
+    a.style.display = "none";
+    document.body.appendChild(a);
+    a.click();
+    setTimeout(() => {
+      a.remove();
+      URL.revokeObjectURL(url);
+    }, 3e4);
+    return true;
+  } catch (e) {
+    S.errors.push("download: " + (e.message || e));
+    return false;
+  }
+}
 function downloadJson(filename, value) {
-  const a = document.createElement("a");
-  a.href = URL.createObjectURL(new Blob([JSON.stringify(value, null, 2)], { type: "application/json" }));
-  a.download = filename;
-  a.click();
-  setTimeout(() => URL.revokeObjectURL(a.href), 5e3);
+  return saveTextFile(filename, JSON.stringify(value, null, 2), "application/json");
 }
 function historyItemLabel(bundle) {
   const m = bundle.meta || {};
@@ -35759,26 +37471,85 @@ function historyItemLabel(bundle) {
   const partialTag = m.status === "partial" ? "\u3010\u4E2D\u65AD\u3011 " : "";
   return `${partialTag}${date} / ${m.mode === "auto" ? "\u30AA\u30FC\u30C8" : "\u624B\u52D5"} / ${length} / ${m.model?.name || m.model?.coach || "-"}<br>${standings}<br>${agr} / \u5916\u3057 ${m.reviewCount ?? 0}\u4EF6`;
 }
+var historyImportMsg = "";
+async function importLogText(text) {
+  if (S.started && !gameEnded) return { fileError: "\u5BFE\u5C40\u4E2D\u306F\u8AAD\u307F\u8FBC\u3081\u307E\u305B\u3093", imported: 0, duplicates: 0, rejected: [] };
+  await refreshHistory().catch(() => {
+  });
+  if (!summariesLoaded) await loadSummaries();
+  const have = /* @__PURE__ */ new Set([...historyCache.map((b) => b.meta.gameId), ...summariesCache.map((s) => s.gameId)]);
+  const plan = planImport(text, have);
+  let imported = 0;
+  for (const bundle of plan.accepted) {
+    try {
+      await idbPutBundle(bundle);
+      await saveSummaryForBundle(bundle);
+      imported++;
+    } catch (e) {
+      S.errors.push("import: " + (e.message || e));
+      plan.rejected.push({ label: bundle.meta.gameId, reason: "\u4FDD\u5B58\u306B\u5931\u6557\u3057\u307E\u3057\u305F" });
+    }
+  }
+  return { ...plan, imported };
+}
 function renderHistoryPanel() {
   const el2 = $("history");
   if (!el2) return;
   const items = historyCache.map((bundle) => `<div class="history-item" data-game-id="${bundle.meta.gameId}">
       <div class="history-meta">${historyItemLabel(bundle)}</div>
       <div class="history-actions">
+        <button type="button" class="history-replay" data-game-id="${bundle.meta.gameId}">\u518D\u751F</button>
         <button type="button" class="history-download" data-game-id="${bundle.meta.gameId}">\u30C0\u30A6\u30F3\u30ED\u30FC\u30C9</button>
         <button type="button" class="history-delete" data-game-id="${bundle.meta.gameId}">\u524A\u9664</button>
       </div>
     </div>`).join("");
   el2.innerHTML = `<div class="history-card">
     <div class="history-head"><h2>\u5BFE\u5C40\u5C65\u6B74\uFF08IndexedDB\u30FB\u76F4\u8FD1${HISTORY_LIMIT}\u4EF6\uFF09</h2>
-      <div><button type="button" id="history-download-all">\u4E00\u62EC\u30C0\u30A6\u30F3\u30ED\u30FC\u30C9</button>
+      <div><button type="button" id="history-clips">\u30AF\u30EA\u30C3\u30D7\u4E00\u89A7</button>
+      <button type="button" id="history-download-all">\u4E00\u62EC\u30C0\u30A6\u30F3\u30ED\u30FC\u30C9</button>
+      <button type="button" id="history-import">\u30ED\u30B0\u3092\u8AAD\u307F\u8FBC\u3080</button>
+      <input type="file" id="history-import-file" accept=".json,application/json" hidden>
       <button type="button" id="history-clear">\u5168\u524A\u9664</button>
       <button type="button" id="history-close">\u9589\u3058\u308B</button></div></div>
+    <div class="history-note">\u300C\u30C0\u30A6\u30F3\u30ED\u30FC\u30C9\u300D\u300C\u4E00\u62EC\u30C0\u30A6\u30F3\u30ED\u30FC\u30C9\u300D\u306F\u5BFE\u5C40ID\u30FB\u4FDD\u5B58\u65E5\u6642\u30FB\u7D50\u679C\u30FB\u30B3\u30FC\u30C1\u8A18\u9332\u30FB\u724C\u8B5C\u3092\u542B\u3080 .json \u5F62\u5F0F\u3067\u3059\u3002\u300C\u30ED\u30B0\u3092\u8AAD\u307F\u8FBC\u3080\u300D\u3067\u623B\u305B\u307E\u3059\u3002</div>
+    ${historyImportMsg ? `<div class="history-import-result" role="status"></div>` : ""}
     <div class="history-list">${items || '<div class="history-empty">\u4FDD\u5B58\u6E08\u307F\u306E\u5BFE\u5C40\u306F\u3042\u308A\u307E\u305B\u3093\u3002</div>'}</div>
   </div>`;
   $("history-close").addEventListener("click", () => {
     el2.style.display = "none";
+    historyImportMsg = "";
   });
+  const resEl = el2.querySelector(".history-import-result");
+  if (resEl) resEl.textContent = historyImportMsg;
+  $("history-import").addEventListener("click", () => $("history-import-file").click());
+  $("history-import-file").addEventListener("change", async (ev2) => {
+    const file = ev2.target.files?.[0];
+    if (!file) return;
+    let result;
+    try {
+      result = await importLogText(await file.text());
+    } catch (e) {
+      S.errors.push("import: " + (e.message || e));
+      result = { fileError: "\u30D5\u30A1\u30A4\u30EB\u3092\u8AAD\u307F\u8FBC\u3081\u307E\u305B\u3093", imported: 0, duplicates: 0, rejected: [] };
+    }
+    S.lastImport = result;
+    try {
+      renderStartScreenStats();
+    } catch (_) {
+    }
+    historyImportMsg = importResultText(result);
+    try {
+      await refreshHistory();
+    } catch (e) {
+      S.errors.push("history load: " + (e.message || e));
+    }
+    renderHistoryPanel();
+  });
+  $("history-clips").addEventListener("click", openClips);
+  el2.querySelectorAll(".history-replay").forEach((btn) => btn.addEventListener("click", () => {
+    const bundle = historyCache.find((b) => b.meta.gameId === btn.dataset.gameId);
+    if (bundle) openReplay(bundle);
+  }));
   $("history-download-all").addEventListener("click", () => {
     if (historyCache.length) downloadJson("mahjong-local_history.json", historyCache);
   });
@@ -35823,6 +37594,7 @@ function renderHistoryPanel() {
   el2.querySelectorAll(".history-delete").forEach((btn) => btn.addEventListener("click", () => historyAction(() => idbDeleteBundle(btn.dataset.gameId))));
 }
 async function openHistory() {
+  historyImportMsg = "";
   try {
     await refreshHistory();
   } catch (e) {
@@ -35864,7 +37636,11 @@ function updateDahaiLog() {
   const evs = bridge.events;
   for (; dahaiLogSeen < evs.length; dahaiLogSeen++) {
     const e = evs[dahaiLogSeen];
-    if (e.type === "start_kyoku") S.dahaiThisKyoku = [0, 0, 0, 0];
+    if (e.type === "start_kyoku") {
+      S.dahaiThisKyoku = [0, 0, 0, 0];
+      S.calledThisKyoku = 0;
+    }
+    if (e.type === "chi" || e.type === "pon" || e.type === "daiminkan") S.calledThisKyoku = (S.calledThisKyoku || 0) + 1;
     if (e.type === "dahai") {
       S.dahaiLog.push({ actor: e.actor, pai: e.pai, tsumogiri: !!e.tsumogiri });
       S.dahaiThisKyoku[e.actor]++;
@@ -35882,7 +37658,7 @@ function updateLastResult() {
   S.mjaiEvents = evs.length;
 }
 var PHONE_LANDSCAPE = window.matchMedia("(orientation: landscape) and (max-height: 700px)");
-var PHONE_PORTRAIT = window.matchMedia("(orientation: portrait) and (max-width: 500px)");
+var PHONE_PORTRAIT = window.matchMedia("(orientation: portrait) and (max-width: 1050px)");
 var fitBoardKey = null;
 function fitBoard() {
   const board = $("board"), wrap = $("table-wrap");
@@ -35893,7 +37669,7 @@ function fitBoard() {
     return;
   }
   const top = $("seat-top"), self2 = $("self-area"), controls = $("controls");
-  const key = [
+  const key2 = [
     window.innerWidth,
     window.innerHeight,
     controls.offsetHeight,
@@ -35901,13 +37677,53 @@ function fitBoard() {
     self2.offsetHeight,
     top.clientWidth
   ].join("|");
-  if (key === fitBoardKey) return;
-  fitBoardKey = key;
+  if (key2 === fitBoardKey) return;
+  fitBoardKey = key2;
   const wrapCS = getComputedStyle(wrap);
   const used = controls.offsetHeight + top.offsetHeight + self2.offsetHeight + parseFloat(wrapCS.paddingTop) + parseFloat(wrapCS.paddingBottom) + 7 + 2 * 5 - 2;
   const availH = window.innerHeight - used;
   const size = Math.max(240, Math.min(660, availH, top.clientWidth));
   board.style.width = size + "px";
+}
+function refitViewport() {
+  const app = $("app");
+  if (app) {
+    app.style.height = window.innerHeight + "px";
+    app.style.width = window.innerWidth + "px";
+    app.scrollTop = 0;
+    app.scrollLeft = 0;
+  }
+  const wrap = $("table-wrap");
+  if (wrap) {
+    wrap.scrollTop = 0;
+    wrap.scrollLeft = 0;
+  }
+  const se = document.scrollingElement || document.documentElement;
+  if (se.scrollTop || se.scrollLeft || window.scrollX || window.scrollY) window.scrollTo(0, 0);
+  fitBoardKey = null;
+  fitBoard();
+  S.fitCount = (S.fitCount | 0) + 1;
+}
+var resumeTimers = [];
+function refitAfterResume() {
+  refitViewport();
+  requestAnimationFrame(refitViewport);
+  for (const t of resumeTimers) clearTimeout(t);
+  resumeTimers = [150, 500, 1200].map((ms2) => setTimeout(refitViewport, ms2));
+}
+function initViewportFit() {
+  window.addEventListener("resize", refitViewport);
+  window.addEventListener("orientationchange", refitAfterResume);
+  window.addEventListener("pageshow", refitAfterResume);
+  window.addEventListener("focus", refitAfterResume);
+  document.addEventListener("visibilitychange", () => {
+    if (document.visibilityState === "visible") refitAfterResume();
+  });
+  window.visualViewport?.addEventListener("resize", refitViewport);
+  window.addEventListener("scroll", () => {
+    if (window.scrollX || window.scrollY) window.scrollTo(0, 0);
+  }, { passive: true });
+  refitViewport();
 }
 function updateSelChip() {
   const chip = $("sel-chip");
@@ -35956,6 +37772,15 @@ function render() {
   }
   if (coach) {
     S.coachRecords = coach.records.length;
+    const reachRecs = coach.records.filter((r) => r.context === "zimo" && (r.qValues || []).some((c2) => c2.action === "reach"));
+    S.reachLabelCheck = {
+      records: reachRecs.length,
+      withTiles: reachRecs.filter((r) => Array.isArray(r.riichiTiles) && r.riichiTiles.length).length,
+      labelOk: reachRecs.filter((r) => {
+        const d = reachDeclareAction(r);
+        return d && r.riichiTiles.includes(d);
+      }).length
+    };
     let autoPlayed = 0, eager = 0, pending2 = 0, withShapeBasis = 0;
     const notes = [];
     for (const r of coach.records) {
@@ -36011,10 +37836,9 @@ function render() {
     <div class="round">${"\u6771\u5357\u897F\u5317"[c.zhuangfeng]}${c.jushu + 1}\u5C40 <span>${c.changbang}\u672C\u5834</span></div>
     <div class="center-meta">\u6B8B\u308A ${c.paishu}\u679A\u3000\u4F9B\u8A17 ${c.lizhibang}</div>
     <div class="dora"><span>\u30C9\u30E9</span>${c.baopai.map((p) => tileHTML(p, "dora-tile")).join("")}</div>
-    <div class="turn">${c.lunban >= 0 ? NAMES[snap.seats[c.lunban].id] + "\u306E\u756A" : ""}</div>
     <div class="result">${lastResultText}</div>`);
   setHTML($("actions"), decisionButtonsHTML());
-  $("actions").classList.toggle("has-actions", !!pending && !AUTO);
+  $("actions").classList.toggle("has-actions", !!(pending || preparingDecision) && !AUTO);
   S.actionButtons = [...document.querySelectorAll("#actions .act")].map((el2) => ({
     act: el2.dataset.act,
     text: el2.textContent.trim().replace(/\s+/g, " "),
@@ -36022,7 +37846,9 @@ function render() {
     height: Math.round(el2.getBoundingClientRect().height)
   }));
   S.tileSvgCount = document.querySelectorAll("#table svg.tile-art").length;
-  setHTML($("coach"), coachHTML());
+  $("coach").classList.add("clip-panel");
+  setHTML($("coach"), clipButtonHTML() + coachHTML() + '<div class="clip-status" role="status"></div>');
+  $("coach").querySelector(".clip-status").textContent = clipMessage;
   setHTML($("explain"), explainHTML());
   renderResultPanel();
   wireButtons();
@@ -36036,7 +37862,6 @@ function wireButtons() {
     el2.addEventListener("click", () => {
       if (!pending) return;
       const action = el2.dataset.tile;
-      const pai = el2.dataset.pai;
       const idx = +el2.dataset.idx;
       if (!pending.options.dapaiList.includes(action)) return;
       if (selectedAction !== action || selectedIdx !== idx) {
@@ -36048,7 +37873,7 @@ function wireButtons() {
         return;
       }
       if (riichiArmed && pending.options.riichiTiles?.includes(action)) {
-        pending.resolve({ dapai: pai + "*" });
+        pending.resolve({ dapai: action + "*" });
       } else pending.resolve({ dapai: action });
     });
   });
@@ -36087,9 +37912,18 @@ var view2 = {
       savePartialGame();
     });
     kyokuResult = null;
+    resetCoachDisplay();
     guarded("view.redraw/render", render);
   },
   update(msg) {
+    audio.handleMessage(msg);
+    const draw = msg?.zimo || msg?.gangzimo;
+    if (draw?.l === seat0._menfeng) resetCoachDisplay("zimo");
+    if (msg?.fulou?.l === seat0._menfeng) {
+      const daiminkan = String(msg.fulou.m || "").replace(/\D/g, "").length === 4;
+      resetCoachDisplay(daiminkan ? null : "fulou");
+    }
+    if (msg?.dapai?.l === seat0._menfeng || msg?.gang?.l === seat0._menfeng || msg?.hule || msg?.pingju) preparingDecision = null;
     if (msg?.dapai) lastDapaiL = msg.dapai.l;
     if (msg?.hule) guarded("view.update/hule", () => {
       kyokuResult = captureHora(msg.hule);
@@ -36109,6 +37943,7 @@ var view2 = {
 function showEnd(paipu) {
   if (endHandled) return;
   endHandled = true;
+  audio.stopGame();
   clearResumeSnapshot();
   S.finished = true;
   S.defen = paipu.defen;
@@ -36164,53 +37999,27 @@ function showEnd(paipu) {
     ${breakdownHTML}
     <p id="save-status" class="save-status">\u5BFE\u5C40\u30C7\u30FC\u30BF\u3092\u4FDD\u5B58\u4E2D\u2026</p>
     ${review}
-    <button id="dl-mjai">mjai\u30ED\u30B0\u3092\u30C0\u30A6\u30F3\u30ED\u30FC\u30C9</button>
+    <button id="dl-bundle" type="button">\u5BFE\u5C40\u30ED\u30B0\uFF08.json\uFF09\u3092\u30C0\u30A6\u30F3\u30ED\u30FC\u30C9</button>
+    <p class="result-note">\u5BFE\u5C40ID\u30FB\u4FDD\u5B58\u65E5\u6642\u30FB\u7D50\u679C\u30FB\u30B3\u30FC\u30C1\u8A18\u9332\u30FB\u724C\u8B5C\u3092\u307E\u3068\u3081\u3066\u4FDD\u5B58\u3057\u307E\u3059\u3002\u300C\u5BFE\u5C40\u5C65\u6B74\u300D\u306E\u300C\u30ED\u30B0\u3092\u8AAD\u307F\u8FBC\u3080\u300D\u3067\u623B\u305B\u307E\u3059\u3002</p>
     <button id="open-history-end" type="button">\u5BFE\u5C40\u5C65\u6B74</button>
     <button id="again">\u30B9\u30BF\u30FC\u30C8\u753B\u9762\u306B\u623B\u308B</button></div>`;
   $("end").style.display = "flex";
-  $("dl-mjai").addEventListener("click", downloadMjai);
+  $("dl-bundle").addEventListener("click", () => downloadJson(`mahjong-local_${bundle.meta.gameId}.json`, bundle));
   $("open-history-end").addEventListener("click", openHistory);
   $("again").addEventListener("click", () => location.reload());
   saveFinishedGame(bundle);
   render();
 }
-function downloadMjai() {
-  const text = bridge.events.map((e) => JSON.stringify(e)).join("\n") + "\n";
-  const a = document.createElement("a");
-  a.href = URL.createObjectURL(new Blob([text], { type: "application/jsonl" }));
-  a.download = "mahjong-local_mjai.jsonl";
-  a.click();
-  setTimeout(() => URL.revokeObjectURL(a.href), 5e3);
-}
-async function attachResumePrefix(resume) {
+async function attachResumePrefix(resume, prepared) {
   S.resumePrefixLoaded = false;
   try {
     const all = await idbGetAllBundles();
     const prev = all.find((b) => b.meta?.gameId === resume.gameId);
     if (!prev) return;
-    const mjai = prev.mjai || [];
-    let cut = mjai.length, seen = 0;
-    for (let i = 0; i < mjai.length; i++) {
-      if (mjai[i].type === "start_kyoku") {
-        if (seen === resume.kyokuIndex) {
-          cut = i;
-          break;
-        }
-        seen++;
-      }
-      if (mjai[i].type === "end_game") {
-        cut = i;
-        break;
-      }
-    }
-    const prefix = mjai.slice(0, cut).filter((e) => e.type !== "start_game" && e.type !== "end_game");
-    const completed = prefix.filter((e) => e.type === "start_kyoku").length;
-    const prefixCopy = JSON.parse(JSON.stringify(prefix));
-    const recsCopy = coach ? JSON.parse(JSON.stringify((prev.coach || []).filter((r) => (r.kyokuIndex ?? -1) < completed))) : [];
-    const resultsCopy = (prev.results || []).filter((r) => (r.kyokuIndex ?? -1) < completed);
+    const { prefix: prefixCopy, records: recsCopy, results: resultsCopy, completed } = resumePrefixPlan(prev, resume, prepared);
     bridge.conv.events.length = 0;
     bridge.conv.events.push(...prefixCopy);
-    bridge.kyokuIndex = completed - 1;
+    bridge.kyokuIndex = resume.kyokuIndex - 1;
     if (coach) coach.records.push(...recsCopy);
     kyokuResultsAll = resultsCopy;
     S.resultCount = kyokuResultsAll.length;
@@ -36221,10 +38030,11 @@ async function attachResumePrefix(resume) {
     recordError("E-D302", e, { stage: "resume-prefix" });
   }
 }
-async function startGame() {
+async function startGame(userGesture = false) {
   if (S.started) return;
   if (!ai || !S.ready || S.modelSwapping) return;
   S.started = true;
+  audio.startGame(!!userGesture && !!navigator.userActivation?.isActive);
   const ssEl = $("start-screen");
   if (ssEl) ssEl.hidden = true;
   try {
@@ -36232,6 +38042,7 @@ async function startGame() {
   } catch (e) {
     S.errors.push("startGame: " + (e?.message || e));
     S.started = false;
+    audio.stopGame();
     game = null;
     const btn = $("startBtn");
     if (btn) btn.disabled = false;
@@ -36259,6 +38070,17 @@ async function startGameInner() {
     gameModel = { modelId: gm.id, modelName: gm.label || gm.name };
   }
   const rule = specRule({ length: gameLength });
+  const preparedResume = resume ? prepareMidhand(resume, rule) : null;
+  if (resume) {
+    resumedFrom = {
+      ...resumedFrom,
+      midhand: !!preparedResume,
+      phase: preparedResume?.phase || "kyoku-head",
+      wallReshuffled: !!preparedResume,
+      fallback: !!resume.midhandFallback || !!resume.midhand && !preparedResume
+    };
+    S.resumeMode = preparedResume ? "midhand" : "kyoku-head";
+  }
   S.ruleSummary = {
     startingPoints: rule["\u914D\u7D66\u539F\u70B9"],
     returnPoints: RETURN_POINTS,
@@ -36283,12 +38105,12 @@ async function startGameInner() {
     bridge.registerCoach(coachBrain);
     coach = new Coach(bridge, ai);
     for (let id2 = 0; id2 < 4; id2++) {
-      players.push(new MortalPlayer(id2, bridge, id2 === 0 ? ai : cpuAiFor(id2), id2 === 0 ? coach : null, decisionLog));
+      players.push(new MortalPlayer(id2, bridge, id2 === 0 ? ai : cpuAiFor(id2), id2 === 0 ? coach : null, decisionLog, onInferFail));
     }
     seat0 = players[0];
-    for (const key of ["action_hule", "action_pingju"]) {
-      const orig = seat0[key].bind(seat0);
-      seat0[key] = (...args) => setTimeout(() => orig(...args), 2600);
+    for (const key2 of ["action_hule", "action_pingju"]) {
+      const orig = seat0[key2].bind(seat0);
+      seat0[key2] = (...args) => setTimeout(() => orig(...args), 2600);
     }
   } else {
     for (let id2 = 1; id2 < 4; id2++) bridge.registerBrain(new MortalBrain((id2 - QIJIA + 4) % 4, 4));
@@ -36310,7 +38132,7 @@ async function startGameInner() {
       human._lastCoach = null;
     };
     players.push(human);
-    for (let id2 = 1; id2 < 4; id2++) players.push(new MortalPlayer(id2, bridge, cpuAiFor(id2), null, decisionLog));
+    for (let id2 = 1; id2 < 4; id2++) players.push(new MortalPlayer(id2, bridge, cpuAiFor(id2), null, decisionLog, onInferFail));
     seat0 = human;
   }
   const reactionCallNotes = () => {
@@ -36326,13 +38148,13 @@ async function startGameInner() {
     if (!dahai) return [];
     const myActor = (4 - QIJIA) % 4;
     if (dahai.actor === myActor) return [];
-    const tile = tileFromMjai(dahai.pai);
-    if (!tile) return [];
+    const tile2 = tileFromMjai(dahai.pai);
+    if (!tile2) return [];
     const discarderId = (dahai.actor + QIJIA) % 4;
     const discarderL = seat0.model.player_id.indexOf(discarderId);
     if (discarderL < 0) return [];
     const dir = ["", "-", "=", "+"][(seat0._menfeng - discarderL + 4) % 4];
-    const pd = tile + dir;
+    const pd = tile2 + dir;
     const notes = [];
     const outlook = (mianzi) => {
       const post = seat0.shoupai.clone().fulou(mianzi);
@@ -36349,7 +38171,7 @@ async function startGameInner() {
       const o = outlook(m);
       if (!o) continue;
       const { tiles, calledIdx } = parseMianzi(m);
-      const n = +(tile[1] === "0" ? "5" : tile[1]);
+      const n = +(tile2[1] === "0" ? "5" : tile2[1]);
       const consumed = tiles.filter((_, i) => i !== calledIdx).map((t) => +(t[1] === "0" ? "5" : t[1])).sort((a, b) => a - b);
       const name2 = JSON.stringify(consumed) === JSON.stringify([n + 1, n + 2]) ? "chi-L" : JSON.stringify(consumed) === JSON.stringify([n - 1, n + 1]) ? "chi-M" : "chi-R";
       notes.push({ action: name2, mianzi: m, ...o });
@@ -36374,6 +38196,7 @@ async function startGameInner() {
     }
     const eagerShape = !AUTO;
     const rows = eagerShape ? analyzeDiscards(seat0.shoupai, seat0._rule, seat0.model) : analyzeDiscards(seat0.shoupai, seat0._rule, seat0.model, { shape: false });
+    rec.riichiTiles = rows.filter((r) => r.shanten === 0 && (typeof seat0.allow_lizhi !== "function" || seat0.allow_lizhi(seat0.shoupai, r.pai))).map((r) => tileNameOf(r.pai));
     rec.shapeEager = eagerShape;
     rec.shapePending = !eagerShape;
     const qByName = new Map((rec.qValues || []).map((c) => [c.action, c]));
@@ -36433,7 +38256,7 @@ async function startGameInner() {
     return verdict;
   };
   seat0.view = view2;
-  class BridgeGame extends import_majiang_core5.default.Game {
+  class BridgeGame extends import_majiang_core6.default.Game {
     kaiju() {
       super.kaiju(QIJIA);
       bridge.startGame(this._model.player);
@@ -36441,6 +38264,21 @@ async function startGameInner() {
     add_paipu(p) {
       super.add_paipu(p);
       bridge.feedPaipu(p, { moreHora: !!(p.hule && this._hule.length) });
+    }
+    call_players(type, msgs, timeout) {
+      guarded("safe-boundary/resumeSnapshot", () => storeResumeSnapshot(type));
+      super.call_players(type, msgs, timeout);
+    }
+    reply_kaiju() {
+      if (!preparedResume) return super.reply_kaiju();
+      installMidhand(this, preparedResume, bridge);
+      kyokuScoresStart = resume.defen.slice();
+      pendingCheckResults = [];
+      kyokuResult = null;
+      resetCoachDisplay();
+      lastDapaiL = preparedResume.log.findLast((e) => e.dapai)?.dapai.l ?? null;
+      guarded("restored/resumeSnapshot", () => storeResumeSnapshot(preparedResume.phase));
+      guarded("restored/render", render);
     }
   }
   game = new BridgeGame(
@@ -36460,7 +38298,10 @@ async function startGameInner() {
     game._model.changbang = resume.changbang;
     game._model.lizhibang = resume.lizhibang;
   }
-  if (resume) await attachResumePrefix(resume);
+  if (resume) {
+    bridge.kyokuIndex = resume.kyokuIndex - 1;
+    await attachResumePrefix(resume, preparedResume);
+  }
   game.kaiju();
   if (resume) {
     const evs = bridge.conv.events;
@@ -36707,7 +38548,7 @@ function renderStatsView() {
   const baseline = isTonpuu ? aiBaselineTonpuu : aiBaseline;
   const showBaseline = !!baseline;
   const totalEligible = summariesCache.filter((s) => s.eligible).length;
-  const lenBtn = (key, label) => `<button type="button" class="st-chip${statsUi.length === key ? " on" : ""}" data-stats-length="${key}">${label}</button>`;
+  const lenBtn = (key2, label) => `<button type="button" class="st-chip${statsUi.length === key2 ? " on" : ""}" data-stats-length="${key2}">${label}</button>`;
   const rangeOpts = RANGE_OPTIONS.map((r) => `<option value="${r.key}"${statsUi.range === r.key ? " selected" : ""}>${r.label}</option>`).join("");
   let html = `<div class="stats-card">
     <div class="st-head"><h2>\u7D71\u8A08\u30FB\u5206\u6790</h2><button type="button" class="st-close" data-stats-close>\u9589\u3058\u308B</button></div>
@@ -36767,7 +38608,7 @@ function statsMismatchListHTML(rows, source) {
     const date = savedAt ? new Date(savedAt).toLocaleDateString("ja-JP") : "";
     return `<button type="button" class="review-item" data-stats-scene="${source}" data-game-id="${escHtml(gameId)}" data-rec-index="${r.recIndex}">
       <span>${escHtml(kyokuText(r.kyoku))} ${r.junme ?? "-"}\u5DE1\u76EE\uFF08${contextLabel(r.context)}\uFF09${date ? " \u30FB " + date : ""}</span>
-      <span>\u63A8\u5968: ${escHtml(actionLabel(r.recommended, r.qValues))} \uFF0F \u3042\u306A\u305F: ${escHtml(actionLabel(r.actual, r.qValues))}</span>
+      <span>\u63A8\u5968: ${escHtml(actionLabel(r.recommended, r))} \uFF0F \u3042\u306A\u305F: ${escHtml(actionLabel(r.actual, r))}</span>
       <span class="review-diff">\u63A8\u5968\u5EA6\u5DEE ${r.probDiff != null ? (r.probDiff * 100).toFixed(1) + "%" : "-"}</span>
     </button>`;
   }).join("");
@@ -36818,7 +38659,7 @@ function statsPosthocHTML(phAgg, pickedIds) {
     const items = rows.map(({ m, gameId, savedAt, hasBundle }) => {
       const date = savedAt ? new Date(savedAt).toLocaleDateString("ja-JP") : "";
       const inner = `<span>${escHtml(kyokuText(m.kyoku))} ${m.junme ?? "-"}\u5DE1\u76EE\uFF08${contextLabel(m.context)}\uFF09${date ? " \u30FB " + date : ""}</span>
-        <span>\u63A8\u5968: ${escHtml(actionLabel(m.recommended, []))} \uFF0F \u3042\u306A\u305F: ${escHtml(actionLabel(m.actual, []))}</span>
+        <span>\u63A8\u5968: ${escHtml(actionLabel(m.recommended, null))} \uFF0F \u3042\u306A\u305F: ${escHtml(actionLabel(m.actual, null))}</span>
         <span class="review-diff">\u63A8\u5968\u5EA6\u5DEE ${m.probDiff != null ? (m.probDiff * 100).toFixed(1) + "%" : "-"}</span>`;
       return hasBundle ? `<button type="button" class="review-item" data-stats-scene="posthoc" data-game-id="${escHtml(gameId)}" data-rec-index="${m.recIndex}">${inner}</button>` : `<div class="review-item st-disabled">${inner}<span>\uFF08\u5BFE\u5C40\u30C7\u30FC\u30BF\u306F\u3053\u306E\u7AEF\u672B\u306B\u6B8B\u3063\u3066\u3044\u307E\u305B\u3093\uFF09</span></div>`;
     }).join("");
@@ -36973,15 +38814,115 @@ function initCpuSelectors() {
     }
   });
 }
-function openRulesView() {
+var refTabsAllowed = ["rules", "yaku", "glossary", "tiles"];
+function setRefTab(tab) {
   const el2 = $("rules-view");
   if (!el2) return;
+  if (!refTabsAllowed.includes(tab)) tab = refTabsAllowed[0];
+  const yaku = $("ref-pane-yaku"), gl2 = $("ref-pane-glossary");
+  if (tab === "yaku" && yaku && !yaku.innerHTML) yaku.innerHTML = renderYakuHtml();
+  if (tab === "glossary" && gl2 && !gl2.innerHTML) gl2.innerHTML = renderGlossaryHtml();
+  const tiles = $("ref-pane-tiles");
+  if (tab === "tiles" && tiles && !tiles.innerHTML) tiles.innerHTML = renderTileReadingHtml();
+  for (const b of el2.querySelectorAll("[data-ref-tab]")) {
+    const on = b.dataset.refTab === tab;
+    b.classList.toggle("on", on);
+    b.setAttribute("aria-selected", on ? "true" : "false");
+    b.hidden = !refTabsAllowed.includes(b.dataset.refTab);
+  }
+  for (const [id2, name2] of [["ref-pane-rules", "rules"], ["ref-pane-yaku", "yaku"], ["ref-pane-glossary", "glossary"], ["ref-pane-tiles", "tiles"]]) {
+    const p = $(id2);
+    if (p) p.hidden = name2 !== tab;
+  }
+  const title = $("rules-title");
+  if (title) title.textContent = refTabsAllowed.includes("rules") ? "\u30EB\u30FC\u30EB" : "\u5F79\u30FB\u7528\u8A9E\u30FB\u724C\u306E\u8AAD\u307F\u65B9";
+  const card = el2.querySelector(".rules-card");
+  el2.scrollTop = 0;
+  if (card) card.scrollTop = 0;
+}
+function openRefView(tab, inGame = false) {
+  const el2 = $("rules-view");
+  if (!el2) return;
+  refTabsAllowed = inGame ? ["yaku", "glossary", "tiles"] : ["rules", "yaku", "glossary", "tiles"];
+  el2.classList.toggle("in-game", inGame);
+  setRefTab(tab);
+  el2.style.display = "flex";
+}
+function openRulesView() {
+  openRefView("rules");
+}
+function openGuideView() {
+  const el2 = $("guide-view");
+  if (!el2) return;
+  const body = $("guide-body");
+  if (body && !body.innerHTML) body.innerHTML = renderGuideHtml(tileHTML);
   el2.style.display = "flex";
   el2.scrollTop = 0;
+  el2.querySelector(".rules-card")?.scrollTo?.(0, 0);
+}
+function closeGuideView() {
+  const el2 = $("guide-view");
+  if (el2) el2.style.display = "none";
+  saveGuideSeen(localStorage);
+}
+function maybeShowFirstRunGuide() {
+  if (AUTO || $("rules-view")?.style.display === "flex") return;
+  const seen = loadGuideSeen(localStorage);
+  if (shouldShowFirstRunGuide({ historyCount: S.historyCount, seen, hasResume: !!resumeAvailable })) openGuideView();
 }
 function closeRulesView() {
   const el2 = $("rules-view");
   if (el2) el2.style.display = "none";
+}
+function initAudioControls() {
+  const sync = () => {
+    for (const kind of ["bgm", "se"]) {
+      const percent = Math.round(audio.settings[kind] * 100);
+      for (const input of document.querySelectorAll(`[data-audio-volume="${kind}"]`)) {
+        input.value = String(percent);
+        input.setAttribute("aria-valuetext", percent === 0 ? "\u30DF\u30E5\u30FC\u30C8" : `${percent}%`);
+      }
+      for (const output of document.querySelectorAll(`[data-audio-value="${kind}"]`)) output.textContent = percent === 0 ? "\u30DF\u30E5\u30FC\u30C8" : `${percent}%`;
+    }
+  };
+  for (const input of document.querySelectorAll("[data-audio-volume]")) input.addEventListener("input", () => {
+    audio.setSettings(saveAudioSettings({ ...audio.settings, [input.dataset.audioVolume]: Number(input.value) / 100 }));
+    sync();
+  });
+  sync();
+  const overlay = $("audio-settings-view");
+  let returnFocus;
+  const close = () => {
+    overlay.style.display = "none";
+    returnFocus?.focus();
+  };
+  $("audioSettingsBtn").addEventListener("click", () => {
+    returnFocus = document.activeElement;
+    overlay.style.display = "flex";
+    $("audio-settings-close").focus();
+  });
+  $("audio-settings-close").addEventListener("click", close);
+  overlay.addEventListener("keydown", (e) => {
+    if (e.key === "Escape") {
+      e.preventDefault();
+      e.stopPropagation();
+      close();
+    }
+    if (e.key === "Tab") {
+      const controls = [...overlay.querySelectorAll("button, input")];
+      const first = controls[0], last = controls.at(-1);
+      if (e.shiftKey && document.activeElement === first) {
+        e.preventDefault();
+        last.focus();
+      } else if (!e.shiftKey && document.activeElement === last) {
+        e.preventDefault();
+        first.focus();
+      }
+    }
+  });
+  for (const type of ["pointerdown", "keydown"]) document.addEventListener(type, (e) => {
+    if (e.isTrusted && audio.active && (!audio.unlocked || audio.context?.state !== "running")) audio.unlock();
+  }, { capture: true });
 }
 function updateModelNotice() {
   const el2 = $("ss-model-notice");
@@ -37004,15 +38945,20 @@ function initStartScreen() {
   if (resumeAvailable) {
     const s = resumeAvailable;
     const card = $("ss-resume");
-    const mine = s.defen[0];
-    const rank = 1 + s.defen.filter((d, i) => i !== 0 && d > mine).length;
+    const scores = s.midhand?.position.defen || s.defen;
+    const mine = scores[0];
+    const rank = 1 + scores.filter((d, i) => i !== 0 && d > mine).length;
     const kyokuLabel = `${{ E: "\u6771", S: "\u5357", W: "\u897F", N: "\u5317" }[s.bakaze] || s.bakaze}${s.kyoku}\u5C40${s.changbang ? ` ${s.changbang}\u672C\u5834` : ""}`;
-    $("ss-resume-detail").textContent = `${s.gameLength === "tonpuu" ? "\u6771\u98A8" : "\u534A\u8358"} \u30FB ${kyokuLabel}\u306E\u982D\u304B\u3089 \uFF0F \u73FE\u5728 ${rank}\u4F4D / ${mine.toLocaleString()}\u70B9`;
+    $("ss-resume-detail").textContent = `${s.gameLength === "tonpuu" ? "\u6771\u98A8" : "\u534A\u8358"} \u30FB ${kyokuLabel}${s.midhand ? "\u306E\u9014\u4E2D\u304B\u3089" : "\u306E\u982D\u304B\u3089"} \uFF0F \u73FE\u5728 ${rank}\u4F4D / ${mine.toLocaleString()}\u70B9`;
+    const note = card?.querySelector(".ss-resume-note");
+    if (note) note.textContent = s.midhand ? "\u76F4\u524D\u306E\u5B89\u5168\u306A\u533A\u5207\u308A\u304B\u3089\u518D\u958B\u3057\u307E\u3059\u3002\u624B\u724C\u3068\u6CB3\u306F\u4FDD\u6301\u3057\u3001\u6B8B\u308A\u306E\u5C71\u306F\u6DF7\u305C\u76F4\u3057\u307E\u3059\u3002" : "\u5C40\u306E\u982D\u304B\u3089\u518D\u958B\u3057\u307E\u3059\uFF08\u914D\u724C\u306F\u65B0\u3057\u304F\u306A\u308A\u307E\u3059\uFF09\u3002" + (s.midhandFallback ? "\u9014\u4E2D\u306E\u4FDD\u5B58\u72B6\u614B\u3092\u8AAD\u307F\u8FBC\u3081\u306A\u304B\u3063\u305F\u305F\u3081\u5C40\u982D\u306B\u623B\u308A\u307E\u3059\u3002" : "");
     if (card) card.hidden = false;
     $("ss-resume-btn").addEventListener("click", () => {
+      if (!ai || !S.ready || S.modelSwapping || S.started) return;
       resumeRequest = s;
-      startGame();
+      startGame(true);
     });
+    $("ss-resume-btn").disabled = !(ai && S.ready);
   }
   const seg = root.querySelector(".ss-segment");
   const syncSeg = () => seg?.querySelectorAll("button").forEach((b) => b.classList.toggle("on", b.dataset.len === gameLength));
@@ -37042,9 +38988,25 @@ function initStartScreen() {
     }
   });
   $("ss-rules-btn")?.addEventListener("click", openRulesView);
+  $("ss-guide-btn")?.addEventListener("click", openGuideView);
+  $("guide-start")?.addEventListener("click", closeGuideView);
+  $("guide-view")?.addEventListener("click", (e) => {
+    const l = e.target.closest?.("[data-guide-link]");
+    if (l) openRefView(l.dataset.guideLink);
+  });
+  $("ss-yaku-btn")?.addEventListener("click", () => openRefView("yaku"));
+  $("ss-glossary-btn")?.addEventListener("click", () => openRefView("glossary"));
+  $("ss-tiles-btn")?.addEventListener("click", () => openRefView("tiles"));
   for (const id2 of ["rules-close", "rules-close2"]) $(id2)?.addEventListener("click", closeRulesView);
+  $("rules-view")?.addEventListener("click", (e) => {
+    const t = e.target.closest?.("[data-ref-tab], [data-ref-link]");
+    if (t) setRefTab(t.dataset.refTab || t.dataset.refLink);
+  });
+  $("refBtn")?.addEventListener("click", () => openRefView("yaku", true));
   document.addEventListener("keydown", (e) => {
-    if (e.key === "Escape" && $("rules-view")?.style.display !== "none") closeRulesView();
+    if (e.key !== "Escape") return;
+    if ($("rules-view")?.style.display !== "none") closeRulesView();
+    else if ($("guide-view")?.style.display !== "none") closeGuideView();
   });
   $("ss-model-reload-btn")?.addEventListener("click", () => location.reload());
   $("ss-diag-copy")?.addEventListener("click", copyDiagnostics);
@@ -37146,10 +39108,13 @@ async function copyDiagnostics() {
   renderDiagnostics();
 }
 async function init() {
+  audio.prepare();
+  initAudioControls();
+  document.addEventListener("visibilitychange", () => audio.setVisible(document.visibilityState !== "hidden"));
+  window.addEventListener("pagehide", () => audio.stopGame());
   if (!document.querySelector(".tile-defs")) document.body.insertAdjacentHTML("afterbegin", TILE_DEFS_HTML);
   preloadTileFaces();
-  window.addEventListener("resize", fitBoard);
-  fitBoard();
+  initViewportFit();
   $("coachToggle").addEventListener("change", (e) => {
     coachEnabled = e.target.checked;
     render();
@@ -37168,20 +39133,44 @@ async function init() {
     }
     render();
   });
-  for (const [id2, key] of [["autoNoCall", "ml-auto-nocall"], ["autoWin", "ml-auto-win"], ["autoTsumogiri", "ml-auto-tsumogiri"]]) {
+  const dimSel = $("ss-dim");
+  const dimKey = "ml-tsumogiri-dim";
+  let dimOn = true;
+  try {
+    dimOn = localStorage.getItem(dimKey) !== "0";
+  } catch (_) {
+  }
+  const applyDim = () => {
+    document.body.classList.toggle("dim-on", dimOn);
+    if (dimSel) dimSel.value = dimOn ? "1" : "0";
+    S.tsumogiriDim = dimOn;
+  };
+  applyDim();
+  dimSel?.addEventListener("change", () => {
+    dimOn = dimSel.value !== "0";
+    try {
+      localStorage.setItem(dimKey, dimOn ? "1" : "0");
+    } catch (_) {
+    }
+    applyDim();
+  });
+  const dimPrev = $("ss-dim-preview");
+  if (dimPrev) dimPrev.innerHTML = [["m5", "\u624B\u51FA\u3057", ""], ["m5", "\u30C4\u30E2\u5207\u308A", " tsumogiri"], ["p3", "\u30C4\u30E2\u5207\u308A\u306E\u30EA\u30FC\u30C1\u5BA3\u8A00\u724C", " tsumogiri riichi-d"]].map(([p, cap, c]) => `<figure>${tileHTML(p, "discard" + c)}<figcaption>${cap}</figcaption></figure>`).join("");
+  for (const [id2, key2] of [["autoNoCall", "ml-auto-nocall"], ["autoWin", "ml-auto-win"], ["autoTsumogiri", "ml-auto-tsumogiri"]]) {
     const el2 = $(id2);
     try {
-      el2.checked = localStorage.getItem(key) === "1";
+      el2.checked = localStorage.getItem(key2) === "1";
     } catch (_) {
     }
     el2.addEventListener("change", () => {
       try {
-        localStorage.setItem(key, el2.checked ? "1" : "0");
+        localStorage.setItem(key2, el2.checked ? "1" : "0");
       } catch (_) {
       }
     });
   }
   $("suspendBtn").addEventListener("click", async () => {
+    audio.stopGame();
     const b = $("suspendBtn");
     if (b) b.disabled = true;
     try {
@@ -37190,8 +39179,26 @@ async function init() {
     }
     location.reload();
   });
+  S.saveTextFile = saveTextFile;
+  S.importLogText = importLogText;
   S.openHistory = openHistory;
   document.addEventListener("click", (e) => {
+    if (e.target.closest?.("[data-clip-save]")) {
+      saveSceneClip();
+      return;
+    }
+    if (e.target.closest?.("[data-replay-play]")) {
+      toggleReplay();
+      return;
+    }
+    if (e.target.closest?.("[data-replay-prev-kyoku]")) {
+      jumpReplayKyoku(-1);
+      return;
+    }
+    if (e.target.closest?.("[data-replay-next-kyoku]")) {
+      jumpReplayKyoku(1);
+      return;
+    }
     const svRow = e.target.closest?.("[data-rec-index]");
     if (svRow) {
       openSceneViewer(Number(svRow.dataset.recIndex));
@@ -37231,6 +39238,7 @@ async function init() {
     if (t) executeProbe(t.rec, btn.dataset.probeBtn);
   });
   refreshHistory().then(async () => {
+    maybeShowFirstRunGuide();
     await loadSummaries();
     renderStartScreenStats();
   }).catch((e) => S.errors.push("history load: " + (e.message || e)));
@@ -37243,6 +39251,7 @@ async function init() {
   });
   S.savePartialGame = savePartialGame;
   S.meldHTML = meldHTML;
+  S.tileHTML = tileHTML;
   S.openSceneViewer = openSceneViewer;
   S.foldMjaiScene = foldMjaiScene;
   $("startBtn").addEventListener("click", startGame);
@@ -37326,7 +39335,50 @@ function setStartEnabled(on) {
   if (b) b.disabled = !on;
   const ssb = $("ss-start-btn");
   if (ssb) ssb.disabled = !on;
+  const rsb = $("ss-resume-btn");
+  if (rsb) rsb.disabled = !on;
 }
+function setModelLoadStatus(text, loading) {
+  const status = $("ss-status-text");
+  if (status) status.textContent = text;
+  const guide = $("guide-load-status");
+  if (guide) {
+    guide.hidden = !loading;
+    if (loading) guide.textContent = `${text}\u3002\u3053\u306E\u30AC\u30A4\u30C9\u306F\u9589\u3058\u3089\u308C\u307E\u3059\u3002`;
+  }
+}
+var inferStall = null;
+function onInferFail(err, context) {
+  S.inferFailures = (S.inferFailures || 0) + 1;
+  if (inferStall) return inferStall.promise;
+  const timeout = /timed out/.test(String(err?.message || err));
+  const code = timeout ? "E-I202" : "E-I201";
+  let resolve;
+  const promise = new Promise((r) => {
+    resolve = r;
+  });
+  const el2 = document.createElement("div");
+  el2.id = "infer-stall";
+  el2.setAttribute("role", "alert");
+  el2.style.cssText = "position:fixed;left:0;right:0;top:0;z-index:99999;background:#7a1f1f;color:#fff;padding:10px 12px;text-align:center;font-size:14px";
+  el2.innerHTML = '<div></div><button type="button" style="margin-top:6px;padding:6px 16px">\u518D\u8A66\u884C</button>';
+  el2.firstChild.textContent = withCode("AI\u306E\u63A8\u8AD6\u304C\u4F7F\u3048\u306A\u3044\u305F\u3081\u3001\u5BFE\u5C40\u3092\u4E00\u6642\u505C\u6B62\u3057\u3066\u3044\u307E\u3059", code);
+  document.body.appendChild(el2);
+  inferStall = { promise, since: Date.now() };
+  S.inferStalled = { code, context, message: String(err?.message || err) };
+  try {
+    recordError(code, err, { stage: "infer-stall", context });
+  } catch (_) {
+  }
+  el2.querySelector("button").addEventListener("click", () => {
+    el2.remove();
+    inferStall = null;
+    S.inferStalled = null;
+    resolve();
+  });
+  return promise;
+}
+S.onInferFail = onInferFail;
 var lightAi = null;
 async function prepareCpuOpponents() {
   const tier = cpuTier(cpuSetting("cpuTier", CPU_TIER_KEY, CPU_TIERS));
@@ -37378,6 +39430,7 @@ async function ensureSelectedModel() {
   S.ready = false;
   S.modelSwapping = swap;
   setStartEnabled(false);
+  setModelLoadStatus(swap ? "AI\u30E2\u30C7\u30EB\u3092\u5207\u308A\u66FF\u3048\u4E2D\u2026 \u304A\u5F85\u3061\u304F\u3060\u3055\u3044" : "AI\u30E2\u30C7\u30EB\u3092\u8AAD\u307F\u8FBC\u307F\u4E2D\u2026 \u304A\u5F85\u3061\u304F\u3060\u3055\u3044", true);
   const sld0 = $("ss-load");
   if (sld0) {
     sld0.classList.remove("failed");
@@ -37403,10 +39456,6 @@ async function loadModelRuntime(model, swap) {
     log(swap ? `AI\u30E2\u30C7\u30EB\u3092\u5207\u308A\u66FF\u3048\u4E2D\u2026\uFF08${model.label || model.name}\uFF09` : "AI\u30E2\u30C7\u30EB\u3092\u8AAD\u307F\u8FBC\u307F\u4E2D\u2026");
     S.modelId = model.id;
     S.modelFailed = null;
-    {
-      const sst0 = $("ss-status-text");
-      if (sst0) sst0.textContent = swap ? "\u5207\u308A\u66FF\u3048\u4E2D\u2026" : "\u8AAD\u307F\u8FBC\u307F\u4E2D\u2026";
-    }
     updateModelNotice();
     updateStartStrength();
     await pop.begin(model.file);
@@ -37417,6 +39466,17 @@ async function loadModelRuntime(model, swap) {
       (m) => log(m),
       { onprogress: pop.progress, expectedBytes: MODEL_SIZES[model.file] || 0, displayTemperature: model.displayTemperature }
     );
+    setModelLoadStatus("\u63A8\u8AD6\u306E\u6E96\u5099\u4E2D\u2026 \u304A\u5F85\u3061\u304F\u3060\u3055\u3044", true);
+    log("\u63A8\u8AD6\u30A8\u30F3\u30B8\u30F3\u306E\u52D5\u4F5C\u78BA\u8A8D\u4E2D\u2026");
+    try {
+      await rt.warmup();
+    } catch (we2) {
+      try {
+        await rt.release();
+      } catch (_) {
+      }
+      throw Object.assign(new Error(we2?.message || String(we2)), { diag: { stage: "init", tried: "", last: "warmup: " + String(we2?.message || we2).slice(0, 140), code: /timed out/.test(String(we2?.message)) ? "E-I202" : "E-I201" } });
+    }
     ai = rt;
     pop.finish();
     S.modelLoads = (S.modelLoads || 0) + 1;
@@ -37430,8 +39490,7 @@ async function loadModelRuntime(model, swap) {
     updateModelNotice();
     S.ortConfig = ai.ortConfig || null;
     const cfgLabel = ai.ortConfig ? `\uFF08\u69CB\u6210${ai.ortConfig}\uFF09` : "";
-    const ssst = $("ss-status-text");
-    if (ssst) ssst.textContent = `${swap ? "\u5207\u308A\u66FF\u3048\u5B8C\u4E86" : "\u6E96\u5099\u5B8C\u4E86"}${cfgLabel} \u2015 \u3059\u3050\u306B\u59CB\u3081\u3089\u308C\u307E\u3059`;
+    setModelLoadStatus(`${swap ? "\u5207\u308A\u66FF\u3048\u5B8C\u4E86" : "\u6E96\u5099\u5B8C\u4E86"}${cfgLabel} \u2015 \u3059\u3050\u306B\u59CB\u3081\u3089\u308C\u307E\u3059`, false);
     const sld = $("ss-load");
     if (sld) sld.hidden = true;
     renderDiagnostics();
@@ -37449,8 +39508,7 @@ async function loadModelRuntime(model, swap) {
     console.log("[stage2]", brief);
     const stEl = document.getElementById("status");
     if (stEl) stEl.textContent = brief;
-    const sst = $("ss-status-text");
-    if (sst) sst.textContent = withCode("\u8AAD\u307F\u8FBC\u307F\u5931\u6557", d.code);
+    setModelLoadStatus(withCode("\u8AAD\u307F\u8FBC\u307F\u5931\u6557", d.code), false);
     pop.fail();
     const ld = $("ss-load");
     if (ld) {
