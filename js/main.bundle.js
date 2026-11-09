@@ -30,9 +30,9 @@ var __toESM = (mod, isNodeMode, target) => (target = mod != null ? __create(__ge
   mod
 ));
 
-// app/node_modules/@kobalab/majiang-core/lib/rule.js
+// ../node_modules/@kobalab/majiang-core/lib/rule.js
 var require_rule = __commonJS({
-  "app/node_modules/@kobalab/majiang-core/lib/rule.js"(exports, module) {
+  "../node_modules/@kobalab/majiang-core/lib/rule.js"(exports, module) {
     "use strict";
     module.exports = function(param = {}) {
       let rule = {
@@ -84,9 +84,9 @@ var require_rule = __commonJS({
   }
 });
 
-// app/node_modules/@kobalab/majiang-core/lib/shoupai.js
+// ../node_modules/@kobalab/majiang-core/lib/shoupai.js
 var require_shoupai = __commonJS({
-  "app/node_modules/@kobalab/majiang-core/lib/shoupai.js"(exports, module) {
+  "../node_modules/@kobalab/majiang-core/lib/shoupai.js"(exports, module) {
     "use strict";
     module.exports = class Shoupai {
       static valid_pai(p) {
@@ -433,9 +433,9 @@ var require_shoupai = __commonJS({
   }
 });
 
-// app/node_modules/@kobalab/majiang-core/lib/shan.js
+// ../node_modules/@kobalab/majiang-core/lib/shan.js
 var require_shan = __commonJS({
-  "app/node_modules/@kobalab/majiang-core/lib/shan.js"(exports, module) {
+  "../node_modules/@kobalab/majiang-core/lib/shan.js"(exports, module) {
     "use strict";
     var Majiang7 = { Shoupai: require_shoupai() };
     module.exports = class Shan {
@@ -506,9 +506,9 @@ var require_shan = __commonJS({
   }
 });
 
-// app/node_modules/@kobalab/majiang-core/lib/he.js
+// ../node_modules/@kobalab/majiang-core/lib/he.js
 var require_he = __commonJS({
-  "app/node_modules/@kobalab/majiang-core/lib/he.js"(exports, module) {
+  "../node_modules/@kobalab/majiang-core/lib/he.js"(exports, module) {
     "use strict";
     var Majiang7 = { Shoupai: require_shoupai() };
     module.exports = class He {
@@ -538,9 +538,9 @@ var require_he = __commonJS({
   }
 });
 
-// app/node_modules/@kobalab/majiang-core/lib/board.js
+// ../node_modules/@kobalab/majiang-core/lib/board.js
 var require_board = __commonJS({
-  "app/node_modules/@kobalab/majiang-core/lib/board.js"(exports, module) {
+  "../node_modules/@kobalab/majiang-core/lib/board.js"(exports, module) {
     "use strict";
     var Majiang7 = {
       Shoupai: require_shoupai(),
@@ -681,9 +681,9 @@ var require_board = __commonJS({
   }
 });
 
-// app/node_modules/@kobalab/majiang-core/lib/xiangting.js
+// ../node_modules/@kobalab/majiang-core/lib/xiangting.js
 var require_xiangting = __commonJS({
-  "app/node_modules/@kobalab/majiang-core/lib/xiangting.js"(exports, module) {
+  "../node_modules/@kobalab/majiang-core/lib/xiangting.js"(exports, module) {
     "use strict";
     function _xiangting(m, d, g, j) {
       let n = j ? 4 : 5;
@@ -850,9 +850,9 @@ var require_xiangting = __commonJS({
   }
 });
 
-// app/node_modules/@kobalab/majiang-core/lib/hule.js
+// ../node_modules/@kobalab/majiang-core/lib/hule.js
 var require_hule = __commonJS({
-  "app/node_modules/@kobalab/majiang-core/lib/hule.js"(exports, module) {
+  "../node_modules/@kobalab/majiang-core/lib/hule.js"(exports, module) {
     "use strict";
     var Majiang7 = {
       Shan: require_shan(),
@@ -1454,9 +1454,9 @@ var require_hule = __commonJS({
   }
 });
 
-// app/node_modules/@kobalab/majiang-core/lib/game.js
+// ../node_modules/@kobalab/majiang-core/lib/game.js
 var require_game = __commonJS({
-  "app/node_modules/@kobalab/majiang-core/lib/game.js"(exports, module) {
+  "../node_modules/@kobalab/majiang-core/lib/game.js"(exports, module) {
     "use strict";
     var Majiang7 = {
       rule: require_rule(),
@@ -2380,9 +2380,9 @@ var require_game = __commonJS({
   }
 });
 
-// app/node_modules/@kobalab/majiang-core/lib/player.js
+// ../node_modules/@kobalab/majiang-core/lib/player.js
 var require_player = __commonJS({
-  "app/node_modules/@kobalab/majiang-core/lib/player.js"(exports, module) {
+  "../node_modules/@kobalab/majiang-core/lib/player.js"(exports, module) {
     "use strict";
     var Majiang7 = {
       Shoupai: require_shoupai(),
@@ -2576,9 +2576,9 @@ var require_player = __commonJS({
   }
 });
 
-// app/node_modules/@kobalab/majiang-core/lib/index.js
+// ../node_modules/@kobalab/majiang-core/lib/index.js
 var require_lib = __commonJS({
-  "app/node_modules/@kobalab/majiang-core/lib/index.js"(exports, module) {
+  "../node_modules/@kobalab/majiang-core/lib/index.js"(exports, module) {
     "use strict";
     module.exports = {
       rule: require_rule(),
@@ -2596,10 +2596,10 @@ var require_lib = __commonJS({
   }
 });
 
-// app/web/src/main.js
+// src/main.js
 var import_majiang_core6 = __toESM(require_lib(), 1);
 
-// app/src/rule.mjs
+// ../src/rule.mjs
 var import_majiang_core = __toESM(require_lib(), 1);
 function specRule(opts = {}) {
   const hanchan = opts.length === "hanchan";
@@ -2650,7 +2650,7 @@ function specRule(opts = {}) {
   });
 }
 
-// app/src/mjai.mjs
+// ../src/mjai.mjs
 var HONOR_TO_MJAI = { 1: "E", 2: "S", 3: "W", 4: "N", 5: "P", 6: "F", 7: "C" };
 var HONOR_FROM_MJAI = { E: "z1", S: "z2", W: "z3", N: "z4", P: "z5", F: "z6", C: "z7" };
 function tileToMjai(p) {
@@ -2845,7 +2845,7 @@ var PaipuConverter = class {
   }
 };
 
-// app/src/bridge.mjs
+// ../src/bridge.mjs
 function maskEvent(ev2, viewer) {
   if (ev2.type === "start_game") return { ...ev2, id: viewer };
   if (ev2.type === "start_kyoku") {
@@ -2923,10 +2923,10 @@ var MjaiBridge = class {
   }
 };
 
-// app/src/mortal_player.mjs
+// ../src/mortal_player.mjs
 var import_majiang_core3 = __toESM(require_lib(), 1);
 
-// app/src/base_player.mjs
+// ../src/base_player.mjs
 var import_majiang_core2 = __toESM(require_lib(), 1);
 var BasePlayer = class extends import_majiang_core2.default.Player {
   _reply(r) {
@@ -2961,7 +2961,7 @@ var BasePlayer = class extends import_majiang_core2.default.Player {
   }
 };
 
-// app/src/mortal_player.mjs
+// ../src/mortal_player.mjs
 var MortalPlayer = class extends BasePlayer {
   constructor(playerId, bridge2, ai2, coach2 = null, decisionLog = null, onInferFail2 = null) {
     super();
@@ -3188,7 +3188,7 @@ var MortalPlayer = class extends BasePlayer {
   }
 };
 
-// app/src/coach.mjs
+// ../src/coach.mjs
 var Coach = class {
   constructor(bridge2, ai2) {
     this.bridge = bridge2;
@@ -3283,7 +3283,7 @@ var Coach = class {
   }
 };
 
-// app/web/src/action_label.mjs
+// src/action_label.mjs
 var SUIT = { m: "\u842C", p: "\u7B52", s: "\u7D22" };
 var START = { "chi-L": 0, "chi-M": -1, "chi-R": -2 };
 function chiRunText(name2, calledTile) {
@@ -3316,7 +3316,7 @@ function chiLabel(name2, rec, events) {
   return run ? `\u30C1\u30FC ${run}${info.red ? "\uFF08\u8D64\uFF09" : ""}` : "\u30C1\u30FC";
 }
 
-// app/web/node_modules/onnxruntime-web/dist/ort.all.bundle.min.mjs
+// node_modules/onnxruntime-web/dist/ort.all.bundle.min.mjs
 var B2 = Object.create;
 var yi = Object.defineProperty;
 var V2 = Object.getOwnPropertyDescriptor;
@@ -28151,7 +28151,7 @@ var zf = "1.31.1";
 }
 Object.defineProperty(me.versions, "web", { value: zf, enumerable: true });
 
-// app/src/obsjs/tile.mjs
+// ../src/obsjs/tile.mjs
 var TILE_NAMES = [
   "1m",
   "2m",
@@ -28266,7 +28266,7 @@ function cmpDiscardPriority(a, b) {
   return b - a;
 }
 
-// app/src/obsjs/shanten.mjs
+// ../src/obsjs/shanten.mjs
 var BIG = 100;
 var MEMO_LIMIT = 12e4;
 var SLACK = 64;
@@ -28613,7 +28613,7 @@ function handAfter(tiles, lenDiv3, delta) {
   return o;
 }
 
-// app/src/obsjs/agari.mjs
+// ../src/obsjs/agari.mjs
 var Agari = class _Agari {
   // kind 'n': normal (fu, han); kind 'y': yakuman (n multiples)
   constructor(kind, a, b) {
@@ -29007,7 +29007,7 @@ var AgariCalculator = class {
   }
 };
 
-// app/src/obsjs/sp.mjs
+// ../src/obsjs/sp.mjs
 var fr2 = Math.fround;
 var SHANTEN_THRES = 3;
 var MAX_TILES_LEFT = 34 * 4 - 1 - 13;
@@ -29589,7 +29589,7 @@ function stableSort(arr, cmp) {
   arr.sort(cmp);
 }
 
-// app/src/obsjs/state.mjs
+// ../src/obsjs/state.mjs
 var ActionCandidate = class {
   constructor(targetActor = 0) {
     this.canDiscard = false;
@@ -30452,7 +30452,7 @@ var PlayerState = class {
   }
 };
 
-// app/src/obsjs/f32math.mjs
+// ../src/obsjs/f32math.mjs
 var fr3 = Math.fround;
 var view = new DataView(new ArrayBuffer(4));
 var bitsOf = (x) => {
@@ -30496,7 +30496,7 @@ function expf(xIn) {
   return fr3(y * 2 ** k2);
 }
 
-// app/src/obsjs/encode.mjs
+// ../src/obsjs/encode.mjs
 var OBS_ROWS = 1012;
 var OBS_COLS = 34;
 var ACTION_SPACE = 46;
@@ -30788,7 +30788,7 @@ function encodeObs(state, atKanSelect = false) {
   return { obs: g.a, mask, obs_rows: OBS_ROWS, obs_cols: OBS_COLS, action_space: ACTION_SPACE };
 }
 
-// app/src/obsjs/engine.mjs
+// ../src/obsjs/engine.mjs
 var JsReviewEngine = class {
   constructor(playerId, version = 4) {
     if (version !== 4) throw new Error(`unsupported obs version ${version}`);
@@ -30816,7 +30816,7 @@ var JsReviewEngine = class {
   }
 };
 
-// app/web/src/infer_guard.mjs
+// src/infer_guard.mjs
 var InferTimeoutError = class extends Error {
   constructor(ms2) {
     super(`inference timed out after ${ms2}ms`);
@@ -30845,7 +30845,7 @@ async function guardedRun(ctx, feeds, timeoutMs, onlog = () => {
   }
 }
 
-// app/web/src/error_codes.mjs
+// src/error_codes.mjs
 var ERROR_CODES = {
   "E-L101": "\u30E2\u30C7\u30EB\u53D6\u5F97\u306B\u5931\u6557\uFF08\u521D\u56DE\uFF09",
   "E-L102": "\u30E2\u30C7\u30EB\u53D6\u5F97\u306E\u518D\u8A66\u884C\u3082\u5931\u6557",
@@ -30933,7 +30933,7 @@ function buildDiagnostics(info) {
   return lines.join("\n");
 }
 
-// app/src/probability.mjs
+// ../src/probability.mjs
 var MORTAL_SOFTMAX_TEMPERATURE = 0.3;
 function softmaxProbabilities(values, temperature = MORTAL_SOFTMAX_TEMPERATURE) {
   if (!values.length) return [];
@@ -30963,7 +30963,7 @@ function formatPercent(prob) {
   return `${pct.toFixed(1)}%`;
 }
 
-// app/web/src/ai_runtime_web.mjs
+// src/ai_runtime_web.mjs
 var ACTION_NAMES = [
   "1m",
   "2m",
@@ -31400,7 +31400,7 @@ var AiRuntime = class _AiRuntime {
   }
 };
 
-// app/web/src/cpu_style.mjs
+// src/cpu_style.mjs
 var CPU_TIERS = [
   { id: "top", label: "\u6700\u4E0A\u7D1A\uFF08\u516B\u6BB5\u76F8\u5F53\uFF09", short: "\u516B\u6BB5\u76F8\u5F53", model: "v1", tau: null, bars: 5 },
   // dan7 = V1 Light greedy (no temperature). Measured arena avg rank 2.5905 (2,000 games, 2026-11-07)
@@ -31554,7 +31554,7 @@ var CpuPolicy = class {
   }
 };
 
-// app/web/src/human_player.mjs
+// src/human_player.mjs
 var HumanPlayer = class extends BasePlayer {
   constructor(ui2, coach2 = null, settingsFn = null) {
     super();
@@ -31812,7 +31812,7 @@ var HumanPlayer = class extends BasePlayer {
   }
 };
 
-// app/web/src/explain.mjs
+// src/explain.mjs
 var import_majiang_core4 = __toESM(require_lib(), 1);
 function outsideCounts(model) {
   const counts = { m: Array(10).fill(0), p: Array(10).fill(0), s: Array(10).fill(0), z: Array(8).fill(0) };
@@ -32805,7 +32805,7 @@ function decomposeHand(shoupai) {
   return { groups: regular.groups, shanten: regular.shanten, form: "regular" };
 }
 
-// app/web/src/probe.mjs
+// src/probe.mjs
 function maskEventForProbe(ev2, viewer) {
   if (ev2.type === "start_game") return { ...ev2, id: viewer };
   if (ev2.type === "start_kyoku") {
@@ -33018,7 +33018,7 @@ async function runProbes({ events, upto, actor, baseRecommended, makeBrain, infe
   return { at: (/* @__PURE__ */ new Date()).toISOString(), baseline, variants };
 }
 
-// app/web/src/oras_memo.mjs
+// src/oras_memo.mjs
 var ceil1002 = (v) => Math.ceil(v / 100) * 100;
 var above100 = (v) => Math.floor(v / 100) * 100 + 100;
 function reversalTargets(diff, tieWins) {
@@ -33029,7 +33029,7 @@ function winsTie(meId, otherId, qijia) {
   return (meId - qijia + 4) % 4 < (otherId - qijia + 4) % 4;
 }
 
-// app/web/src/settlement.mjs
+// src/settlement.mjs
 function horaBreakdown({ fenpei, pid, winnerL, baojia, honba, kyotaku }) {
   const isTsumo = baojia == null;
   const deltasById = [0, 0, 0, 0], baseById = [0, 0, 0, 0];
@@ -33068,7 +33068,7 @@ function resultLineFor(evs, names, qijia) {
   return "";
 }
 
-// app/web/src/result_presentation.mjs
+// src/result_presentation.mjs
 function horaHeadingHTML(r, names, winTileHTML = "") {
   const suffix = r.isTsumo ? "\u30C4\u30E2" : `\u30ED\u30F3\uFF08${names[r.targetId]}\u304B\u3089\uFF09`;
   const particle = r.winnerId === 0 ? "\u306E" : " \u306E";
@@ -33079,7 +33079,7 @@ function deltaTotalClass(value) {
   return "delta-total" + (value > 0 ? " delta-positive" : value < 0 ? " delta-negative" : "");
 }
 
-// app/web/src/tile_art.mjs
+// src/tile_art.mjs
 var BODY = `
   <rect x="5" y="4" width="52" height="79" rx="9" fill="#a99f88"/>
   <rect x="3" y="2" width="52" height="77" rx="9" fill="url(#tileBody)" stroke="#8b8171" stroke-width="1.4"/>
@@ -33314,7 +33314,7 @@ function tileSVG(p, label = "") {
   return `<svg class="tile-art" viewBox="0 0 60 84" role="img" aria-label="${label}"><use href="#tile-${id2}"></use></svg>`;
 }
 
-// app/web/src/stats.mjs
+// src/stats.mjs
 var SUMMARY_SCHEMA = 1;
 var RED = { "5mr": "5m", "5pr": "5p", "5sr": "5s" };
 var baseTile2 = (t) => RED[t] || t;
@@ -33920,6 +33920,7 @@ function summarizeBundle(bundle) {
     // they are deliberately not back-filled from meta.model.
     modelId: meta.gameModel?.modelId ?? null,
     modelName: meta.gameModel?.modelName ?? null,
+    coachDisplay: typeof meta.coachDisplay === "boolean" ? meta.coachDisplay : null,
     eligible: (meta.mode || "manual") === "manual" && (meta.status || "finished") === "finished" && horaConsistent,
     excludedReason: horaConsistent ? null : "mjai\u3068\u7D50\u679C\u306E\u548C\u4E86\u6570\u304C\u4E0D\u4E00\u81F4\u306E\u305F\u3081\u96C6\u8A08\u304B\u3089\u9664\u5916",
     warnings,
@@ -33928,8 +33929,7 @@ function summarizeBundle(bundle) {
     finalPoint: meta.final?.point?.[0] ?? null,
     kyokuCount: facts.length,
     stats: c,
-    coachAgg,
-    posthoc: null
+    coachAgg
   };
   return summary;
 }
@@ -33986,8 +33986,8 @@ var RANGE_OPTIONS = [
   { key: "50", label: "\u76F4\u8FD150\u5BFE\u5C40", n: 50 },
   { key: "all", label: "\u5168\u671F\u9593", n: Infinity }
 ];
-function selectSummaries(summaries, { length = "all", range = "all" } = {}) {
-  const sorted = (summaries || []).filter((s) => s && s.eligible).filter((s) => length === "all" || s.gameLength === length).sort((a, b) => String(b.savedAt || "").localeCompare(String(a.savedAt || "")));
+function selectSummaries(summaries, { length = "all", range = "all", coachDisplay = "all", modelId = "all" } = {}) {
+  const sorted = (summaries || []).filter((s) => s && s.eligible).filter((s) => length === "all" || s.gameLength === length).filter((s) => coachDisplay === "all" || (coachDisplay === "unknown" ? s.coachDisplay == null : s.coachDisplay === (coachDisplay === "on"))).filter((s) => modelId === "all" || (modelId === "unknown" ? s.modelId == null : s.modelId === modelId)).sort((a, b) => String(b.savedAt || "").localeCompare(String(a.savedAt || "")));
   const opt = RANGE_OPTIONS.find((r) => r.key === range) || RANGE_OPTIONS[3];
   const picked = opt.n === Infinity ? sorted : sorted.slice(0, opt.n);
   return { picked, available: sorted.length, limited: picked.length < sorted.length && opt.n !== Infinity, rangeLabel: opt.label };
@@ -34103,174 +34103,15 @@ function aggregateCoach(summaries) {
   }
   return agg;
 }
-function aggregatePosthoc(summaries) {
-  const agg = { games: 0, judged: 0, agree: 0, probDiffSum: 0, probDiffN: 0, qDiffSum: 0, qDiffN: 0, models: {} };
-  for (const s of summaries || []) {
-    const p = s.posthoc;
-    if (!p || !p.agg) continue;
-    agg.games++;
-    agg.judged += p.agg.judged || 0;
-    agg.agree += p.agg.agree || 0;
-    agg.probDiffSum += p.agg.probDiffSum || 0;
-    agg.probDiffN += p.agg.probDiffN || 0;
-    agg.qDiffSum += p.agg.qDiffSum || 0;
-    agg.qDiffN += p.agg.qDiffN || 0;
-    if (p.modelName) agg.models[p.modelName] = (agg.models[p.modelName] || 0) + 1;
-  }
-  return agg;
-}
 
-// app/web/src/posthoc.mjs
-var MELD_OPEN = ["chi", "pon", "daiminkan"];
-function chiName(consumed, pai) {
-  const called = +pai[0];
-  const nums = (consumed || []).map((t) => +t[0]).sort((a, b) => a - b);
-  if (JSON.stringify(nums) === JSON.stringify([called + 1, called + 2])) return "chi-L";
-  if (JSON.stringify(nums) === JSON.stringify([called - 1, called + 1])) return "chi-M";
-  if (JSON.stringify(nums) === JSON.stringify([called - 2, called - 1])) return "chi-R";
-  return "chi-M";
-}
-function actualAction(events, at2, context, userActor) {
-  const A = userActor;
-  const trigger = events[at2];
-  for (let j = at2 + 1; j < events.length; j++) {
-    const ev2 = events[j];
-    if (ev2.type === "start_kyoku" || ev2.type === "end_kyoku") return null;
-    if (context === "zimo") {
-      if (ev2.actor !== A) continue;
-      if (ev2.type === "dahai") {
-        const prev = events[j - 1];
-        return prev && prev.type === "reach" && prev.actor === A ? "reach" : ev2.pai;
-      }
-      if (ev2.type === "ankan" || ev2.type === "kakan") return "kan";
-      if (ev2.type === "hora") return "hora";
-      if (ev2.type === "ryukyoku") return "ryukyoku";
-      continue;
-    }
-    if (context === "fulou") {
-      if (ev2.actor === A && ev2.type === "dahai") return ev2.pai;
-      continue;
-    }
-    if (context === "dapai") {
-      if (MELD_OPEN.includes(ev2.type) && ev2.actor === A && ev2.target === trigger.actor) {
-        if (ev2.type === "pon") return "pon";
-        if (ev2.type === "daiminkan") return "kan";
-        return chiName(ev2.consumed, ev2.pai);
-      }
-      if (ev2.type === "hora" && ev2.actor === A && ev2.target === trigger.actor) return "hora";
-      if (ev2.type === "tsumo" || ev2.type === "dahai" || ev2.type === "hora") return "none";
-      continue;
-    }
-    if (context === "gang") {
-      if (ev2.type === "hora" && ev2.actor === A) return "hora";
-      if (ev2.type === "tsumo" || ev2.type === "dahai" || ev2.type === "dora") return "none";
-      continue;
-    }
-    return null;
-  }
+// src/coach_display.mjs
+function mergeCoachDisplay(previous, current) {
+  if (previous === true || current === true) return true;
+  if (previous === false && current === false) return false;
   return null;
 }
-function contextForTrigger(ev2, userActor) {
-  if (!ev2) return null;
-  if (ev2.type === "tsumo" && ev2.actor === userActor) return "zimo";
-  if (ev2.type === "dahai" && ev2.actor !== userActor) return "dapai";
-  if ((ev2.type === "chi" || ev2.type === "pon") && ev2.actor === userActor) return "fulou";
-  if ((ev2.type === "ankan" || ev2.type === "kakan") && ev2.actor !== userActor) return "gang";
-  return null;
-}
-function contextFromCandidates(qAll) {
-  const acts = new Set((qAll || []).map((c) => c.action));
-  if (acts.has("none") || acts.has("pon") || [...acts].some((a) => a.startsWith("chi"))) {
-    return acts.has("hora") && acts.size <= 2 ? "gang" : "dapai";
-  }
-  return "zimo";
-}
-async function analyzeCoachOffline({ mjai, qijia = 0, makeBrain, infer, onProgress = null, isCancelled = null }) {
-  const A = (0 - qijia + 4) % 4;
-  const brain = makeBrain(A);
-  const records = [];
-  let kyokuIndex = -1;
-  let kyokuLabel = "pre-game";
-  let userDraws = 0;
-  let decisions = 0;
-  let wasPending = false;
-  for (let i = 0; i < mjai.length; i++) {
-    const ev2 = mjai[i];
-    if (ev2.type === "start_kyoku") {
-      kyokuIndex++;
-      kyokuLabel = `${ev2.bakaze}${ev2.kyoku}.${ev2.honba}`;
-      userDraws = 0;
-    }
-    brain.feed(maskEventForProbe(ev2, A));
-    if (brain.feedErrors) {
-      return { error: `\u30A8\u30F3\u30B8\u30F3\u3078\u306E\u6295\u5165\u3067\u30A8\u30E9\u30FC\u304C\u767A\u751F\u3057\u307E\u3057\u305F (${brain.firstError || ""})`, records: [], decisions };
-    }
-    if (ev2.type === "tsumo" && ev2.actor === A) userDraws++;
-    const pending2 = !!brain.pending;
-    if (pending2 && !wasPending) {
-      if (isCancelled && isCancelled()) return { cancelled: true, records: [], decisions };
-      brain.consume();
-      const res = await infer(brain);
-      wasPending = false;
-      if (!res || res.emptyMask || !(res.qAll || []).length) continue;
-      const context = contextForTrigger(ev2, A) || contextFromCandidates(res.qAll);
-      const actual = actualAction(mjai, i, context, A);
-      if (actual == null) continue;
-      const rec = {
-        kyokuIndex,
-        kyoku: kyokuLabel,
-        junme: Math.max(1, userDraws),
-        turn: Math.max(1, userDraws),
-        mjaiEventCount: i + 1,
-        context,
-        recommended: res.name,
-        actual: null,
-        actualCandidate: null,
-        qActual: null,
-        pActual: null,
-        probActual: null,
-        qDiff: null,
-        probDiff: null,
-        agreement: null,
-        qBest: res.qBest,
-        pBest: res.pBest ?? res.top3?.[0]?.prob ?? null,
-        probabilityMethod: res.probabilityMethod || "softmax",
-        softmaxTemperature: res.softmaxTemperature ?? 0.3,
-        top3: res.top3,
-        qValues: res.qAll,
-        shanten: res.shanten,
-        shantenAfter: null,
-        posthoc: true
-      };
-      const cand = (rec.qValues || []).find((c) => c.action === actual) || null;
-      rec.actual = actual;
-      rec.actualCandidate = cand;
-      rec.qActual = cand?.q ?? null;
-      rec.pActual = cand?.prob ?? null;
-      rec.probActual = cand?.prob ?? null;
-      rec.qDiff = rec.qBest != null && rec.qActual != null ? +(rec.qBest - rec.qActual).toFixed(4) : null;
-      rec.probDiff = rec.pBest != null && rec.probActual != null ? +(rec.pBest - rec.probActual).toFixed(6) : null;
-      rec.agreement = actual === rec.recommended;
-      records.push(rec);
-      decisions++;
-      if (onProgress) onProgress({ eventsDone: i + 1, eventsTotal: mjai.length, decisions });
-      continue;
-    }
-    wasPending = pending2;
-  }
-  return { records, decisions, feedErrors: brain.feedErrors || 0 };
-}
-function trimPosthocRecords(records) {
-  return (records || []).map((r) => {
-    const keep = /* @__PURE__ */ new Set([r.recommended, r.actual]);
-    const sorted = [...r.qValues || []].sort((a, b) => (b.prob ?? 0) - (a.prob ?? 0));
-    sorted.slice(0, 4).forEach((c) => keep.add(c.action));
-    const qValues = (r.qValues || []).filter((c) => keep.has(c.action) || (c.prob ?? 0) >= 1e-3);
-    return { ...r, qValues, actualCandidate: void 0, top3: (r.top3 || []).slice(0, 3) };
-  });
-}
 
-// app/web/src/log_import.mjs
+// src/log_import.mjs
 var MAX_IMPORT_BYTES = 200 * 1024 * 1024;
 var GAME_ID_RE = /^[A-Za-z0-9._-]{1,80}$/;
 var isObj = (v) => v && typeof v === "object" && !Array.isArray(v);
@@ -34351,14 +34192,14 @@ ${why}${n.rejected.length > 5 ? `
 \u2026\u307B\u304B${n.rejected.length - 5}\u4EF6` : ""}` : head;
 }
 
-// app/web/src/resume_snapshot.mjs
+// src/resume_snapshot.mjs
 var isInt = (v, lo2, hi) => Number.isInteger(v) && v >= lo2 && v <= hi;
 var isCount = (v) => Number.isFinite(v) && v >= 0;
 function isValidResumeSnapshot(s) {
   return !!s && s.v === 1 && Array.isArray(s.defen) && s.defen.length === 4 && s.defen.every(Number.isFinite) && isInt(s.zhuangfeng, 0, 3) && isInt(s.jushu, 0, 3) && isInt(s.qijia, 0, 3) && isInt(s.kyokuIndex, -1, 1e4) && isCount(s.changbang) && isCount(s.lizhibang);
 }
 
-// app/web/src/midhand_resume.mjs
+// src/midhand_resume.mjs
 var import_majiang_core5 = __toESM(require_lib(), 1);
 var copy = (value) => JSON.parse(JSON.stringify(value));
 var equal = (a, b) => JSON.stringify(a) === JSON.stringify(b);
@@ -34585,7 +34426,7 @@ function installMidhand(game2, prepared, bridge2) {
   }
 }
 
-// app/web/src/pond_view.mjs
+// src/pond_view.mjs
 function parseHeEntry(raw) {
   let face = String(raw);
   const called = /[+\-=]$/.test(face);
@@ -34614,7 +34455,7 @@ function riverTiles(he) {
   return out;
 }
 
-// app/web/src/orientation.mjs
+// src/orientation.mjs
 var ORIENTATION_KEY = "ml-orientation";
 var ORIENTATION_VALUES = ["auto", "portrait", "landscape"];
 function normalizeOrientation(v) {
@@ -34660,7 +34501,7 @@ async function applyOrientation(value, scr, bridge2) {
   }
 }
 
-// app/web/src/glossary_data.mjs
+// src/glossary_data.mjs
 var YAKU_GROUPS = [
   {
     "title": "1\u7FFB",
@@ -35070,7 +34911,7 @@ var GLOSSARY_TERMS = [
   }
 ];
 
-// app/web/src/tile_reference.mjs
+// src/tile_reference.mjs
 var numbers = ["\u4E00", "\u4E8C", "\u4E09", "\u56DB", "\u4E94", "\u516D", "\u4E03", "\u516B", "\u4E5D"];
 var readings = ["\u30A4\u30FC", "\u30EA\u30E3\u30F3", "\u30B5\u30F3", "\u30B9\u30FC", "\u30A6\u30FC", "\u30ED\u30FC", "\u30C1\u30FC", "\u30D1\u30FC", "\u30AD\u30E5\u30FC"];
 var TILE_FAMILIES = [
@@ -35109,7 +34950,7 @@ var YAKU_EXAMPLES = {
   "\u56FD\u58EB\u7121\u53CC": { groups: ["m19", "p19", "s19", "z1234567", "m1"], winTile: "z7", note: "1\u30FB9\u30FB\u5B57\u724C\u306E13\u7A2E\u985E\u30921\u679A\u305A\u3064\uFF0B\u4E00\u842C\u3092\u3082\u30461\u679A\uFF08\u96C0\u982D\uFF09\u3002" }
 };
 
-// app/web/src/glossary.mjs
+// src/glossary.mjs
 var esc = (s) => String(s).replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" })[c]);
 var collator = new Intl.Collator("ja");
 var key = (t) => t.yomi.replace(/ー/g, "");
@@ -35149,7 +34990,7 @@ function renderTileReadingHtml() {
   return "<p>AI\u30B3\u30FC\u30C1\u306E\u300C3\u7D22\u300D\u306F\u4E09\u7D22\uFF08\u30B5\u30F3\u30BD\u30FC\uFF09\u3001\u300C\u767C\u300D\u306F\u30CF\u30C4\u306E\u724C\u3067\u3059\u3002\u3053\u3053\u3067\u306F\u5BFE\u5C40\u3068\u540C\u3058\u7D75\u67C4\u3067\u3001\u724C\u306E\u540D\u524D\u3068\u8AAD\u307F\u65B9\u3092\u78BA\u8A8D\u3067\u304D\u307E\u3059\u3002</p>" + TILE_FAMILIES.map((f) => `<section><h3>${esc(f.title)}</h3><p>${esc(f.note)}</p>${cards(f.tiles)}</section>`).join("") + `<section><h3>\u8D64\u30C9\u30E9\uFF08\u8D64\u30445\u306E\u724C\uFF09</h3><p>\u8D64\u3044\u4E94\u842C\u30FB\u4E94\u7B52\u30FB\u4E94\u7D22\u3082\u3001\u5F62\u3092\u4F5C\u308B\u3068\u304D\u306F\u666E\u901A\u306E5\u3068\u540C\u3058\u724C\u3067\u3059\u3002\u6301\u3063\u3066\u548C\u4E86\u3059\u308B\u30681\u679A\u306B\u3064\u304D1\u7FFB\u5897\u3048\u307E\u3059\u304C\u3001\u30C9\u30E9\u81EA\u4F53\u306F\u5F79\u3067\u306F\u3042\u308A\u307E\u305B\u3093\u3002</p>${cards(RED_TILES)}</section><p><button type="button" class="ref-link" data-ref-link="glossary">\u7528\u8A9E\u8F9E\u5178\u3092\u898B\u308B \u203A</button> <button type="button" class="ref-link" data-ref-link="yaku">\u5F79\u4E00\u89A7\u3092\u898B\u308B \u203A</button></p>`;
 }
 
-// app/web/src/first_run_guide.mjs
+// src/first_run_guide.mjs
 var GUIDE_SEEN_KEY = "ml-first-guide-seen";
 var LINK_LABEL = { yaku: "\u5F79\u4E00\u89A7\u3092\u898B\u308B", glossary: "\u7528\u8A9E\u8F9E\u5178\u3092\u898B\u308B" };
 var GUIDE_SECTIONS = [
@@ -35208,7 +35049,7 @@ function saveGuideSeen(storage) {
   }
 }
 
-// app/web/src/audio_assets.mjs
+// src/audio_assets.mjs
 var SOUND_FILES = Object.freeze({
   bgm: "assets/9c41b7e20a6f.bin",
   tile1: "assets/bd7298a1cf04.bin",
@@ -35236,7 +35077,7 @@ function cuesForMessage(msg) {
   return [];
 }
 
-// app/web/src/audio.mjs
+// src/audio.mjs
 var AUDIO_SETTINGS_KEY = "ml-audio-v1";
 var DEFAULT_AUDIO_SETTINGS = Object.freeze({ bgm: 0.15, se: 0.35 });
 function normalizeAudioSettings(value) {
@@ -35424,7 +35265,7 @@ var GameAudio = class {
   }
 };
 
-// app/web/src/replay.mjs
+// src/replay.mjs
 function replaySteps(bundle) {
   const coached = new Set((bundle.coach || []).map((r) => r.mjaiEventCount));
   let kyokuIndex = -1;
@@ -35619,7 +35460,7 @@ function foldMjaiScene(events, upto) {
   return st2;
 }
 
-// app/web/src/clips.mjs
+// src/clips.mjs
 var CLIP_LIMIT = 100;
 var CLIP_DB = "mahjong-local-clips";
 var STORE = "clips";
@@ -35726,7 +35567,7 @@ function createClipStore(indexedDB2 = globalThis.indexedDB) {
   };
 }
 
-// app/web/src/main.js
+// src/main.js
 var NAMES = ["\u3042\u306A\u305F", "AI-1", "AI-2", "AI-3"];
 var MODELS = [
   { id: "jaklab-v1", version: "V1", label: "V1", name: "V1\uFF08\u81EA\u524D\u30E2\u30C7\u30EB\u30FB43MB\uFF09", file: "models/jaklab_v1.onnx", displayTemperature: 0.725 },
@@ -35992,10 +35833,11 @@ function resetCoachDisplay(kind = null) {
 }
 var ui = {
   onCoach(rec, context) {
+    rec.coachDisplay = coachEnabled;
     currentCoach = { record: rec, context };
     coachMissing = null;
     explainCache = null;
-    render();
+    if (coachEnabled) render();
   },
   // The coach produced no evaluation for this decision (inference failed, or
   // no candidates at a discard decision): drop the previous decision's
@@ -37254,6 +37096,7 @@ function makeGameId(endedAt) {
 }
 var currentGameId = null;
 var gameModel = null;
+var gameCoachDisplay = null;
 function buildGameBundle(paipu, { partial = false } = {}) {
   const endedAt = (/* @__PURE__ */ new Date()).toISOString();
   const records = coach?.records || [];
@@ -37281,6 +37124,7 @@ function buildGameBundle(paipu, { partial = false } = {}) {
         wind: "\u6771\u5357\u897F\u5317"[(id2 - QIJIA + 4) % 4]
       })),
       gameModel: gameModel ? { ...gameModel } : null,
+      coachDisplay: gameCoachDisplay,
       model: {
         coach: model.id,
         opponents: S.cpu?.tier.model === "light" ? "jaklab-v1-light" : model.id,
@@ -38015,7 +37859,11 @@ async function attachResumePrefix(resume, prepared) {
   try {
     const all = await idbGetAllBundles();
     const prev = all.find((b) => b.meta?.gameId === resume.gameId);
-    if (!prev) return;
+    if (!prev) {
+      gameCoachDisplay = mergeCoachDisplay(void 0, gameCoachDisplay);
+      return;
+    }
+    gameCoachDisplay = mergeCoachDisplay(prev.meta?.coachDisplay, gameCoachDisplay);
     const { prefix: prefixCopy, records: recsCopy, results: resultsCopy, completed } = resumePrefixPlan(prev, resume, prepared);
     bridge.conv.events.length = 0;
     bridge.conv.events.push(...prefixCopy);
@@ -38026,6 +37874,7 @@ async function attachResumePrefix(resume, prepared) {
     S.resumePrefixLoaded = true;
     S.resumePrefixKyoku = completed;
   } catch (e) {
+    gameCoachDisplay = mergeCoachDisplay(void 0, gameCoachDisplay);
     S.errors.push("resume prefix: " + (e.message || e));
     recordError("E-D302", e, { stage: "resume-prefix" });
   }
@@ -38064,6 +37913,7 @@ async function startGameInner() {
     resumedFrom = { gameId: resume.gameId, kyokuIndex: resume.kyokuIndex, startedAt: resume.startedAt };
   }
   S.gameLength = gameLength;
+  gameCoachDisplay = coachEnabled;
   gameStartedAt = resume?.startedAt || (/* @__PURE__ */ new Date()).toISOString();
   {
     const gm = MODELS.find((m) => m.id === S.modelId) || MODELS[0];
@@ -38126,11 +37976,6 @@ async function startGameInner() {
       S.autoSettings = s;
       return s;
     });
-    const origFirst = human._coachFirst.bind(human);
-    human._coachFirst = async (ctx) => {
-      if (coachEnabled) return origFirst(ctx);
-      human._lastCoach = null;
-    };
     players.push(human);
     for (let id2 = 1; id2 < 4; id2++) players.push(new MortalPlayer(id2, bridge, cpuAiFor(id2), null, decisionLog, onInferFail));
     seat0 = human;
@@ -38351,8 +38196,7 @@ function renderStartScreenStats() {
 }
 var aiBaseline = null;
 var aiBaselineTonpuu = null;
-var statsUi = { length: "all", range: "20", open: /* @__PURE__ */ new Set(), mmSort: "diff", mmFilter: "all" };
-var posthocRun = null;
+var statsUi = { length: "all", range: "20", coachDisplay: "all", modelId: "all", open: /* @__PURE__ */ new Set(), mmSort: "diff", mmFilter: "all" };
 var escHtml = (s) => String(s ?? "").replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" })[c]);
 async function loadAiBaseline() {
   if (aiBaseline) return aiBaseline;
@@ -38524,24 +38368,12 @@ function mismatchControlsHTML() {
     <label>\u5834\u9762 <select data-mm-filter>${o(statsUi.mmFilter, "all", "\u5168\u90E8")}${o(statsUi.mmFilter, "self", "\u81EA\u5BB6\u306E\u6253\u724C")}${o(statsUi.mmFilter, "other", "\u4ED6\u5BB6\u306E\u6253\u724C")}</select></label>
   </div>`;
 }
-function statsMismatchRowsPosthoc(pickedIds) {
-  const rows = [];
-  for (const s of summariesCache) {
-    if (!pickedIds.has(s.gameId) || !s.posthoc?.agg) continue;
-    const hasBundle = historyCache.some((b) => b.meta?.gameId === s.gameId);
-    for (const m of s.posthoc.agg.mismatches || []) {
-      rows.push({ m, gameId: s.gameId, savedAt: s.savedAt, hasBundle });
-    }
-  }
-  return arrangeMismatchRows(rows, (x) => x.m, (x) => x.m.recIndex);
-}
 function renderStatsView() {
   const el2 = $("stats-view");
   if (!el2) return;
   const sel = selectSummaries(summariesCache, statsUi);
   const agg = aggregateMetrics(sel.picked);
   const coachAgg = aggregateCoach(sel.picked);
-  const phAgg = aggregatePosthoc(sel.picked);
   const pickedIds = new Set(sel.picked.map((s) => s.gameId));
   const lowSample = agg.kyoku < 30;
   const isTonpuu = statsUi.length === "tonpuu";
@@ -38550,39 +38382,44 @@ function renderStatsView() {
   const totalEligible = summariesCache.filter((s) => s.eligible).length;
   const lenBtn = (key2, label) => `<button type="button" class="st-chip${statsUi.length === key2 ? " on" : ""}" data-stats-length="${key2}">${label}</button>`;
   const rangeOpts = RANGE_OPTIONS.map((r) => `<option value="${r.key}"${statsUi.range === r.key ? " selected" : ""}>${r.label}</option>`).join("");
+  const options = (current, entries) => entries.map(([v, label]) => `<option value="${v}"${current === v ? " selected" : ""}>${label}</option>`).join("");
   let html = `<div class="stats-card">
     <div class="st-head"><h2>\u7D71\u8A08\u30FB\u5206\u6790</h2><button type="button" class="st-close" data-stats-close>\u9589\u3058\u308B</button></div>
     <div class="st-filters">
       <span class="st-chipset">${lenBtn("all", "\u3059\u3079\u3066")}${lenBtn("tonpuu", "\u6771\u98A8")}${lenBtn("hanchan", "\u534A\u8358")}</span>
       <label>\u7BC4\u56F2 <select id="st-range">${rangeOpts}</select></label>
+      <label>\u30B3\u30FC\u30C1\u8868\u793A <select id="st-coach-display">${options(statsUi.coachDisplay, [["all", "\u3059\u3079\u3066"], ["on", "\u6709\u308A"], ["off", "\u7121\u3057"], ["unknown", "\u8A18\u9332\u306A\u3057"]])}</select></label>
+      <label>\u4F7F\u7528\u30E2\u30C7\u30EB <select id="st-model">${options(statsUi.modelId, [["all", "\u3059\u3079\u3066"], ...MODELS.map((m) => [m.id, m.label]), ["unknown", "\u8A18\u9332\u306A\u3057"]])}</select></label>
     </div>
-    <div class="st-scope">\u5BFE\u8C61: \u624B\u52D5\u30FB\u5B8C\u4E86 ${sel.picked.length}\u5BFE\u5C40\uFF08\u5168\u671F\u9593 ${totalEligible}\u5BFE\u5C40\uFF09\uFF0F ${agg.kyoku}\u5C40
+    <div class="st-scope">\u5BFE\u8C61: \u624B\u52D5\u30FB\u5B8C\u4E86 ${sel.picked.length}\u5BFE\u5C40\uFF08\u6761\u4EF6\u4E00\u81F4 ${sel.available}\u5BFE\u5C40\uFF0F\u5168\u671F\u9593 ${totalEligible}\u5BFE\u5C40\uFF09\uFF0F ${agg.kyoku}\u5C40
       ${sel.limited ? `\uFF0F \u7BC4\u56F2\u6307\u5B9A\u306B\u3088\u308A\u76F4\u8FD1\u5206\u306E\u307F\u96C6\u8A08` : ""}
+      <br>\u30B3\u30FC\u30C1\u8868\u793A\u300C\u6709\u308A\u300D\u306F\u5BFE\u5C40\u4E2D\u306B\u4E00\u5EA6\u3067\u3082ON\u306B\u3057\u305F\u5BFE\u5C40\u3067\u3059\u3002\u8868\u793A\u30FB\u30E2\u30C7\u30EB\u306E\u8A18\u9332\u304C\u306A\u3044\u65E7\u5BFE\u5C40\u306F\u300C\u8A18\u9332\u306A\u3057\u300D\u3067\u78BA\u8A8D\u3067\u304D\u307E\u3059\u3002
       <br>\u96C6\u8A08\u5BFE\u8C61\u306F\u624B\u52D5\u5BFE\u5C40\uFF08\u5B8C\u4E86\uFF09\u306E\u307F\u3067\u3059\u3002AUTO\u5BFE\u5C40\u30FB\u4E2D\u65AD\u5BFE\u5C40\u306F\u6BCD\u6570\u306B\u542B\u307F\u307E\u305B\u3093\u3002
       ${isTonpuu && !baseline ? "<br>\u6771\u98A8\u7528\u306EAI\u30B3\u30FC\u30C1\u57FA\u6E96\u306F\u307E\u3060\u7528\u610F\u3055\u308C\u3066\u3044\u306A\u3044\u305F\u3081\u3001\u6771\u98A8\u8868\u793A\u3067\u306F\u4F75\u8A18\u3057\u307E\u305B\u3093\u3002" : ""}
       ${showBaseline ? `<br>AI\u30B3\u30FC\u30C1\u57FA\u6E96: ${escHtml(baseline.source || "AI\u81EA\u5DF1\u5BFE\u6226")}\uFF08${baseline.sourceGames ?? ""}\u5BFE\u5C40\u30FB${isTonpuu ? "\u6771\u98A8" : "\u534A\u8358"}\uFF09${baseline.modelId && baseline.modelId !== S.modelId ? `<br>\u203B \u3053\u306E\u57FA\u6E96\u306F\u65E7\u30E2\u30C7\u30EB\uFF08${escHtml(baseline.modelName || baseline.modelId)}\uFF09\u306E\u81EA\u5DF1\u5BFE\u6226\u306B\u3088\u308B\u3082\u306E\u3067\u3001\u73FE\u5728\u306EAI\u30B3\u30FC\u30C1\uFF08${escHtml(modelLabel(S.modelId))}\uFF09\u306E\u57FA\u6E96\u3067\u306F\u3042\u308A\u307E\u305B\u3093\u3002` : ""}` : ""}
       ${lowSample ? '<br><span class="st-ref">\u53C2\u8003\u5024</span> \u5C40\u6570\u304C30\u672A\u6E80\u306E\u305F\u3081\u3001\u5404\u6307\u6A19\u306F\u53C2\u8003\u5024\u3067\u3059\uFF08\u5DEE\u5206\u3082\u53C2\u8003\u5024\u3068\u3057\u3066\u8868\u793A\u3057\u307E\u3059\uFF09\u3002' : ""}
     </div>`;
   if (!sel.picked.length) {
-    html += '<div class="st-empty">\u96C6\u8A08\u3067\u304D\u308B\u5BFE\u5C40\uFF08\u624B\u52D5\u30FB\u5B8C\u4E86\uFF09\u304C\u307E\u3060\u3042\u308A\u307E\u305B\u3093\u3002\u5BFE\u5C40\u3092\u7D42\u3048\u308B\u3068\u3001\u3053\u3053\u306B\u7D71\u8A08\u304C\u8868\u793A\u3055\u308C\u307E\u3059\u3002</div>';
+    html += '<div class="st-empty">\u3053\u306E\u6761\u4EF6\u3067\u96C6\u8A08\u3067\u304D\u308B\u5BFE\u5C40\uFF08\u624B\u52D5\u30FB\u5B8C\u4E86\uFF09\u306F\u3042\u308A\u307E\u305B\u3093\u3002\u6761\u4EF6\u3092\u5909\u66F4\u3059\u308B\u304B\u3001\u5BFE\u5C40\u3092\u7D42\u3048\u308B\u3068\u7D71\u8A08\u304C\u8868\u793A\u3055\u308C\u307E\u3059\u3002</div>';
   } else {
     for (const sec of METRIC_SECTIONS) html += statsSectionHTML(sec, agg, baseline, showBaseline, lowSample);
     html += yakuTableHTML("\u548C\u4E86\u5F79\u306E\u5185\u8A33", agg.counters.horaYaku, agg.counters.hora);
     html += yakuTableHTML("\u653E\u9283\u6642\u306E\u76F8\u624B\u306E\u5F79", agg.counters.dealInYaku, agg.counters.dealInTimes);
+    const noAnalysis = sel.picked.filter((s) => !(s.coachAgg?.judged > 0)).length;
     const rate2 = coachAgg.judged ? coachAgg.agree / coachAgg.judged : null;
     const ctxRows = ["zimo", "dapai", "fulou", "gang"].map((ctx) => {
       const b = coachAgg.byContext[ctx];
       if (!b || !b.judged) return "";
       return `<tr><td>${contextLabel(ctx)}</td><td class="st-num">${(b.agree / b.judged * 100).toFixed(1)}%</td><td class="st-den">${b.agree}/${b.judged}</td></tr>`;
     }).join("");
-    html += `<div class="st-section"><h3>AI\u30B3\u30FC\u30C1\u5206\u6790\uFF08\u30B3\u30FC\u30C1ON\u5BFE\u5C40\uFF09</h3>
+    html += `<div class="st-section"><h3>AI\u30B3\u30FC\u30C1\u5206\u6790</h3>
       <div class="st-hero"><div class="st-hero-v">${rate2 != null ? (rate2 * 100).toFixed(1) + "%" : "\u2015"}</div>
       <div class="st-hero-k">\u30B3\u30FC\u30C1\u3068\u306E\u4E00\u81F4\u7387\uFF08${coachAgg.agree}/${coachAgg.judged} \u5224\u65AD\uFF09</div></div>
-      ${coachAgg.judged ? `<div class="st-note">\u81EA\u52D5\u518D\u751F\uFF08\u30EA\u30FC\u30C1\u5F8C\u30C4\u30E2\u5207\u308A\u7B49\uFF09\u306E\u5224\u65AD: ${coachAgg.autoPlayed}\u4EF6\u3092\u542B\u3080 \uFF0F \u5E73\u5747\u63A8\u5968\u5EA6\u5DEE: ${coachAgg.probDiffN ? (coachAgg.probDiffSum / coachAgg.probDiffN * 100).toFixed(1) + "%" : "\u2015"}</div>` : '<div class="st-note">\u30B3\u30FC\u30C1ON\u3067\u5224\u5B9A\u3055\u308C\u305F\u5224\u65AD\u304C\u307E\u3060\u3042\u308A\u307E\u305B\u3093\u3002</div>'}
+      ${coachAgg.judged ? `<div class="st-note">\u81EA\u52D5\u518D\u751F\uFF08\u30EA\u30FC\u30C1\u5F8C\u30C4\u30E2\u5207\u308A\u7B49\uFF09\u306E\u5224\u65AD: ${coachAgg.autoPlayed}\u4EF6\u3092\u542B\u3080 \uFF0F \u5E73\u5747\u63A8\u5968\u5EA6\u5DEE: ${coachAgg.probDiffN ? (coachAgg.probDiffSum / coachAgg.probDiffN * 100).toFixed(1) + "%" : "\u2015"}</div>` : '<div class="st-note">\u5206\u6790\u8A18\u9332\u306A\u3057\u3002\u5BFE\u5C40\u4E2D\u306E\u5206\u6790\u8A18\u9332\u304C\u3042\u308B\u5224\u65AD\u306E\u307F\u3092\u96C6\u8A08\u3057\u307E\u3059\u3002</div>'}
       ${ctxRows ? `<table class="st-table"><thead><tr><th>\u5834\u9762</th><th>\u4E00\u81F4\u7387</th><th></th></tr></thead><tbody>${ctxRows}</tbody></table>` : ""}
+      <div class="st-note">\u5206\u6790\u8A18\u9332\u306A\u3057: ${noAnalysis}\u5BFE\u5C40\uFF08\u901A\u5E38\u306E\u6210\u7E3E\u306B\u306F\u542B\u307F\u3001\u4E00\u81F4\u7387\u306E\u6BCD\u6570\u306B\u306F\u542B\u307F\u307E\u305B\u3093\uFF09\u3002</div>
       <div id="st-live-mismatch">${statsMismatchListHTML(statsMismatchRowsLive(pickedIds), "live")}</div>
     </div>`;
-    html += statsPosthocHTML(phAgg, pickedIds);
   }
   html += "</div>";
   el2.innerHTML = html;
@@ -38591,6 +38428,13 @@ function renderStatsView() {
     statsUi.range = rangeSel.value;
     renderStatsView();
   });
+  for (const [id2, key2] of [["st-coach-display", "coachDisplay"], ["st-model", "modelId"]]) {
+    const control = el2.querySelector("#" + id2);
+    control?.addEventListener("change", () => {
+      statsUi[key2] = control.value;
+      renderStatsView();
+    });
+  }
   for (const sel2 of el2.querySelectorAll("[data-mm-sort], [data-mm-filter]")) {
     sel2.addEventListener("change", () => {
       if (sel2.matches("[data-mm-sort]")) statsUi.mmSort = sel2.value;
@@ -38613,104 +38457,6 @@ function statsMismatchListHTML(rows, source) {
     </button>`;
   }).join("");
   return `<div class="st-note">\u63A8\u5968\u3068\u9055\u3048\u305F\u5834\u9762\uFF08${statsUi.mmSort === "recent" ? "\u65B0\u3057\u3044\u9806" : "\u63A8\u5968\u5EA6\u5DEE\u306E\u5927\u304D\u3044\u9806"}\u30FB\u30BF\u30C3\u30D7\u3067\u5C40\u9762\u3092\u8868\u793A\uFF09</div>${mismatchControlsHTML()}<div class="review-list">${items}</div>`;
-}
-function statsPosthocHTML(phAgg, pickedIds) {
-  const phRate = phAgg.judged ? phAgg.agree / phAgg.judged : null;
-  const modelsNote = Object.keys(phAgg.models || {}).length ? `\u5206\u6790\u30E2\u30C7\u30EB: ${Object.entries(phAgg.models).map(([n, c]) => `${escHtml(n)} \xD7${c}`).join("\u3001")}` : "";
-  let html = `<div class="st-section"><h3>\u30B3\u30FC\u30C1OFF\u5BFE\u5C40\u306E\u5F8C\u4ED8\u3051\u5206\u6790</h3>
-    <div class="st-note">\u30B3\u30FC\u30C1OFF\u3067\u5BFE\u5C40\u3057\u305F\u5BFE\u5C40\u306F\u3001\u5BFE\u5C40\u30ED\u30B0\u3092\u518D\u751F\u3057\u3066\u30E2\u30C7\u30EB\u3067\u63A8\u8AD6\u3057\u76F4\u3059\u3053\u3068\u3067\u3001\u3042\u3068\u304B\u3089\u300C\u63A8\u5968\u3068\u306E\u4E56\u96E2\u300D\u3092\u8A08\u7B97\u3067\u304D\u307E\u3059\uFF08\u5F8C\u4ED8\u3051\u5206\u6790\uFF09\u3002\u4E00\u81F4\u7387\u306F\u30B3\u30FC\u30C1ON\u5BFE\u5C40\u3068\u306F\u6BCD\u6570\u3092\u5206\u3051\u3001\u6DF7\u305C\u307E\u305B\u3093\u3002</div>`;
-  if (phAgg.judged) {
-    html += `<div class="st-hero"><div class="st-hero-v">${(phRate * 100).toFixed(1)}%</div>
-      <div class="st-hero-k">\u5F8C\u4ED8\u3051\u5206\u6790\u306E\u4E00\u81F4\u7387\uFF08${phAgg.agree}/${phAgg.judged} \u5224\u65AD\u30FB${phAgg.games}\u5BFE\u5C40\uFF09</div></div>
-      <div class="st-note">${modelsNote}</div>`;
-  }
-  const games = historyCache.filter((b) => (b.meta?.mode || "manual") === "manual" && b.meta?.status === "finished");
-  if (!games.length) {
-    html += '<div class="st-note">\u3053\u306E\u7AEF\u672B\u306B\u5BFE\u5C40\u5C65\u6B74\u304C\u3042\u308A\u307E\u305B\u3093\u3002</div>';
-  } else {
-    const items = games.map((b) => {
-      const gid = b.meta.gameId;
-      const s = summariesCache.find((x) => x.gameId === gid);
-      const judged = s?.coachAgg?.judged ?? 0;
-      const date = b.meta?.savedAt ? new Date(b.meta.savedAt).toLocaleString("ja-JP") : "";
-      const len = b.meta?.gameLength === "hanchan" ? "\u534A\u8358" : "\u6771\u98A8";
-      if (judged > 0) {
-        return `<div class="st-game"><span>${date} \uFF0F ${len} \uFF0F \u30B3\u30FC\u30C1ON\uFF08\u5224\u5B9A ${judged}\u4EF6\uFF09</span></div>`;
-      }
-      if (s?.posthoc?.agg) {
-        const a = s.posthoc.agg;
-        const r = a.judged ? (a.agree / a.judged * 100).toFixed(1) + "%" : "\u2015";
-        return `<div class="st-game"><span>${date} \uFF0F ${len} \uFF0F \u5F8C\u4ED8\u3051\u5206\u6790\u6E08\u307F\uFF08\u4E00\u81F4\u7387 ${r}\u30FB${escHtml(s.posthoc.modelName || "")}\uFF09</span>
-          <button type="button" class="st-mini-btn" data-posthoc-run="${escHtml(gid)}">\u518D\u5206\u6790</button></div>`;
-      }
-      return `<div class="st-game"><span>${date} \uFF0F ${len} \uFF0F \u30B3\u30FC\u30C1OFF\uFF08\u672A\u5206\u6790\uFF09</span>
-        <button type="button" class="st-mini-btn" data-posthoc-run="${escHtml(gid)}">\u5206\u6790\u3059\u308B</button></div>`;
-    }).join("");
-    html += `<div class="st-games">${items}</div>`;
-  }
-  if (posthocRun) {
-    html += `<div class="st-progress" id="st-posthoc-progress">
-      <div>\u5F8C\u4ED8\u3051\u5206\u6790\u4E2D\u2026 <span id="st-posthoc-progress-text">\u6E96\u5099\u4E2D</span></div>
-      <div class="st-bar"><div class="st-bar-fill" id="st-posthoc-bar" style="width:0%"></div></div>
-      <button type="button" class="st-mini-btn" data-posthoc-cancel>\u30AD\u30E3\u30F3\u30BB\u30EB</button></div>`;
-  }
-  const rows = statsMismatchRowsPosthoc(pickedIds);
-  if (rows.length || phAgg.judged && statsUi.mmFilter !== "all") {
-    const items = rows.map(({ m, gameId, savedAt, hasBundle }) => {
-      const date = savedAt ? new Date(savedAt).toLocaleDateString("ja-JP") : "";
-      const inner = `<span>${escHtml(kyokuText(m.kyoku))} ${m.junme ?? "-"}\u5DE1\u76EE\uFF08${contextLabel(m.context)}\uFF09${date ? " \u30FB " + date : ""}</span>
-        <span>\u63A8\u5968: ${escHtml(actionLabel(m.recommended, null))} \uFF0F \u3042\u306A\u305F: ${escHtml(actionLabel(m.actual, null))}</span>
-        <span class="review-diff">\u63A8\u5968\u5EA6\u5DEE ${m.probDiff != null ? (m.probDiff * 100).toFixed(1) + "%" : "-"}</span>`;
-      return hasBundle ? `<button type="button" class="review-item" data-stats-scene="posthoc" data-game-id="${escHtml(gameId)}" data-rec-index="${m.recIndex}">${inner}</button>` : `<div class="review-item st-disabled">${inner}<span>\uFF08\u5BFE\u5C40\u30C7\u30FC\u30BF\u306F\u3053\u306E\u7AEF\u672B\u306B\u6B8B\u3063\u3066\u3044\u307E\u305B\u3093\uFF09</span></div>`;
-    }).join("");
-    html += `<div class="st-note">\u5F8C\u4ED8\u3051\u5206\u6790\u3067\u63A8\u5968\u3068\u9055\u3048\u305F\u5834\u9762\uFF08${statsUi.mmSort === "recent" ? "\u65B0\u3057\u3044\u9806" : "\u63A8\u5968\u5EA6\u5DEE\u306E\u5927\u304D\u3044\u9806"}\uFF09</div><div id="st-posthoc-mismatch">${mismatchControlsHTML()}${rows.length ? `<div class="review-list">${items}</div>` : '<div class="st-note">\u3053\u306E\u6761\u4EF6\u306B\u5F53\u3066\u306F\u307E\u308B\u5834\u9762\u306F\u3042\u308A\u307E\u305B\u3093\u3002</div>'}</div>`;
-  }
-  html += "</div>";
-  return html;
-}
-async function runPosthocAnalysis(gameId) {
-  if (posthocRun) return;
-  const bundle = historyCache.find((b) => b.meta?.gameId === gameId);
-  const summary = summariesCache.find((s) => s.gameId === gameId);
-  if (!bundle || !summary) return;
-  if (!ai) {
-    S.errors.push("posthoc: model not loaded");
-    return;
-  }
-  posthocRun = { gameId, cancelled: false };
-  renderStatsView();
-  const res = await analyzeCoachOffline({
-    mjai: bundle.mjai || [],
-    qijia: bundle.meta?.qijia ?? 0,
-    makeBrain: (a) => new MortalBrain(a),
-    infer: (b) => ai.infer(b),
-    onProgress: ({ eventsDone, eventsTotal, decisions }) => {
-      const t = document.getElementById("st-posthoc-progress-text");
-      const bar = document.getElementById("st-posthoc-bar");
-      if (t) t.textContent = `${eventsDone}/${eventsTotal} \u30A4\u30D9\u30F3\u30C8\u51E6\u7406\u6E08\u307F\uFF08${decisions} \u5224\u65AD\uFF09`;
-      if (bar) bar.style.width = `${eventsTotal ? Math.round(eventsDone / eventsTotal * 100) : 0}%`;
-    },
-    isCancelled: () => !!posthocRun?.cancelled
-  });
-  const wasCancelled = !!posthocRun?.cancelled;
-  posthocRun = null;
-  if (!wasCancelled && !res.cancelled && !res.error && res.records) {
-    summary.posthoc = {
-      modelId: S.modelId,
-      modelName: modelLabel(S.modelId),
-      computedAt: (/* @__PURE__ */ new Date()).toISOString(),
-      agg: aggregateCoachRecords(res.records),
-      records: trimPosthocRecords(res.records)
-    };
-    try {
-      await idbPutSummary(summary);
-    } catch (e) {
-      S.errors.push("posthoc save: " + (e.message || e));
-    }
-  } else if (res.error) {
-    S.errors.push("posthoc: " + res.error);
-  }
-  renderStatsView();
 }
 function toggleStatsMetric(k2) {
   const open = statsUi.open;
@@ -38746,28 +38492,13 @@ document.addEventListener("click", (e) => {
     renderStatsView();
     return;
   }
-  const run = e.target.closest?.("[data-posthoc-run]");
-  if (run) {
-    runPosthocAnalysis(run.dataset.posthocRun);
-    return;
-  }
-  if (e.target.closest?.("[data-posthoc-cancel]")) {
-    if (posthocRun) posthocRun.cancelled = true;
-    return;
-  }
   const scene = e.target.closest?.("[data-stats-scene]");
   if (scene) {
     const gid = scene.dataset.gameId;
     const idx = Number(scene.dataset.recIndex);
     const bundle = historyCache.find((b) => b.meta?.gameId === gid);
     if (!bundle) return;
-    if (scene.dataset.statsScene === "posthoc") {
-      const s = summariesCache.find((x) => x.gameId === gid);
-      if (!s?.posthoc?.records) return;
-      openSceneViewer(idx, { ...bundle, coach: s.posthoc.records });
-    } else {
-      openSceneViewer(idx, bundle);
-    }
+    openSceneViewer(idx, bundle);
   }
 });
 function refreshTierOptionText(coachLight) {
@@ -39117,6 +38848,7 @@ async function init() {
   initViewportFit();
   $("coachToggle").addEventListener("change", (e) => {
     coachEnabled = e.target.checked;
+    if (S.started && !S.finished) gameCoachDisplay = mergeCoachDisplay(gameCoachDisplay, coachEnabled);
     render();
   });
   const assistEl = $("assistToggle");
