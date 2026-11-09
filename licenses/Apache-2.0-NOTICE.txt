@@ -1,0 +1,33 @@
+Third-party notices for Apache-2.0 components bundled in this application
+==========================================================================
+
+The following components are distributed under the Apache License, Version 2.0
+(see Apache-2.0.txt). The upstream npm packages / Maven artifacts used here do
+not ship a separate NOTICE file; the attribution notices reproduced by or
+contained in the bundled sources are listed below.
+
+FlatBuffers (flatbuffers 25.9.23)
+  Copyright: The FlatBuffers project
+  Source: https://github.com/google/flatbuffers
+  Included in the onnxruntime-web prebundle.
+
+long.js (long 5.3.2)
+  Copyright 2020 Daniel Wirtz / The long.js Authors
+  Source: https://github.com/dcodeIO/long.js
+  Included in the onnxruntime-web prebundle.
+
+Closure Library (portions included in long.js)
+  Copyright 2009 The Closure Library Authors
+  Source: https://github.com/google/closure-library
+  Included in the onnxruntime-web prebundle.
+
+Google LLC portions in the onnxruntime-web prebundle
+  Copyright 2019 Google LLC. All Rights Reserved.
+  Copyright 2020 Google LLC. All Rights Reserved.
+  Copyright 2021 Google LLC. All Rights Reserved.
+  Licensed under the Apache License, Version 2.0.
+
+AndroidX WebKit and transitive AndroidX dependencies (Android build only)
+  Copyright (C) The Android Open Source Project
+  Source: https://developer.android.com/jetpack/androidx
+  The AAR/POM artifacts do not include a separate NOTICE file.

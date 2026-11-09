@@ -6,7 +6,7 @@
 <title>雀コーチ ― リアルタイムAI分析麻雀</title>
 <link rel="manifest" href="manifest.webmanifest">
 <meta name="theme-color" content="#0b3d2e">
-<meta name="build-version" content="8668d74b5003">
+<meta name="build-version" content="3e3c9d6385e4">
 <meta name="model-version" content="bd980c22b59a">
 <link rel="icon" type="image/png" sizes="32x32" href="icons/favicon-32.png">
 <link rel="icon" type="image/png" sizes="192x192" href="icons/icon-192.png">
@@ -33,7 +33,7 @@
         <button id="startBtn" disabled>対局開始</button>
       </div>
       <button id="refBtn" type="button" title="役一覧・用語辞典・牌の読み方を開きます（閉じると対局はそのまま続きます）">役・用語</button>
-      <button id="audioSettingsBtn" type="button" title="音量設定を開きます（閉じると対局に戻ります）">音量</button>
+      <button id="audioSettingsBtn" type="button" title="音・テンポ設定を開きます">音・テンポ</button>
       <button id="suspendBtn" type="button" title="対局を中断してスタート画面に戻ります（スタート画面の「続きから再開」で再開できます）">中断</button>
       <div class="chip-row" role="group" aria-label="アシスト設定（対局中もすぐ反映）">
         <label class="chip" title="AIコーチ表示"><input type="checkbox" id="coachToggle" checked><span>コーチ</span></label>
@@ -70,7 +70,6 @@
           <div class="ss-card ss-resume" id="ss-resume" hidden>
             <div class="ss-resume-title">前回の対局が残っています</div>
             <div class="ss-resume-detail" id="ss-resume-detail"></div>
-            <div class="ss-resume-note">直前の安全な区切りから再開します。残りの山は混ぜ直します。</div>
             <button type="button" class="ss-btn-resume" id="ss-resume-btn">続きから再開</button>
           </div>
           <div class="ss-card" id="ss-stats-card" hidden>
@@ -82,14 +81,36 @@
             </div>
           </div>
           <div class="ss-card ss-strength-card">
+            <label class="ss-coach-model">コーチモデル <select id="ss-model" aria-label="コーチモデル">
+              <option value="jaklab-v1">V1（八段相当）</option>
+              <option value="jaklab-v1-light">V1 Light（七段相当）</option>
+            </select></label>
             <div class="ss-strength-row">
-              <span class="ss-k">CPUの強さ <span id="ss-model-ver" class="ss-model-ver">モデル V1</span></span>
+              <span class="ss-k">対戦相手</span>
             </div>
             <!-- CPU tier / type (src/cpu_style.mjs; options filled by main.js).
                  Applies to the three CPUs from the next game; the AI coach is always 最上級. -->
-            <div class="ss-cpu-row">
-              <label>強さ <select id="ss-cpu-tier" title="CPUの強さ（AIコーチは常に最上級）"></select></label>
-              <label>タイプ <select id="ss-cpu-style" title="CPUのタイプ（最上級のときだけ選べます）"></select></label>
+            <div class="ss-cpu-seat" role="group" aria-label="下家のCPU設定">
+              <div class="ss-cpu-seat-name">下家</div>
+              <div class="ss-cpu-row">
+                <label>強さ <select id="ss-cpu-tier-1" aria-label="下家の強さ"></select></label>
+                <label>タイプ <select id="ss-cpu-style-1" aria-label="下家のタイプ"></select></label>
+              </div>
+            </div>
+            <div class="ss-cpu-seat" role="group" aria-label="対面のCPU設定">
+              <div class="ss-cpu-seat-name">対面</div>
+              <div class="ss-cpu-row">
+                <label>強さ <select id="ss-cpu-tier-2" aria-label="対面の強さ"></select></label>
+                <label>タイプ <select id="ss-cpu-style-2" aria-label="対面のタイプ"></select></label>
+              </div>
+            </div>
+            <div class="ss-cpu-seat" role="group" aria-label="上家のCPU設定">
+              <div class="ss-cpu-seat-name">上家</div>
+              <div class="ss-cpu-row">
+                <label>強さ <select id="ss-cpu-tier-3" aria-label="上家の強さ"></select></label>
+                <label>タイプ <select id="ss-cpu-style-3" aria-label="上家のタイプ"></select></label>
+              </div>
+              <div class="ss-settings-note ss-cpu-note">七段相当以下は軽量モデルです</div>
             </div>
           </div>
           <div class="ss-segment" role="tablist" aria-label="対局の長さ">
@@ -106,61 +127,16 @@
           </div>
           <button type="button" class="ss-btn-primary" id="ss-start-btn" disabled>新しい対局を開始</button>
           <div class="ss-link-row">
-            <button type="button" class="ss-btn-ghost" id="ss-history-btn">対局履歴</button>
+            <button type="button" class="ss-btn-ghost" id="ss-guide-btn">初めての方</button>
             <button type="button" class="ss-btn-ghost" id="ss-stats-btn">統計・分析</button>
+            <button type="button" class="ss-btn-ghost" id="ss-history-btn">対局履歴</button>
             <button type="button" class="ss-btn-ghost" id="ss-settings-btn">設定</button>
-            <button type="button" class="ss-btn-ghost" id="ss-rules-btn">ルール</button>
           </div>
           <div class="ss-link-row">
-            <button type="button" class="ss-btn-ghost" id="ss-guide-btn">はじめての方へ</button>
+            <button type="button" class="ss-btn-ghost" id="ss-rules-btn">ルール</button>
             <button type="button" class="ss-btn-ghost" id="ss-yaku-btn">役一覧</button>
             <button type="button" class="ss-btn-ghost" id="ss-glossary-btn">用語辞典</button>
             <button type="button" class="ss-btn-ghost" id="ss-tiles-btn">牌の読み方</button>
-          </div>
-          <div class="ss-panel" id="ss-settings-panel" hidden>
-            <fieldset class="audio-settings"><legend>音量</legend>
-              <label for="ss-bgm-volume">BGM <output data-audio-value="bgm" for="ss-bgm-volume"></output></label>
-              <input id="ss-bgm-volume" data-audio-volume="bgm" type="range" min="0" max="100" step="1">
-              <label for="ss-se-volume">効果音 <output data-audio-value="se" for="ss-se-volume"></output></label>
-              <input id="ss-se-volume" data-audio-volume="se" type="range" min="0" max="100" step="1">
-              <p>0でミュート。設定はこの端末に保存され、対局中もすぐ反映されます。</p>
-            </fieldset>
-            <label>コーチモデル <select id="ss-model">
-              <option value="jaklab-v1">V1（標準・43MB）</option>
-              <option value="jaklab-v1-light">V1 Light（軽量・5.8MB）</option>
-            </select></label>
-            <div class="ss-settings-note ss-model-help">コーチと最上級CPUが使うモデルです（上の「CPUの強さ」とは別の設定です）。V1 Light は容量が小さく推論が速いので、低スペック端末向けです。</div>
-            <label>画面の向き <select id="ss-orientation">
-              <option value="auto">自動</option>
-              <option value="portrait">縦に固定</option>
-              <option value="landscape">横に固定</option>
-            </select></label>
-            <label><input type="checkbox" id="ss-coach" checked> AIコーチ表示</label>
-            <label><input type="checkbox" id="ss-assist"> アシスト</label>
-            <label><input type="checkbox" id="ss-nocall"> 鳴きなし</label>
-            <label><input type="checkbox" id="ss-autowin"> 自動和了</label>
-            <label><input type="checkbox" id="ss-tsumogiri"> 自動ツモ切り</label>
-            <label>ツモ切り暗転表示 <select id="ss-dim">
-              <option value="1">暗転表示</option>
-              <option value="0">通常表示</option>
-            </select></label>
-            <div class="ss-settings-note">ツモ切りで捨てられた牌を、河の中で少し暗く表示します（その局の間ずっと）。手出しの牌は通常の明るさのままなので、どちらで捨てたか後から見分けられます。</div>
-            <div class="ss-dim-preview" id="ss-dim-preview" aria-label="ツモ切り暗転のプレビュー"></div>
-            <div class="ss-settings-note">コーチモデルは選ぶとすぐ切り替わります（切り替え中は開始できません）。画面の向きは端末が対応している場合のみ固定されます（未対応の端末では自動のままです）。その他の設定は対局画面のチップと同じもので、対局中に変えてもすぐ反映されます。</div>
-            <!-- Diagnostics (product/error_codes.md). Local only: nothing is sent;
-                 the copy button puts a text block on the clipboard. -->
-            <div class="ss-diag" id="ss-diag">
-              <div class="ss-diag-title">診断</div>
-              <dl>
-                <dt>アプリ版</dt><dd id="ss-diag-app">-</dd>
-                <dt>モデル</dt><dd id="ss-diag-model">-</dd>
-                <dt>成功構成</dt><dd id="ss-diag-config">-</dd>
-                <dt>最終エラー</dt><dd id="ss-diag-last">なし</dd>
-              </dl>
-              <button type="button" class="ss-diag-copy" id="ss-diag-copy">診断情報をコピー</button>
-              <span class="ss-diag-copy-status" id="ss-diag-copy-status" aria-live="polite"></span>
-              <div class="ss-settings-note">不具合のお問い合わせの際は、エラーコード（例: E-L110）と、可能ならこの診断情報を添えてください。情報は自動では送信されません。対局内容や個人情報は含みません。</div>
-            </div>
           </div>
         </div>
         <div class="ss-status"><span class="ss-dot"></span><span id="ss-status-text" role="status" aria-live="polite">読み込み中… お待ちください</span></div>
@@ -195,16 +171,64 @@
 <div id="clips-view" class="scene-viewer" style="display:none"></div>
 <div id="scene-viewer" class="scene-viewer" style="display:none"></div>
 <div id="stats-view" class="stats-view" style="display:none"></div>
-<div id="audio-settings-view" class="stats-view" role="dialog" aria-modal="true" aria-labelledby="audio-settings-title" style="display:none">
+<!-- 設定ポップアップ（2026-11-09）: スタート画面の「設定」と対局中の「音・テンポ」から開く同一の画面。
+     コントロールはここだけに置く（複製しない）。main.js initAudioControls() が開閉を管理。 -->
+<div id="settings-view" class="stats-view" role="dialog" aria-modal="true" aria-labelledby="settings-title" style="display:none">
   <div class="stats-card rules-card">
-    <div class="st-head"><h2 id="audio-settings-title">音量設定</h2><button type="button" class="st-close" id="audio-settings-close">閉じる</button></div>
-    <fieldset class="audio-settings"><legend>音量</legend>
-      <label for="game-bgm-volume">BGM <output data-audio-value="bgm" for="game-bgm-volume"></output></label>
-      <input id="game-bgm-volume" data-audio-volume="bgm" type="range" min="0" max="100" step="1">
-      <label for="game-se-volume">効果音 <output data-audio-value="se" for="game-se-volume"></output></label>
-      <input id="game-se-volume" data-audio-volume="se" type="range" min="0" max="100" step="1">
-      <p>0でミュート。設定はこの端末に保存され、対局中もすぐ反映されます。</p>
-    </fieldset>
+    <div class="st-head"><h2 id="settings-title">設定</h2><button type="button" class="st-close" id="settings-close">閉じる</button></div>
+          <div class="ss-panel" id="ss-settings-panel">
+            <fieldset class="audio-settings"><legend>音量</legend>
+              <label for="ss-bgm-volume">BGM <output data-audio-value="bgm" for="ss-bgm-volume"></output></label>
+              <input id="ss-bgm-volume" data-audio-volume="bgm" type="range" min="0" max="100" step="1">
+              <label for="ss-se-volume">効果音 <output data-audio-value="se" for="ss-se-volume"></output></label>
+              <input id="ss-se-volume" data-audio-volume="se" type="range" min="0" max="100" step="1">
+              <p>0でミュート。設定はこの端末に保存され、対局中もすぐ反映されます。</p>
+            </fieldset>
+            <label><input id="ss-discard-tempo" data-discard-tempo type="checkbox"> 打牌間隔を500ms以上にする</label>
+            <label>画面の向き <select id="ss-orientation">
+              <option value="auto">自動</option>
+              <option value="portrait">縦に固定</option>
+              <option value="landscape">横に固定</option>
+            </select></label>
+            <label><input type="checkbox" id="ss-coach" checked> AIコーチ表示</label>
+            <label><input type="checkbox" id="ss-assist"> アシスト</label>
+            <label><input type="checkbox" id="ss-nocall"> 鳴きなし</label>
+            <label><input type="checkbox" id="ss-autowin"> 自動和了</label>
+            <label><input type="checkbox" id="ss-tsumogiri"> 自動ツモ切り</label>
+            <label>ツモ切り暗転表示 <select id="ss-dim">
+              <option value="1">暗転表示</option>
+              <option value="0">通常表示</option>
+            </select></label>
+            <div class="ss-settings-note">ツモ切りで捨てられた牌を、河の中で少し暗く表示します（その局の間ずっと）。手出しの牌は通常の明るさのままなので、どちらで捨てたか後から見分けられます。</div>
+            <div class="ss-dim-preview" id="ss-dim-preview" aria-label="ツモ切り暗転のプレビュー"></div>
+            <div class="ss-settings-note">コーチモデルは選ぶとすぐ切り替わります（切り替え中は開始できません）。画面の向きは端末が対応している場合のみ固定されます（未対応の端末では自動のままです）。その他の設定は対局画面のチップと同じもので、対局中に変えてもすぐ反映されます。</div>
+            <!-- Diagnostics (product/error_codes.md). Local only: nothing is sent;
+                 the copy button puts a text block on the clipboard. -->
+            <div class="ss-diag" id="ss-diag">
+              <div class="ss-diag-title">診断</div>
+              <dl>
+                <dt>アプリ版</dt><dd id="ss-diag-app">-</dd>
+                <dt>モデル</dt><dd id="ss-diag-model">-</dd>
+                <dt>成功構成</dt><dd id="ss-diag-config">-</dd>
+                <dt>最終エラー</dt><dd id="ss-diag-last">なし</dd>
+              </dl>
+              <button type="button" class="ss-diag-copy" id="ss-diag-copy">診断情報をコピー</button>
+              <span class="ss-diag-copy-status" id="ss-diag-copy-status" aria-live="polite"></span>
+              <div class="ss-settings-note">不具合のお問い合わせの際は、エラーコード（例: E-L110）と、可能ならこの診断情報を添えてください。情報は自動では送信されません。対局内容や個人情報は含みません。</div>
+            </div>
+            <!-- 設定ポップアップの最下部（2026-11-09, product B5）。押すと about-view を前面に開く。 -->
+            <div class="ss-about-row">
+              <button type="button" class="ss-btn-ghost ss-about-btn" id="ss-about-btn">このアプリについて</button>
+            </div>
+          </div>
+  </div>
+</div>
+<!-- このアプリについて（2026-11-09, product B5）。設定ポップアップの最下部から開く。
+     中身は about.mjs が描画し、ライセンス本文は licenses/ の静的ファイルから読み込む。 -->
+<div id="about-view" class="stats-view about-view" role="dialog" aria-modal="true" aria-labelledby="about-title" style="display:none">
+  <div class="stats-card rules-card about-card">
+    <div class="st-head"><h2 id="about-title">このアプリについて</h2><button type="button" class="st-close" id="about-close">閉じる</button></div>
+    <div id="about-body"></div>
   </div>
 </div>
 <!-- 初回ガイド「はじめての方へ」。本文は first_run_guide.mjs が描画。rules-view(z25) より背面(z24)。 -->
@@ -216,13 +240,13 @@
     <div class="rules-foot guide-foot"><button type="button" class="ss-btn-primary" id="guide-start">閉じる</button></div>
   </div>
 </div>
-<!-- Rules view (start screen only). Text = product/rules_text.md
+<!-- Rules view (shared by start screen and in-game 役・用語). Text = product/rules_text.md
      「アプリ内に表示する本文」; update both together when rule.mjs changes. -->
 <div id="rules-view" class="stats-view rules-view" role="dialog" aria-modal="true" aria-labelledby="rules-title" style="display:none">
   <div class="stats-card rules-card">
     <div class="st-head"><h2 id="rules-title">ルール</h2><button type="button" class="st-close" id="rules-close">閉じる</button></div>
-    <!-- 2026-11-08: ルール / 役一覧 / 用語辞典 / 牌の読み方のタブ。対局中は toolbar の「役・用語」から
-         同じ画面を開く（ルールタブは隠す）。main.js openRefView() が管理。 -->
+    <!-- 2026-11-08: ルール / 役一覧 / 用語辞典 / 牌の読み方のタブ。対局中も toolbar の「役・用語」から
+         同じ4タブを開く。main.js openRefView() が管理。 -->
     <div class="ref-tabs" role="tablist" aria-label="ルール・役一覧・用語辞典・牌の読み方">
       <button type="button" role="tab" class="ref-tab" data-ref-tab="rules">ルール</button>
       <button type="button" role="tab" class="ref-tab" data-ref-tab="yaku">役一覧</button>
@@ -259,6 +283,7 @@
       <h3>鳴き・役</h3>
       <ul>
         <li>チー・ポン・カンあり。</li>
+        <li><b>後付けあり</b>。</li>
         <li><b>喰いタンあり</b>。</li>
         <li><b>喰い替えなし</b>（鳴いた牌と同じ牌、および筋になる牌は、鳴いた直後に切れません）。</li>
         <li>連風牌（場風かつ自風）の雀頭は <b>2符ではなく 4符</b>。</li>
@@ -275,7 +300,7 @@
         <li>リーチ：門前でテンパイ時、1,000 点を供託して宣言。持ち点が 1,000 点未満、または山の残りが 4 枚未満（ツモ番なし）ではリーチできません。</li>
         <li><b>一発あり</b>。</li>
         <li><b>裏ドラあり</b>。</li>
-        <li><b>カンドラあり</b>、<b>カン裏あり</b>。カンドラはカンの直後ではなく、<b>打牌後にめくる（後乗せ）</b> 扱い。</li>
+        <li><b>カンドラ・カン裏あり</b>。暗槓・加槓は打牌前、大明槓は打牌後にめくります。</li>
         <li><b>ダブルリーチあり</b>（第一ツモ前の巡目でのリーチ。2翻。一発も有効）。</li>
         <li><b>オープンリーチなし</b>。</li>
         <li>リーチ後の暗槓は、<b>待ちが変わらない場合のみ可</b>。</li>
@@ -339,6 +364,10 @@
 (function () {
   function run() {
     try {
+      // The Play shell (window.JanLabNative, src/shell.mjs) updates through
+      // Play, so this PWA self-heal must not run there. This inline script runs
+      // before the module bundle, so it checks the same bridge global directly.
+      if (window.JanLabNative) return;
       var m = document.querySelector('meta[name="build-version"]');
       var mine = m ? m.getAttribute('content') : '';
       if (!mine || mine.indexOf('__') === 0) return;

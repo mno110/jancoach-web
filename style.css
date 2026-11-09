@@ -98,7 +98,6 @@ body:has(#start-screen:not([hidden])) { background: #06231a; }
 .ss-resume { border-color: rgba(255,217,122,.6); text-align: center; }
 .ss-resume-title { font-weight: 800; color: #ffd97a; }
 .ss-resume-detail { margin-top: 4px; font-size: 14px; }
-.ss-resume-note { margin-top: 2px; font-size: 11.5px; color: #bde; }
 .ss-btn-resume { margin-top: 9px; width: 100%; padding: 11px; font-size: 16px; font-weight: 800;
   background: linear-gradient(180deg, #ffd97a, #d9a83c); color: #231a04; border: none; border-radius: 8px; cursor: pointer; }
 .ss-btn-discard { margin-top: 6px; padding: 6px 12px; font-size: 12.5px; background: transparent;
@@ -113,7 +112,12 @@ body:has(#start-screen:not([hidden])) { background: #06231a; }
 .ss-cpu-row label:last-child { flex: 0 1 auto; min-width: 0; }
 .ss-cpu-row label:last-child select { width: 92px; flex: 0 1 92px; }
 .ss-cpu-row select { flex: 1 1 auto; min-width: 0; text-overflow: ellipsis; }
-.ss-model-ver { margin-left: .5em; }
+.ss-cpu-seat { width: 100%; padding-top: 8px; }
+.ss-cpu-seat + .ss-cpu-seat { border-top: 1px solid #ffffff20; margin-top: 8px; }
+.ss-cpu-seat-name { color: #eef; font-size: 12px; margin-bottom: 4px; }
+.ss-coach-model { display: flex; align-items: center; gap: 8px; font-size: 13px; }
+.ss-coach-model select { flex: 1; min-width: 0; font-size: 13px; }
+.ss-cpu-note { margin-top: 4px; }
 .ss-segment { display: flex; width: min(430px, 100%); background: rgba(0,0,0,.35); border-radius: 9px; padding: 3px; gap: 3px; }
 .ss-segment button { flex: 1; padding: 8px; font-size: 15px; background: transparent; color: #cfe;
   border: none; border-radius: 7px; cursor: pointer; }
@@ -736,7 +740,8 @@ table.fb-table td, table.fb-table th { border: 1px solid #26594a; padding: 3px 1
   .tile.hand.drawn { margin-left: 10px; }
   .tile.act-tile { width: 15px; height: 21px; }
   #sel-chip { font-size: 11px; padding: 2px 8px; gap: 6px; }
-  #side { flex: 1 1 auto; min-height: 140px; padding: 6px; }
+  /* The panel itself must fit the remaining height; its content scrolls. */
+  #side { flex: 1 1 auto; min-height: 0; padding: 6px; }
   #side h3 { font-size: 13px; margin: 4px 0; }
   .rec { font-size: 13px; }
   .prob.big { font-size: 17px; }
@@ -753,6 +758,14 @@ table.fb-table td, table.fb-table th { border: 1px solid #26594a; padding: 3px 1
 .st-chip { font-size: 13px; padding: 6px 12px; border-radius: 999px; border: 1px solid #2a7; background: transparent; color: #cfe; cursor: pointer; }
 .st-chip.on { background: #1a7a56; color: #fff; }
 .st-filters select { font-size: 14px; }
+.st-multi { max-width: 100%; }
+.st-multi > summary { list-style: none; cursor: pointer; font-size: 14px; padding: 4px 24px 4px 8px; border: 1px solid #2a7; border-radius: 6px; background: #0e5a41; color: #eef; position: relative; }
+.st-multi > summary::-webkit-details-marker { display: none; }
+.st-multi > summary::after { content: '▾'; position: absolute; right: 8px; top: 50%; transform: translateY(-50%); color: #ffd97a; font-size: 11px; }
+.st-multi[open] > summary::after { transform: translateY(-50%) rotate(180deg); }
+.st-multi > summary:focus-visible { outline: 2px solid #ffd97a; outline-offset: 1px; }
+.st-multi-list { display: grid; gap: 2px; margin-top: 4px; padding: 6px; border: 1px solid #2a7; border-radius: 6px; background: #0a3f2e; width: max-content; max-width: 100%; box-sizing: border-box; }
+.st-multi-list label { display: flex; align-items: center; gap: 7px; font-size: 13px; padding: 3px 4px; cursor: pointer; white-space: nowrap; }
 .st-scope { font-size: 12.5px; color: #bde; line-height: 1.55; margin-bottom: 8px; }
 .st-section { margin-top: 18px; }
 .st-section h3 { font-size: 15px; margin: 0 0 6px; border-left: 4px solid #2a7; padding-left: 8px; }
@@ -866,28 +879,30 @@ table.fb-final td.nm { text-align: left; }
 .ss-diag-copy-status { font-size: 11px; margin-left: 6px; color: #bde; }
 
 /* Shared select look (2026-11-06): dark green + gold chevron, closed state only
-   (the open option list stays OS-drawn). Per-screen rules above/below only set font-size. */
-.ss-cpu-row select, .ss-panel select, .st-filters select, .st-mm-ctl select {
+   (the open option list stays OS-drawn). Per-screen rules above/below only set font-size.
+   2026-11-10: the start screen's coach model select (.ss-coach-model select) joins the group
+   so it matches the CPU strength/type selects instead of falling back to the OS white look. */
+.ss-coach-model select, .ss-cpu-row select, .ss-panel select, .st-filters select, .st-mm-ctl select {
   -webkit-appearance: none; appearance: none; color-scheme: dark;
   padding: 4px 22px 4px 8px; border-radius: 6px; border: 1px solid #2a7; background-color: #0e5a41; color: #eef;
   background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='10' height='6' viewBox='0 0 10 6'><path d='M1 1l4 4 4-4' fill='none' stroke='%23ffd97a' stroke-width='1.6' stroke-linecap='round' stroke-linejoin='round'/></svg>");
   background-repeat: no-repeat; background-position: right 7px center; background-size: 10px 6px; cursor: pointer; }
-.ss-cpu-row select:disabled, .ss-panel select:disabled, .st-filters select:disabled, .st-mm-ctl select:disabled {
+.ss-coach-model select:disabled, .ss-cpu-row select:disabled, .ss-panel select:disabled, .st-filters select:disabled, .st-mm-ctl select:disabled {
   opacity: .5; cursor: default; background-color: #0a3f2e; }
-.ss-cpu-row select:focus-visible, .ss-panel select:focus-visible, .st-filters select:focus-visible, .st-mm-ctl select:focus-visible { outline: 2px solid #ffd97a; outline-offset: 1px; }
-.ss-cpu-row select option, .ss-panel select option, .st-filters select option, .st-mm-ctl select option { background: #0e5a41; color: #eef; }
+.ss-coach-model select:focus-visible, .ss-cpu-row select:focus-visible, .ss-panel select:focus-visible, .st-filters select:focus-visible, .st-mm-ctl select:focus-visible { outline: 2px solid #ffd97a; outline-offset: 1px; }
+.ss-coach-model select option, .ss-cpu-row select option, .ss-panel select option, .st-filters select option, .st-mm-ctl select option { background: #0e5a41; color: #eef; }
 
 /* Shared checkbox look (2026-11-06 addendum): dark green box, gold fill + dark check when on
    (replaces the OS-blue accent-color). Whole <label> stays the tap target. */
-.ss-panel input[type="checkbox"], #controls label.chip input[type="checkbox"] {
+.ss-panel input[type="checkbox"], .st-multi-list input[type="checkbox"], #controls label.chip input[type="checkbox"] {
   -webkit-appearance: none; appearance: none; flex: none; box-sizing: border-box; display: inline-block; position: relative;
   border: 1.5px solid #2a7; border-radius: 4px; background-color: #0a3b2c; cursor: pointer; vertical-align: middle; }
-.ss-panel input[type="checkbox"]:checked, #controls label.chip input[type="checkbox"]:checked {
+.ss-panel input[type="checkbox"]:checked, .st-multi-list input[type="checkbox"]:checked, #controls label.chip input[type="checkbox"]:checked {
   background-color: #ffd97a; border-color: #ffd97a;
   background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 10 10'><path d='M2 5.2l2.2 2.2L8 3' fill='none' stroke='%230a3b2c' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'/></svg>");
   background-repeat: no-repeat; background-position: center; background-size: 80% 80%; }
-.ss-panel input[type="checkbox"]:focus-visible, #controls label.chip input[type="checkbox"]:focus-visible { outline: 2px solid #ffd97a; outline-offset: 2px; }
-.ss-panel label:has(> input[type="checkbox"]) { cursor: pointer; }
+.ss-panel input[type="checkbox"]:focus-visible, .st-multi-list input[type="checkbox"]:focus-visible, #controls label.chip input[type="checkbox"]:focus-visible { outline: 2px solid #ffd97a; outline-offset: 2px; }
+.ss-panel label:has(> input[type="checkbox"]), .st-multi-list label { cursor: pointer; }
 
 /* Shared button look: remaining OS-default / off-theme buttons */
 .ss-diag-copy { border-radius: 6px; border: 1px solid #2a7; background: #0e5a41; color: #eef; cursor: pointer; }
@@ -988,8 +1003,39 @@ table.fb-final td.nm { text-align: left; }
 .yk-example p { margin: 6px 0 0; font-size: 12px; }
 /* 対局中に開く場合: 対局の盤面より前面（#kyoku-result:15 / #end:10 の上）、全画面で入力を遮る */
 #rules-view.in-game { z-index: 40; }
-#audio-settings-view { z-index: 40; }
-#audio-settings-view .stats-card { width: min(440px, 100%); }
+#settings-view { z-index: 40; }
+#settings-view .stats-card { width: min(480px, 100%); box-sizing: border-box; }
+#settings-view .ss-panel { width: auto; background: none; border: 0; padding: 8px 0 0; }
+.ss-about-row { margin-top: 12px; padding-top: 12px; border-top: 1px solid rgba(255,255,255,.16); }
+.ss-about-row .ss-about-btn { width: 100%; flex: none; padding: 10px 8px; font-size: 14px; }
+
+/* ---- このアプリについて（2026-11-09, product B5） ---- */
+#about-view { z-index: 45; }
+#about-view .stats-card { width: min(560px, 100%); box-sizing: border-box; }
+.about-brand { margin: 10px 0 14px; }
+.about-app-name { font-size: 22px; font-weight: 700; letter-spacing: .04em; }
+.about-app-sub { font-size: 13px; color: #bde; margin-top: 2px; }
+.about-meta { display: grid; grid-template-columns: auto 1fr; gap: 4px 14px; margin: 0 0 14px; font-size: 13px; }
+.about-meta dt { color: #bde; }
+.about-meta dd { margin: 0; overflow-wrap: anywhere; }
+.about-links { display: flex; flex-wrap: wrap; gap: 8px 16px; margin: 0 0 6px; font-size: 13.5px; }
+.about-link { color: #9fe6c0; }
+.about-link:focus-visible { outline: 2px solid #ffd97a; outline-offset: 2px; }
+.about-section-title { font-size: 14.5px; margin: 18px 0 6px; border-left: 4px solid #2a7; padding-left: 8px; }
+.about-credit, .about-note { font-size: 12.5px; line-height: 1.6; color: #dfe; margin: 0 0 6px; }
+.about-license { border-top: 1px solid rgba(255,255,255,.14); padding: 10px 0 2px; }
+.about-license-name { font-size: 13.5px; font-weight: 700; }
+.about-license-meta { font-size: 11.5px; line-height: 1.5; color: #bde; overflow-wrap: anywhere; margin-top: 2px; }
+.about-license-text { margin-top: 6px; }
+.about-license-text summary { cursor: pointer; font-size: 12.5px; color: #cfe; }
+.about-license-text pre { max-height: 220px; overflow: auto; white-space: pre-wrap; overflow-wrap: anywhere;
+  background: rgba(0,0,0,.28); border-radius: 6px; padding: 8px; margin: 6px 0 0;
+  font-size: 11px; line-height: 1.45; font-family: ui-monospace, Consolas, monospace; }
+@media (max-width: 420px) {
+  .about-app-name { font-size: 20px; }
+  .about-meta { grid-template-columns: 1fr; gap: 2px; }
+  .about-meta dd { margin-bottom: 6px; }
+}
 .audio-settings { min-width: 0; border: 1px solid #4a9; border-radius: 8px; padding: 12px; margin: 8px 0; }
 .audio-settings label { display: flex; justify-content: space-between; gap: 12px; }
 .audio-settings input[type="range"] { display: block; width: 100%; min-height: 36px; margin: 4px 0 12px; accent-color: #6db; }
@@ -1296,4 +1342,38 @@ table.fb-final td.nm { text-align: left; }
   #scene-viewer .replay-center .round { white-space: nowrap; font-size: 13px; }
   #scene-viewer .replay-center .round span { font-size: 11px; }
   #scene-viewer .replay-center .center-meta { font-size: 10px; white-space: nowrap; }
+}
+
+/* Element overflow sweep (2026-11-09). Keep the v11 board/pond/centre
+   dimensions. Near-square narrow windows cannot show the full-width square
+   board, toolbar, hand and coach together: make the table reachable through
+   its own scrollport instead of clipping the hand behind #app. */
+@media (orientation: portrait) and (max-width: 500px) and (min-aspect-ratio: 4/5) {
+  #table-wrap { flex: 1 1 auto; overflow-y: auto; }
+  #controls { flex-shrink: 0; }
+  #table { flex: 0 0 auto; grid-template-rows: auto auto auto; }
+  #side { flex: 0 0 140px; }
+}
+@media (orientation: landscape) and (max-height: 700px) {
+  #controls .chip-row { min-width: 0; max-width: 100%; }
+  #controls label.chip { min-width: 0; max-width: 100%; white-space: normal; }
+  #controls label.chip span { min-width: 0; overflow-wrap: anywhere; }
+  #center .center-meta { min-width: 0; white-space: normal; overflow-wrap: anywhere; line-height: 1.1; }
+}
+@media (orientation: landscape) and (max-height: 700px) and (max-width: 880px) {
+  #board #center { padding-block: 1px; row-gap: 0; }
+}
+@media (orientation: landscape) and (max-height: 700px) and (max-width: 600px) {
+  #center .center-meta { font-size: 9px; }
+  #center .dora { font-size: 8px; gap: 2px; white-space: nowrap; }
+}
+/* 320px portrait: the normal text stack is taller than the unchanged 36%
+   centre box. Compact only its contents, including the dora label/tile. */
+@media (orientation: portrait) and (max-width: 340px) {
+  #board #center { padding: 2px; gap: 1px; }
+  #center .round { font-size: 13px; line-height: 1.1; }
+  #center .round span { font-size: 11px; }
+  #center .center-meta { font-size: 9px; line-height: 1.1; }
+  #center .dora { font-size: 8px; gap: 2px; }
+  #center .tile.dora-tile { width: 16px; height: 22px; }
 }

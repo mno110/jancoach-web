@@ -2650,6 +2650,24 @@ function specRule(opts = {}) {
   });
 }
 
+// ../src/tenhou_kandora.mjs
+function withTenhouKandora(Game) {
+  return class extends Game {
+    gangzimo() {
+      if (!this._rule["\u30AB\u30F3\u30C9\u30E9\u5F8C\u4E57\u305B"] || !/^[mpsz]\d{3}[+=-]\d$/.test(this._gang)) {
+        return super.gangzimo();
+      }
+      const rule = this._rule;
+      this._rule = { ...rule, "\u30AB\u30F3\u30C9\u30E9\u5F8C\u4E57\u305B": false };
+      try {
+        return super.gangzimo();
+      } finally {
+        this._rule = rule;
+      }
+    }
+  };
+}
+
 // ../src/mjai.mjs
 var HONOR_TO_MJAI = { 1: "E", 2: "S", 3: "W", 4: "N", 5: "P", 6: "F", 7: "C" };
 var HONOR_FROM_MJAI = { E: "z1", S: "z2", W: "z3", N: "z4", P: "z5", F: "z6", C: "z7" };
@@ -30816,44 +30834,18 @@ var JsReviewEngine = class {
   }
 };
 
-// src/infer_guard.mjs
-var InferTimeoutError = class extends Error {
-  constructor(ms2) {
-    super(`inference timed out after ${ms2}ms`);
-    this.name = "InferTimeoutError";
-  }
-};
-function withTimeout(promise, ms2) {
-  let timer;
-  const timeout = new Promise((_, reject) => {
-    timer = setTimeout(() => reject(new InferTimeoutError(ms2)), ms2);
-  });
-  return Promise.race([promise, timeout]).finally(() => clearTimeout(timer));
-}
-async function guardedRun(ctx, feeds, timeoutMs, onlog = () => {
-}) {
-  try {
-    return await withTimeout(ctx.session.run(feeds), timeoutMs);
-  } catch (e) {
-    const usedGpu = Array.isArray(ctx.providerUsed) && ctx.providerUsed.includes("webgpu");
-    if (!usedGpu || !ctx.recreateWasm) throw e;
-    onlog(`webgpu run failed (${e.message || e}); falling back to wasm`);
-    ctx.session = await ctx.recreateWasm();
-    ctx.providerUsed = ["wasm"];
-    ctx.fellBack = true;
-    return await withTimeout(ctx.session.run(feeds), timeoutMs);
-  }
-}
-
 // src/error_codes.mjs
 var ERROR_CODES = {
   "E-L101": "\u30E2\u30C7\u30EB\u53D6\u5F97\u306B\u5931\u6557\uFF08\u521D\u56DE\uFF09",
   "E-L102": "\u30E2\u30C7\u30EB\u53D6\u5F97\u306E\u518D\u8A66\u884C\u3082\u5931\u6557",
   "E-L110": "\u63A8\u8AD6\u30BB\u30C3\u30B7\u30E7\u30F3\u4F5C\u6210\u304C\u5168\u69CB\u6210\uFF08A/B/C\uFF09\u3067\u5931\u6557",
+  "E-L111": "\u63A8\u8AD6\u30BB\u30C3\u30B7\u30E7\u30F3\u306E\u3042\u308B\u69CB\u6210\u304C\u5931\u6557\uFF08\u5225\u69CB\u6210\u3067\u7D99\u7D9A\uFF09",
   "E-L120": "\u8AAD\u307F\u8FBC\u307F\u304C\u9577\u6642\u9593\u5316",
+  "E-L130": "\u30E2\u30C7\u30EB\uFF08\u6A19\u6E96\uFF09\u306E\u8AAD\u307F\u8FBC\u307F\u5931\u6557\u30FB\u30AF\u30E9\u30C3\u30B7\u30E5\u3067\u8EFD\u91CF\u7248\uFF08V1 Light\uFF09\u306B\u5207\u66FF",
   "E-I201": "\u63A8\u8AD6\u306E\u5B9F\u884C\u6642\u30A8\u30E9\u30FC",
   "E-I202": "\u63A8\u8AD6\u30BF\u30A4\u30E0\u30A2\u30A6\u30C8",
   "E-I203": "\u30B3\u30FC\u30C1\u8A55\u4FA1\u304C\u5019\u88DC\u306A\u3057\u3067\u7D42\u4E86\uFF08\u6253\u724C\u5224\u65AD\u306E\u72B6\u614B\u4E0D\u6574\u5408\uFF09",
+  "E-I204": "WebGPU\u3067\u63A8\u8AD6\u3067\u304D\u305AWASM\u3067\u7D99\u7D9A",
   "E-D301": "\u5BFE\u5C40\u30C7\u30FC\u30BF\u306E\u4FDD\u5B58\u306B\u5931\u6557",
   "E-D302": "\u518D\u958B\u30C7\u30FC\u30BF\u304C\u58CA\u308C\u3066\u3044\u308B",
   "E-S401": "\u30A2\u30D7\u30EA\u66F4\u65B0\u306E\u9069\u7528\u306B\u5931\u6557",
@@ -30931,6 +30923,35 @@ function buildDiagnostics(info) {
     ...diagLog
   ];
   return lines.join("\n");
+}
+
+// src/infer_guard.mjs
+var InferTimeoutError = class extends Error {
+  constructor(ms2) {
+    super(`inference timed out after ${ms2}ms`);
+    this.name = "InferTimeoutError";
+  }
+};
+function withTimeout(promise, ms2) {
+  let timer;
+  const timeout = new Promise((_, reject) => {
+    timer = setTimeout(() => reject(new InferTimeoutError(ms2)), ms2);
+  });
+  return Promise.race([promise, timeout]).finally(() => clearTimeout(timer));
+}
+async function guardedRun(ctx, feeds, timeoutMs, _onlog = () => {
+}) {
+  try {
+    return await withTimeout(ctx.session.run(feeds), timeoutMs);
+  } catch (e) {
+    const usedGpu = Array.isArray(ctx.providerUsed) && ctx.providerUsed.includes("webgpu");
+    if (!usedGpu || !ctx.recreateWasm) throw e;
+    recordError("E-I204", e, { stage: "infer-fallback" });
+    ctx.session = await ctx.recreateWasm();
+    ctx.providerUsed = ["wasm"];
+    ctx.fellBack = true;
+    return await withTimeout(ctx.session.run(feeds), timeoutMs);
+  }
 }
 
 // ../src/probability.mjs
@@ -31013,21 +31034,10 @@ var ACTION_NAMES = [
   "none"
 ];
 var IDX = Object.fromEntries(ACTION_NAMES.map((n, i) => [n, i]));
-var wasmApi = null;
-function selectedEncoder() {
-  try {
-    const q4 = new URLSearchParams(self.location?.search || "").get("encoder");
-    if (q4 === "wasm" || q4 === "js") return q4;
-    const ls2 = self.localStorage?.getItem("obsEncoder");
-    if (ls2 === "wasm") return "wasm";
-  } catch (_) {
-  }
-  return "js";
-}
 var MortalBrain = class {
   constructor(actor, version = 4) {
     this.actor = actor;
-    this.engine = wasmApi ? new wasmApi.ReviewEngine(actor, version) : new JsReviewEngine(actor, version);
+    this.engine = new JsReviewEngine(actor, version);
     this.pending = false;
     this.feedErrors = 0;
     this.firstError = null;
@@ -31132,15 +31142,7 @@ var AiRuntime = class _AiRuntime {
       }
     };
     progress({ stage: "engine" });
-    wasmApi = null;
-    if (selectedEncoder() === "wasm") {
-      const mod = await import("../assets/mortal_wasm.js");
-      mod.initSync({ module: await (await fetch(wasmUrl)).arrayBuffer() });
-      wasmApi = mod;
-      onlog("encoder: legacy WASM (rollback mode)");
-    } else {
-      onlog("encoder: JS");
-    }
+    onlog("encoder: JS");
     me.wasm.numThreads = self.crossOriginIsolated ? Math.min(4, navigator.hardwareConcurrency || 2) : 1;
     onlog(`ort wasm threads=${me.wasm.numThreads} isolated=${self.crossOriginIsolated} gpu=${!!navigator.gpu}`);
     const fetchModel = async (url) => {
@@ -31186,11 +31188,11 @@ var AiRuntime = class _AiRuntime {
       onlog(`model fetch ok (${(modelBuf.byteLength / 1048576).toFixed(1)}MB)`);
     } catch (e1) {
       recordError("E-L101", errText(e1), { stage: "fetch" });
-      onlog(`[E-L101] model fetch failed: ${errText(e1)}; retrying without cache`);
+      onlog("[E-L101] \u30E2\u30C7\u30EB\u3092\u53D6\u5F97\u3067\u304D\u307E\u305B\u3093\u3067\u3057\u305F\u3002\u518D\u8A66\u884C\u3057\u307E\u3059");
       try {
         const bust = modelUrl + (modelUrl.includes("?") ? "&" : "?") + "nocache=" + Date.now();
         modelBuf = await fetchModel(bust);
-        onlog("model fetch retry ok");
+        onlog("\u30E2\u30C7\u30EB\u53D6\u5F97\u306E\u518D\u8A66\u884C\u306B\u6210\u529F\u3057\u307E\u3057\u305F");
       } catch (e2) {
         const err = diagError("fetch", "E-L102", [], e2);
         err.diag.first = "E-L101";
@@ -31230,7 +31232,8 @@ var AiRuntime = class _AiRuntime {
         return rt;
       } catch (e) {
         errs.push(errText(e));
-        onlog(`config ${cname} ${eps.join("+")} failed: ${errText(e)}`);
+        recordError("E-L111", e, { stage: "session", tried: `${cname}/${eps.join("+")}` });
+        onlog(`\u63A8\u8AD6\u306E\u69CB\u6210${cname}\u3067\u521D\u671F\u5316\u3067\u304D\u307E\u305B\u3093\u3067\u3057\u305F [E-L111]\u3002\u6B21\u306E\u69CB\u6210\u3092\u8A66\u3057\u307E\u3059`);
       }
     }
     const merged = { tried: state.tried + cname, steps: state.steps.concat(`${cname}/${attempts.map((x) => x.join("+")).join(",")}`), last: errs[errs.length - 1] };
@@ -31400,6 +31403,49 @@ var AiRuntime = class _AiRuntime {
   }
 };
 
+// src/model_fallback.mjs
+var MODEL_LOADING_KEY = "ml-model-loading";
+var PRIMARY_MODEL_ID = "jaklab-v1";
+var LIGHT_MODEL_ID = "jaklab-v1-light";
+var FALLBACK_CODE = "E-L130";
+function modelLoadPending(storage) {
+  try {
+    return storage?.getItem(MODEL_LOADING_KEY) || null;
+  } catch (_) {
+    return null;
+  }
+}
+function markModelLoading(storage, file) {
+  try {
+    storage?.setItem(MODEL_LOADING_KEY, String(file || ""));
+  } catch (_) {
+  }
+}
+function clearModelLoading(storage) {
+  try {
+    storage?.removeItem(MODEL_LOADING_KEY);
+  } catch (_) {
+  }
+}
+function fallbackForFailure(modelId) {
+  if (modelId !== PRIMARY_MODEL_ID) return null;
+  return {
+    kind: "failure",
+    modelId: LIGHT_MODEL_ID,
+    code: FALLBACK_CODE,
+    notice: "\u30E2\u30C7\u30EB\uFF08\u6A19\u6E96\uFF09\u306E\u8AAD\u307F\u8FBC\u307F\u306B\u5931\u6557\u3057\u305F\u305F\u3081\u3001\u8EFD\u91CF\u7248\uFF08V1 Light\uFF09\u306B\u5207\u308A\u66FF\u3048\u307E\u3057\u305F"
+  };
+}
+function crashFallback(pendingFile) {
+  if (!pendingFile) return null;
+  return {
+    kind: "crash",
+    modelId: LIGHT_MODEL_ID,
+    code: FALLBACK_CODE,
+    notice: "\u524D\u56DE\u30E2\u30C7\u30EB\uFF08\u6A19\u6E96\uFF09\u306E\u8AAD\u307F\u8FBC\u307F\u304C\u5B8C\u4E86\u3057\u306A\u304B\u3063\u305F\u305F\u3081\u3001\u8EFD\u91CF\u7248\uFF08V1 Light\uFF09\u3067\u8D77\u52D5\u3057\u307E\u3057\u305F"
+  };
+}
+
 // src/cpu_style.mjs
 var CPU_TIERS = [
   { id: "top", label: "\u6700\u4E0A\u7D1A\uFF08\u516B\u6BB5\u76F8\u5F53\uFF09", short: "\u516B\u6BB5\u76F8\u5F53", model: "v1", tau: null, bars: 5 },
@@ -31412,17 +31458,32 @@ var CPU_TIERS = [
   { id: "kyu", label: "\u59CB\u3081\u305F\u3066\uFF08\u7D1A\u4F4D\u76F8\u5F53\uFF09", short: "\u7D1A\u4F4D\u76F8\u5F53", model: "light", tau: 3.4, bars: 1 }
 ];
 var CPU_STYLES = [
-  { id: "none", label: "\u306A\u3057", mag: 0 },
-  { id: "naki", label: "\u9CF4\u304D\u304C\u3061", mag: 3 },
+  { id: "none", label: "\u88DC\u6B63\u306A\u3057", mag: 0 },
+  { id: "naki", label: "\u9CF4\u304D\u578B", mag: 3 },
   { id: "defense", label: "\u5B88\u5099\u578B", mag: 3 },
   { id: "attack", label: "\u653B\u6483\u578B", mag: 3 },
-  { id: "some", label: "\u67D3\u3081\u597D\u304D", mag: 2 }
+  { id: "some", label: "\u67D3\u3081\u578B", mag: 2 }
 ];
 var cpuTier = (id2) => CPU_TIERS.find((t) => t.id === id2) || CPU_TIERS[0];
 var cpuStyle = (id2) => CPU_STYLES.find((s) => s.id === id2) || CPU_STYLES[0];
-var styleAllowed = (tierId) => cpuTier(tierId).id === "top";
-var tierLabel = (tier, coachIsLight) => tier.id === "top" && coachIsLight ? "\u6700\u4E0A\u7D1A\uFF08\u4E03\u6BB5\u76F8\u5F53\uFF09" : tier.label;
-var tierShort = (tier, coachIsLight) => tier.id === "top" && coachIsLight ? "\u4E03\u6BB5\u76F8\u5F53" : tier.short;
+var CPU_STYLE_MAG = {
+  top: { naki: 3, defense: 3, attack: 3, some: 2 },
+  dan7: { naki: 3, defense: 3, attack: 3, some: 2 },
+  dan6: { naki: 1.5, defense: 3, attack: 3, some: 1 },
+  dan3: { naki: 1.5, defense: 3, attack: 3, some: 2 },
+  dan1: { naki: 1.5, defense: 3, attack: 3, some: 0.5 },
+  kyu: { naki: 1.5, defense: 3, attack: 3, some: 1 }
+};
+var cpuStyleForTier = (tierId, styleId) => {
+  const style = cpuStyle(styleId);
+  return { ...style, mag: style.id === "none" ? 0 : CPU_STYLE_MAG[cpuTier(tierId).id][style.id] };
+};
+var isLightCoach = (coachModelId) => coachModelId === LIGHT_MODEL_ID;
+var availableCpuTiers = (coachModelId) => isLightCoach(coachModelId) ? CPU_TIERS.filter((t) => t.id !== "top") : CPU_TIERS;
+var effectiveCpuTierId = (tierId, coachModelId) => {
+  const id2 = cpuTier(tierId).id;
+  return isLightCoach(coachModelId) && id2 === "top" ? "dan7" : id2;
+};
 var A_RIICHI = 37;
 var A_CHI_LO = 38;
 var A_PON = 41;
@@ -31532,7 +31593,7 @@ function pick(qb2, mask, tau, rng, allow) {
 var CpuPolicy = class {
   constructor({ tierId = "top", styleId = "none", seed = 0 } = {}) {
     const tier = cpuTier(tierId);
-    const style = styleAllowed(tier.id) ? cpuStyle(styleId) : CPU_STYLES[0];
+    const style = cpuStyleForTier(tier.id, styleId);
     this.tier = tier;
     this.style = style;
     this.tau = tier.tau;
@@ -31553,6 +31614,83 @@ var CpuPolicy = class {
     return { actionIdx, dahaiIdx };
   }
 };
+
+// src/cpu_settings.mjs
+var CPU_SEATS = [
+  { id: 1, label: "\u4E0B\u5BB6" },
+  { id: 2, label: "\u5BFE\u9762" },
+  { id: 3, label: "\u4E0A\u5BB6" }
+];
+var CPU_SEATS_KEY = "ml-cpu-seats-v1";
+var normalize = (s) => ({ tierId: cpuTier(s?.tierId).id, styleId: cpuStyle(s?.styleId).id });
+var normalizeCpuSeats = (settings) => CPU_SEATS.map((_, i) => normalize(settings?.[i]));
+function loadCpuSeats(storage, search = "") {
+  const get = (key2) => {
+    try {
+      return storage.getItem(key2);
+    } catch (_) {
+      return null;
+    }
+  };
+  const legacy = normalize({ tierId: get("ml-cpu-tier"), styleId: get("ml-cpu-style") });
+  let saved;
+  try {
+    saved = JSON.parse(get(CPU_SEATS_KEY));
+  } catch (_) {
+  }
+  const settings = CPU_SEATS.map((_, i) => normalize(Array.isArray(saved) && saved[i] ? saved[i] : legacy));
+  const q4 = new URLSearchParams(search);
+  return settings.map((s, i) => normalize({
+    tierId: q4.get(`cpuTier${i + 1}`) || q4.get("cpuTier") || s.tierId,
+    styleId: q4.get(`cpuStyle${i + 1}`) || q4.get("cpuStyle") || s.styleId
+  }));
+}
+function saveCpuSeats(storage, settings) {
+  try {
+    storage.setItem(CPU_SEATS_KEY, JSON.stringify(normalizeCpuSeats(settings)));
+    return true;
+  } catch (_) {
+    return false;
+  }
+}
+function cpuRecord(seats) {
+  const records = seats.map(({ id: id2, label, tier: tier2, style: style2, modelId }) => ({
+    id: id2,
+    seat: label,
+    tier: tier2.id,
+    tierLabel: tier2.label,
+    tau: tier2.tau,
+    style: style2.id,
+    styleLabel: style2.label,
+    styleMag: style2.mag,
+    modelId
+  }));
+  const same = records.every((s) => s.tier === records[0].tier && s.style === records[0].style);
+  const { tier, tierLabel, tau, style, styleLabel, styleMag } = records[0];
+  return { ...same ? { tier, tierLabel, tau, style, styleLabel, styleMag } : {}, seats: records };
+}
+async function createCpuOpponents({ settings, ai: ai2, coachModelId, loadLight, seed }) {
+  const normalized = normalizeCpuSeats(settings).map((s) => ({ ...s, tierId: effectiveCpuTierId(s.tierId, coachModelId) }));
+  const needsLight = normalized.some((s) => cpuTier(s.tierId).model === "light");
+  const light = needsLight ? coachModelId === "jaklab-v1-light" ? ai2 : await loadLight() : null;
+  const policies = {};
+  const runtimes = {};
+  const seats = normalized.map((s, i) => {
+    const { id: id2, label } = CPU_SEATS[i];
+    const policy = new CpuPolicy({ ...s, seed: seed + id2 * 7919 });
+    policies[id2] = policy;
+    const rt = policy.tier.model === "light" ? light : ai2;
+    runtimes[id2] = policy.tier.id === "top" && policy.style.id === "none" ? rt : { infer: (b) => rt.inferCpu(b, policy) };
+    return {
+      id: id2,
+      label,
+      tier: policy.tier,
+      style: policy.style,
+      modelId: policy.tier.model === "light" ? "jaklab-v1-light" : coachModelId
+    };
+  });
+  return { seats, policies, forSeat: (id2) => runtimes[id2] };
+}
 
 // src/human_player.mjs
 var HumanPlayer = class extends BasePlayer {
@@ -33315,7 +33453,27 @@ function tileSVG(p, label = "") {
 }
 
 // src/stats.mjs
-var SUMMARY_SCHEMA = 1;
+var SUMMARY_SCHEMA = 2;
+var CPU_TIER_IDS = new Set(CPU_TIERS.map((t) => t.id));
+var CPU_STYLE_IDS = new Set(CPU_STYLES.map((s) => s.id));
+function cpuFilterValues(cpu) {
+  if (!cpu || typeof cpu !== "object") return { tiers: null, styles: null };
+  const seats = Array.isArray(cpu.seats) ? cpu.seats : null;
+  if (seats && seats.length === 3) {
+    const tiers = seats.map((s) => s?.tier);
+    const styles = seats.map((s) => s?.style);
+    return {
+      tiers: tiers.every((id2) => CPU_TIER_IDS.has(id2)) ? tiers : null,
+      styles: styles.every((id2) => CPU_STYLE_IDS.has(id2)) ? styles : null
+    };
+  }
+  const tier = cpu.tier;
+  const style = cpu.style;
+  return {
+    tiers: CPU_TIER_IDS.has(tier) ? [tier, tier, tier] : null,
+    styles: CPU_STYLE_IDS.has(style) ? [style, style, style] : null
+  };
+}
 var RED = { "5mr": "5m", "5pr": "5p", "5sr": "5s" };
 var baseTile2 = (t) => RED[t] || t;
 function countsOf(tiles) {
@@ -33907,6 +34065,7 @@ function summarizeBundle(bundle) {
     }
   });
   const coachAgg = aggregateCoachRecords(bundle.coach || []);
+  const cpuFilter = cpuFilterValues(meta.cpu);
   const summary = {
     schema: SUMMARY_SCHEMA,
     gameId: meta.gameId,
@@ -33921,6 +34080,8 @@ function summarizeBundle(bundle) {
     modelId: meta.gameModel?.modelId ?? null,
     modelName: meta.gameModel?.modelName ?? null,
     coachDisplay: typeof meta.coachDisplay === "boolean" ? meta.coachDisplay : null,
+    cpuTiers: cpuFilter.tiers,
+    cpuStyles: cpuFilter.styles,
     eligible: (meta.mode || "manual") === "manual" && (meta.status || "finished") === "finished" && horaConsistent,
     excludedReason: horaConsistent ? null : "mjai\u3068\u7D50\u679C\u306E\u548C\u4E86\u6570\u304C\u4E0D\u4E00\u81F4\u306E\u305F\u3081\u96C6\u8A08\u304B\u3089\u9664\u5916",
     warnings,
@@ -33986,8 +34147,13 @@ var RANGE_OPTIONS = [
   { key: "50", label: "\u76F4\u8FD150\u5BFE\u5C40", n: 50 },
   { key: "all", label: "\u5168\u671F\u9593", n: Infinity }
 ];
-function selectSummaries(summaries, { length = "all", range = "all", coachDisplay = "all", modelId = "all" } = {}) {
-  const sorted = (summaries || []).filter((s) => s && s.eligible).filter((s) => length === "all" || s.gameLength === length).filter((s) => coachDisplay === "all" || (coachDisplay === "unknown" ? s.coachDisplay == null : s.coachDisplay === (coachDisplay === "on"))).filter((s) => modelId === "all" || (modelId === "unknown" ? s.modelId == null : s.modelId === modelId)).sort((a, b) => String(b.savedAt || "").localeCompare(String(a.savedAt || "")));
+function selectSummaries(summaries, { length = "all", range = "all", coachDisplay = "all", modelId = "all", cpuTiers = [], cpuStyles = [] } = {}) {
+  const tierSel = Array.isArray(cpuTiers) ? cpuTiers : [];
+  const styleSel = Array.isArray(cpuStyles) ? cpuStyles : [];
+  const tierSet = tierSel.length ? new Set(tierSel) : null;
+  const styleSet = styleSel.length ? new Set(styleSel) : null;
+  const allSelected = (values, set) => Array.isArray(values) && values.length === 3 && values.every((v) => set.has(v));
+  const sorted = (summaries || []).filter((s) => s && s.eligible).filter((s) => length === "all" || s.gameLength === length).filter((s) => coachDisplay === "all" || (coachDisplay === "unknown" ? s.coachDisplay == null : s.coachDisplay === (coachDisplay === "on"))).filter((s) => modelId === "all" || (modelId === "unknown" ? s.modelId == null : s.modelId === modelId)).filter((s) => !tierSet || allSelected(s.cpuTiers, tierSet)).filter((s) => !styleSet || allSelected(s.cpuStyles, styleSet)).sort((a, b) => String(b.savedAt || "").localeCompare(String(a.savedAt || "")));
   const opt = RANGE_OPTIONS.find((r) => r.key === range) || RANGE_OPTIONS[3];
   const picked = opt.n === Infinity ? sorted : sorted.slice(0, opt.n);
   return { picked, available: sorted.length, limited: picked.length < sorted.length && opt.n !== Infinity, rangeLabel: opt.label };
@@ -34201,6 +34367,7 @@ function isValidResumeSnapshot(s) {
 
 // src/midhand_resume.mjs
 var import_majiang_core5 = __toESM(require_lib(), 1);
+var TenhouGame = withTenhouKandora(import_majiang_core5.default.Game);
 var copy = (value) => JSON.parse(JSON.stringify(value));
 var equal = (a, b) => JSON.stringify(a) === JSON.stringify(b);
 var tile = (p) => typeof p === "string" && /^(?:[mps][0-9]|z[1-7])$/.test(p);
@@ -34349,7 +34516,7 @@ function prepareMidhand(resume, rule) {
       if (typeof s !== "string" || import_majiang_core5.default.Shoupai.fromString(s).toString() !== s || s.includes(",") || import_majiang_core5.default.Shoupai.fromString(s)._zimo) return null;
     }
     const players = Array.from({ length: 4 }, () => new import_majiang_core5.default.Player());
-    const replay = new import_majiang_core5.default.Game(players, null, rule);
+    const replay = new TenhouGame(players, null, rule);
     replay._sync = true;
     replay.delay = () => {
     };
@@ -34383,8 +34550,11 @@ function prepareMidhand(resume, rule) {
       else if (type === "dapai" && isSafeHandPhase(phase, replay.model) && replay.get_dapai().includes(d.p.replace(/\*$/, "")) && (!d.p.endsWith("*") || replay.allow_lizhi(d.p.replace(/\*$/, "")))) replay.dapai(d.p);
       else if (type === "fulou" && phase === "dapai" && [...replay.get_chi_mianzi(d.l), ...replay.get_peng_mianzi(d.l), ...replay.get_gang_mianzi(d.l)].includes(d.m)) replay.fulou(d.m);
       else if (type === "gang" && ["zimo", "gangzimo"].includes(phase) && replay.get_gang_mianzi().includes(d.m)) replay.gang(d.m);
-      else if (type === "gangzimo" && (phase === "gang" || phase === "fulou" && replay._gang)) replay.gangzimo();
-      else return null;
+      else if (type === "gangzimo" && (phase === "gang" || phase === "fulou" && replay._gang)) {
+        if (/^[mpsz]\d{3}[+=-]\d$/.test(replay._gang) && !h.log[i + 1]?.kaigang) {
+          import_majiang_core5.default.Game.prototype.gangzimo.call(replay);
+        } else replay.gangzimo();
+      } else return null;
       const generated = replay._paipu.log[0];
       const next = generated.length;
       if (next <= i || !equal(generated.slice(i), h.log.slice(i, next))) return null;
@@ -34455,6 +34625,17 @@ function riverTiles(he) {
   return out;
 }
 
+// src/shell.mjs
+function isShell(bridge2) {
+  const nb2 = bridge2 !== void 0 ? bridge2 : typeof globalThis !== "undefined" ? globalThis.JanLabNative : null;
+  return !!nb2 && (typeof nb2 === "object" || typeof nb2 === "function");
+}
+function shouldRegisterServiceWorker({ bridge: bridge2, hasServiceWorker } = {}) {
+  if (isShell(bridge2)) return false;
+  if (hasServiceWorker !== void 0) return !!hasServiceWorker;
+  return typeof navigator !== "undefined" && !!navigator && "serviceWorker" in navigator;
+}
+
 // src/orientation.mjs
 var ORIENTATION_KEY = "ml-orientation";
 var ORIENTATION_VALUES = ["auto", "portrait", "landscape"];
@@ -34478,7 +34659,7 @@ async function applyOrientation(value, scr, bridge2) {
   const mode = normalizeOrientation(value);
   try {
     const nb2 = bridge2 !== void 0 ? bridge2 : typeof globalThis !== "undefined" ? globalThis.JanLabNative : null;
-    if (nb2 && typeof nb2.setOrientation === "function") {
+    if (isShell(nb2) && typeof nb2.setOrientation === "function") {
       nb2.setOrientation(mode);
       return "native";
     }
@@ -34755,6 +34936,11 @@ var GLOSSARY_TERMS = [
     "desc": "\u305D\u306E\u5C40\u306E\u6700\u521D\u306E\u4EBA\u3002\u548C\u4E86\u70B9\u304C1.5\u500D\u306B\u306A\u308A\u3001\u548C\u4E86\u3084\u30C6\u30F3\u30D1\u30A4\u3067\u9023\u8358\u3059\u308B"
   },
   {
+    "term": "\u4E0A\u5BB6\uFF08\u304B\u307F\u3061\u3083\uFF09",
+    "yomi": "\u304B\u307F\u3061\u3083",
+    "desc": "\u81EA\u5206\u306E\u5DE6\u96A3\u306E\u4EBA"
+  },
+  {
     "term": "\u30AB\u30F3",
     "yomi": "\u304B\u3093",
     "desc": "\u540C\u3058\u724C4\u679A\u3092\u305D\u308D\u3048\u3066\u5BA3\u8A00\u3059\u308B\u3053\u3068\u3002\u30C9\u30E9\u304C\u5897\u3048\u308B\u3002\u660E\u69D3\u30FB\u6697\u69D3\u30FB\u52A0\u69D3\u306E3\u7A2E\u304C\u3042\u308B"
@@ -34775,9 +34961,19 @@ var GLOSSARY_TERMS = [
     "desc": "\u3042\u3068\u4F55\u679A\u3067\u30C6\u30F3\u30D1\u30A4\u306B\u306A\u308B\u304B\u306E\u6570\u3002\u300C\u5411\u80741\u300D\u306F\u3042\u30681\u679A\u6709\u52B9\u306A\u724C\u3092\u5F15\u3051\u3070\u30C6\u30F3\u30D1\u30A4"
   },
   {
+    "term": "\u4E0B\u5BB6\uFF08\u3057\u3082\u3061\u3083\uFF09",
+    "yomi": "\u3057\u3082\u3061\u3083",
+    "desc": "\u81EA\u5206\u306E\u53F3\u96A3\u306E\u4EBA\u3002\u81EA\u5BB6\u304C\u6368\u3066\u305F\u724C\u3092\u30C1\u30FC\u3067\u304D\u308B\u306E\u306F\u4E0B\u5BB6\u3060\u3051"
+  },
+  {
     "term": "\u63A8\u5968\u5EA6\uFF08\u3059\u3044\u3057\u3087\u3046\u3069\uFF09",
     "yomi": "\u3059\u3044\u3057\u3087\u3046\u3069",
     "desc": "AI\u30B3\u30FC\u30C1\u306E\u8A55\u4FA1\u3092\u5019\u88DC\u5168\u4F53\u306B\u5BFE\u3059\u308B\u5272\u5408\uFF08%\uFF09\u3067\u8868\u3057\u305F\u3082\u306E\u3002\u52DD\u7387\u3067\u306F\u306A\u3044"
+  },
+  {
+    "term": "\u81EA\u5BB6\uFF08\u3058\u304B\uFF09",
+    "yomi": "\u3058\u304B",
+    "desc": "\u81EA\u5206\u306E\u3053\u3068\u3002\u3053\u306E\u30A2\u30D7\u30EA\u3067\u306F\u753B\u9762\u306E\u4E0B\u5074\u306B\u3044\u308B\u306E\u304C\u81EA\u5BB6"
   },
   {
     "term": "\u30C4\u30E2",
@@ -34793,6 +34989,11 @@ var GLOSSARY_TERMS = [
     "term": "\u30C6\u30F3\u30D1\u30A4\uFF08\u8074\u724C\uFF09",
     "yomi": "\u3066\u3093\u3071\u3044",
     "desc": "\u3042\u30681\u679A\u3067\u548C\u4E86\u3067\u304D\u308B\u72B6\u614B"
+  },
+  {
+    "term": "\u5BFE\u9762\uFF08\u3068\u3044\u3081\u3093\uFF09",
+    "yomi": "\u3068\u3044\u3081\u3093",
+    "desc": "\u81EA\u5206\u306E\u5411\u304B\u3044\u5074\u306E\u4EBA"
   },
   {
     "term": "\u30C9\u30E9",
@@ -35049,6 +35250,126 @@ function saveGuideSeen(storage) {
   }
 }
 
+// src/about.mjs
+var ABOUT_APP_NAME = "\u96C0\u30B3\u30FC\u30C1";
+var ABOUT_APP_SUBTITLE = "\u30EA\u30A2\u30EB\u30BF\u30A4\u30E0AI\u5206\u6790\u9EBB\u96C0";
+var ABOUT_DEVELOPER = "mno lab";
+var ABOUT_PRIVACY_URL = "https://mno110.github.io/janlab/privacy-policy.html";
+var ABOUT_TERMS_URL = "https://mno110.github.io/janlab/terms.html";
+var ABOUT_AUDIO_CREDITS = "BGM\u300C\u795E\u96A0\u3057\u306E\u771F\u76F8\u300D\u4F5C\u66F2 \u3057\u3083\u308D\u3046\uFF08OpenTracks\uFF09\uFF0F\u52B9\u679C\u97F3 \u7A3F\u5C4B \u9686\uFF08OpenTracks\uFF09";
+var ABOUT_LICENSES = Object.freeze([
+  Object.freeze({
+    id: "majiang-core",
+    name: "@kobalab/majiang-core\uFF08\u9EBB\u96C0\u30A8\u30F3\u30B8\u30F3\uFF09",
+    license: "MIT License",
+    copyright: "Copyright (c) 2021 Satoshi Kobayashi",
+    url: "https://github.com/kobalab/Majiang-core",
+    textUrl: "licenses/majiang-core-MIT.txt"
+  }),
+  Object.freeze({
+    id: "onnxruntime-web",
+    name: "onnxruntime-web\uFF08\u30D6\u30E9\u30A6\u30B6\u5185 ONNX \u63A8\u8AD6\u30E9\u30F3\u30BF\u30A4\u30E0\uFF09",
+    license: "MIT License",
+    copyright: "Copyright (c) Microsoft Corporation",
+    url: "https://github.com/microsoft/onnxruntime",
+    textUrl: "licenses/onnxruntime-web-MIT.txt"
+  }),
+  Object.freeze({
+    id: "onnxruntime-common",
+    name: "onnxruntime-common\uFF08ONNX Runtime \u306E\u5171\u901A\u90E8\u5206\uFF09",
+    license: "MIT License",
+    copyright: "Copyright (c) Microsoft Corporation",
+    url: "https://github.com/microsoft/onnxruntime",
+    textUrl: "licenses/onnxruntime-common-MIT.txt"
+  }),
+  Object.freeze({
+    id: "flatbuffers",
+    name: "FlatBuffers\uFF08ONNX \u30E2\u30C7\u30EB\u306E\u30B7\u30EA\u30A2\u30E9\u30A4\u30BA\uFF09",
+    license: "Apache License 2.0",
+    copyright: "The FlatBuffers project",
+    url: "https://github.com/google/flatbuffers",
+    textUrl: "licenses/Apache-2.0.txt"
+  }),
+  Object.freeze({
+    id: "long-js",
+    name: "long.js\uFF0864 \u30D3\u30C3\u30C8\u6574\u6570\u6F14\u7B97\uFF09",
+    license: "Apache License 2.0",
+    copyright: "Copyright 2020 Daniel Wirtz / The long.js Authors",
+    url: "https://github.com/dcodeIO/long.js",
+    textUrl: "licenses/Apache-2.0.txt"
+  }),
+  Object.freeze({
+    id: "closure-library",
+    name: "Closure Library\uFF08long.js \u306B\u542B\u307E\u308C\u308B\u90E8\u5206\uFF09",
+    license: "Apache License 2.0",
+    copyright: "Copyright 2009 The Closure Library Authors",
+    url: "https://github.com/google/closure-library",
+    textUrl: "licenses/Apache-2.0.txt"
+  }),
+  Object.freeze({
+    id: "androidx-webkit",
+    name: "AndroidX WebKit \u3068\u63A8\u79FB\u4F9D\u5B58\uFF08annotation / core / collection / lifecycle / versionedparcelable\uFF09",
+    license: "Apache License 2.0",
+    copyright: "Copyright (C) The Android Open Source Project",
+    url: "https://developer.android.com/jetpack/androidx",
+    textUrl: "licenses/Apache-2.0.txt",
+    note: "Android\u7248\u3067\u4F7F\u7528"
+  })
+]);
+var asBuild = (value) => {
+  const v = String(value ?? "").trim();
+  return v && !v.startsWith("__") ? v : "dev";
+};
+function versionLabel({ webBuild, nativeName, nativeCode } = {}) {
+  const web = asBuild(webBuild);
+  const name2 = String(nativeName ?? "").trim();
+  const code = nativeCode === 0 || nativeCode ? String(nativeCode).trim() : "";
+  if (!name2) return `\u30A2\u30D7\u30EA\u30D3\u30EB\u30C9 ${web}`;
+  return `${name2}${code ? `\uFF08\u30D3\u30EB\u30C9 ${code}\uFF09` : ""}\uFF0F\u30A2\u30D7\u30EA\u30D3\u30EB\u30C9 ${web}`;
+}
+function escapeHtml(value) {
+  return String(value ?? "").replace(/[&<>"']/g, (ch) => ({
+    "&": "&amp;",
+    "<": "&lt;",
+    ">": "&gt;",
+    '"': "&quot;",
+    "'": "&#39;"
+  })[ch]);
+}
+var externalLink = (url, label) => `<a class="about-link" href="${escapeHtml(url)}" data-external="${escapeHtml(url)}" target="_blank" rel="noopener noreferrer">${escapeHtml(label)}</a>`;
+function renderAboutHtml(version) {
+  const licenses = ABOUT_LICENSES.map((entry) => `
+    <section class="about-license" id="about-license-${escapeHtml(entry.id)}">
+      <div class="about-license-name">${escapeHtml(entry.name)}</div>
+      ${entry.note ? `<div class="about-license-meta about-license-note">${escapeHtml(entry.note)}</div>` : ""}
+      <div class="about-license-meta">${escapeHtml(entry.license)} \uFF0F ${escapeHtml(entry.copyright)}</div>
+      <div class="about-license-meta">${externalLink(entry.url, entry.url)}</div>
+      <details class="about-license-text" data-license-url="${escapeHtml(entry.textUrl)}">
+        <summary>\u30E9\u30A4\u30BB\u30F3\u30B9\u6587\u3092\u8868\u793A</summary>
+        <pre>\u8AAD\u307F\u8FBC\u307F\u4E2D\u2026</pre>
+      </details>
+    </section>`).join("");
+  return `
+    <div class="about-brand">
+      <div class="about-app-name">${escapeHtml(ABOUT_APP_NAME)}</div>
+      <div class="about-app-sub">${escapeHtml(ABOUT_APP_SUBTITLE)}</div>
+    </div>
+    <dl class="about-meta">
+      <dt>\u30D0\u30FC\u30B8\u30E7\u30F3</dt><dd id="about-version">${escapeHtml(version)}</dd>
+      <dt>\u958B\u767A\u8005</dt><dd>${escapeHtml(ABOUT_DEVELOPER)}</dd>
+    </dl>
+    <div class="about-links">
+      ${externalLink(ABOUT_PRIVACY_URL, "\u30D7\u30E9\u30A4\u30D0\u30B7\u30FC\u30DD\u30EA\u30B7\u30FC")}
+      ${externalLink(ABOUT_TERMS_URL, "\u5229\u7528\u898F\u7D04")}
+    </div>
+    <h3 class="about-section-title">\u97F3\u7D20\u6750</h3>
+    <p class="about-credit">${escapeHtml(ABOUT_AUDIO_CREDITS)}</p>
+    <h3 class="about-section-title">\u30E9\u30A4\u30BB\u30F3\u30B9</h3>
+    <p class="about-note">\u672C\u30A2\u30D7\u30EA\u306B\u306F\u6B21\u306E\u30AA\u30FC\u30D7\u30F3\u30BD\u30FC\u30B9\u30BD\u30D5\u30C8\u30A6\u30A7\u30A2\u304C\u542B\u307E\u308C\u307E\u3059\u3002AndroidX \u306E\u9805\u76EE\u306F Android \u7248\u3067\u306E\u307F\u4F7F\u7528\u3057\u307E\u3059\u3002</p>
+    ${licenses}
+  `;
+}
+
 // src/audio_assets.mjs
 var SOUND_FILES = Object.freeze({
   bgm: "assets/9c41b7e20a6f.bin",
@@ -35058,6 +35379,14 @@ var SOUND_FILES = Object.freeze({
   stick1: "assets/7a4dc019e2b8.bin",
   stick2: "assets/c5803f6b2d91.bin",
   stick3: "assets/2f89a64ed031.bin"
+});
+var SOUND_OFFSETS = Object.freeze({
+  tile1: 0.25,
+  tile2: 0.25,
+  tile3: 0.25,
+  stick1: 0.24,
+  stick2: 0.24,
+  stick3: 0.24
 });
 function cuesForMessage(msg) {
   if (msg?.zimo || msg?.gangzimo || msg?.fulou || msg?.gang) return [{ sound: "tile1", delay: 0 }];
@@ -35080,6 +35409,8 @@ function cuesForMessage(msg) {
 // src/audio.mjs
 var AUDIO_SETTINGS_KEY = "ml-audio-v1";
 var DEFAULT_AUDIO_SETTINGS = Object.freeze({ bgm: 0.15, se: 0.35 });
+var SE_MIN_INTERVAL_SECONDS = 0.5;
+var STICK_SOUNDS = /* @__PURE__ */ new Set(["stick1", "stick2", "stick3"]);
 function normalizeAudioSettings(value) {
   return Object.fromEntries(Object.entries(DEFAULT_AUDIO_SETTINGS).map(([key2, fallback]) => [
     key2,
@@ -35115,6 +35446,7 @@ var GameAudio = class {
     this.diagnose = diagnose;
     this.buffers = /* @__PURE__ */ new Map();
     this.sources = /* @__PURE__ */ new Set();
+    this.seStarts = [];
     this.active = false;
     this.visible = true;
     this.unlocked = false;
@@ -35130,13 +35462,17 @@ var GameAudio = class {
   }
   prepare() {
     if (this.preparing) return this.preparing;
-    this.preparing = Promise.resolve().then(async () => {
+    this.preparing = (async () => {
       this.context = this.createContext();
+      this.unlocked ||= this.context.state === "running";
       this.bgmGain = this.context.createGain();
       this.seGain = this.context.createGain();
       this.bgmGain.connect(this.context.destination);
       this.seGain.connect(this.context.destination);
-      this.context.onstatechange = () => this.syncMusic();
+      this.context.onstatechange = () => {
+        this.unlocked ||= this.context.state === "running";
+        this.syncMusic();
+      };
       this.setSettings(this.settings);
       await Promise.all(Object.entries(SOUND_FILES).map(async ([key2, url]) => {
         const abort = new AbortController();
@@ -35153,7 +35489,7 @@ var GameAudio = class {
           clearTimeout(timer);
         }
       }));
-    }).catch((e) => this.report("prepare", e));
+    })().catch((e) => this.report("prepare", e));
     return this.preparing;
   }
   // Must be called directly in an input handler (before its first await).
@@ -35161,7 +35497,7 @@ var GameAudio = class {
     try {
       if (!this.context) {
         this.prepare();
-        return;
+        if (!this.context) return;
       }
       this.unlocked = true;
       Promise.resolve(this.context.resume()).then(() => this.syncMusic()).catch((e) => this.report("resume", e));
@@ -35176,24 +35512,26 @@ var GameAudio = class {
   }
   stopGame() {
     this.active = false;
-    this.stopSources();
+    this.stopSources({ keepMusic: true });
   }
   setVisible(visible) {
     this.visible = visible;
     if (!visible) this.stopSources();
     else this.syncMusic();
   }
-  stopSources() {
+  stopSources({ keepMusic = false } = {}) {
     for (const source of [...this.sources]) {
+      if (keepMusic && source === this.music) continue;
       try {
         source.stop();
         source.disconnect();
       } catch (e) {
         this.report("stop", e);
       }
+      this.sources.delete(source);
     }
-    this.sources.clear();
-    this.music = null;
+    if (!keepMusic) this.music = null;
+    this.seStarts = this.seStarts.filter((at2) => at2 <= this.context?.currentTime);
   }
   setSettings(value) {
     this.settings = normalizeAudioSettings(value);
@@ -35206,7 +35544,7 @@ var GameAudio = class {
     }
   }
   canPlay() {
-    return this.active && this.visible && this.unlocked && this.context?.state === "running";
+    return this.visible && this.unlocked && this.context?.state === "running";
   }
   source(key2, gain, delay = 0, loop = false) {
     let source;
@@ -35214,6 +35552,12 @@ var GameAudio = class {
       if (!this.buffers.has(key2)) {
         this.report(`not-ready/${key2}`, "buffer unavailable; cue skipped");
         return null;
+      }
+      const now = this.context.currentTime;
+      const at2 = now + delay;
+      if (!loop) {
+        this.seStarts = this.seStarts.filter((t) => t > now - SE_MIN_INTERVAL_SECONDS);
+        if (!STICK_SOUNDS.has(key2) && this.seStarts.some((t) => t <= at2 && at2 - t < SE_MIN_INTERVAL_SECONDS)) return null;
       }
       source = this.context.createBufferSource();
       source.buffer = this.buffers.get(key2);
@@ -35227,7 +35571,8 @@ var GameAudio = class {
         }
       };
       this.sources.add(source);
-      source.start(this.context.currentTime + delay);
+      source.start(at2, SOUND_OFFSETS[key2] ?? 0);
+      if (!loop) this.seStarts.push(at2);
       return source;
     } catch (e) {
       this.sources.delete(source);
@@ -35257,13 +35602,82 @@ var GameAudio = class {
   }
   handleMessage(msg) {
     try {
-      if (!this.canPlay() || this.settings.se === 0) return;
+      if (!this.active || !this.canPlay() || this.settings.se === 0) return;
       for (const cue of cuesForMessage(msg)) this.source(cue.sound, this.seGain, cue.delay);
     } catch (e) {
       this.report("event", e);
     }
   }
 };
+
+// src/discard_tempo.mjs
+var DISCARD_TEMPO_KEY = "ml-discard-tempo-v1";
+var MIN_DISCARD_INTERVAL_MS = 500;
+function loadDiscardTempo(storage) {
+  try {
+    return (storage ?? globalThis.localStorage).getItem(DISCARD_TEMPO_KEY) !== "0";
+  } catch (_) {
+    return true;
+  }
+}
+function saveDiscardTempo(enabled, storage) {
+  try {
+    (storage ?? globalThis.localStorage).setItem(DISCARD_TEMPO_KEY, enabled ? "1" : "0");
+  } catch (_) {
+  }
+}
+var DiscardTempo = class {
+  constructor({
+    enabled = loadDiscardTempo(),
+    now = () => performance.now(),
+    schedule = (fn, ms2) => setTimeout(fn, ms2),
+    cancel = (id2) => clearTimeout(id2)
+  } = {}) {
+    Object.assign(this, { enabled, now, schedule, cancel });
+    this.lastDisplayed = null;
+    this.pending = null;
+  }
+  displayed() {
+    this.lastDisplayed = this.now();
+  }
+  remaining(manual = false) {
+    return manual || !this.enabled || this.lastDisplayed == null ? 0 : Math.max(0, MIN_DISCARD_INTERVAL_MS - (this.now() - this.lastDisplayed));
+  }
+  dispatch(commit, { manual = false } = {}) {
+    const attempt = () => {
+      const ms2 = this.remaining(manual);
+      if (ms2 > 0) {
+        this.pending = { attempt, timer: this.schedule(attempt, Math.ceil(ms2)) };
+      } else {
+        this.pending = null;
+        commit();
+      }
+    };
+    attempt();
+  }
+  setEnabled(enabled) {
+    this.enabled = !!enabled;
+    if (!this.enabled && this.pending) {
+      const { timer, attempt } = this.pending;
+      this.cancel(timer);
+      attempt();
+    }
+  }
+  reset() {
+    if (this.pending) this.cancel(this.pending.timer);
+    this.pending = null;
+    this.lastDisplayed = null;
+  }
+};
+function withDiscardTempo(Game) {
+  return class extends Game {
+    dapai(p) {
+      if (!this.discardTempo) return super.dapai(p);
+      const manual = !!this.takeManualDiscard?.();
+      this.discardTempo.dispatch(() => super.dapai(p), { manual });
+    }
+  };
+}
 
 // src/replay.mjs
 function replaySteps(bundle) {
@@ -35567,7 +35981,70 @@ function createClipStore(indexedDB2 = globalThis.indexedDB) {
   };
 }
 
+// src/clip_status.mjs
+var CLIP_MESSAGE_MS = 2500;
+function createClipStatus({
+  setTimeoutFn = globalThis.setTimeout,
+  clearTimeoutFn = globalThis.clearTimeout,
+  onChange = () => {
+  }
+} = {}) {
+  let message = "";
+  let timer = null;
+  let generation = 0;
+  const emit = () => onChange(message);
+  const disarm = () => {
+    if (timer !== null) {
+      clearTimeoutFn(timer);
+      timer = null;
+    }
+  };
+  function clear() {
+    generation++;
+    disarm();
+    if (message !== "") {
+      message = "";
+      emit();
+    }
+  }
+  function show(text) {
+    generation++;
+    const gen = generation;
+    disarm();
+    message = text;
+    emit();
+    timer = setTimeoutFn(() => {
+      if (gen !== generation) return;
+      timer = null;
+      message = "";
+      emit();
+    }, CLIP_MESSAGE_MS);
+  }
+  return {
+    clear,
+    show,
+    generation: () => generation,
+    get message() {
+      return message;
+    },
+    get active() {
+      return timer !== null;
+    }
+  };
+}
+
+// src/grandfather.mjs
+var GRANDFATHER_KEY = "ml-grandfather-v1";
+function markGrandfathered(storage) {
+  try {
+    if (storage.getItem(GRANDFATHER_KEY) !== null) return;
+    storage.setItem(GRANDFATHER_KEY, "1");
+  } catch (_) {
+  }
+}
+
 // src/main.js
+markGrandfathered({ getItem: (key2) => localStorage.getItem(key2), setItem: (key2, value) => localStorage.setItem(key2, value) });
 var NAMES = ["\u3042\u306A\u305F", "AI-1", "AI-2", "AI-3"];
 var MODELS = [
   { id: "jaklab-v1", version: "V1", label: "V1", name: "V1\uFF08\u81EA\u524D\u30E2\u30C7\u30EB\u30FB43MB\uFF09", file: "models/jaklab_v1.onnx", displayTemperature: 0.725 },
@@ -35581,21 +36058,13 @@ function modelLabel(id2) {
   return m ? m.label || m.name : id2;
 }
 var AUTO = new URLSearchParams(location.search).get("auto") === "1";
+var SHELL = isShell();
 var LENGTH_KEY = "ml-game-length";
 var MODEL_KEY = "ml-model";
-var CPU_TIER_KEY = "ml-cpu-tier";
-var CPU_STYLE_KEY = "ml-cpu-style";
 var LIGHT_MODEL_FILE = "models/jaklab_v1_light.onnx";
-function cpuSetting(param, key2, list) {
-  const q4 = param ? new URLSearchParams(location.search).get(param) : null;
-  if (q4 && list.some((x) => x.id === q4)) return q4;
-  try {
-    const v = localStorage.getItem(key2);
-    if (v && list.some((x) => x.id === v)) return v;
-  } catch (_) {
-  }
-  return list[0].id;
-}
+var startupFallback = null;
+var cpuStorage = { getItem: (key2) => localStorage.getItem(key2), setItem: (key2, val) => localStorage.setItem(key2, val) };
+var cpuSeats = loadCpuSeats(cpuStorage, location.search);
 function initialGameLength() {
   const param = new URLSearchParams(location.search).get("length");
   if (param === "hanchan" || param === "tonpuu") return param;
@@ -35648,7 +36117,8 @@ var S = {
   lastResult: null,
   resultCount: 0,
   scoreCheck: { checked: 0, ok: true, mismatches: [] },
-  finalBreakdown: null
+  finalBreakdown: null,
+  shell: SHELL
 };
 window.__stage2 = S;
 window.addEventListener("error", (e) => {
@@ -35670,6 +36140,9 @@ var audio = new GameAudio({ diagnose: (line) => {
   diagLogPush(line);
   console.warn(line);
 } });
+var discardTempo = new DiscardTempo();
+var manualDiscard = false;
+var gameSession = null;
 S.audioStatus = () => ({
   settings: { ...audio.settings },
   active: audio.active,
@@ -35822,6 +36295,7 @@ var SUMMARY_STORE = "summaries";
 var HISTORY_LIMIT = 50;
 var $ = (id2) => document.getElementById(id2);
 function resetCoachDisplay(kind = null) {
+  clipStatus.clear();
   preparingDecision = kind;
   currentCoach = null;
   coachMissing = null;
@@ -35872,6 +36346,7 @@ var ui = {
     });
   },
   requestDecision(kind, options) {
+    clipStatus.clear();
     preparingDecision = null;
     S.decisionPending = true;
     S.pendingKind = kind;
@@ -35887,6 +36362,7 @@ var ui = {
         kind,
         options,
         resolve: (r) => {
+          if (r?.dapai) manualDiscard = true;
           pending = null;
           S.decisionPending = false;
           S.pendingKind = null;
@@ -36150,6 +36626,7 @@ function storeResumeSnapshot(phase) {
     startedAt: gameStartedAt,
     gameLength,
     qijia: QIJIA,
+    cpuSeats: S.cpu?.seats.map((s) => ({ tierId: s.tier.id, styleId: s.style.id })),
     zhuangfeng: "ESWN".indexOf(sk2.bakaze),
     jushu: (sk2.kyoku || 1) - 1,
     changbang: sk2.honba || 0,
@@ -36746,8 +37223,14 @@ function reviewHTML(records) {
 var sceneViewer = null;
 var clips = createClipStore();
 var replayTimer = null;
-var clipMessage = "";
 var clipSaving = false;
+var clipStatus = createClipStatus({
+  onChange: (message) => {
+    document.querySelectorAll(".clip-status").forEach((el2) => {
+      el2.textContent = message;
+    });
+  }
+});
 function clipButtonHTML() {
   return '<button type="button" class="clip-save" data-clip-save aria-label="\u4ECA\u306E\u5C40\u9762\u3092\u30AF\u30EA\u30C3\u30D7" title="\u4ECA\u306E\u5C40\u9762\u3092\u30AF\u30EA\u30C3\u30D7">\u{1F4CE}</button>';
 }
@@ -36772,7 +37255,7 @@ function openReplay(bundle, eventCount = null, savedRecord = void 0) {
     savedRecord,
     savedEventCount: eventCount
   };
-  clipMessage = "";
+  clipStatus.clear();
   renderSceneViewer();
 }
 function replayCurrent() {
@@ -36788,7 +37271,7 @@ function moveReplay(delta) {
   if (!v?.replay || !v.bundle) return;
   v.index = Math.max(0, Math.min(v.index + delta, v.steps.length - 1));
   if (v.index === v.steps.length - 1) stopReplay();
-  clipMessage = "";
+  clipStatus.clear();
   renderSceneViewer();
 }
 function toggleReplay() {
@@ -36806,7 +37289,7 @@ function jumpReplayKyoku(delta) {
   const index = v.steps.findIndex((s) => s.kyokuIndex === kyoku);
   if (index >= 0) {
     v.index = index;
-    clipMessage = "";
+    clipStatus.clear();
   }
   renderSceneViewer();
 }
@@ -36835,14 +37318,14 @@ function renderReplayViewer() {
       <div class="replay-board"><div class="replay-center">
         <div class="center-players">${[2, 3, 1, 0].map((p) => mini(byPos[p])).join("")}</div>
         <div class="round">${"\u6771\u5357\u897F\u5317"[c.zhuangfeng]}${c.jushu + 1}\u5C40 <span>${c.changbang}\u672C\u5834</span></div><div class="center-meta">\u6B8B\u308A ${c.paishu}\u679A\u3000\u4F9B\u8A17 ${c.lizhibang}</div>
-        <div class="dora"><span>\u30C9\u30E9</span>${c.baopai.map((p) => tileHTML(p, "dora-tile")).join("")}</div></div>
+        <div class="dora"><span>\u30C9\u30E9\u8868\u793A</span>${c.baopai.map((p) => tileHTML(p, "dora-tile")).join("")}</div></div>
       ${snap.seats.map((s) => `<div class="board-pond bp-${s.pos}${s.lizhi ? " riichi-on" : ""}">${pondHTML(s, scene.lastDapai ? (scene.lastDapai.actor - scene.oya + 4) % 4 : -1)}</div>`).join("")}</div>
       ${seat(1)}<div class="replay-self-area">${seat(0)}</div></div>
     ${record ? `<section class="replay-coach clip-panel">${clipButtonHTML()}${coachHTML(record)}<div class="clip-status" role="status"></div></section>` : ""}
     ${!record ? `<div class="replay-clip-tools clip-panel">${clipButtonHTML()}<div class="clip-status" role="status"></div></div>` : ""}
     </div>`;
   $("scene-viewer").style.display = "flex";
-  $("scene-viewer").querySelector(".clip-status").textContent = clipMessage;
+  $("scene-viewer").querySelector(".clip-status").textContent = clipStatus.message;
   fitReplayBoard();
 }
 function fitReplayBoard() {
@@ -36865,6 +37348,7 @@ window.addEventListener("resize", fitReplayBoard);
 async function saveSceneClip() {
   if (clipSaving) return;
   clipSaving = true;
+  const generation = clipStatus.generation();
   let message;
   try {
     let input;
@@ -36885,13 +37369,10 @@ async function saveSceneClip() {
   } finally {
     clipSaving = false;
   }
-  clipMessage = message;
-  const root = sceneViewer?.replay ? $("scene-viewer") : $("coach");
-  root.querySelectorAll(".clip-status").forEach((el2) => {
-    el2.textContent = message;
-  });
+  if (clipStatus.generation() === generation) clipStatus.show(message);
 }
 async function openClips() {
+  clipStatus.clear();
   const el2 = $("clips-view");
   let items = [], error = "";
   try {
@@ -36933,7 +37414,7 @@ async function openClips() {
       else {
         stopReplay();
         sceneViewer = { replay: true, clip };
-        clipMessage = "";
+        clipStatus.clear();
         renderSceneViewer();
       }
     };
@@ -37007,12 +37488,14 @@ function sceneCandidateHTML(rec) {
 }
 function openSceneViewer(recIndex, bundle = lastBundle) {
   stopReplay();
+  clipStatus.clear();
   if (!bundle?.coach?.length || !bundle?.mjai?.length) return;
   sceneViewer = { bundle, index: Math.max(0, Math.min(recIndex, bundle.coach.length - 1)), expanded: false };
   renderSceneViewer();
 }
 function closeSceneViewer() {
   stopReplay();
+  clipStatus.clear();
   sceneViewer = null;
   const el2 = $("scene-viewer");
   if (el2) {
@@ -37027,6 +37510,7 @@ function stepSceneViewer(delta) {
     return;
   }
   if (!sceneViewer) return;
+  clipStatus.clear();
   const next = sceneViewer.index + delta;
   if (next < 0 || next >= sceneViewer.bundle.coach.length) return;
   sceneViewer.index = next;
@@ -37127,19 +37611,13 @@ function buildGameBundle(paipu, { partial = false } = {}) {
       coachDisplay: gameCoachDisplay,
       model: {
         coach: model.id,
-        opponents: S.cpu?.tier.model === "light" ? "jaklab-v1-light" : model.id,
+        opponents: S.cpu?.seats.every((s) => s.modelId === S.cpu.seats[0].modelId) ? S.cpu.seats[0].modelId : null,
+        opponentsBySeat: S.cpu?.seats.map((s) => ({ id: s.id, modelId: s.modelId })) || null,
         name: model.label || model.name,
         version: model.version || null,
         file: model.file
       },
-      cpu: S.cpu ? {
-        tier: S.cpu.tier.id,
-        tierLabel: S.cpu.tier.label,
-        tau: S.cpu.tier.tau,
-        style: S.cpu.style.id,
-        styleLabel: S.cpu.style.label,
-        styleMag: S.cpu.style.mag
-      } : null,
+      cpu: S.cpu ? cpuRecord(S.cpu.seats) : null,
       rule,
       ruleSummary: {
         startingPoints: rule["\u914D\u7D66\u539F\u70B9"],
@@ -37245,15 +37723,22 @@ async function loadSummaries() {
     S.errors.push("summary load: " + (e.message || e));
     summariesCache = [];
   }
-  const have = new Set(summariesCache.map((s) => s.gameId));
+  const byId = new Map(summariesCache.map((s) => [s.gameId, s]));
   for (const b of historyCache) {
     const gid = b?.meta?.gameId;
-    if (!gid || have.has(gid)) continue;
+    if (!gid) continue;
+    const existing = byId.get(gid);
+    if (existing && existing.schema === SUMMARY_SCHEMA) continue;
     try {
       const s = summarizeBundle(b);
       await idbPutSummary(s);
-      summariesCache.push(s);
-      have.add(gid);
+      if (existing) {
+        const i = summariesCache.indexOf(existing);
+        if (i >= 0) summariesCache[i] = s;
+      } else {
+        summariesCache.push(s);
+      }
+      byId.set(gid, s);
     } catch (e) {
       S.errors.push("summary backfill: " + (e.message || e));
     }
@@ -37276,7 +37761,7 @@ async function saveSummaryForBundle(bundle) {
 }
 function saveTextFile(filename, text, mime) {
   const nb2 = globalThis.JanLabNative;
-  if (nb2 && typeof nb2.saveTextFile === "function") {
+  if (isShell(nb2) && typeof nb2.saveTextFile === "function") {
     try {
       if (nb2.saveTextFile(filename, mime, text)) return true;
     } catch (e) {
@@ -37438,6 +37923,7 @@ function renderHistoryPanel() {
   el2.querySelectorAll(".history-delete").forEach((btn) => btn.addEventListener("click", () => historyAction(() => idbDeleteBundle(btn.dataset.gameId))));
 }
 async function openHistory() {
+  clipStatus.clear();
   historyImportMsg = "";
   try {
     await refreshHistory();
@@ -37679,7 +38165,7 @@ function render() {
     <div class="center-players">${mini(byPos[2])}${mini(byPos[3])}${mini(byPos[1])}${mini(byPos[0])}</div>
     <div class="round">${"\u6771\u5357\u897F\u5317"[c.zhuangfeng]}${c.jushu + 1}\u5C40 <span>${c.changbang}\u672C\u5834</span></div>
     <div class="center-meta">\u6B8B\u308A ${c.paishu}\u679A\u3000\u4F9B\u8A17 ${c.lizhibang}</div>
-    <div class="dora"><span>\u30C9\u30E9</span>${c.baopai.map((p) => tileHTML(p, "dora-tile")).join("")}</div>
+    <div class="dora"><span>\u30C9\u30E9\u8868\u793A</span>${c.baopai.map((p) => tileHTML(p, "dora-tile")).join("")}</div>
     <div class="result">${lastResultText}</div>`);
   setHTML($("actions"), decisionButtonsHTML());
   $("actions").classList.toggle("has-actions", !!(pending || preparingDecision) && !AUTO);
@@ -37692,7 +38178,7 @@ function render() {
   S.tileSvgCount = document.querySelectorAll("#table svg.tile-art").length;
   $("coach").classList.add("clip-panel");
   setHTML($("coach"), clipButtonHTML() + coachHTML() + '<div class="clip-status" role="status"></div>');
-  $("coach").querySelector(".clip-status").textContent = clipMessage;
+  $("coach").querySelector(".clip-status").textContent = clipStatus.message;
   setHTML($("explain"), explainHTML());
   renderResultPanel();
   wireButtons();
@@ -37760,6 +38246,7 @@ var view2 = {
     guarded("view.redraw/render", render);
   },
   update(msg) {
+    clipStatus.clear();
     audio.handleMessage(msg);
     const draw = msg?.zimo || msg?.gangzimo;
     if (draw?.l === seat0._menfeng) resetCoachDisplay("zimo");
@@ -37778,6 +38265,7 @@ var view2 = {
       registerResult(kyokuResult);
     });
     guarded("view.update/render", render);
+    if (msg?.dapai) discardTempo.displayed();
   },
   summary() {
   },
@@ -37787,6 +38275,7 @@ var view2 = {
 function showEnd(paipu) {
   if (endHandled) return;
   endHandled = true;
+  clipStatus.clear();
   audio.stopGame();
   clearResumeSnapshot();
   S.finished = true;
@@ -37850,9 +38339,79 @@ function showEnd(paipu) {
   $("end").style.display = "flex";
   $("dl-bundle").addEventListener("click", () => downloadJson(`mahjong-local_${bundle.meta.gameId}.json`, bundle));
   $("open-history-end").addEventListener("click", openHistory);
-  $("again").addEventListener("click", () => location.reload());
+  $("again").addEventListener("click", returnToStart);
   saveFinishedGame(bundle);
   render();
+}
+var returningToStart = false;
+async function returnToStart() {
+  if (returningToStart) return;
+  returningToStart = true;
+  clipStatus.clear();
+  if (gameSession) gameSession.active = false;
+  game?.stop();
+  discardTempo.reset();
+  audio.stopGame();
+  $("suspendBtn").disabled = true;
+  try {
+    await Promise.race([savePartialGame(), new Promise((r) => setTimeout(r, 1500))]);
+  } catch (_) {
+  }
+  game = bridge = coach = seat0 = null;
+  pending = resultWaiter = null;
+  preparingDecision = currentCoach = coachMissing = explainCache = null;
+  selectedAction = selectedIdx = null;
+  riichiArmed = manualDiscard = false;
+  gameEnded = endHandled = false;
+  kyokuResult = kyokuScoresStart = lastBundle = null;
+  kyokuResultsAll = [];
+  pendingCheckResults = [];
+  horaHandByKyoku.clear();
+  prevLizhiByPos = {};
+  resultPanelShownFor = void 0;
+  currentGameId = gameStartedAt = gameModel = gameCoachDisplay = null;
+  resumeSnapshot = resumeRequest = resumedFrom = null;
+  lastDapaiL = snapshotTurnL = -1;
+  dahaiLogSeen = 0;
+  lastResultText = "";
+  lastResultScanned = { bridge: null, len: -1 };
+  regionHTML.clear();
+  assistCache = { key: null, kindByIdx: /* @__PURE__ */ new Map(), starts: /* @__PURE__ */ new Set() };
+  Object.assign(explainAudit, { checked: 0, fulouChecked: 0, skippedNonDiscard: 0, missing: [] });
+  Object.assign(explainabilityStats, { total: 0, withVerdict: 0, unexplained: 0, outOfScope: 0 });
+  Object.assign(S, {
+    started: false,
+    finished: false,
+    decisionPending: false,
+    pendingKind: null,
+    pendingOptions: null,
+    selectedAction: null,
+    selectedIdx: null,
+    mjaiEvents: 0,
+    coachRecords: 0,
+    dahaiLog: [],
+    dahaiThisKyoku: [0, 0, 0, 0],
+    resultCount: 0,
+    lastResult: null,
+    lastBundle: null,
+    saveCompleted: false,
+    riichiSeats: [],
+    kyokuIndex: -1,
+    scoreCheck: { checked: 0, ok: true, mismatches: [] }
+  });
+  for (const id2 of ["end", "settings-view", "kyoku-result"]) {
+    const el2 = $(id2);
+    if (el2) el2.style.display = "none";
+  }
+  $("end").innerHTML = "";
+  closeSceneViewer();
+  $("start-screen").hidden = false;
+  $("suspendBtn").disabled = false;
+  refreshResumeOffer();
+  renderStartScreenStats();
+  updateModelNotice();
+  setStartEnabled(!!ai && S.ready && !S.modelSwapping);
+  returningToStart = false;
 }
 async function attachResumePrefix(resume, prepared) {
   S.resumePrefixLoaded = false;
@@ -37880,15 +38439,19 @@ async function attachResumePrefix(resume, prepared) {
   }
 }
 async function startGame(userGesture = false) {
-  if (S.started) return;
+  if (S.started || returningToStart) return;
   if (!ai || !S.ready || S.modelSwapping) return;
+  clipStatus.clear();
   S.started = true;
   audio.startGame(!!userGesture && !!navigator.userActivation?.isActive);
   const ssEl = $("start-screen");
   if (ssEl) ssEl.hidden = true;
+  const session = { active: true };
+  gameSession = session;
   try {
-    await startGameInner();
+    await startGameInner(session);
   } catch (e) {
+    if (!session.active) return;
     S.errors.push("startGame: " + (e?.message || e));
     S.started = false;
     audio.stopGame();
@@ -37902,7 +38465,14 @@ async function startGame(userGesture = false) {
     }
   }
 }
-async function startGameInner() {
+async function startGameInner(session) {
+  const sessionUi = Object.fromEntries(Object.entries(ui).map(([key2, fn]) => [
+    key2,
+    (...args) => session.active ? fn(...args) : new Promise(() => {
+    })
+  ]));
+  const inferFail = (...args) => session.active ? onInferFail(...args) : new Promise(() => {
+  });
   const resume = resumeRequest;
   resumeRequest = null;
   if (resume) {
@@ -37945,7 +38515,8 @@ async function startGameInner() {
   log("\u5BFE\u5C40\u3092\u958B\u59CB\u3057\u307E\u3059\u2026");
   QIJIA = resume ? resume.qijia : Math.floor(Math.random() * 4);
   S.qijia = QIJIA;
-  const cpuAiFor = await prepareCpuOpponents();
+  const cpuAiFor = await prepareCpuOpponents(resume?.cpuSeats || cpuSeats);
+  if (!session.active) return;
   bridge = new MjaiBridge(QIJIA);
   const decisionLog = [];
   const players = [];
@@ -37955,7 +38526,7 @@ async function startGameInner() {
     bridge.registerCoach(coachBrain);
     coach = new Coach(bridge, ai);
     for (let id2 = 0; id2 < 4; id2++) {
-      players.push(new MortalPlayer(id2, bridge, id2 === 0 ? ai : cpuAiFor(id2), id2 === 0 ? coach : null, decisionLog, onInferFail));
+      players.push(new MortalPlayer(id2, bridge, id2 === 0 ? ai : cpuAiFor(id2), id2 === 0 ? coach : null, decisionLog, inferFail));
     }
     seat0 = players[0];
     for (const key2 of ["action_hule", "action_pingju"]) {
@@ -37967,7 +38538,7 @@ async function startGameInner() {
     const coachBrain = new MortalBrain((4 - QIJIA) % 4, 4);
     bridge.registerCoach(coachBrain);
     coach = new Coach(bridge, ai);
-    const human = new HumanPlayer(ui, coach, () => {
+    const human = new HumanPlayer(sessionUi, coach, () => {
       const s = {
         noCall: $("autoNoCall").checked,
         autoWin: $("autoWin").checked,
@@ -37977,7 +38548,7 @@ async function startGameInner() {
       return s;
     });
     players.push(human);
-    for (let id2 = 1; id2 < 4; id2++) players.push(new MortalPlayer(id2, bridge, cpuAiFor(id2), null, decisionLog, onInferFail));
+    for (let id2 = 1; id2 < 4; id2++) players.push(new MortalPlayer(id2, bridge, cpuAiFor(id2), null, decisionLog, inferFail));
     seat0 = human;
   }
   const reactionCallNotes = () => {
@@ -38100,17 +38671,31 @@ async function startGameInner() {
     }
     return verdict;
   };
-  seat0.view = view2;
-  class BridgeGame extends import_majiang_core6.default.Game {
+  for (const key2 of ["shantenProvider", "statisticsProvider", "explainabilityProvider"]) {
+    const provider = coach[key2];
+    coach[key2] = (...args) => session.active ? provider(...args) : null;
+  }
+  seat0.view = Object.fromEntries(Object.entries(view2).map(([key2, fn]) => [
+    key2,
+    (...args) => {
+      if (session.active) return fn(...args);
+    }
+  ]));
+  class BridgeGame extends withDiscardTempo(withTenhouKandora(import_majiang_core6.default.Game)) {
+    dapai(p) {
+      if (session.active) super.dapai(p);
+    }
     kaiju() {
       super.kaiju(QIJIA);
       bridge.startGame(this._model.player);
     }
     add_paipu(p) {
+      if (!session.active) return;
       super.add_paipu(p);
       bridge.feedPaipu(p, { moreHora: !!(p.hule && this._hule.length) });
     }
     call_players(type, msgs, timeout) {
+      if (!session.active) return;
       guarded("safe-boundary/resumeSnapshot", () => storeResumeSnapshot(type));
       super.call_players(type, msgs, timeout);
     }
@@ -38129,12 +38714,22 @@ async function startGameInner() {
   game = new BridgeGame(
     players,
     (paipu) => {
-      bridge.endGame();
-      showEnd(paipu);
+      if (session.active) {
+        bridge.endGame();
+        showEnd(paipu);
+      }
     },
     specRule({ length: gameLength }),
     "mahjong-local stage2"
   );
+  discardTempo.reset();
+  manualDiscard = false;
+  game.discardTempo = discardTempo;
+  game.takeManualDiscard = function() {
+    const manual = !AUTO && this.model.player_id[this.model.lunban] === 0 && manualDiscard;
+    manualDiscard = false;
+    return manual;
+  };
   game._model.player = NAMES.slice();
   if (resume) {
     game._model.defen = resume.defen.slice(0, 4);
@@ -38146,6 +38741,7 @@ async function startGameInner() {
   if (resume) {
     bridge.kyokuIndex = resume.kyokuIndex - 1;
     await attachResumePrefix(resume, preparedResume);
+    if (!session.active) return;
   }
   game.kaiju();
   if (resume) {
@@ -38196,7 +38792,18 @@ function renderStartScreenStats() {
 }
 var aiBaseline = null;
 var aiBaselineTonpuu = null;
-var statsUi = { length: "all", range: "20", coachDisplay: "all", modelId: "all", open: /* @__PURE__ */ new Set(), mmSort: "diff", mmFilter: "all" };
+var statsUi = {
+  length: "all",
+  range: "20",
+  coachDisplay: "all",
+  modelId: "all",
+  cpuTiers: [],
+  cpuStyles: [],
+  cpuOpen: { tier: false, style: false },
+  open: /* @__PURE__ */ new Set(),
+  mmSort: "diff",
+  mmFilter: "all"
+};
 var escHtml = (s) => String(s ?? "").replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" })[c]);
 async function loadAiBaseline() {
   if (aiBaseline) return aiBaseline;
@@ -38302,6 +38909,7 @@ function fmtDiff(fmt, own, ideal) {
   return (d > 0 ? "+" : "") + Math.round(d).toLocaleString();
 }
 function openStatsView() {
+  clipStatus.clear();
   const el2 = $("stats-view");
   if (!el2) return;
   el2.style.display = "flex";
@@ -38368,6 +38976,15 @@ function mismatchControlsHTML() {
     <label>\u5834\u9762 <select data-mm-filter>${o(statsUi.mmFilter, "all", "\u5168\u90E8")}${o(statsUi.mmFilter, "self", "\u81EA\u5BB6\u306E\u6253\u724C")}${o(statsUi.mmFilter, "other", "\u4ED6\u5BB6\u306E\u6253\u724C")}</select></label>
   </div>`;
 }
+function cpuMultiHTML(kind, label, options, selected, open) {
+  const chosen = options.filter((o) => selected.includes(o.id));
+  const summary = chosen.length === 0 ? `${label}: \u3059\u3079\u3066` : chosen.length === 1 ? `${label}: ${chosen[0].label}` : `${label}: ${chosen.length}\u4EF6`;
+  const items = options.map((o) => `<label><input type="checkbox" data-st-cpu-${kind}="${escHtml(o.id)}"${selected.includes(o.id) ? " checked" : ""}><span>${escHtml(o.label)}</span></label>`).join("");
+  return `<details id="st-cpu-${kind}" class="st-multi"${open ? " open" : ""}>
+    <summary>${escHtml(summary)}</summary>
+    <div class="st-multi-list">${items}</div>
+  </details>`;
+}
 function renderStatsView() {
   const el2 = $("stats-view");
   if (!el2) return;
@@ -38390,17 +39007,21 @@ function renderStatsView() {
       <label>\u7BC4\u56F2 <select id="st-range">${rangeOpts}</select></label>
       <label>\u30B3\u30FC\u30C1\u8868\u793A <select id="st-coach-display">${options(statsUi.coachDisplay, [["all", "\u3059\u3079\u3066"], ["on", "\u6709\u308A"], ["off", "\u7121\u3057"], ["unknown", "\u8A18\u9332\u306A\u3057"]])}</select></label>
       <label>\u4F7F\u7528\u30E2\u30C7\u30EB <select id="st-model">${options(statsUi.modelId, [["all", "\u3059\u3079\u3066"], ...MODELS.map((m) => [m.id, m.label]), ["unknown", "\u8A18\u9332\u306A\u3057"]])}</select></label>
+      ${cpuMultiHTML("tier", "\u76F8\u624B\u306E\u5F37\u3055", CPU_TIERS, statsUi.cpuTiers, statsUi.cpuOpen.tier)}
+      ${cpuMultiHTML("style", "\u76F8\u624B\u306E\u30BF\u30A4\u30D7", CPU_STYLES, statsUi.cpuStyles, statsUi.cpuOpen.style)}
     </div>
-    <div class="st-scope">\u5BFE\u8C61: \u624B\u52D5\u30FB\u5B8C\u4E86 ${sel.picked.length}\u5BFE\u5C40\uFF08\u6761\u4EF6\u4E00\u81F4 ${sel.available}\u5BFE\u5C40\uFF0F\u5168\u671F\u9593 ${totalEligible}\u5BFE\u5C40\uFF09\uFF0F ${agg.kyoku}\u5C40
+    <div class="st-scope">\u5BFE\u8C61: \u5B8C\u4E86 ${sel.picked.length}\u5BFE\u5C40\uFF08\u6761\u4EF6\u4E00\u81F4 ${sel.available}\u5BFE\u5C40\uFF0F\u5168\u671F\u9593 ${totalEligible}\u5BFE\u5C40\uFF09\uFF0F ${agg.kyoku}\u5C40
       ${sel.limited ? `\uFF0F \u7BC4\u56F2\u6307\u5B9A\u306B\u3088\u308A\u76F4\u8FD1\u5206\u306E\u307F\u96C6\u8A08` : ""}
       <br>\u30B3\u30FC\u30C1\u8868\u793A\u300C\u6709\u308A\u300D\u306F\u5BFE\u5C40\u4E2D\u306B\u4E00\u5EA6\u3067\u3082ON\u306B\u3057\u305F\u5BFE\u5C40\u3067\u3059\u3002\u8868\u793A\u30FB\u30E2\u30C7\u30EB\u306E\u8A18\u9332\u304C\u306A\u3044\u65E7\u5BFE\u5C40\u306F\u300C\u8A18\u9332\u306A\u3057\u300D\u3067\u78BA\u8A8D\u3067\u304D\u307E\u3059\u3002
-      <br>\u96C6\u8A08\u5BFE\u8C61\u306F\u624B\u52D5\u5BFE\u5C40\uFF08\u5B8C\u4E86\uFF09\u306E\u307F\u3067\u3059\u3002AUTO\u5BFE\u5C40\u30FB\u4E2D\u65AD\u5BFE\u5C40\u306F\u6BCD\u6570\u306B\u542B\u307F\u307E\u305B\u3093\u3002
+      <br>\u76F8\u624B\u306E\u5F37\u3055\u30FB\u30BF\u30A4\u30D7\u306F\u3001\u305D\u306E\u5BFE\u5C40\u306E3\u4EBA\u5168\u54E1\u304C\u9078\u629E\u7BC4\u56F2\u306B\u53CE\u307E\u308B\u5834\u5408\u3060\u3051\u96C6\u8A08\u3057\u307E\u3059\u3002\u76F8\u624B\u8A2D\u5B9A\u306E\u8A18\u9332\u304C\u306A\u3044\u65E7\u5BFE\u5C40\u306F\u3001\u7D5E\u308A\u8FBC\u307F\u4E2D\u306F\u5BFE\u8C61\u5916\u3067\u3059\u3002
+      <br>\u96C6\u8A08\u5BFE\u8C61\u306F\u5B8C\u4E86\u3057\u305F\u5BFE\u5C40\u306E\u307F\u3067\u3059\u3002\u4E2D\u65AD\u5BFE\u5C40\u306F\u6BCD\u6570\u306B\u542B\u307E\u308C\u307E\u305B\u3093\u3002
       ${isTonpuu && !baseline ? "<br>\u6771\u98A8\u7528\u306EAI\u30B3\u30FC\u30C1\u57FA\u6E96\u306F\u307E\u3060\u7528\u610F\u3055\u308C\u3066\u3044\u306A\u3044\u305F\u3081\u3001\u6771\u98A8\u8868\u793A\u3067\u306F\u4F75\u8A18\u3057\u307E\u305B\u3093\u3002" : ""}
       ${showBaseline ? `<br>AI\u30B3\u30FC\u30C1\u57FA\u6E96: ${escHtml(baseline.source || "AI\u81EA\u5DF1\u5BFE\u6226")}\uFF08${baseline.sourceGames ?? ""}\u5BFE\u5C40\u30FB${isTonpuu ? "\u6771\u98A8" : "\u534A\u8358"}\uFF09${baseline.modelId && baseline.modelId !== S.modelId ? `<br>\u203B \u3053\u306E\u57FA\u6E96\u306F\u65E7\u30E2\u30C7\u30EB\uFF08${escHtml(baseline.modelName || baseline.modelId)}\uFF09\u306E\u81EA\u5DF1\u5BFE\u6226\u306B\u3088\u308B\u3082\u306E\u3067\u3001\u73FE\u5728\u306EAI\u30B3\u30FC\u30C1\uFF08${escHtml(modelLabel(S.modelId))}\uFF09\u306E\u57FA\u6E96\u3067\u306F\u3042\u308A\u307E\u305B\u3093\u3002` : ""}` : ""}
+      ${showBaseline ? "<br>AI\u30B3\u30FC\u30C1\u57FA\u6E96\u3082\u5404\u6307\u6A19\u3068\u540C\u3058\u5B9A\u7FA9\u3067\u96C6\u8A08\u3057\u3066\u3044\u307E\u3059\u3002" : ""}
       ${lowSample ? '<br><span class="st-ref">\u53C2\u8003\u5024</span> \u5C40\u6570\u304C30\u672A\u6E80\u306E\u305F\u3081\u3001\u5404\u6307\u6A19\u306F\u53C2\u8003\u5024\u3067\u3059\uFF08\u5DEE\u5206\u3082\u53C2\u8003\u5024\u3068\u3057\u3066\u8868\u793A\u3057\u307E\u3059\uFF09\u3002' : ""}
     </div>`;
   if (!sel.picked.length) {
-    html += '<div class="st-empty">\u3053\u306E\u6761\u4EF6\u3067\u96C6\u8A08\u3067\u304D\u308B\u5BFE\u5C40\uFF08\u624B\u52D5\u30FB\u5B8C\u4E86\uFF09\u306F\u3042\u308A\u307E\u305B\u3093\u3002\u6761\u4EF6\u3092\u5909\u66F4\u3059\u308B\u304B\u3001\u5BFE\u5C40\u3092\u7D42\u3048\u308B\u3068\u7D71\u8A08\u304C\u8868\u793A\u3055\u308C\u307E\u3059\u3002</div>';
+    html += '<div class="st-empty">\u3053\u306E\u6761\u4EF6\u3067\u96C6\u8A08\u3067\u304D\u308B\u5BFE\u5C40\uFF08\u5B8C\u4E86\uFF09\u306F\u3042\u308A\u307E\u305B\u3093\u3002\u6761\u4EF6\u3092\u5909\u66F4\u3059\u308B\u304B\u3001\u5BFE\u5C40\u3092\u7D42\u3048\u308B\u3068\u7D71\u8A08\u304C\u8868\u793A\u3055\u308C\u307E\u3059\u3002</div>';
   } else {
     for (const sec of METRIC_SECTIONS) html += statsSectionHTML(sec, agg, baseline, showBaseline, lowSample);
     html += yakuTableHTML("\u548C\u4E86\u5F79\u306E\u5185\u8A33", agg.counters.horaYaku, agg.counters.hora);
@@ -38434,6 +39055,21 @@ function renderStatsView() {
       statsUi[key2] = control.value;
       renderStatsView();
     });
+  }
+  for (const [id2, kind] of [["st-cpu-tier", "tier"], ["st-cpu-style", "style"]]) {
+    const details = el2.querySelector("#" + id2);
+    if (!details) continue;
+    details.addEventListener("toggle", () => {
+      statsUi.cpuOpen[kind] = details.open;
+    });
+    details.querySelectorAll('input[type="checkbox"]').forEach((cb2) => cb2.addEventListener("change", () => {
+      const key2 = kind === "tier" ? "cpuTiers" : "cpuStyles";
+      const dataKey = kind === "tier" ? "stCpuTier" : "stCpuStyle";
+      statsUi[key2] = [...details.querySelectorAll('input[type="checkbox"]:checked')].map((x) => x.dataset[dataKey]);
+      const top = el2.scrollTop;
+      renderStatsView();
+      el2.scrollTop = top;
+    }));
   }
   for (const sel2 of el2.querySelectorAll("[data-mm-sort], [data-mm-filter]")) {
     sel2.addEventListener("change", () => {
@@ -38501,55 +39137,38 @@ document.addEventListener("click", (e) => {
     openSceneViewer(idx, bundle);
   }
 });
-function refreshTierOptionText(coachLight) {
-  for (const o of $("ss-cpu-tier")?.options || []) o.textContent = tierLabel(cpuTier(o.value), coachLight);
-}
 function updateStartStrength() {
-  const id2 = $("modelSel")?.value;
-  const tier = cpuTier($("ss-cpu-tier")?.value);
-  const label = $("ss-strength-label");
-  const m = MODELS.find((x) => x.id === id2) || MODELS[0];
-  const coachLight = m.file === LIGHT_MODEL_FILE;
-  if (label) label.textContent = tierShort(tier, coachLight);
-  refreshTierOptionText(coachLight);
-  const ver = $("ss-model-ver");
-  if (ver) {
-    ver.textContent = m.version ? `\u30E2\u30C7\u30EB ${tier.model === "light" ? "V1 Light" : m.version}` : (m.label || m.name).replace(/\s*\(.*\)$/, "");
-  }
-  const st2 = $("ss-cpu-style");
-  if (st2) {
-    const ok2 = styleAllowed(tier.id);
-    st2.disabled = !ok2;
-    st2.value = ok2 ? cpuSetting("", CPU_STYLE_KEY, CPU_STYLES) : "none";
+  for (const [i, { id: id2 }] of CPU_SEATS.entries()) {
+    const tierSel = $(`ss-cpu-tier-${id2}`);
+    if (!tierSel) continue;
+    tierSel.innerHTML = availableCpuTiers(S.modelId).map((t) => `<option value="${t.id}">${t.label}</option>`).join("");
+    tierSel.value = effectiveCpuTierId(cpuSeats[i].tierId, S.modelId);
   }
 }
 function initCpuSelectors() {
-  const tierSel = $("ss-cpu-tier"), styleSel = $("ss-cpu-style");
-  if (!tierSel || !styleSel) return;
-  tierSel.innerHTML = CPU_TIERS.map((t) => `<option value="${t.id}">${t.label}</option>`).join("");
-  styleSel.innerHTML = CPU_STYLES.map((x) => `<option value="${x.id}">${x.label}</option>`).join("");
-  tierSel.value = cpuSetting("cpuTier", CPU_TIER_KEY, CPU_TIERS);
-  styleSel.value = cpuSetting("cpuStyle", CPU_STYLE_KEY, CPU_STYLES);
-  tierSel.addEventListener("change", () => {
-    try {
-      localStorage.setItem(CPU_TIER_KEY, tierSel.value);
-    } catch (_) {
-    }
-    updateStartStrength();
-  });
+  for (const [i, { id: id2 }] of CPU_SEATS.entries()) {
+    const tierSel = $(`ss-cpu-tier-${id2}`), styleSel = $(`ss-cpu-style-${id2}`);
+    if (!tierSel || !styleSel) continue;
+    styleSel.innerHTML = CPU_STYLES.map((x) => `<option value="${x.id}">${x.label}</option>`).join("");
+    styleSel.value = cpuSeats[i].styleId;
+    const change = () => {
+      const shownTier = tierSel.value;
+      const capped = effectiveCpuTierId(cpuSeats[i].tierId, S.modelId);
+      cpuSeats[i] = {
+        tierId: shownTier === capped ? cpuSeats[i].tierId : shownTier,
+        styleId: styleSel.value
+      };
+      saveCpuSeats(cpuStorage, cpuSeats);
+      updateStartStrength();
+    };
+    tierSel.addEventListener("change", change);
+    styleSel.addEventListener("change", change);
+  }
   updateStartStrength();
-  styleSel.addEventListener("change", () => {
-    try {
-      localStorage.setItem(CPU_STYLE_KEY, styleSel.value);
-    } catch (_) {
-    }
-  });
 }
-var refTabsAllowed = ["rules", "yaku", "glossary", "tiles"];
 function setRefTab(tab) {
   const el2 = $("rules-view");
   if (!el2) return;
-  if (!refTabsAllowed.includes(tab)) tab = refTabsAllowed[0];
   const yaku = $("ref-pane-yaku"), gl2 = $("ref-pane-glossary");
   if (tab === "yaku" && yaku && !yaku.innerHTML) yaku.innerHTML = renderYakuHtml();
   if (tab === "glossary" && gl2 && !gl2.innerHTML) gl2.innerHTML = renderGlossaryHtml();
@@ -38559,22 +39178,21 @@ function setRefTab(tab) {
     const on = b.dataset.refTab === tab;
     b.classList.toggle("on", on);
     b.setAttribute("aria-selected", on ? "true" : "false");
-    b.hidden = !refTabsAllowed.includes(b.dataset.refTab);
   }
   for (const [id2, name2] of [["ref-pane-rules", "rules"], ["ref-pane-yaku", "yaku"], ["ref-pane-glossary", "glossary"], ["ref-pane-tiles", "tiles"]]) {
     const p = $(id2);
     if (p) p.hidden = name2 !== tab;
   }
   const title = $("rules-title");
-  if (title) title.textContent = refTabsAllowed.includes("rules") ? "\u30EB\u30FC\u30EB" : "\u5F79\u30FB\u7528\u8A9E\u30FB\u724C\u306E\u8AAD\u307F\u65B9";
+  if (title) title.textContent = "\u30EB\u30FC\u30EB";
   const card = el2.querySelector(".rules-card");
   el2.scrollTop = 0;
   if (card) card.scrollTop = 0;
 }
 function openRefView(tab, inGame = false) {
+  clipStatus.clear();
   const el2 = $("rules-view");
   if (!el2) return;
-  refTabsAllowed = inGame ? ["yaku", "glossary", "tiles"] : ["rules", "yaku", "glossary", "tiles"];
   el2.classList.toggle("in-game", inGame);
   setRefTab(tab);
   el2.style.display = "flex";
@@ -38583,6 +39201,7 @@ function openRulesView() {
   openRefView("rules");
 }
 function openGuideView() {
+  clipStatus.clear();
   const el2 = $("guide-view");
   if (!el2) return;
   const body = $("guide-body");
@@ -38605,6 +39224,50 @@ function closeRulesView() {
   const el2 = $("rules-view");
   if (el2) el2.style.display = "none";
 }
+function aboutVersionText() {
+  const webBuild = document.querySelector('meta[name="build-version"]')?.content || "";
+  const nb2 = globalThis.JanLabNative;
+  let nativeName = "", nativeCode = "";
+  try {
+    if (isShell(nb2) && typeof nb2.getVersionName === "function") nativeName = nb2.getVersionName();
+    if (isShell(nb2) && typeof nb2.getVersionCode === "function") nativeCode = nb2.getVersionCode();
+  } catch (_) {
+  }
+  return versionLabel({ webBuild, nativeName, nativeCode });
+}
+function openExternalUrl(url) {
+  const nb2 = globalThis.JanLabNative;
+  if (isShell(nb2) && typeof nb2.openExternal === "function") {
+    try {
+      return !!nb2.openExternal(url);
+    } catch (_) {
+      return false;
+    }
+  }
+  return false;
+}
+var aboutLicenseCache = /* @__PURE__ */ new Map();
+function fillAboutLicenses() {
+  for (const el2 of document.querySelectorAll("#about-body [data-license-url]")) {
+    const pre = el2.querySelector("pre");
+    const url = el2.dataset.licenseUrl;
+    if (!pre || !url) continue;
+    let pending2 = aboutLicenseCache.get(url);
+    if (!pending2) {
+      pending2 = fetch(url).then((r) => {
+        if (!r.ok) throw new Error(String(r.status));
+        return r.text();
+      });
+      aboutLicenseCache.set(url, pending2);
+    }
+    pending2.then((text) => {
+      pre.textContent = text;
+    }).catch((e) => {
+      pre.textContent = "\u30E9\u30A4\u30BB\u30F3\u30B9\u6587\u3092\u8AAD\u307F\u8FBC\u3081\u307E\u305B\u3093\u3067\u3057\u305F\u3002";
+      S.errors.push("about license: " + (e.message || e));
+    });
+  }
+}
 function initAudioControls() {
   const sync = () => {
     for (const kind of ["bgm", "se"]) {
@@ -38621,18 +39284,22 @@ function initAudioControls() {
     sync();
   });
   sync();
-  const overlay = $("audio-settings-view");
+  const overlay = $("settings-view");
   let returnFocus;
   const close = () => {
     overlay.style.display = "none";
     returnFocus?.focus();
   };
-  $("audioSettingsBtn").addEventListener("click", () => {
-    returnFocus = document.activeElement;
+  const open = (opener) => {
+    returnFocus = opener;
+    renderDiagnostics();
     overlay.style.display = "flex";
-    $("audio-settings-close").focus();
-  });
-  $("audio-settings-close").addEventListener("click", close);
+    overlay.scrollTop = 0;
+    $("settings-close").focus();
+  };
+  $("audioSettingsBtn").addEventListener("click", (e) => open(e.currentTarget));
+  $("ss-settings-btn").addEventListener("click", (e) => open(e.currentTarget));
+  $("settings-close").addEventListener("click", close);
   overlay.addEventListener("keydown", (e) => {
     if (e.key === "Escape") {
       e.preventDefault();
@@ -38640,7 +39307,7 @@ function initAudioControls() {
       close();
     }
     if (e.key === "Tab") {
-      const controls = [...overlay.querySelectorAll("button, input")];
+      const controls = [...overlay.querySelectorAll("button, input, select")];
       const first = controls[0], last = controls.at(-1);
       if (e.shiftKey && document.activeElement === first) {
         e.preventDefault();
@@ -38651,8 +39318,59 @@ function initAudioControls() {
       }
     }
   });
+  const aboutOverlay = $("about-view");
+  let aboutReturnFocus;
+  const closeAbout = () => {
+    if (!aboutOverlay) return;
+    aboutOverlay.style.display = "none";
+    aboutReturnFocus?.focus();
+  };
+  const openAbout = (opener) => {
+    if (!aboutOverlay) return;
+    aboutReturnFocus = opener;
+    const body = $("about-body");
+    if (body) body.innerHTML = renderAboutHtml(aboutVersionText());
+    aboutOverlay.style.display = "flex";
+    aboutOverlay.scrollTop = 0;
+    $("about-close")?.focus();
+    fillAboutLicenses();
+  };
+  $("ss-about-btn")?.addEventListener("click", (e) => openAbout(e.currentTarget));
+  $("about-close")?.addEventListener("click", closeAbout);
+  $("about-body")?.addEventListener("click", (e) => {
+    const a = e.target.closest?.("[data-external]");
+    if (a && openExternalUrl(a.dataset.external)) e.preventDefault();
+  });
+  aboutOverlay?.addEventListener("keydown", (e) => {
+    if (e.key === "Escape") {
+      e.preventDefault();
+      e.stopPropagation();
+      closeAbout();
+    }
+    if (e.key === "Tab") {
+      const controls = [...aboutOverlay.querySelectorAll("button, a, input, select, summary")];
+      const first = controls[0], last = controls.at(-1);
+      if (e.shiftKey && document.activeElement === first) {
+        e.preventDefault();
+        last.focus();
+      } else if (!e.shiftKey && document.activeElement === last) {
+        e.preventDefault();
+        first.focus();
+      }
+    }
+  });
+  const syncTempo = () => {
+    S.discardTempo = discardTempo.enabled;
+    for (const input of document.querySelectorAll("[data-discard-tempo]")) input.checked = discardTempo.enabled;
+  };
+  for (const input of document.querySelectorAll("[data-discard-tempo]")) input.addEventListener("change", () => {
+    discardTempo.setEnabled(input.checked);
+    saveDiscardTempo(discardTempo.enabled);
+    syncTempo();
+  });
+  syncTempo();
   for (const type of ["pointerdown", "keydown"]) document.addEventListener(type, (e) => {
-    if (e.isTrusted && audio.active && (!audio.unlocked || audio.context?.state !== "running")) audio.unlock();
+    if (e.isTrusted && (!audio.unlocked || audio.context?.state !== "running")) audio.unlock();
   }, { capture: true });
 }
 function updateModelNotice() {
@@ -38664,15 +39382,10 @@ function updateModelNotice() {
   const t = el2.querySelector(".ss-model-notice-text");
   if (t && pending2) t.textContent = "\u5BFE\u5C40\u4E2D\u306E\u305F\u3081\u30E2\u30C7\u30EB\u306F\u5909\u66F4\u3067\u304D\u307E\u305B\u3093\u3002\u6B21\u56DE\u306E\u5BFE\u5C40\uFF08\u518D\u8AAD\u307F\u8FBC\u307F\u5F8C\uFF09\u306B\u53CD\u6620\u3055\u308C\u307E\u3059";
 }
-function initStartScreen() {
-  const root = $("start-screen");
-  if (!root) return;
-  if (AUTO) {
-    root.hidden = true;
-    return;
-  }
+function refreshResumeOffer() {
   resumeAvailable = loadResumeSnapshot();
   S.resumeAvailable = resumeAvailable;
+  $("ss-resume").hidden = !resumeAvailable;
   if (resumeAvailable) {
     const s = resumeAvailable;
     const card = $("ss-resume");
@@ -38681,16 +39394,20 @@ function initStartScreen() {
     const rank = 1 + scores.filter((d, i) => i !== 0 && d > mine).length;
     const kyokuLabel = `${{ E: "\u6771", S: "\u5357", W: "\u897F", N: "\u5317" }[s.bakaze] || s.bakaze}${s.kyoku}\u5C40${s.changbang ? ` ${s.changbang}\u672C\u5834` : ""}`;
     $("ss-resume-detail").textContent = `${s.gameLength === "tonpuu" ? "\u6771\u98A8" : "\u534A\u8358"} \u30FB ${kyokuLabel}${s.midhand ? "\u306E\u9014\u4E2D\u304B\u3089" : "\u306E\u982D\u304B\u3089"} \uFF0F \u73FE\u5728 ${rank}\u4F4D / ${mine.toLocaleString()}\u70B9`;
-    const note = card?.querySelector(".ss-resume-note");
-    if (note) note.textContent = s.midhand ? "\u76F4\u524D\u306E\u5B89\u5168\u306A\u533A\u5207\u308A\u304B\u3089\u518D\u958B\u3057\u307E\u3059\u3002\u624B\u724C\u3068\u6CB3\u306F\u4FDD\u6301\u3057\u3001\u6B8B\u308A\u306E\u5C71\u306F\u6DF7\u305C\u76F4\u3057\u307E\u3059\u3002" : "\u5C40\u306E\u982D\u304B\u3089\u518D\u958B\u3057\u307E\u3059\uFF08\u914D\u724C\u306F\u65B0\u3057\u304F\u306A\u308A\u307E\u3059\uFF09\u3002" + (s.midhandFallback ? "\u9014\u4E2D\u306E\u4FDD\u5B58\u72B6\u614B\u3092\u8AAD\u307F\u8FBC\u3081\u306A\u304B\u3063\u305F\u305F\u3081\u5C40\u982D\u306B\u623B\u308A\u307E\u3059\u3002" : "");
     if (card) card.hidden = false;
-    $("ss-resume-btn").addEventListener("click", () => {
+    $("ss-resume-btn").onclick = () => {
       if (!ai || !S.ready || S.modelSwapping || S.started) return;
       resumeRequest = s;
       startGame(true);
-    });
+    };
     $("ss-resume-btn").disabled = !(ai && S.ready);
   }
+}
+function initStartScreen() {
+  const root = $("start-screen");
+  if (!root) return;
+  if (AUTO) root.hidden = true;
+  refreshResumeOffer();
   const seg = root.querySelector(".ss-segment");
   const syncSeg = () => seg?.querySelectorAll("button").forEach((b) => b.classList.toggle("on", b.dataset.len === gameLength));
   seg?.querySelectorAll("button").forEach((b) => b.addEventListener("click", () => {
@@ -38707,16 +39424,6 @@ function initStartScreen() {
   $("ss-history-btn").addEventListener("click", openHistory);
   $("ss-stats-btn").addEventListener("click", () => {
     openStatsView();
-  });
-  $("ss-settings-btn").addEventListener("click", () => {
-    const p = $("ss-settings-panel");
-    if (p) {
-      p.hidden = !p.hidden;
-      if (!p.hidden) {
-        renderDiagnostics();
-        p.scrollIntoView({ block: "nearest" });
-      }
-    }
   });
   $("ss-rules-btn")?.addEventListener("click", openRulesView);
   $("ss-guide-btn")?.addEventListener("click", openGuideView);
@@ -38842,7 +39549,8 @@ async function init() {
   audio.prepare();
   initAudioControls();
   document.addEventListener("visibilitychange", () => audio.setVisible(document.visibilityState !== "hidden"));
-  window.addEventListener("pagehide", () => audio.stopGame());
+  window.addEventListener("pagehide", () => audio.setVisible(false));
+  window.addEventListener("pageshow", () => audio.setVisible(document.visibilityState !== "hidden"));
   if (!document.querySelector(".tile-defs")) document.body.insertAdjacentHTML("afterbegin", TILE_DEFS_HTML);
   preloadTileFaces();
   initViewportFit();
@@ -38901,16 +39609,7 @@ async function init() {
       }
     });
   }
-  $("suspendBtn").addEventListener("click", async () => {
-    audio.stopGame();
-    const b = $("suspendBtn");
-    if (b) b.disabled = true;
-    try {
-      await Promise.race([savePartialGame(), new Promise((r) => setTimeout(r, 1500))]);
-    } catch (_) {
-    }
-    location.reload();
-  });
+  $("suspendBtn").addEventListener("click", returnToStart);
   S.saveTextFile = saveTextFile;
   S.importLogText = importLogText;
   S.openHistory = openHistory;
@@ -38974,11 +39673,13 @@ async function init() {
     await loadSummaries();
     renderStartScreenStats();
   }).catch((e) => S.errors.push("history load: " + (e.message || e)));
+  initModelSelector();
   initStartScreen();
   document.addEventListener("visibilitychange", () => {
     if (document.visibilityState === "hidden") savePartialGame();
   });
   window.addEventListener("pagehide", () => {
+    clearModelLoading(localStorage);
     savePartialGame();
   });
   S.savePartialGame = savePartialGame;
@@ -39011,29 +39712,9 @@ async function init() {
       applyOrientation(S.orientation);
     });
   }
-  const modelSel = $("modelSel");
-  if (modelSel) {
-    try {
-      const saved = localStorage.getItem(MODEL_KEY);
-      if (saved && MODELS.some((m) => m.id === saved)) modelSel.value = saved;
-    } catch (_) {
-    }
-    S.modelSelected = modelSel.value;
-    modelSel.addEventListener("change", () => {
-      S.modelSelected = modelSel.value;
-      try {
-        localStorage.setItem(MODEL_KEY, modelSel.value);
-      } catch (_) {
-      }
-      if (S.started) {
-        log("\u5BFE\u5C40\u4E2D\u306E\u305F\u3081\u30E2\u30C7\u30EB\u306F\u5909\u66F4\u3067\u304D\u307E\u305B\u3093\uFF08\u6B21\u56DE\u30FB\u518D\u8AAD\u307F\u8FBC\u307F\u3067\u53CD\u6620\u3055\u308C\u307E\u3059\uFF09");
-        updateModelNotice();
-        return;
-      }
-      requestModelLoad();
-    });
-  }
-  if ("serviceWorker" in navigator) {
+  if (!shouldRegisterServiceWorker({ bridge: globalThis.JanLabNative })) {
+    S.swRegistration = SHELL ? "skipped-shell" : "unsupported";
+  } else {
     const hadController = !!navigator.serviceWorker.controller;
     let swReloading = false;
     navigator.serviceWorker.addEventListener("controllerchange", () => {
@@ -39043,16 +39724,47 @@ async function init() {
     });
     try {
       const reg = await navigator.serviceWorker.register("sw.js");
+      S.swRegistration = "registered";
       log("Service Worker \u767B\u9332\u6E08\u307F");
       reg?.update?.()?.catch?.(() => {
       });
     } catch (e) {
+      S.swRegistration = "failed";
       recordError("E-S401", e, { stage: "sw-register" });
-      log(withCode("SW\u767B\u9332\u5931\u6557: " + e.message, "E-S401"));
+      log(withCode("\u30A2\u30D7\u30EA\u66F4\u65B0\u306E\u6E96\u5099\u306B\u5931\u6557\u3057\u307E\u3057\u305F", "E-S401"));
     }
+  }
+  const pendingLoad = modelLoadPending(localStorage);
+  startupFallback = crashFallback(pendingLoad);
+  if (startupFallback) {
+    recordError(startupFallback.code, `\u524D\u56DE\u306E\u8AAD\u307F\u8FBC\u307F\u304C\u672A\u5B8C\u4E86 (${pendingLoad})`, { stage: "fallback-crash" });
+    log("\u524D\u56DE\u306E\u30E2\u30C7\u30EB\u8AAD\u307F\u8FBC\u307F\u304C\u5B8C\u4E86\u3057\u306A\u304B\u3063\u305F\u305F\u3081\u3001\u8EFD\u91CF\u7248\uFF08V1 Light\uFF09\u3067\u8D77\u52D5\u3057\u307E\u3059");
   }
   await requestModelLoad();
   if (AUTO && S.ready) startGame();
+}
+function initModelSelector() {
+  const modelSel = $("modelSel");
+  if (!modelSel) return;
+  try {
+    const saved = localStorage.getItem(MODEL_KEY);
+    if (saved && MODELS.some((m) => m.id === saved)) modelSel.value = saved;
+  } catch (_) {
+  }
+  S.modelSelected = modelSel.value;
+  modelSel.addEventListener("change", () => {
+    S.modelSelected = modelSel.value;
+    try {
+      localStorage.setItem(MODEL_KEY, modelSel.value);
+    } catch (_) {
+    }
+    if (S.started) {
+      log("\u5BFE\u5C40\u4E2D\u306E\u305F\u3081\u30E2\u30C7\u30EB\u306F\u5909\u66F4\u3067\u304D\u307E\u305B\u3093\uFF08\u6B21\u56DE\u30FB\u518D\u8AAD\u307F\u8FBC\u307F\u3067\u53CD\u6620\u3055\u308C\u307E\u3059\uFF09");
+      updateModelNotice();
+      return;
+    }
+    requestModelLoad();
+  });
 }
 var modelLoadChain = Promise.resolve();
 function requestModelLoad() {
@@ -39078,6 +39790,10 @@ function setModelLoadStatus(text, loading) {
     guide.hidden = !loading;
     if (loading) guide.textContent = `${text}\u3002\u3053\u306E\u30AC\u30A4\u30C9\u306F\u9589\u3058\u3089\u308C\u307E\u3059\u3002`;
   }
+}
+function userDiagText(d) {
+  const stageJa = { fetch: "\u30E2\u30C7\u30EB\u53D6\u5F97", session: "\u30BB\u30C3\u30B7\u30E7\u30F3\u4F5C\u6210", init: "\u521D\u671F\u5316" }[d.stage] || d.stage;
+  return `[${d.code}] ${ERROR_CODES[d.code] || ""} / \u6BB5\u968E=${stageJa}(${d.stage})${d.first ? " \u5148\u884C=" + d.first : ""} \u8A66\u884C=${d.tried || "-"}`;
 }
 var inferStall = null;
 function onInferFail(err, context) {
@@ -39112,18 +39828,8 @@ function onInferFail(err, context) {
 }
 S.onInferFail = onInferFail;
 var lightAi = null;
-async function prepareCpuOpponents() {
-  const tier = cpuTier(cpuSetting("cpuTier", CPU_TIER_KEY, CPU_TIERS));
-  const style = styleAllowed(tier.id) ? cpuStyle(cpuSetting("cpuStyle", CPU_STYLE_KEY, CPU_STYLES)) : CPU_STYLES[0];
-  S.cpu = { tier, style };
-  if (tier.model !== "light" && style.id === "none") {
-    S.cpuPolicies = null;
-    return () => ai;
-  }
-  let rt = ai;
-  if (tier.model === "light" && LIGHT_MODEL_FILE === MODELS.find((m) => m.id === S.modelId)?.file) {
-    rt = ai;
-  } else if (tier.model === "light") {
+async function prepareCpuOpponents(settings = cpuSeats) {
+  const loadLight = async () => {
     if (!lightAi) {
       log("CPU\u7528\u306E\u8EFD\u91CF\u30E2\u30C7\u30EB\uFF08V1 Light\uFF09\u3092\u8AAD\u307F\u8FBC\u307F\u4E2D\u2026");
       lightAi = await AiRuntime.create(
@@ -39135,16 +39841,20 @@ async function prepareCpuOpponents() {
       );
       log("CPU\u7528\u306E\u8EFD\u91CF\u30E2\u30C7\u30EB\uFF08V1 Light\uFF09\u8AAD\u307F\u8FBC\u307F\u5B8C\u4E86");
     }
-    rt = lightAi;
-  }
+    return lightAi;
+  };
   const seedParam = Number(new URLSearchParams(location.search).get("cpuSeed"));
   const base = Number.isFinite(seedParam) && seedParam > 0 ? seedParam : Math.floor(Math.random() * 2 ** 31);
-  const policies = {};
-  for (let id2 = 1; id2 < 4; id2++) policies[id2] = new CpuPolicy({ tierId: tier.id, styleId: style.id, seed: base + id2 * 7919 });
-  S.cpuPolicies = policies;
+  const prepared = await createCpuOpponents({ settings, ai, coachModelId: S.modelId, loadLight, seed: base });
+  const record = cpuRecord(prepared.seats);
+  S.cpu = {
+    seats: prepared.seats,
+    ...record.tier ? { tier: prepared.seats[0].tier, style: prepared.seats[0].style } : {}
+  };
+  S.cpuPolicies = prepared.policies;
   S.cpuSeed = base;
-  log(`CPU: ${tier.label}${style.id !== "none" ? "\u30FB" + style.label : ""}`);
-  return (id2) => ({ infer: (b) => rt.inferCpu(b, policies[id2]) });
+  log(prepared.seats.map((s) => `${s.label}: ${s.tier.label}\u30FB${s.style.label}`).join(" / "));
+  return prepared.forSeat;
 }
 S.cpuStats = () => S.cpuPolicies ? Object.fromEntries(Object.entries(S.cpuPolicies).map(([k2, p]) => [k2, { ...p.stats }])) : null;
 S.cpuRuntimeUrl = () => lightAi?.modelUrl || null;
@@ -39153,7 +39863,13 @@ async function ensureSelectedModel() {
     updateModelNotice();
     return;
   }
-  const model = MODELS.find((m) => m.id === $("modelSel")?.value) || MODELS[0];
+  let model = MODELS.find((m) => m.id === $("modelSel")?.value) || MODELS[0];
+  let fallback = null;
+  if (startupFallback) {
+    fallback = startupFallback;
+    startupFallback = null;
+    model = MODELS.find((m) => m.id === fallback.modelId) || model;
+  }
   if (ai && S.ready && S.modelId === model.id) {
     updateModelNotice();
     return;
@@ -39176,20 +39892,22 @@ async function ensureSelectedModel() {
       log(`\u65E7\u30E2\u30C7\u30EB\uFF08${modelLabel(S.modelId)}\uFF09\u306E\u30BB\u30C3\u30B7\u30E7\u30F3\u3092\u89E3\u653E\u3057\u307E\u3057\u305F`);
     } catch (e) {
       S.errors.push("release: " + (e.message || e));
-      log("\u65E7\u30E2\u30C7\u30EB\u306E\u89E3\u653E\u306B\u5931\u6557: " + (e.message || e));
+      log("\u65E7\u30E2\u30C7\u30EB\u306E\u89E3\u653E\u306B\u5931\u6557\u3057\u307E\u3057\u305F");
     }
   }
-  await loadModelRuntime(model, swap);
+  await loadModelRuntime(model, swap, fallback);
   S.modelSwapping = false;
 }
-async function loadModelRuntime(model, swap) {
+async function loadModelRuntime(model, swap, fallback = null) {
   const pop = createLoadPopup();
   try {
-    log(swap ? `AI\u30E2\u30C7\u30EB\u3092\u5207\u308A\u66FF\u3048\u4E2D\u2026\uFF08${model.label || model.name}\uFF09` : "AI\u30E2\u30C7\u30EB\u3092\u8AAD\u307F\u8FBC\u307F\u4E2D\u2026");
+    S.modelFallback = fallback;
+    log(fallback ? fallback.notice : swap ? `AI\u30E2\u30C7\u30EB\u3092\u5207\u308A\u66FF\u3048\u4E2D\u2026\uFF08${model.label || model.name}\uFF09` : "AI\u30E2\u30C7\u30EB\u3092\u8AAD\u307F\u8FBC\u307F\u4E2D\u2026");
     S.modelId = model.id;
     S.modelFailed = null;
     updateModelNotice();
     updateStartStrength();
+    markModelLoading(localStorage, model.file);
     await pop.begin(model.file);
     const rt = await AiRuntime.create(
       model.file,
@@ -39210,6 +39928,7 @@ async function loadModelRuntime(model, swap) {
       throw Object.assign(new Error(we2?.message || String(we2)), { diag: { stage: "init", tried: "", last: "warmup: " + String(we2?.message || we2).slice(0, 140), code: /timed out/.test(String(we2?.message)) ? "E-I202" : "E-I201" } });
     }
     ai = rt;
+    clearModelLoading(localStorage);
     pop.finish();
     S.modelLoads = (S.modelLoads || 0) + 1;
     S.provider = ai.providerUsed;
@@ -39222,17 +39941,31 @@ async function loadModelRuntime(model, swap) {
     updateModelNotice();
     S.ortConfig = ai.ortConfig || null;
     const cfgLabel = ai.ortConfig ? `\uFF08\u69CB\u6210${ai.ortConfig}\uFF09` : "";
-    setModelLoadStatus(`${swap ? "\u5207\u308A\u66FF\u3048\u5B8C\u4E86" : "\u6E96\u5099\u5B8C\u4E86"}${cfgLabel} \u2015 \u3059\u3050\u306B\u59CB\u3081\u3089\u308C\u307E\u3059`, false);
+    setModelLoadStatus(fallback ? `${fallback.notice}${cfgLabel} \u2015 \u3059\u3050\u306B\u59CB\u3081\u3089\u308C\u307E\u3059` : `${swap ? "\u5207\u308A\u66FF\u3048\u5B8C\u4E86" : "\u6E96\u5099\u5B8C\u4E86"}${cfgLabel} \u2015 \u3059\u3050\u306B\u59CB\u3081\u3089\u308C\u307E\u3059`, false);
     const sld = $("ss-load");
     if (sld) sld.hidden = true;
     renderDiagnostics();
   } catch (e) {
     S.errors.push((swap ? "swap: " : "init: ") + (e.message || e));
-    S.modelFailed = model.id;
     const d = e.diag || { stage: "init", tried: "", last: String(e.message || e).slice(0, 140), code: "E-G501" };
-    const stageJa = { fetch: "\u30E2\u30C7\u30EB\u53D6\u5F97", session: "\u30BB\u30C3\u30B7\u30E7\u30F3\u4F5C\u6210", init: "\u521D\u671F\u5316" }[d.stage] || d.stage;
     recordError(d.code, d.last, { stage: d.stage, tried: [d.cfgs, d.tried].filter(Boolean).join(" ") });
-    const diagText = `[${d.code}] ${ERROR_CODES[d.code] || ""} / \u6BB5\u968E=${stageJa}(${d.stage})${d.first ? " \u5148\u884C=" + d.first : ""} \u8A66\u884C=${d.tried || "-"} \u4F8B\u5916=${d.last}`;
+    const fb2 = fallbackForFailure(model.id);
+    if (fb2) {
+      const light = MODELS.find((m) => m.id === fb2.modelId);
+      if (light) {
+        const info = { ...fb2, from: model.id, cause: d.code };
+        S.modelFallback = info;
+        recordError(fb2.code, `\u30E2\u30C7\u30EB\uFF08${model.label || model.name}\uFF09\u306E\u8AAD\u307F\u8FBC\u307F\u5931\u6557 (${d.code})`, { stage: "fallback", tried: d.code });
+        log(`${fb2.notice}\uFF08${d.code}\uFF09`);
+        pop.fail();
+        setModelLoadStatus("\u8EFD\u91CF\u7248\uFF08V1 Light\uFF09\u3092\u8AAD\u307F\u8FBC\u307F\u4E2D\u2026 \u304A\u5F85\u3061\u304F\u3060\u3055\u3044", true);
+        await loadModelRuntime(light, swap, info);
+        return;
+      }
+    }
+    clearModelLoading(localStorage);
+    S.modelFailed = model.id;
+    const diagText = userDiagText(d);
     S.initDiag = diagText;
     S.initErrorCode = d.code;
     const brief = `\u30E2\u30C7\u30EB\u306E${swap ? "\u5207\u308A\u66FF\u3048" : "\u8AAD\u307F\u8FBC\u307F"}\u306B\u5931\u6557\u3057\u307E\u3057\u305F ${diagText}`;
