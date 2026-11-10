@@ -1,7 +1,8 @@
 * { box-sizing: border-box; }
 /* Replay uses the live table/tiles/pond/coach presentation in its own overlay. */
 .clip-panel { position: relative; padding-right: 46px; }
-.clip-save { position: absolute; right: 2px; top: 2px; min-width: 40px; min-height: 40px; border-radius: 8px; border: 1px solid #2a7; background: #0e5a41; color: #eef; font-size: 22px; cursor: pointer; }
+.clip-save { position: absolute; right: 2px; top: 2px; min-width: 40px; min-height: 40px; border-radius: 8px; border: 1px solid #2a7; background: #0e5a41; color: #eef; font-size: 22px; cursor: pointer; display: inline-flex; align-items: center; justify-content: center; padding: 0; }
+.clip-save svg { display: block; width: 15px; height: 22px; fill: currentColor; }
 .clip-status { font-size: 12px; color: #ffd97a; }
 #clips-view { z-index: 29; }
 .scene-viewer .replay-card { width: min(1100px, 98vw); padding: 10px; }
@@ -32,6 +33,23 @@ body { background: #0b3d2e; color: #eef; overflow: hidden; overscroll-behavior: 
 /* UX (theme 5): touch-action: manipulation drops double-tap-to-zoom (the coach's
    second click on the same tile is a double tap) but keeps pinch zoom. */
 #app { display: grid; grid-template-columns: minmax(720px, 1fr) 384px; height: 100vh; height: 100dvh; overflow: hidden; padding: var(--sa-t) var(--sa-r) var(--sa-b) var(--sa-l); }
+/* Game-screen fit (2026-11-10): when the natural height of the game screen is
+   taller than the viewport, main.js pins #app to that natural height and scales
+   it down uniformly (transform-origin top centre). Position: fixed keeps the
+   untransformed layout box out of the document flow, so the page itself never
+   gains a scroll range. Scale 1 leaves all of this inert (the class and the
+   transform are removed), keeping every other screen exactly as before. */
+#app.fit-scaled { position: fixed; top: 0; left: 0; transform-origin: top center; }
+/* Measurement pass: let the content define the height while main.js reads
+   offsetHeight. The pass is added and removed synchronously in one task, so
+   the browser never paints it (no flicker). The board keeps the height it
+   currently has (main.js pins it inline), because in landscape it is sized
+   from the cell height and would otherwise collapse to 0 in an auto-height
+   container. */
+#app.fit-measuring { height: auto !important; min-height: 0 !important; }
+#app.fit-measuring #table-wrap { flex: 0 0 auto !important; min-height: 0 !important; overflow: visible !important; }
+#app.fit-measuring #table { flex: 0 0 auto !important; min-height: 0 !important; }
+#app.fit-measuring #side { flex: 0 0 auto !important; min-height: 0 !important; overflow: visible !important; }
 #table-wrap { padding: 8px; display: flex; flex-direction: column; gap: 7px; min-width: 0; min-height: 0; }
 #controls { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; background: #083024; padding: 6px 10px; border-radius: 8px; font-size: 13px; }
 #controls button, #controls select { font-size: 13px; padding: 4px 10px; border-radius: 6px; border: 1px solid #2a7; background: #0e5a41; color: #eef; cursor: pointer; }
@@ -814,8 +832,10 @@ table.fb-table td, table.fb-table th { border: 1px solid #26594a; padding: 3px 1
    The bar now holds only 中断 + the five assist chips (+ status line).
    Model / length / start / history moved to the start (home) screen.
    Chips keep a real checkbox (state source shared with the start screen's
-   settings panel) and are one tap to flip, any time during a game. */
-#controls .chip-row { display: flex; flex-wrap: wrap; gap: 4px; align-items: center; }
+   settings panel) and are one tap to flip, any time during a game.
+   2026-11-10: the chips flow directly in the same flex row as the three
+   buttons (no dedicated chip row), so 320px keeps them in two rows and the
+   freed height goes to #side. */
 #controls label.chip { display: inline-flex; flex-direction: row; align-items: center; gap: 3px;
   padding: 2px 8px 2px 5px; border: 1px solid #2a7; border-radius: 999px; background: #0a3b2c;
   font-size: 12px; line-height: 1.3; white-space: nowrap; cursor: pointer; user-select: none; }
@@ -824,7 +844,6 @@ table.fb-table td, table.fb-table th { border: 1px solid #26594a; padding: 3px 1
 #controls #suspendBtn { background: #5a3a12; border-color: #c93; }
 #status:empty { display: none; }
 @media (orientation: landscape) and (max-height: 500px) {
-  #controls .chip-row { flex-direction: column; flex-wrap: nowrap; align-items: stretch; gap: 3px; }
   #controls label.chip { font-size: 10px; padding: 4px 4px; gap: 3px; }
   #controls #suspendBtn { margin: 0 0 6px; padding: 4px 3px; }
   #controls label.chip input { width: 11px; height: 11px; }
@@ -1344,16 +1363,10 @@ table.fb-final td.nm { text-align: left; }
   #scene-viewer .replay-center .center-meta { font-size: 10px; white-space: nowrap; }
 }
 
-/* Element overflow sweep (2026-11-09). Keep the v11 board/pond/centre
-   dimensions. Near-square narrow windows cannot show the full-width square
-   board, toolbar, hand and coach together: make the table reachable through
-   its own scrollport instead of clipping the hand behind #app. */
-@media (orientation: portrait) and (max-width: 500px) and (min-aspect-ratio: 4/5) {
-  #table-wrap { flex: 1 1 auto; overflow-y: auto; }
-  #controls { flex-shrink: 0; }
-  #table { flex: 0 0 auto; grid-template-rows: auto auto auto; }
-  #side { flex: 0 0 140px; }
-}
+/* Near-square narrow windows (e.g. 500x500) used to make the table reachable
+   through its own scrollport (2026-11-09). 2026-11-10 replaced that with the
+   compression + uniform game-screen scale: keep the plain column layout and
+   let #app.fit-scaled shrink the whole screen uniformly. */
 @media (orientation: landscape) and (max-height: 700px) {
   #controls .chip-row { min-width: 0; max-width: 100%; }
   #controls label.chip { min-width: 0; max-width: 100%; white-space: normal; }

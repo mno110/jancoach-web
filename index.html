@@ -6,7 +6,7 @@
 <title>雀コーチ ― リアルタイムAI分析麻雀</title>
 <link rel="manifest" href="manifest.webmanifest">
 <meta name="theme-color" content="#0b3d2e">
-<meta name="build-version" content="3e3c9d6385e4">
+<meta name="build-version" content="ae9036313311">
 <meta name="model-version" content="bd980c22b59a">
 <link rel="icon" type="image/png" sizes="32x32" href="icons/favicon-32.png">
 <link rel="icon" type="image/png" sizes="192x192" href="icons/icon-192.png">
@@ -35,13 +35,11 @@
       <button id="refBtn" type="button" title="役一覧・用語辞典・牌の読み方を開きます（閉じると対局はそのまま続きます）">役・用語</button>
       <button id="audioSettingsBtn" type="button" title="音・テンポ設定を開きます">音・テンポ</button>
       <button id="suspendBtn" type="button" title="対局を中断してスタート画面に戻ります（スタート画面の「続きから再開」で再開できます）">中断</button>
-      <div class="chip-row" role="group" aria-label="アシスト設定（対局中もすぐ反映）">
-        <label class="chip" title="AIコーチ表示"><input type="checkbox" id="coachToggle" checked><span>コーチ</span></label>
-        <label class="chip" title="アシスト"><input type="checkbox" id="assistToggle"><span>アシスト</span></label>
-        <label class="chip" title="鳴きなし"><input type="checkbox" id="autoNoCall"><span>鳴きなし</span></label>
-        <label class="chip" title="自動和了"><input type="checkbox" id="autoWin"><span>自動和了</span></label>
-        <label class="chip" title="自動ツモ切り"><input type="checkbox" id="autoTsumogiri"><span>ツモ切り</span></label>
-      </div>
+      <label class="chip" title="AIコーチ表示"><input type="checkbox" id="coachToggle" checked><span>コーチ</span></label>
+      <label class="chip" title="アシスト"><input type="checkbox" id="assistToggle"><span>アシスト</span></label>
+      <label class="chip" title="鳴きなし"><input type="checkbox" id="autoNoCall"><span>鳴きなし</span></label>
+      <label class="chip" title="自動和了"><input type="checkbox" id="autoWin"><span>自動和了</span></label>
+      <label class="chip" title="自動ツモ切り"><input type="checkbox" id="autoTsumogiri"><span>ツモ切り</span></label>
       <span id="status"></span>
     </div>
     <div id="table">

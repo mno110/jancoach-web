@@ -36045,6 +36045,7 @@ function markGrandfathered(storage) {
 
 // src/main.js
 markGrandfathered({ getItem: (key2) => localStorage.getItem(key2), setItem: (key2, value) => localStorage.setItem(key2, value) });
+var fitDirty = true;
 var NAMES = ["\u3042\u306A\u305F", "AI-1", "AI-2", "AI-3"];
 var MODELS = [
   { id: "jaklab-v1", version: "V1", label: "V1", name: "V1\uFF08\u81EA\u524D\u30E2\u30C7\u30EB\u30FB43MB\uFF09", file: "models/jaklab_v1.onnx", displayTemperature: 0.725 },
@@ -36134,6 +36135,7 @@ var log = (m) => {
   if (!S.ready) diagLogPush(m);
   const el2 = document.getElementById("status");
   if (el2) el2.textContent = m;
+  fitDirty = true;
   console.log("[stage2]", m);
 };
 var audio = new GameAudio({ diagnose: (line) => {
@@ -37232,7 +37234,7 @@ var clipStatus = createClipStatus({
   }
 });
 function clipButtonHTML() {
-  return '<button type="button" class="clip-save" data-clip-save aria-label="\u4ECA\u306E\u5C40\u9762\u3092\u30AF\u30EA\u30C3\u30D7" title="\u4ECA\u306E\u5C40\u9762\u3092\u30AF\u30EA\u30C3\u30D7">\u{1F4CE}</button>';
+  return '<button type="button" class="clip-save" data-clip-save aria-label="\u4ECA\u306E\u5C40\u9762\u3092\u30AF\u30EA\u30C3\u30D7" title="\u4ECA\u306E\u5C40\u9762\u3092\u30AF\u30EA\u30C3\u30D7"><svg viewBox="0 0 20 28" aria-hidden="true" focusable="false"><path d="M4 3A3 3 0 0 1 7 0h6a3 3 0 0 1 3 3v24l-6-4.5L4 27V3Z"/></svg></button>';
 }
 function stopReplay() {
   if (replayTimer !== null) clearInterval(replayTimer);
@@ -37989,6 +37991,7 @@ function updateLastResult() {
 }
 var PHONE_LANDSCAPE = window.matchMedia("(orientation: landscape) and (max-height: 700px)");
 var PHONE_PORTRAIT = window.matchMedia("(orientation: portrait) and (max-width: 1050px)");
+var COLUMN_LAYOUT = window.matchMedia("(orientation: portrait) and (max-width: 1050px)");
 var fitBoardKey = null;
 function fitBoard() {
   const board = $("board"), wrap = $("table-wrap");
@@ -38015,10 +38018,92 @@ function fitBoard() {
   const size = Math.max(240, Math.min(660, availH, top.clientWidth));
   board.style.width = size + "px";
 }
+var fitScale = 1;
+var fitNaturalHeight = 0;
+function measureNaturalHeight() {
+  const app = $("app"), table = $("table");
+  if (!app) return 0;
+  if (!COLUMN_LAYOUT.matches) {
+    const vh = window.innerHeight;
+    const saved = {
+      height: app.style.height,
+      width: app.style.width,
+      transform: app.style.transform,
+      scaled: app.classList.contains("fit-scaled")
+    };
+    if (saved.scaled) app.classList.remove("fit-scaled");
+    app.style.transform = "";
+    app.style.height = vh + "px";
+    app.style.width = window.innerWidth + "px";
+    const overflow = (el2) => el2 ? Math.max(0, el2.scrollHeight - el2.clientHeight) : 0;
+    const extra = Math.max(
+      overflow($("side")),
+      overflow($("controls")),
+      overflow($("table-wrap")),
+      overflow(table)
+    );
+    if (saved.scaled) app.classList.add("fit-scaled");
+    app.style.height = saved.height;
+    app.style.width = saved.width;
+    app.style.transform = saved.transform;
+    return vh + extra;
+  }
+  const prevTableHeight = table ? table.style.height : "";
+  if (table) table.style.height = table.offsetHeight + "px";
+  app.classList.add("fit-measuring");
+  const natural = app.offsetHeight;
+  app.classList.remove("fit-measuring");
+  if (table) table.style.height = prevTableHeight;
+  return natural;
+}
+function resetFitScale() {
+  const app = $("app");
+  if (!app) return;
+  app.classList.remove("fit-scaled");
+  app.classList.remove("fit-measuring");
+  app.style.transform = "";
+  app.style.width = window.innerWidth + "px";
+  app.style.height = window.innerHeight + "px";
+  fitScale = 1;
+  fitNaturalHeight = 0;
+  S.fitScale = 1;
+}
+function fitViewportScale(force = false) {
+  const app = $("app");
+  if (!app) return;
+  if (!force && selectedAction) return;
+  if (!force && !fitDirty) return;
+  fitDirty = false;
+  const start = $("start-screen");
+  if (!seat0 || start && !start.hidden) {
+    resetFitScale();
+    return;
+  }
+  const measured = measureNaturalHeight();
+  const vh = window.innerHeight;
+  const natural = measured > vh + 0.5 ? measured + 2 : measured;
+  const scale = natural > vh + 0.5 ? Math.min(1, vh / natural) : 1;
+  fitNaturalHeight = natural;
+  fitScale = scale;
+  S.fitScale = +scale.toFixed(6);
+  S.fitNaturalHeight = natural;
+  S.fitViewportHeight = vh;
+  if (scale < 0.999) {
+    app.classList.add("fit-scaled");
+    app.style.width = window.innerWidth + "px";
+    app.style.height = natural + "px";
+    app.style.transform = `scale(${scale.toFixed(6)})`;
+  } else {
+    app.classList.remove("fit-scaled");
+    app.style.transform = "";
+    app.style.height = vh + "px";
+    app.style.width = window.innerWidth + "px";
+  }
+}
 function refitViewport() {
   const app = $("app");
   if (app) {
-    app.style.height = window.innerHeight + "px";
+    if (!app.classList.contains("fit-scaled")) app.style.height = window.innerHeight + "px";
     app.style.width = window.innerWidth + "px";
     app.scrollTop = 0;
     app.scrollLeft = 0;
@@ -38032,6 +38117,8 @@ function refitViewport() {
   if (se.scrollTop || se.scrollLeft || window.scrollX || window.scrollY) window.scrollTo(0, 0);
   fitBoardKey = null;
   fitBoard();
+  fitDirty = true;
+  fitViewportScale(true);
   S.fitCount = (S.fitCount | 0) + 1;
 }
 var resumeTimers = [];
@@ -38087,10 +38174,12 @@ function updateSelChip() {
   }
 }
 var regionHTML = /* @__PURE__ */ new Map();
+var FIT_REGIONS = /* @__PURE__ */ new Set(["coach", "explain", "actions", "seat-top", "seat-bottom", "controls", "status"]);
 function setHTML(el2, html) {
   if (!el2) return;
   if (regionHTML.get(el2.id) === html) return;
   regionHTML.set(el2.id, html);
+  if (FIT_REGIONS.has(el2.id)) fitDirty = true;
   el2.innerHTML = html;
 }
 function render() {
@@ -38184,6 +38273,7 @@ function render() {
   wireButtons();
   updateSelChip();
   fitBoard();
+  fitViewportScale();
 }
 function wireButtons() {
   document.querySelectorAll("#seat-bottom .tile.hand.clickable").forEach((el2) => {
@@ -38406,6 +38496,7 @@ async function returnToStart() {
   $("end").innerHTML = "";
   closeSceneViewer();
   $("start-screen").hidden = false;
+  resetFitScale();
   $("suspendBtn").disabled = false;
   refreshResumeOffer();
   renderStartScreenStats();
@@ -38753,12 +38844,13 @@ async function startGameInner(session) {
     }
   }
   game.start();
-  if (AUTO) log("\u30AA\u30FC\u30C8\u5BFE\u5C40\u4E2D\u2026");
-  else {
-    S.logs.push("\u5BFE\u5C40\u958B\u59CB");
-    const st2 = document.getElementById("status");
-    if (st2) st2.textContent = "";
-  }
+  if (AUTO) {
+    S.logs.push("\u30AA\u30FC\u30C8\u5BFE\u5C40\u4E2D\u2026");
+    console.log("[stage2]", "\u30AA\u30FC\u30C8\u5BFE\u5C40\u4E2D\u2026");
+  } else S.logs.push("\u5BFE\u5C40\u958B\u59CB");
+  const statusEl = document.getElementById("status");
+  if (statusEl) statusEl.textContent = "";
+  fitDirty = true;
   render();
 }
 function startScreenStatsData() {
