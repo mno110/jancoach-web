@@ -1,0 +1,430 @@
+/* 何切るドリル (2026-11-14). Scoped to the start-screen entry and the drill
+   overlay; the live game / replay / coach styling is never overridden. */
+.ss-drill-btn {
+  width: min(430px, 100%);
+  margin: 2px 0 0;
+  padding: 9px 14px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  border: 1px solid rgba(255, 217, 122, .7);
+  border-radius: 9px;
+  background: linear-gradient(180deg, #14573f 0%, #0b3a2a 100%);
+  color: #eef;
+  cursor: pointer;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, .25);
+}
+.ss-drill-btn:active { filter: brightness(1.12); }
+.ss-drill-btn:focus-visible { outline: 2px solid #ffd97a; outline-offset: 2px; }
+.ss-drill-btn:disabled { opacity: .55; cursor: default; }
+.ss-drill-btn.locked { border-color: rgba(255, 217, 122, .45); }
+.ss-drill-title { font-size: 17px; font-weight: 800; color: #ffd97a; letter-spacing: .02em; }
+.ss-drill-sub { font-size: 11.5px; color: #cfe3d9; }
+.ss-drill-sub[hidden] { display: none; }
+
+#drill-screen {
+  position: fixed;
+  inset: 0;
+  z-index: 26;
+  display: flex;
+  flex-direction: column;
+  padding: var(--sa-t) var(--sa-r) var(--sa-b) var(--sa-l);
+  background: #06231a;
+  color: #eef;
+  overflow: hidden;
+}
+#drill-screen[hidden] { display: none; }
+.drill-head {
+  flex: 0 0 auto;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 3px 12px;
+  background: #0b3d2e;
+  border-bottom: 1px solid rgba(255, 217, 122, .22);
+}
+.drill-back {
+  flex: 0 0 auto;
+  width: 30px;
+  height: 26px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid #2a7;
+  border-radius: 7px;
+  background: #0e5a41;
+  color: #eef;
+  font-size: 16px;
+  line-height: 1;
+  cursor: pointer;
+}
+.drill-back:active { filter: brightness(1.15); }
+.drill-head-main { flex: 1 1 auto; min-width: 0; display: flex; align-items: baseline; gap: 8px; }
+.drill-head-title { flex: 0 0 auto; font-size: 14px; font-weight: 800; white-space: nowrap; }
+.drill-head-meta { flex: 0 1 auto; min-width: 0; font-size: 10px; color: #9db; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.drill-progress { flex: 0 0 auto; font-size: 15px; font-weight: 800; color: #fff; white-space: nowrap; }
+.drill-progress small { font-size: 10px; color: #9db; font-weight: 600; }
+
+.drill-scroll { flex: 1 1 auto; min-height: 0; overflow-y: auto; overflow-x: hidden; padding: 7px 8px 18px; -webkit-overflow-scrolling: touch; }
+.drill-stage { min-width: 0; }
+.drill-side { min-width: 0; }
+.drill-board-wrap { margin: 0 auto; }
+.drill-loading, .drill-error { padding: 24px 12px; text-align: center; color: #cfe3d9; }
+.drill-error p { margin: 6px 0 12px; }
+
+/* Read-only board: the drill reuses the live replay-table grid and follows the
+   same calibration as the game screen. Portrait (<=1050px wide) keeps the
+   original full-width stack; landscape/wide put the question panel in the
+   coach column and size the square board from the measured board cell
+   (drill_ui.mjs fitDrillBoard, mirroring main.js fitBoard). */
+#drill-screen .drill-tile {
+  cursor: pointer;
+  pointer-events: auto;   /* .replay-table .tile.hand is pointer-events:none */
+  touch-action: manipulation;
+}
+#drill-screen .drill-tile:disabled { cursor: default; }
+#drill-screen .drill-tile.selected {
+  outline: 3px solid #35b6f2;
+  outline-offset: 1px;
+  filter: drop-shadow(0 0 6px #35b6f2);
+}
+
+@media (orientation: portrait) and (max-width: 500px) {
+  #drill-screen .replay-table {
+    height: auto;
+    margin: 0;
+    grid-template-columns: 42px minmax(0, 1fr) 42px;
+    gap: 3px;
+  }
+  #drill-screen .replay-board {
+    width: 100%;
+    height: auto;
+    aspect-ratio: 1 / 1;
+    justify-self: stretch;
+    align-self: center;
+  }
+  #drill-screen .replay-center { padding: 5px; gap: 3px; }
+  #drill-screen .replay-center .round { font-size: 17px; }
+  #drill-screen .replay-center .round span { font-size: 12px; }
+  #drill-screen .replay-center .dora { font-size: 10px; gap: 3px; }
+  #drill-screen .replay-center .center-meta { font-size: 10px; }
+  #drill-screen .replay-self-area { container-type: inline-size; --hand-reserve: 74px; }
+  #drill-screen .drill-self-area .seat-info { margin-bottom: 2px; }
+  #drill-screen .drill-self-area .hand-row { flex-wrap: nowrap; gap: 4px; margin-top: 2px; }
+  #drill-screen .drill-tile {
+    width: clamp(12px, calc((100cqw - var(--hand-reserve)) / 14), 40px);
+    height: auto;
+    aspect-ratio: 46 / 65;
+  }
+  #drill-screen .drill-tile.drawn { margin-left: clamp(4px, 1.4cqw, 12px); }
+  #drill-screen .drill-self-area .melds { flex-shrink: 0; }
+  #drill-screen .pos-left .hand, #drill-screen .pos-right .hand { width: 40px; }
+  #drill-screen .pos-left .seat-info, #drill-screen .pos-right .seat-info { flex-wrap: wrap; white-space: normal; line-height: 1.15; }
+  #drill-screen .pos-left .seat-name, #drill-screen .pos-right .seat-name { display: none; }
+}
+
+/* Portrait tablet (501-1050px wide): same as the live table's column layout --
+   the board stays a capped square above the coach/question column, and only
+   the panel scrolls below it. */
+@media (orientation: portrait) and (min-width: 501px) and (max-width: 1050px) {
+  #drill-screen .drill-scroll {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    padding: 6px;
+    overflow: hidden;
+  }
+  #drill-screen .drill-stage { flex: 0 0 auto; }
+  #drill-screen .drill-board-wrap { margin: 0 auto; }
+  #drill-screen .replay-table { height: auto; margin: 0; }
+  #drill-screen .replay-board {
+    width: min(100%, 440px, calc(100dvh - 340px));
+    height: auto;
+    aspect-ratio: 1 / 1;
+    justify-self: center;
+    align-self: center;
+  }
+  #drill-screen .drill-side {
+    flex: 1 1 auto;
+    min-height: 0;
+    overflow-y: auto;
+    overflow-x: hidden;
+    overscroll-behavior: contain;
+    padding: 0 2px 2px;
+  }
+  #drill-screen .drill-panel { margin: 0; }
+}
+
+/* Wide / landscape: the board sits in the left cell and the question panel
+   takes the coach column, exactly like #table + #side in the game screen. */
+@media (orientation: landscape), (min-width: 1051px) {
+  #drill-screen .drill-scroll {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 384px;
+    grid-template-rows: minmax(0, 1fr);
+    gap: 8px;
+    padding: 8px;
+    overflow: hidden;
+  }
+  #drill-screen .drill-stage { min-height: 0; min-width: 0; display: flex; }
+  #drill-screen .drill-board-wrap { flex: 1 1 auto; min-width: 0; min-height: 0; display: flex; margin: 0; }
+  #drill-screen .replay-table { flex: 1 1 auto; height: 100%; margin: 0; }
+  #drill-screen .replay-board { justify-self: center; align-self: center; }
+  #drill-screen .drill-side { min-height: 0; overflow-y: auto; overflow-x: hidden; overscroll-behavior: contain; padding: 0 2px 2px; }
+  #drill-screen .drill-panel { margin: 0; }
+}
+
+@media (orientation: landscape) and (max-height: 700px) {
+  #drill-screen .drill-scroll { grid-template-columns: minmax(0, 1fr) clamp(232px, 30vw, 340px); gap: 5px; padding: 5px; }
+}
+@media (orientation: landscape) and (max-height: 700px) and (max-width: 700px) {
+  #drill-screen .drill-scroll { grid-template-columns: minmax(0, 1fr) 168px; }
+}
+
+/* Square band (aspect 4/5..5/4): Plan C, the same as #app.layout-square --
+   board on top, coach band full width below it. */
+#drill-screen.drill-square .drill-scroll {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: 6px;
+  overflow: hidden;
+}
+#drill-screen.drill-square .drill-stage { flex: 1 1 auto; min-height: 0; min-width: 0; display: flex; }
+#drill-screen.drill-square .drill-board-wrap { flex: 1 1 auto; min-width: 0; min-height: 0; display: flex; margin: 0; }
+#drill-screen.drill-square .replay-table {
+  flex: 1 1 auto;
+  height: 100%;
+  margin: 0;
+  grid-template-columns: 60px minmax(0, 1fr) 60px;
+  gap: 3px;
+}
+#drill-screen.drill-square .replay-board {
+  width: min(100%, 660px);
+  height: auto;
+  aspect-ratio: 1 / 1;
+  justify-self: center;
+  align-self: center;
+}
+#drill-screen.drill-square .drill-side {
+  flex: 0 0 clamp(110px, 24vh, 180px);
+  min-height: 0;
+  overflow-y: auto;
+  overflow-x: hidden;
+  overscroll-behavior: contain;
+  padding: 0 2px 2px;
+}
+#drill-screen.drill-square .drill-panel { margin: 0; }
+
+/* Screens without a board (result / loading / error) use one scroll column. */
+#drill-screen .drill-scroll.drill-single {
+  display: block;
+  width: 100%;
+  max-width: 780px;
+  margin: 0 auto;
+  padding: 7px 8px 18px;
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+
+.drill-panel {
+  margin: 8px 0 0;
+  padding: 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+  background: #07271c;
+  border: 1px solid rgba(255, 255, 255, .08);
+  border-radius: 10px;
+}
+.drill-panel-title { font-size: 14px; font-weight: 800; }
+.drill-panel-title span, .drill-coach-head span { font-size: 11px; color: #9db; font-weight: 500; }
+.drill-hint {
+  padding: 9px 10px;
+  border: 1px solid rgba(255, 217, 122, .45);
+  border-radius: 8px;
+  background: rgba(255, 217, 122, .08);
+  color: #ffe6a8;
+  font-size: 13px;
+  font-weight: 700;
+}
+.drill-hint-sub { font-size: 11.5px; color: #b9d4c7; line-height: 1.45; }
+.drill-error-note { color: #ffd97a; }
+.drill-set-row { display: flex; align-items: baseline; justify-content: space-between; gap: 8px; font-size: 11.5px; color: #a9c6b8; }
+.drill-set-row b { color: #ffd97a; font-size: 13px; }
+.drill-dots { display: flex; gap: 4px; }
+.drill-dots span { flex: 1 1 0; height: 5px; border-radius: 3px; background: rgba(255, 255, 255, .16); }
+.drill-dots span.done { background: #57c785; }
+.drill-dots span.now { background: #ffd97a; }
+.drill-diff-card { padding: 8px 9px; border-radius: 8px; background: #0b3a2a; border: 1px solid rgba(255, 255, 255, .08); }
+.drill-diff-title { font-size: 12px; font-weight: 700; }
+.drill-diff-card p { margin: 4px 0 0; font-size: 11px; color: #a9c6b8; line-height: 1.45; }
+.drill-diff-badge { display: inline-block; margin-left: 4px; padding: 1px 8px; border-radius: 999px; font-size: 11px; font-weight: 700; border: 1px solid; white-space: nowrap; }
+.drill-diff-badge.diff-easy { color: #8fe3b2; border-color: rgba(87, 199, 133, .55); background: rgba(87, 199, 133, .12); }
+.drill-diff-badge.diff-normal { color: #ffd97a; border-color: rgba(255, 217, 122, .55); background: rgba(255, 217, 122, .10); }
+.drill-diff-badge.diff-hard { color: #ff9f8f; border-color: rgba(235, 70, 50, .55); background: rgba(235, 70, 50, .12); }
+.drill-footnote { margin: 0; font-size: 10.5px; color: #8fae9f; line-height: 1.45; }
+
+/* 2026-11-15 diffbadge: the three verdict-strip parts are scaled down together (~10%) so the
+   difficulty badge stays on one line without squeezing only the middle text. */
+.drill-verdict { display: flex; align-items: center; gap: 7px; padding: 7px 9px; border-radius: 8px; border: 1px solid; }
+.drill-verdict.correct { background: rgba(87, 199, 133, .14); border-color: rgba(87, 199, 133, .55); }
+.drill-verdict.close { background: rgba(255, 217, 122, .12); border-color: rgba(255, 217, 122, .55); }
+.drill-verdict.wrong { background: rgba(235, 70, 50, .13); border-color: rgba(235, 70, 50, .5); }
+.drill-verdict-badge { display: inline-block; padding: 2px 10px; border-radius: 999px; font-size: 12px; font-weight: 800; }
+.drill-verdict-badge.correct { background: #1d7a4f; color: #eafff2; }
+.drill-verdict-badge.close { background: #8a6a15; color: #fff6d7; }
+.drill-verdict-badge.wrong { background: #8b2a20; color: #ffe6e1; }
+.drill-verdict-text { flex: 1 1 auto; font-size: 11px; color: #d9efe5; }
+/* 2026-11-15 drillsame: the judged panel reuses the in-game coach markup, so the
+   side-panel rules (style.css, scoped to #side) are mirrored for the drill panel. */
+#drill-screen .drill-same { text-align: left; }
+#drill-screen .drill-same h3 { margin: 6px 0; font-size: 15px; }
+#drill-screen .drill-same .ctx { color: #9db; font-size: 11px; font-weight: normal; }
+#drill-screen #drill-same-coach .coach-summary { display: flex; flex-direction: column; }
+#drill-screen #drill-same-coach .coach-conclusion { background: rgba(255,217,122,.07); border: 1px solid rgba(255,217,122,.20);
+  border-left: 3px solid #ffd97a; border-radius: 6px; padding: 6px 8px 5px; }
+#drill-screen #drill-same-coach .coach-conclusion .rec { margin: 0; font-size: 15px; align-items: baseline; gap: 6px; }
+#drill-screen #drill-same-coach .coach-conclusion .rec .r1-name { font-size: 18px; line-height: 1; color: #ffd97a; }
+#drill-screen #drill-same-coach .coach-conclusion .rec .prob.eval { margin-left: auto; padding-left: 6px;
+  font-size: 15px; font-weight: 800; color: #7ee2a8; }
+#drill-screen #drill-same-coach .coach-conclusion .runner-up-line { margin: 3px 0 0; font-size: 12.5px; color: #d9efe5; }
+#drill-screen #drill-same-coach .coach-conclusion .after-state { display: flex; align-items: baseline; flex-wrap: wrap;
+  gap: 5px; margin-top: 2px; font-size: 12.5px; color: #d9efe5; }
+#drill-screen #drill-same-coach .after-state .prob-def.inline { margin: 0 0 0 auto; }
+#drill-screen #drill-same-coach .prob-def.inline summary { font-size: 10px; color: #8fae9f; }
+#drill-screen #drill-same-coach .prob-def.inline .prob-def-body { font-size: 11px; }
+#drill-screen #drill-same-coach .coach-meta { display: flex; justify-content: flex-end; padding: 2px 2px 5px;
+  border-bottom: 1px solid rgba(255,255,255,.10); margin: 0 0 6px; }
+#drill-screen #drill-same-coach .coach-meta .agreement-line { margin: 0; font-size: 11.5px; color: #8fae9f; }
+#drill-screen #drill-same-explain { background: rgba(0,0,0,.16); border: 1px solid rgba(255,255,255,.07);
+  border-radius: 6px; padding: 6px 8px 8px; }
+#drill-screen #drill-same-explain h3 { margin-top: 0; }
+#drill-screen .drill-same .sel-info { display: flex; align-items: baseline; flex-wrap: wrap; gap: 5px;
+  margin: 4px 0 5px; font-size: 12.5px; color: #cfe9ff; }
+#drill-screen .drill-same .sel-info .r1-subject { font-size: 10px; font-weight: 700; color: #9db; letter-spacing: .04em; }
+#drill-screen .drill-same .sel-info .r1-name { font-size: 14px; color: #fff; }
+#drill-screen .drill-same .sel-info .sel-facts { font-size: 11.5px; color: #a9c6d8; }
+#drill-screen .drill-same .sel-info .sel-facts b { color: #e8f2ec; }
+#drill-screen .drill-same .sel-info .sel-metric { margin-left: auto; display: inline-flex; align-items: baseline;
+  gap: 4px; padding-left: 6px; border-left: 1px solid rgba(255,255,255,.14); }
+#drill-screen .drill-same .sel-info .sel-metric .r1-mlabel { font-size: 9.5px; color: #7f9a8f; }
+#drill-screen .drill-same .sel-info .sel-metric .prob { font-size: 12px; font-weight: 700; color: #b8c9c1; }
+#drill-screen #drill-same-coach h3.coach-head { display: flex; align-items: center; gap: 6px; flex-wrap: nowrap; white-space: nowrap; }
+#drill-screen #drill-same-coach h3.coach-head .ctx { flex: 0 1 auto; min-width: 0; overflow-wrap: anywhere; white-space: normal; }
+@media (orientation: landscape) and (max-height: 700px), (orientation: portrait) and (max-width: 500px) {
+  #drill-screen .drill-same h3 { font-size: 13px; margin: 4px 0; }
+}
+.drill-note { font-size: 10.5px; color: #8fae9f; }
+.drill-actions { display: flex; justify-content: flex-end; gap: 8px; margin-top: 2px; }
+.drill-primary, .drill-secondary {
+  padding: 10px 18px;
+  border-radius: 9px;
+  font-size: 14px;
+  font-weight: 800;
+  cursor: pointer;
+}
+.drill-primary { border: 1px solid #2a7; background: #0e7a52; color: #fff; }
+.drill-secondary { border: 1px solid rgba(255, 255, 255, .24); background: #0d3a2a; color: #dfe; }
+.drill-primary:active, .drill-secondary:active { filter: brightness(1.14); }
+
+/* Result screen */
+.drill-result-card {
+  padding: 10px;
+  border-radius: 10px;
+  border: 1px solid rgba(255, 217, 122, .35);
+  background: #0b3a2a;
+}
+.drill-result-hero { display: flex; align-items: baseline; gap: 4px; }
+.drill-result-hero b { font-size: 44px; line-height: .9; color: #fff; }
+.drill-result-hero span { font-size: 16px; color: #9db; }
+.drill-result-legend { margin-top: 5px; font-size: 11.5px; color: #b9d4c7; }
+.drill-result-bar { margin: 8px 0 4px; height: 8px; border-radius: 999px; background: rgba(255, 255, 255, .14); overflow: hidden; }
+.drill-result-bar i { display: block; height: 100%; border-radius: 999px; background: linear-gradient(90deg, #57c785, #ffd97a); }
+.drill-result-list { margin-top: 10px; }
+.drill-list-head { display: flex; align-items: baseline; justify-content: space-between; margin-bottom: 4px; }
+.drill-list-head h3 { margin: 0; font-size: 14px; }
+.drill-list-head span { font-size: 10.5px; color: #8fae9f; }
+.drill-result-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 5px 8px;
+  margin-bottom: 3px;
+  border-radius: 8px;
+  background: #0a3325;
+  border: 1px solid rgba(255, 255, 255, .07);
+}
+.drill-result-q { flex: 1 1 auto; min-width: 0; display: grid; grid-template-columns: auto 1fr; gap: 0 7px; align-items: baseline; }
+.drill-result-q b { font-size: 12px; color: #fff; }
+.drill-result-q span { font-size: 12px; color: #d9efe5; }
+.drill-result-q small { grid-column: 2; font-size: 9.5px; color: #7f9a8f; }
+.drill-result-tags { flex: 0 0 auto; display: flex; align-items: center; gap: 4px; }
+.drill-result-tags .drill-diff-badge { margin-left: 0; }
+.drill-verdict .drill-verdict-badge { padding: 2px 9px; font-size: 11px; }
+.drill-verdict .drill-diff-badge { margin-left: 0; padding: 1px 7px; font-size: 10px; }
+.drill-result-actions { display: flex; gap: 8px; margin-top: 12px; }
+.drill-result-actions .drill-secondary, .drill-result-actions .drill-primary { flex: 1 1 0; }
+
+/* ---- entrance sheet (spec 7; look follows reviews/drill_entrance_mock_20261114) ---- */
+#drill-sheet { position: fixed; inset: 0; z-index: 27; display: flex; flex-direction: column; justify-content: flex-end; color: #eef; }
+#drill-sheet[hidden] { display: none; }
+#drill-sheet .drill-scrim { position: absolute; inset: 0; background: rgba(0, 0, 0, .55); }
+#drill-sheet .drill-sheet-body {
+  position: relative; width: 100%; max-width: 520px; margin: 0 auto; max-height: 100%; overflow-y: auto;
+  background: #0a3f2e; border-top: 1px solid rgba(255, 217, 122, .55); border-radius: 18px 18px 0 0;
+  padding: 8px 14px calc(16px + var(--sa-b, 0px)); box-shadow: 0 -8px 24px rgba(0, 0, 0, .5);
+}
+#drill-sheet button { font: inherit; color: inherit; cursor: pointer; }
+#drill-sheet .drill-grab { width: 38px; height: 4px; border-radius: 2px; background: rgba(255, 255, 255, .3); margin: 0 auto 8px; }
+#drill-sheet .drill-sh-head { display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px; }
+#drill-sheet .drill-sh-title { font-size: 17px; font-weight: 800; color: #ffd97a; letter-spacing: .04em; }
+#drill-sheet .drill-sh-close { width: 36px; height: 36px; border-radius: 50%; background: rgba(0, 0, 0, .35); border: 1px solid rgba(255, 255, 255, .25); font-size: 16px; line-height: 1; }
+#drill-sheet .drill-sh-label { font-size: 12px; color: #bde; margin: 10px 0 5px; }
+#drill-sheet .drill-scenes { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; }
+#drill-sheet .drill-sc { position: relative; text-align: left; padding: 7px 9px; min-height: 50px; background: rgba(0, 0, 0, .28); border: 1px solid rgba(255, 255, 255, .2); border-radius: 9px; display: flex; flex-direction: column; gap: 1px; }
+#drill-sheet .drill-sc b { font-size: 14px; font-weight: 700; color: #eef; }
+#drill-sheet .drill-sc i { font-style: normal; font-size: 10px; color: #bde; }
+#drill-sheet .drill-sc.wide { grid-column: 1 / 3; min-height: 0; }
+#drill-sheet .drill-sc.on { background: #0e5a41; border: 2px solid #ffd97a; padding: 6px 8px; box-shadow: 0 0 0 2px rgba(255, 217, 122, .18); }
+#drill-sheet .drill-sc.on b { color: #fff; font-weight: 800; }
+#drill-sheet .drill-sc.on::after { content: "✓"; position: absolute; right: 7px; top: 5px; width: 17px; height: 17px; border-radius: 50%; background: #ffd97a; color: #0a3f2e; font-size: 11px; font-weight: 900; display: flex; align-items: center; justify-content: center; }
+#drill-sheet .drill-diffs { display: flex; background: rgba(0, 0, 0, .35); border-radius: 9px; padding: 3px; gap: 3px; }
+#drill-sheet .drill-diffs button { flex: 1; text-align: center; padding: 8px 0; font-size: 13.5px; color: #cfe; border-radius: 7px; background: transparent; border: 0; }
+#drill-sheet .drill-diffs button.on { background: #0e5a41; color: #fff; font-weight: 800; box-shadow: inset 0 0 0 1.5px #ffd97a; }
+#drill-sheet .drill-sum { margin-top: 12px; text-align: center; font-size: 12px; color: #bde; }
+#drill-sheet .drill-sum b { color: #ffd97a; font-weight: 700; }
+#drill-sheet .drill-sh-status { margin-top: 4px; text-align: center; font-size: 11px; color: #9db; min-height: 1.4em; }
+#drill-sheet .drill-sh-status.instant { color: #7ee2a8; }
+#drill-sheet .drill-go { margin-top: 6px; width: 100%; padding: 12px; font-size: 16.5px; font-weight: 800; background: #0e7a52; color: #fff; border: 1px solid #2a7; border-radius: 10px; }
+#drill-sheet .drill-go:disabled { opacity: .55; cursor: default; }
+#drill-sheet button:focus-visible { outline: 2px solid #ffd97a; outline-offset: 2px; }
+@media (max-height: 560px) and (orientation: landscape) {
+  #drill-sheet .drill-sheet-body { max-width: 640px; }
+  #drill-sheet .drill-scenes { grid-template-columns: repeat(3, 1fr); }
+  #drill-sheet .drill-sc.wide { grid-column: auto; }
+  #drill-sheet .drill-sheet-body { padding-top: 6px; padding-bottom: calc(8px + var(--sa-b, 0px)); }
+  #drill-sheet .drill-grab { display: none; }
+  #drill-sheet .drill-sh-head { margin-bottom: 2px; }
+  #drill-sheet .drill-sh-close { width: 32px; height: 32px; }
+  #drill-sheet .drill-sh-label { margin: 5px 0 3px; }
+  #drill-sheet .drill-sc { min-height: 40px; padding: 4px 8px; }
+  #drill-sheet .drill-sc.on { padding: 3px 7px; }
+  #drill-sheet .drill-diffs button { padding: 5px 0; }
+  #drill-sheet .drill-sum { margin-top: 6px; }
+  #drill-sheet .drill-go { padding: 8px; margin-top: 3px; }
+}
+
+/* ---- generation wait screen (spec 6.3) ---- */
+#drill-screen .drill-wait { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 12px; padding: 28px 24px; text-align: center; min-height: 60%; }
+#drill-screen .drill-ring { width: 54px; height: 54px; border-radius: 50%; border: 5px solid rgba(255, 255, 255, .14); border-top-color: #ffd97a; animation: drill-spin 1s linear infinite; }
+#drill-screen .drill-wait h2 { margin: 0; font-size: 18px; color: #ffd97a; }
+#drill-screen .drill-wait-chips { display: flex; gap: 6px; justify-content: center; flex-wrap: wrap; }
+#drill-screen .drill-wait-chips span { padding: 4px 10px; border-radius: 12px; background: rgba(0, 0, 0, .3); border: 1px solid rgba(255, 217, 122, .45); font-size: 12px; color: #eef; }
+#drill-screen .drill-wait p { margin: 0; font-size: 12.5px; color: #bde; line-height: 1.6; }
+#drill-screen .drill-wait-cancel { padding: 8px 22px; font-size: 13px; background: rgba(0, 0, 0, .25); border: 1px solid rgba(255, 255, 255, .3); border-radius: 8px; color: #eef; cursor: pointer; }
+#drill-screen .drill-fallback-note { color: #ffd97a; }
+@keyframes drill-spin { to { transform: rotate(360deg); } }
+@media (prefers-reduced-motion: reduce) { #drill-screen .drill-ring { animation: none; } }
+.drill-verdict-badge { white-space: nowrap; }

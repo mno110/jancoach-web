@@ -6,12 +6,14 @@
 <title>雀コーチ ― リアルタイムAI分析麻雀</title>
 <link rel="manifest" href="manifest.webmanifest">
 <meta name="theme-color" content="#0b3d2e">
-<meta name="build-version" content="ae9036313311">
-<meta name="model-version" content="bd980c22b59a">
+<meta name="build-version" content="870672bfef8d">
+<meta name="model-version" content="9c84b741fe3f">
 <link rel="icon" type="image/png" sizes="32x32" href="icons/favicon-32.png">
 <link rel="icon" type="image/png" sizes="192x192" href="icons/icon-192.png">
 <link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
 <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="./freemium.css">
+  <link rel="stylesheet" href="./drill.css">
 </head>
 <body>
 <div id="app">
@@ -32,6 +34,7 @@
         </select>
         <button id="startBtn" disabled>対局開始</button>
       </div>
+      <button id="controlsToggle" type="button" class="controls-toggle" aria-expanded="true" title="操作を畳む" aria-label="操作を畳む">≡</button>
       <button id="refBtn" type="button" title="役一覧・用語辞典・牌の読み方を開きます（閉じると対局はそのまま続きます）">役・用語</button>
       <button id="audioSettingsBtn" type="button" title="音・テンポ設定を開きます">音・テンポ</button>
       <button id="suspendBtn" type="button" title="対局を中断してスタート画面に戻ります（スタート画面の「続きから再開」で再開できます）">中断</button>
@@ -64,6 +67,7 @@
             <div class="ss-mark">發</div>
             <h1>雀コーチ</h1>
             <div class="ss-sub">リアルタイムAI分析麻雀</div>
+            <div class="ss-sim-badge" id="ss-sim-badge" hidden>テスト中</div>
           </div>
           <div class="ss-card ss-resume" id="ss-resume" hidden>
             <div class="ss-resume-title">前回の対局が残っています</div>
@@ -71,18 +75,21 @@
             <button type="button" class="ss-btn-resume" id="ss-resume-btn">続きから再開</button>
           </div>
           <div class="ss-card" id="ss-stats-card" hidden>
-            <div class="ss-card-title">最近の成績（直近20対局）</div>
+            <div class="ss-card-title" id="ss-stats-title">最近の成績</div>
             <div class="ss-mini-stats">
               <div class="ss-cell"><div class="ss-v" id="ss-avg-rank">-</div><div class="ss-k">平均順位</div></div>
               <div class="ss-cell"><div class="ss-v" id="ss-agree">-</div><div class="ss-k">コーチ一致率</div></div>
               <div class="ss-cell"><div class="ss-v" id="ss-games">-</div><div class="ss-k">総対局数</div></div>
+              <button type="button" class="ss-cell ss-cert-cell" id="ss-cert-cell" aria-haspopup="true" aria-expanded="false"><span class="ss-v" id="ss-cert">—</span><span class="ss-k">認定段位</span></button>
             </div>
+            <div class="ss-cert-pop" id="ss-cert-pop" role="note" hidden></div>
           </div>
           <div class="ss-card ss-strength-card">
             <label class="ss-coach-model">コーチモデル <select id="ss-model" aria-label="コーチモデル">
               <option value="jaklab-v1">V1（八段相当）</option>
               <option value="jaklab-v1-light">V1 Light（七段相当）</option>
             </select></label>
+            <div class="ss-model-lock" id="ss-model-lock" hidden>🔒 解除後に使用</div>
             <div class="ss-strength-row">
               <span class="ss-k">対戦相手</span>
             </div>
@@ -123,7 +130,9 @@
             <div class="ss-model-notice-text">対局中のためモデルは変更できません。次回の対局（再読み込み後）に反映されます</div>
             <button type="button" class="ss-btn-reload" id="ss-model-reload-btn">再読み込み</button>
           </div>
-          <button type="button" class="ss-btn-primary" id="ss-start-btn" disabled>新しい対局を開始</button>
+          <button type="button" class="ss-btn-primary" id="ss-start-btn" disabled><span class="ss-start-label">新しい対局を開始</span><span class="ss-start-free" id="ss-start-free" hidden></span></button>
+          <button type="button" class="ss-drill-btn" id="ss-drill-btn"><span class="ss-drill-title">何切るドリル</span><span class="ss-drill-sub">10問1セット・AIコーチの解説つき</span></button>
+          <button type="button" class="ss-unlock-link" id="ss-unlock-link" data-coach-unlock hidden>AIコーチを解除（買い切り）</button>
           <div class="ss-link-row">
             <button type="button" class="ss-btn-ghost" id="ss-guide-btn">初めての方</button>
             <button type="button" class="ss-btn-ghost" id="ss-stats-btn">統計・分析</button>
@@ -155,6 +164,9 @@
             <button type="button" class="ss-btn-reload" id="ss-reload-btn" hidden>再読み込み</button>
           </div>
         </div>
+        <!-- Shown only when a resumable game exists and a free user still has a
+             trial game left: starting a new game consumes one free game. -->
+        <div class="start-confirm" id="start-confirm" role="dialog" aria-modal="true" aria-labelledby="start-confirm-title" hidden></div>
       </div>
     </div>
   </main>
@@ -163,17 +175,27 @@
     <section id="explain"></section>
   </aside>
 </div>
+<!-- AIコーチの拡大シート（2026-11-10）。見出し横の「拡大」で開く。中身は main.js が
+     対局中の #coach / #explain と同じ内容で描画し、閉じても対局状態は変えない。 -->
+<div id="coach-sheet" class="coach-sheet" role="dialog" aria-modal="true" aria-labelledby="coach-sheet-title" style="display:none">
+  <div class="coach-sheet-card sheet-card">
+    <div class="coach-sheet-head st-head sheet-head"><h2 id="coach-sheet-title">AIコーチ</h2><button type="button" class="st-close" id="coach-sheet-close" data-coach-sheet-close>閉じる</button><button type="button" class="clip-save" data-clip-save aria-label="この局面をクリップ" title="この局面をクリップ"><span class="clip-label">保存</span></button><span class="clip-status coach-sheet-status" role="status"></span></div>
+    <div id="coach-sheet-body" class="coach-sheet-body sheet-body"></div>
+  </div>
+</div>
 <div id="kyoku-result" style="display:none"></div>
 <div id="end" style="display:none"></div>
 <div id="history" style="display:none"></div>
 <div id="clips-view" class="scene-viewer" style="display:none"></div>
 <div id="scene-viewer" class="scene-viewer" style="display:none"></div>
+<div id="confirm-dialog" class="start-confirm confirm-dialog" role="dialog" aria-modal="true" aria-labelledby="confirm-dialog-title" hidden></div>
 <div id="stats-view" class="stats-view" style="display:none"></div>
 <!-- 設定ポップアップ（2026-11-09）: スタート画面の「設定」と対局中の「音・テンポ」から開く同一の画面。
      コントロールはここだけに置く（複製しない）。main.js initAudioControls() が開閉を管理。 -->
 <div id="settings-view" class="stats-view" role="dialog" aria-modal="true" aria-labelledby="settings-title" style="display:none">
-  <div class="stats-card rules-card">
-    <div class="st-head"><h2 id="settings-title">設定</h2><button type="button" class="st-close" id="settings-close">閉じる</button></div>
+  <div class="stats-card rules-card sheet-card">
+    <div class="st-head sheet-head"><h2 id="settings-title">設定</h2><button type="button" class="st-close" id="settings-close">閉じる</button></div>
+    <div class="sheet-body" id="settings-body">
           <div class="ss-panel" id="ss-settings-panel">
             <fieldset class="audio-settings"><legend>音量</legend>
               <label for="ss-bgm-volume">BGM <output data-audio-value="bgm" for="ss-bgm-volume"></output></label>
@@ -200,25 +222,29 @@
             <div class="ss-settings-note">ツモ切りで捨てられた牌を、河の中で少し暗く表示します（その局の間ずっと）。手出しの牌は通常の明るさのままなので、どちらで捨てたか後から見分けられます。</div>
             <div class="ss-dim-preview" id="ss-dim-preview" aria-label="ツモ切り暗転のプレビュー"></div>
             <div class="ss-settings-note">コーチモデルは選ぶとすぐ切り替わります（切り替え中は開始できません）。画面の向きは端末が対応している場合のみ固定されます（未対応の端末では自動のままです）。その他の設定は対局画面のチップと同じもので、対局中に変えてもすぐ反映されます。</div>
+            <!-- 設定ポップアップの最下部（2026-11-09, product B5）。押すと about-view を前面に開く。
+                 2026-11-11: 並びは「購入を復元する → このアプリについて → 診断情報」。 -->
+            <div class="ss-about-row">
+              <button type="button" class="ss-btn-ghost ss-about-btn" id="ss-about-btn">このアプリについて</button>
+            </div>
             <!-- Diagnostics (product/error_codes.md). Local only: nothing is sent;
-                 the copy button puts a text block on the clipboard. -->
-            <div class="ss-diag" id="ss-diag">
-              <div class="ss-diag-title">診断</div>
+                 the copy button puts a text block on the clipboard. Folded so the
+                 settings screen stays short; everything diagnosis-related lives inside. -->
+            <details class="ss-diag" id="ss-diag">
+              <summary>診断情報</summary>
               <dl>
                 <dt>アプリ版</dt><dd id="ss-diag-app">-</dd>
                 <dt>モデル</dt><dd id="ss-diag-model">-</dd>
                 <dt>成功構成</dt><dd id="ss-diag-config">-</dd>
+                <dt>画面fit</dt><dd id="ss-diag-fit">-</dd>
                 <dt>最終エラー</dt><dd id="ss-diag-last">なし</dd>
               </dl>
               <button type="button" class="ss-diag-copy" id="ss-diag-copy">診断情報をコピー</button>
               <span class="ss-diag-copy-status" id="ss-diag-copy-status" aria-live="polite"></span>
               <div class="ss-settings-note">不具合のお問い合わせの際は、エラーコード（例: E-L110）と、可能ならこの診断情報を添えてください。情報は自動では送信されません。対局内容や個人情報は含みません。</div>
-            </div>
-            <!-- 設定ポップアップの最下部（2026-11-09, product B5）。押すと about-view を前面に開く。 -->
-            <div class="ss-about-row">
-              <button type="button" class="ss-btn-ghost ss-about-btn" id="ss-about-btn">このアプリについて</button>
-            </div>
+            </details>
           </div>
+    </div>
   </div>
 </div>
 <!-- このアプリについて（2026-11-09, product B5）。設定ポップアップの最下部から開く。
@@ -231,18 +257,19 @@
 </div>
 <!-- 初回ガイド「はじめての方へ」。本文は first_run_guide.mjs が描画。rules-view(z25) より背面(z24)。 -->
 <div id="guide-view" class="stats-view guide-view" role="dialog" aria-modal="true" aria-labelledby="guide-title" style="display:none">
-  <div class="stats-card rules-card">
-    <div class="st-head"><h2 id="guide-title">はじめての方へ ― 遊び方の基本</h2></div>
-    <p id="guide-load-status" role="status" aria-live="polite">AIモデルを読み込み中… お待ちください。このガイドは閉じられます。</p>
-    <div class="rules-body guide-body" id="guide-body"></div>
-    <div class="rules-foot guide-foot"><button type="button" class="ss-btn-primary" id="guide-start">閉じる</button></div>
+  <div class="stats-card rules-card sheet-card">
+    <div class="st-head sheet-head"><h2 id="guide-title">はじめての方へ</h2><button type="button" class="st-close" id="guide-start">閉じる</button></div>
+    <div class="sheet-body">
+      <p id="guide-load-status" role="status" aria-live="polite">AIモデルを読み込み中… お待ちください。このガイドは閉じられます。</p>
+      <div class="rules-body guide-body" id="guide-body"></div>
+    </div>
   </div>
 </div>
 <!-- Rules view (shared by start screen and in-game 役・用語). Text = product/rules_text.md
      「アプリ内に表示する本文」; update both together when rule.mjs changes. -->
 <div id="rules-view" class="stats-view rules-view" role="dialog" aria-modal="true" aria-labelledby="rules-title" style="display:none">
-  <div class="stats-card rules-card">
-    <div class="st-head"><h2 id="rules-title">ルール</h2><button type="button" class="st-close" id="rules-close">閉じる</button></div>
+  <div class="stats-card rules-card sheet-card">
+    <div class="st-head sheet-head"><h2 id="rules-title">ルール</h2><button type="button" class="st-close" id="rules-close">閉じる</button></div>
     <!-- 2026-11-08: ルール / 役一覧 / 用語辞典 / 牌の読み方のタブ。対局中も toolbar の「役・用語」から
          同じ4タブを開く。main.js openRefView() が管理。 -->
     <div class="ref-tabs" role="tablist" aria-label="ルール・役一覧・用語辞典・牌の読み方">
@@ -251,6 +278,7 @@
       <button type="button" role="tab" class="ref-tab" data-ref-tab="glossary">用語辞典</button>
       <button type="button" role="tab" class="ref-tab" data-ref-tab="tiles">牌の読み方</button>
     </div>
+    <div class="sheet-body">
     <div class="ref-pane rules-body" id="ref-pane-rules" role="tabpanel">
       <h3>基本</h3>
       <ul>
@@ -261,9 +289,10 @@
       </ul>
       <h3>半荘 / 東風</h3>
       <table class="st-table rules-table">
+        <colgroup><col class="rules-col-label"><col><col></colgroup>
         <thead><tr><th></th><th>半荘（既定）</th><th>東風</th></tr></thead>
         <tbody>
-          <tr><td>局数</td><td>東1局〜南4局</td><td>東1局〜東4局</td></tr>
+          <tr><td>局数</td><td class="rules-range">東1〜南4</td><td class="rules-range">東1〜東4</td></tr>
           <tr><td>延長</td><td>あり（下の「西入」）</td><td>あり（東4局終了で誰も30,000点に届かなければ「南入」）</td></tr>
         </tbody>
       </table>
@@ -349,7 +378,7 @@
     <div class="ref-pane rules-body" id="ref-pane-yaku" role="tabpanel" hidden></div>
     <div class="ref-pane rules-body" id="ref-pane-glossary" role="tabpanel" hidden></div>
     <div class="ref-pane rules-body" id="ref-pane-tiles" role="tabpanel" hidden></div>
-    <div class="rules-foot"><button type="button" class="st-close" id="rules-close2">閉じる</button></div>
+    </div>
   </div>
 </div>
 <script>

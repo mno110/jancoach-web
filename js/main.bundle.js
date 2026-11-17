@@ -437,10 +437,10 @@ var require_shoupai = __commonJS({
 var require_shan = __commonJS({
   "../node_modules/@kobalab/majiang-core/lib/shan.js"(exports, module) {
     "use strict";
-    var Majiang7 = { Shoupai: require_shoupai() };
+    var Majiang9 = { Shoupai: require_shoupai() };
     module.exports = class Shan {
       static zhenbaopai(p) {
-        if (!Majiang7.Shoupai.valid_pai(p)) throw new Error(p);
+        if (!Majiang9.Shoupai.valid_pai(p)) throw new Error(p);
         let s = p[0], n = +p[1] || 5;
         return s == "z" ? n < 5 ? s + (n % 4 + 1) : s + ((n - 4) % 3 + 5) : s + (n % 9 + 1);
       }
@@ -510,20 +510,20 @@ var require_shan = __commonJS({
 var require_he = __commonJS({
   "../node_modules/@kobalab/majiang-core/lib/he.js"(exports, module) {
     "use strict";
-    var Majiang7 = { Shoupai: require_shoupai() };
+    var Majiang9 = { Shoupai: require_shoupai() };
     module.exports = class He {
       constructor() {
         this._pai = [];
         this._find = {};
       }
       dapai(p) {
-        if (!Majiang7.Shoupai.valid_pai(p)) throw new Error(p);
+        if (!Majiang9.Shoupai.valid_pai(p)) throw new Error(p);
         this._pai.push(p.replace(/[\+\=\-]$/, ""));
         this._find[p[0] + (+p[1] || 5)] = true;
         return this;
       }
       fulou(m) {
-        if (!Majiang7.Shoupai.valid_mianzi(m)) throw new Error(m);
+        if (!Majiang9.Shoupai.valid_mianzi(m)) throw new Error(m);
         let p = m[0] + m.match(/\d(?=[\+\=\-])/), d = m.match(/[\+\=\-]/);
         if (!d) throw new Error(m);
         if (this._pai[this._pai.length - 1].slice(0, 2) != p)
@@ -542,7 +542,7 @@ var require_he = __commonJS({
 var require_board = __commonJS({
   "../node_modules/@kobalab/majiang-core/lib/board.js"(exports, module) {
     "use strict";
-    var Majiang7 = {
+    var Majiang9 = {
       Shoupai: require_shoupai(),
       He: require_he()
     };
@@ -595,8 +595,8 @@ var require_board = __commonJS({
         this.shan = new Shan(qipai.baopai);
         for (let l = 0; l < 4; l++) {
           let paistr = qipai.shoupai[l] || "_".repeat(13);
-          this.shoupai[l] = Majiang7.Shoupai.fromString(paistr);
-          this.he[l] = new Majiang7.He();
+          this.shoupai[l] = Majiang9.Shoupai.fromString(paistr);
+          this.he[l] = new Majiang9.He();
           this.player_id[l] = (this.qijia + this.jushu + l) % 4;
           this.defen[this.player_id[l]] = qipai.defen[l];
         }
@@ -854,7 +854,7 @@ var require_xiangting = __commonJS({
 var require_hule = __commonJS({
   "../node_modules/@kobalab/majiang-core/lib/hule.js"(exports, module) {
     "use strict";
-    var Majiang7 = {
+    var Majiang9 = {
       Shan: require_shan(),
       rule: require_rule()
     };
@@ -1308,7 +1308,7 @@ var require_hule = __commonJS({
       let suitstr = paistr.match(/[mpsz][^mpsz,]*/g);
       let n_baopai = 0;
       for (let p of baopai) {
-        p = Majiang7.Shan.zhenbaopai(p);
+        p = Majiang9.Shan.zhenbaopai(p);
         const regexp = new RegExp(p[1], "g");
         for (let m of suitstr) {
           if (m[0] != p[0]) continue;
@@ -1324,7 +1324,7 @@ var require_hule = __commonJS({
       if (n_hongpai) post_hupai.push({ name: "\u8D64\u30C9\u30E9", fanshu: n_hongpai });
       let n_fubaopai = 0;
       for (let p of fubaopai || []) {
-        p = Majiang7.Shan.zhenbaopai(p);
+        p = Majiang9.Shan.zhenbaopai(p);
         const regexp = new RegExp(p[1], "g");
         for (let m of suitstr) {
           if (m[0] != p[0]) continue;
@@ -1426,7 +1426,7 @@ var require_hule = __commonJS({
     }
     function hule_param(param = {}) {
       let rv2 = {
-        rule: param.rule ?? Majiang7.rule(),
+        rule: param.rule ?? Majiang9.rule(),
         zhuangfeng: param.zhuangfeng ?? 0,
         menfeng: param.menfeng ?? 1,
         hupai: {
@@ -1458,7 +1458,7 @@ var require_hule = __commonJS({
 var require_game = __commonJS({
   "../node_modules/@kobalab/majiang-core/lib/game.js"(exports, module) {
     "use strict";
-    var Majiang7 = {
+    var Majiang9 = {
       rule: require_rule(),
       Shoupai: require_shoupai(),
       Shan: require_shan(),
@@ -1473,7 +1473,7 @@ var require_game = __commonJS({
         this._players = players;
         this._callback = callback || (() => {
         });
-        this._rule = rule || Majiang7.rule();
+        this._rule = rule || Majiang9.rule();
         this._model = {
           title: title || "\u96FB\u8133\u9EBB\u5C06\n" + (/* @__PURE__ */ new Date()).toLocaleString(),
           player: ["\u79C1", "\u4E0B\u5BB6", "\u5BFE\u9762", "\u4E0A\u5BB6"],
@@ -1644,14 +1644,14 @@ var require_game = __commonJS({
       }
       qipai(shan) {
         let model = this._model;
-        model.shan = shan || new Majiang7.Shan(this._rule);
+        model.shan = shan || new Majiang9.Shan(this._rule);
         for (let l = 0; l < 4; l++) {
           let qipai = [];
           for (let i = 0; i < 13; i++) {
             qipai.push(model.shan.zimo());
           }
-          model.shoupai[l] = new Majiang7.Shoupai(qipai);
-          model.he[l] = new Majiang7.He();
+          model.shoupai[l] = new Majiang9.Shoupai(qipai);
+          model.he[l] = new Majiang9.He();
           model.player_id[l] = (model.qijia + model.jushu + l) % 4;
         }
         model.lunban = -1;
@@ -1724,7 +1724,7 @@ var require_game = __commonJS({
           this._lizhi[model.lunban] = this._diyizimo ? 2 : 1;
           this._yifa[model.lunban] = this._rule["\u4E00\u767A\u3042\u308A"];
         }
-        if (Majiang7.Util.xiangting(model.shoupai[model.lunban]) == 0 && Majiang7.Util.tingpai(model.shoupai[model.lunban]).find((p) => model.he[model.lunban].find(p))) {
+        if (Majiang9.Util.xiangting(model.shoupai[model.lunban]) == 0 && Majiang9.Util.tingpai(model.shoupai[model.lunban]).find((p) => model.he[model.lunban].find(p))) {
           this._neng_rong[model.lunban] = false;
         }
         this._dapai = dapai;
@@ -1835,7 +1835,7 @@ var require_game = __commonJS({
             lizhibang: model.lizhibang
           }
         };
-        let hule = Majiang7.Util.hule(shoupai, rongpai, param);
+        let hule = Majiang9.Util.hule(shoupai, rongpai, param);
         if (this._rule["\u9023\u8358\u65B9\u5F0F"] > 0 && menfeng == 0) this._lianzhuang = true;
         if (this._rule["\u5834\u6570"] == 0) this._lianzhuang = false;
         this._fenpei = hule.fenpei;
@@ -1873,7 +1873,7 @@ var require_game = __commonJS({
             if (this._rule["\u30CE\u30FC\u30C6\u30F3\u5BA3\u8A00\u3042\u308A"] && !shoupai[l] && !model.shoupai[l].lizhi) continue;
             if (!this._rule["\u30CE\u30FC\u30C6\u30F3\u7F70\u3042\u308A"] && (this._rule["\u9023\u8358\u65B9\u5F0F"] != 2 || l != 0) && !model.shoupai[l].lizhi) {
               shoupai[l] = "";
-            } else if (Majiang7.Util.xiangting(model.shoupai[l]) == 0 && Majiang7.Util.tingpai(model.shoupai[l]).length > 0) {
+            } else if (Majiang9.Util.xiangting(model.shoupai[l]) == 0 && Majiang9.Util.tingpai(model.shoupai[l]).length > 0) {
               n_tingpai++;
               shoupai[l] = model.shoupai[l].toString();
               if (this._rule["\u9023\u8358\u65B9\u5F0F"] == 2 && l == 0)
@@ -2054,7 +2054,7 @@ var require_game = __commonJS({
             this._hule.push(l2);
           } else {
             let shoupai = model.shoupai[l2].clone().zimo(this._dapai);
-            if (Majiang7.Util.xiangting(shoupai) == -1)
+            if (Majiang9.Util.xiangting(shoupai) == -1)
               this._neng_rong[l2] = false;
           }
         }
@@ -2152,7 +2152,7 @@ var require_game = __commonJS({
           } else {
             let p = this._gang[0] + this._gang.slice(-1);
             let shoupai = model.shoupai[l].clone().zimo(p);
-            if (Majiang7.Util.xiangting(shoupai) == -1)
+            if (Majiang9.Util.xiangting(shoupai) == -1)
               this._neng_rong[l] = false;
           }
         }
@@ -2299,21 +2299,21 @@ var require_game = __commonJS({
           else if (rule["\u30EA\u30FC\u30C1\u5F8C\u6697\u69D3\u8A31\u53EF\u30EC\u30D9\u30EB"] == 1) {
             let new_shoupai, n_hule1 = 0, n_hule2 = 0;
             new_shoupai = shoupai.clone().dapai(shoupai._zimo);
-            for (let p2 of Majiang7.Util.tingpai(new_shoupai)) {
-              n_hule1 += Majiang7.Util.hule_mianzi(new_shoupai, p2).length;
+            for (let p2 of Majiang9.Util.tingpai(new_shoupai)) {
+              n_hule1 += Majiang9.Util.hule_mianzi(new_shoupai, p2).length;
             }
             new_shoupai = shoupai.clone().gang(mianzi[0]);
-            for (let p2 of Majiang7.Util.tingpai(new_shoupai)) {
-              n_hule2 += Majiang7.Util.hule_mianzi(new_shoupai, p2).length;
+            for (let p2 of Majiang9.Util.tingpai(new_shoupai)) {
+              n_hule2 += Majiang9.Util.hule_mianzi(new_shoupai, p2).length;
             }
             if (n_hule1 > n_hule2) return [];
           } else {
             let new_shoupai;
             new_shoupai = shoupai.clone().dapai(shoupai._zimo);
-            let n_tingpai1 = Majiang7.Util.tingpai(new_shoupai).length;
+            let n_tingpai1 = Majiang9.Util.tingpai(new_shoupai).length;
             new_shoupai = shoupai.clone().gang(mianzi[0]);
-            if (Majiang7.Util.xiangting(new_shoupai) > 0) return [];
-            let n_tingpai2 = Majiang7.Util.tingpai(new_shoupai).length;
+            if (Majiang9.Util.xiangting(new_shoupai) > 0) return [];
+            let n_tingpai2 = Majiang9.Util.tingpai(new_shoupai).length;
             if (n_tingpai1 > n_tingpai2) return [];
           }
         }
@@ -2325,15 +2325,15 @@ var require_game = __commonJS({
         if (!shoupai.menqian) return false;
         if (!rule["\u30C4\u30E2\u756A\u306A\u3057\u30EA\u30FC\u30C1\u3042\u308A"] && paishu < 4) return false;
         if (rule["\u30C8\u30D3\u7D42\u4E86\u3042\u308A"] && defen < 1e3) return false;
-        if (Majiang7.Util.xiangting(shoupai) > 0) return false;
+        if (Majiang9.Util.xiangting(shoupai) > 0) return false;
         if (p) {
           let new_shoupai = shoupai.clone().dapai(p);
-          return Majiang7.Util.xiangting(new_shoupai) == 0 && Majiang7.Util.tingpai(new_shoupai).length > 0;
+          return Majiang9.Util.xiangting(new_shoupai) == 0 && Majiang9.Util.tingpai(new_shoupai).length > 0;
         } else {
           let dapai = [];
           for (let p2 of Game.get_dapai(rule, shoupai)) {
             let new_shoupai = shoupai.clone().dapai(p2);
-            if (Majiang7.Util.xiangting(new_shoupai) == 0 && Majiang7.Util.tingpai(new_shoupai).length > 0) {
+            if (Majiang9.Util.xiangting(new_shoupai) == 0 && Majiang9.Util.tingpai(new_shoupai).length > 0) {
               dapai.push(p2);
             }
           }
@@ -2344,7 +2344,7 @@ var require_game = __commonJS({
         if (p && !neng_rong) return false;
         let new_shoupai = shoupai.clone();
         if (p) new_shoupai.zimo(p);
-        if (Majiang7.Util.xiangting(new_shoupai) != -1) return false;
+        if (Majiang9.Util.xiangting(new_shoupai) != -1) return false;
         if (hupai) return true;
         let param = {
           rule,
@@ -2354,7 +2354,7 @@ var require_game = __commonJS({
           baopai: [],
           jicun: { changbang: 0, lizhibang: 0 }
         };
-        let hule = Majiang7.Util.hule(shoupai, p, param);
+        let hule = Majiang9.Util.hule(shoupai, p, param);
         return hule.hupai != null;
       }
       static allow_pingju(rule, shoupai, diyizimo) {
@@ -2374,7 +2374,7 @@ var require_game = __commonJS({
         if (paishu > 0 || shoupai._zimo) return false;
         if (!rule["\u30CE\u30FC\u30C6\u30F3\u5BA3\u8A00\u3042\u308A"]) return false;
         if (shoupai.lizhi) return false;
-        return Majiang7.Util.xiangting(shoupai) == 0 && Majiang7.Util.tingpai(shoupai).length > 0;
+        return Majiang9.Util.xiangting(shoupai) == 0 && Majiang9.Util.tingpai(shoupai).length > 0;
       }
     };
   }
@@ -2384,7 +2384,7 @@ var require_game = __commonJS({
 var require_player = __commonJS({
   "../node_modules/@kobalab/majiang-core/lib/player.js"(exports, module) {
     "use strict";
-    var Majiang7 = {
+    var Majiang9 = {
       Shoupai: require_shoupai(),
       He: require_he(),
       Game: require_game(),
@@ -2396,7 +2396,7 @@ var require_player = __commonJS({
     };
     module.exports = class Player {
       constructor() {
-        this._model = new Majiang7.Board();
+        this._model = new Majiang9.Board();
       }
       action(msg, callback) {
         this._callback = callback;
@@ -2422,7 +2422,7 @@ var require_player = __commonJS({
         return this._model.shan;
       }
       get hulepai() {
-        return Majiang7.Util.xiangting(this.shoupai) == 0 && Majiang7.Util.tingpai(this.shoupai) || [];
+        return Majiang9.Util.xiangting(this.shoupai) == 0 && Majiang9.Util.tingpai(this.shoupai) || [];
       }
       get model() {
         return this._model;
@@ -2510,10 +2510,10 @@ var require_player = __commonJS({
         if (this._callback) this.action_jieju(paipu);
       }
       get_dapai(shoupai) {
-        return Majiang7.Game.get_dapai(this._rule, shoupai);
+        return Majiang9.Game.get_dapai(this._rule, shoupai);
       }
       get_chi_mianzi(shoupai, p) {
-        return Majiang7.Game.get_chi_mianzi(
+        return Majiang9.Game.get_chi_mianzi(
           this._rule,
           shoupai,
           p,
@@ -2521,7 +2521,7 @@ var require_player = __commonJS({
         );
       }
       get_peng_mianzi(shoupai, p) {
-        return Majiang7.Game.get_peng_mianzi(
+        return Majiang9.Game.get_peng_mianzi(
           this._rule,
           shoupai,
           p,
@@ -2529,7 +2529,7 @@ var require_player = __commonJS({
         );
       }
       get_gang_mianzi(shoupai, p) {
-        return Majiang7.Game.get_gang_mianzi(
+        return Majiang9.Game.get_gang_mianzi(
           this._rule,
           shoupai,
           p,
@@ -2538,7 +2538,7 @@ var require_player = __commonJS({
         );
       }
       allow_lizhi(shoupai, p) {
-        return Majiang7.Game.allow_lizhi(
+        return Majiang9.Game.allow_lizhi(
           this._rule,
           shoupai,
           p,
@@ -2548,7 +2548,7 @@ var require_player = __commonJS({
       }
       allow_hule(shoupai, p, hupai) {
         hupai = hupai || shoupai.lizhi || this.shan.paishu == 0;
-        return Majiang7.Game.allow_hule(
+        return Majiang9.Game.allow_hule(
           this._rule,
           shoupai,
           p,
@@ -2559,14 +2559,14 @@ var require_player = __commonJS({
         );
       }
       allow_pingju(shoupai) {
-        return Majiang7.Game.allow_pingju(
+        return Majiang9.Game.allow_pingju(
           this._rule,
           shoupai,
           this._diyizimo
         );
       }
       allow_no_daopai(shoupai) {
-        return Majiang7.Game.allow_no_daopai(
+        return Majiang9.Game.allow_no_daopai(
           this._rule,
           shoupai,
           this.shan.paishu
@@ -2597,7 +2597,7 @@ var require_lib = __commonJS({
 });
 
 // src/main.js
-var import_majiang_core6 = __toESM(require_lib(), 1);
+var import_majiang_core8 = __toESM(require_lib(), 1);
 
 // ../src/rule.mjs
 var import_majiang_core = __toESM(require_lib(), 1);
@@ -3007,7 +3007,7 @@ var MortalPlayer = class extends BasePlayer {
     return import_majiang_core3.default.Game.get_dapai(this._rule, this.shoupai);
   }
   _fallbackDapai() {
-    const l = this._validDapai();
+    const l = this._validDapai() || [];
     return l.length ? { dapai: l[l.length - 1] } : {};
   }
   _tileReply(mjaiName, riichi = false) {
@@ -3017,6 +3017,30 @@ var MortalPlayer = class extends BasePlayer {
     const tile2 = legal.includes(mj) ? mj : legal.includes(mj + "_") ? mj + "_" : null;
     if (!tile2) return null;
     return { dapai: riichi ? tile2 + "*" : tile2 };
+  }
+  _legalRiichiTiles() {
+    try {
+      return this._validDapai().filter((p) => this.allow_lizhi(this.shoupai, p));
+    } catch (_) {
+      return [];
+    }
+  }
+  // The declaring tile must be a legal riichi declaration: the model's
+  // highest-Q discard can be a non-tenpai keep, which majiang-core would
+  // silently turn into a plain discard (dropping the riichi).
+  _reachDeclareName(res) {
+    const legal = this._legalRiichiTiles();
+    if (!legal.length) return null;
+    const names = /* @__PURE__ */ new Map();
+    for (const p of legal) names.set(tileToMjai(p.replace(/_$/, "").replace(/\*$/, "")), p);
+    let best = null;
+    for (const c of Array.isArray(res?.qAll) ? res.qAll : []) {
+      if (!names.has(c?.action) || !Number.isFinite(c.q)) continue;
+      if (!best || c.q > best.q) best = { name: c.action, q: c.q };
+    }
+    if (best) return best.name;
+    if (res?.bestDahaiName && names.has(res.bestDahaiName)) return res.bestDahaiName;
+    return tileToMjai(legal[0].replace(/_$/, "").replace(/\*$/, ""));
   }
   async _inferPending(context) {
     const brain = this.brain;
@@ -3103,7 +3127,7 @@ var MortalPlayer = class extends BasePlayer {
     }
     switch (res.name) {
       case "reach": {
-        return this._tileReply(res.bestDahaiName, true) || this._fallbackDapai();
+        return this._tileReply(this._reachDeclareName(res), true) || this._fallbackDapai();
       }
       case "kan": {
         const cand = this.get_gang_mianzi(this.shoupai);
@@ -3174,6 +3198,7 @@ var MortalPlayer = class extends BasePlayer {
   action_fulou(fulou) {
     const reply = this._capture();
     if (fulou.l !== this._menfeng) return reply({});
+    if (String(fulou.m || "").replace(/\D/g, "").length === 4) return reply({});
     (async () => {
       try {
         const coachRec = await this._coachFirst("fulou");
@@ -3183,7 +3208,11 @@ var MortalPlayer = class extends BasePlayer {
         reply(out);
       } catch (e) {
         this.stats.errors++;
-        reply(this._fallbackDapai());
+        try {
+          reply(this._fallbackDapai());
+        } catch (_) {
+          reply({});
+        }
       }
     })();
   }
@@ -28776,9 +28805,9 @@ function isChuuren(tehai) {
 }
 var AgariCalculator = class {
   // tehai: Uint8Array/Array(34) of concealed tiles including the winning tile.
-  constructor({ tehai, isMenzen, chis, pons, minkans, ankans, bakaze, jikaze, winningTile, isRon }) {
+  constructor({ tehai, isMenzen: isMenzen2, chis, pons, minkans, ankans, bakaze, jikaze, winningTile, isRon }) {
     this.tehai = tehai;
-    this.isMenzen = isMenzen;
+    this.isMenzen = isMenzen2;
     this.chis = chis;
     this.pons = pons;
     this.minkans = minkans;
@@ -30909,6 +30938,8 @@ function buildDiagnostics(info) {
       return "-";
     }
   })();
+  const fit = info.fit || {};
+  const fv2 = (x) => x === null || x === void 0 ? "-" : x;
   const lines = [
     "\u96C0\u30B3\u30FC\u30C1 \u8A3A\u65AD\u60C5\u5831",
     `\u4F5C\u6210: ${(/* @__PURE__ */ new Date()).toISOString()}`,
@@ -30917,6 +30948,7 @@ function buildDiagnostics(info) {
     `\u6210\u529F\u69CB\u6210: ${info.config || "-"}`,
     `UA: ${scrub(self.navigator?.userAgent || "-", 300)}`,
     `\u753B\u9762: ${scr}`,
+    `fit: scale=${fv2(fit.scale)} natural=${fv2(fit.natural)} vh=${fv2(fit.vh)} fits=${fv2(fit.fits)} innerH=${fv2(fit.innerH)} visualH=${fv2(fit.visualH)} dpr=${fv2(fit.dpr)}`,
     `\u518D\u958B\u30C7\u30FC\u30BF: ${info.resume ? "\u3042\u308A" : "\u306A\u3057"}`,
     le ? `\u6700\u7D42\u30A8\u30E9\u30FC: ${le.code} ${ERROR_CODES[le.code] || ""} / ${le.at}${le.stage ? " / \u6BB5\u968E=" + le.stage : ""}${le.tried ? " / \u8A66\u884C=" + le.tried : ""} / \u4F8B\u5916=${le.message}` : "\u6700\u7D42\u30A8\u30E9\u30FC: \u306A\u3057",
     `--- \u30ED\u30B0\uFF08\u76F4\u8FD1${DIAG_LOG_MAX}\u884C\u307E\u3067\uFF09 ---`,
@@ -30979,9 +31011,65 @@ function withRecommendationProbabilities(candidates, temperature = MORTAL_SOFTMA
 }
 function formatPercent(prob) {
   if (prob == null || !Number.isFinite(prob)) return "-";
-  const pct = prob * 100;
-  if (pct > 0 && pct < 0.1) return "<0.1%";
-  return `${pct.toFixed(1)}%`;
+  const pct2 = prob * 100;
+  if (pct2 > 0 && pct2 < 0.1) return "<0.1%";
+  return `${pct2.toFixed(1)}%`;
+}
+
+// ../src/softvalue.mjs
+var TAU_PHI = 0.0247;
+var SOFTVALUE_BETA = Object.freeze({
+  late: 0.01545,
+  // rem <= 23
+  riichi: 0.01098,
+  // opp_riichi > 0
+  open_only: 961e-5,
+  // opp_open > 0 and opp_riichi == 0
+  plain: 651e-5
+  // opp_open == 0 and opp_riichi == 0
+});
+var SOFTVALUE_BETA_LIGHT = Object.freeze({
+  late: 0.01363,
+  // rem <= 23 (95%CI 0.00958-0.01805, n=210)
+  riichi: 85e-4,
+  // opp_riichi > 0 (0.00570-0.01166, n=390)
+  open_only: 464e-5,
+  // opp_open > 0 and opp_riichi == 0 (0.00291-0.00648, n=533)
+  plain: 281e-5
+  // opp_open == 0 and opp_riichi == 0 (0.00209-0.00355, n=1077)
+});
+var SOFTVALUE_BETA_SETS = Object.freeze({ s59000: SOFTVALUE_BETA, light: SOFTVALUE_BETA_LIGHT });
+var LATE_REM = 23;
+function softvalueSetName(flag) {
+  if (!flag) return null;
+  return typeof flag === "string" && SOFTVALUE_BETA_SETS[flag] ? flag : "s59000";
+}
+function softvalueLayer({ oppRiichi = 0, oppOpen = 0, rem = null } = {}) {
+  if (Number.isFinite(rem) && rem <= LATE_REM) return "late";
+  if (oppRiichi > 0) return "riichi";
+  if (oppOpen > 0) return "open_only";
+  return "plain";
+}
+function layerInfoFromBrain(brain) {
+  const st2 = brain?.engine?.state;
+  if (!st2) return {};
+  let oppRiichi = 0, oppOpen = 0;
+  for (let i = 1; i < 4; i++) {
+    if (st2.riichiAccepted?.[i]) oppRiichi++;
+    if (st2.fuuroOverview?.[i]?.length > 0) oppOpen++;
+  }
+  return { oppRiichi, oppOpen, rem: Number.isFinite(st2.tilesLeft) ? st2.tilesLeft : null };
+}
+function softvalueProbabilities(qs2, layer, tauPhi = TAU_PHI, betaSet = SOFTVALUE_BETA) {
+  if (!qs2.length) return [];
+  const beta = betaSet[layer] ?? betaSet.plain;
+  const top = Math.max(...qs2);
+  return softmaxProbabilities(qs2.map((q4) => beta * (q4 - top)), tauPhi);
+}
+function withSoftvalueProbabilities(candidates, info, setName = "s59000") {
+  const layer = softvalueLayer(info);
+  const probs = softvalueProbabilities(candidates.map((c) => c.q), layer, TAU_PHI, SOFTVALUE_BETA_SETS[setName] ?? SOFTVALUE_BETA);
+  return candidates.map((c, i) => ({ ...c, prob: probs[i], percent: +(probs[i] * 100).toFixed(2) }));
 }
 
 // src/ai_runtime_web.mjs
@@ -31125,6 +31213,8 @@ var AiRuntime = class _AiRuntime {
     this.inferCount = 0;
     this.inferMs = 0;
     this.displayTemperature = MORTAL_SOFTMAX_TEMPERATURE;
+    this.softvalue = false;
+    this.softvalueSet = null;
   }
   // modelUrl / wasmUrl are resolved against the page (dist root layout:
   // models/ and assets/). ortBaseUrl points at the vendored ORT wasm dir.
@@ -31222,6 +31312,8 @@ var AiRuntime = class _AiRuntime {
         ssSet(CHAIN_KEY, null);
         const rt = new _AiRuntime(session, eps);
         if (Number.isFinite(opts.displayTemperature) && opts.displayTemperature > 0) rt.displayTemperature = opts.displayTemperature;
+        rt.softvalueSet = softvalueSetName(opts.softvalue);
+        rt.softvalue = !!rt.softvalueSet;
         rt.onlog = onlog;
         rt.ortConfig = cname;
         rt.modelUrl = modelUrl;
@@ -31313,6 +31405,7 @@ var AiRuntime = class _AiRuntime {
     const t02 = performance.now();
     const obs = brain.engine.encode_obs();
     const shanten = brain.shanten();
+    const layerInfo = this.softvalue ? layerInfoFromBrain(brain) : null;
     let obsData = obs.obs;
     if (zeroRows && zeroRows.length) {
       obsData = Float32Array.from(obs.obs);
@@ -31330,15 +31423,14 @@ var AiRuntime = class _AiRuntime {
     const run = async () => {
       const results = await guardedRun(this, feeds, this.runTimeoutMs, this.onlog);
       const q4 = results.q_values.data;
+      const pMethod = this.softvalue ? "softvalue" : "softmax";
       let best = -1;
       for (let j = 0; j < q4.length; j++) {
         if (obs.mask[j] && (best < 0 || q4[j] > q4[best])) best = j;
       }
       const legal = Array.from(q4).map((v, j) => [j, v]).filter(([j]) => obs.mask[j]);
-      const qAll = withRecommendationProbabilities(
-        legal.map(([j, v]) => ({ action: ACTION_NAMES[j] || String(j), q: +Number(v).toFixed(4) })),
-        this.displayTemperature
-      ).sort((a, b) => b.q - a.q);
+      const cands = legal.map(([j, v]) => ({ action: ACTION_NAMES[j] || String(j), q: +Number(v).toFixed(4) }));
+      const qAll = (this.softvalue ? withSoftvalueProbabilities(cands, layerInfo, this.softvalueSet) : withRecommendationProbabilities(cands, this.displayTemperature)).sort((a, b) => b.q - a.q);
       const top3 = qAll.slice(0, 3);
       this.inferMs += performance.now() - t02;
       this.inferCount++;
@@ -31350,7 +31442,7 @@ var AiRuntime = class _AiRuntime {
           pBest: null,
           top3: [],
           qAll: [],
-          probabilityMethod: "softmax",
+          probabilityMethod: pMethod,
           softmaxTemperature: this.displayTemperature,
           bestDahaiName: null,
           shanten,
@@ -31373,7 +31465,7 @@ var AiRuntime = class _AiRuntime {
           pBest: qAll.find((x) => x.action === ACTION_NAMES[chosen])?.prob ?? null,
           top3,
           qAll,
-          probabilityMethod: "softmax",
+          probabilityMethod: pMethod,
           softmaxTemperature: this.displayTemperature,
           bestDahaiName: dahai >= 0 ? ACTION_NAMES[dahai] : null,
           shanten,
@@ -31387,7 +31479,7 @@ var AiRuntime = class _AiRuntime {
         pBest: qAll[0]?.prob ?? null,
         top3,
         qAll,
-        probabilityMethod: "softmax",
+        probabilityMethod: pMethod,
         softmaxTemperature: this.displayTemperature,
         bestDahaiName: bestDahai >= 0 ? ACTION_NAMES[bestDahai] : null,
         shanten
@@ -31405,6 +31497,7 @@ var AiRuntime = class _AiRuntime {
 
 // src/model_fallback.mjs
 var MODEL_LOADING_KEY = "ml-model-loading";
+var FALLBACK_MODEL_KEY = "ml-fallback-model";
 var PRIMARY_MODEL_ID = "jaklab-v1";
 var LIGHT_MODEL_ID = "jaklab-v1-light";
 var FALLBACK_CODE = "E-L130";
@@ -31427,6 +31520,25 @@ function clearModelLoading(storage) {
   } catch (_) {
   }
 }
+function fallbackModelPending(storage) {
+  try {
+    return storage?.getItem(FALLBACK_MODEL_KEY) || null;
+  } catch (_) {
+    return null;
+  }
+}
+function markFallbackModel(storage, modelId) {
+  try {
+    storage?.setItem(FALLBACK_MODEL_KEY, String(modelId || ""));
+  } catch (_) {
+  }
+}
+function clearFallbackModel(storage) {
+  try {
+    storage?.removeItem(FALLBACK_MODEL_KEY);
+  } catch (_) {
+  }
+}
 function fallbackForFailure(modelId) {
   if (modelId !== PRIMARY_MODEL_ID) return null;
   return {
@@ -31445,6 +31557,10 @@ function crashFallback(pendingFile) {
     notice: "\u524D\u56DE\u30E2\u30C7\u30EB\uFF08\u6A19\u6E96\uFF09\u306E\u8AAD\u307F\u8FBC\u307F\u304C\u5B8C\u4E86\u3057\u306A\u304B\u3063\u305F\u305F\u3081\u3001\u8EFD\u91CF\u7248\uFF08V1 Light\uFF09\u3067\u8D77\u52D5\u3057\u307E\u3057\u305F"
   };
 }
+function resumeFallback(modelId) {
+  if (modelId !== LIGHT_MODEL_ID) return null;
+  return fallbackForFailure(PRIMARY_MODEL_ID);
+}
 
 // src/cpu_style.mjs
 var CPU_TIERS = [
@@ -31453,12 +31569,14 @@ var CPU_TIERS = [
   // -> 8 - (2.5905 - 2.537) / 0.045 = 6.8 -> 七段. No new calibration needed.
   { id: "dan7", label: "\u4E03\u6BB5\u76F8\u5F53", short: "\u4E03\u6BB5\u76F8\u5F53", model: "light", tau: null, bars: 5 },
   { id: "dan6", label: "\u4E94\u6BB5\u76F8\u5F53", short: "\u4E94\u6BB5\u76F8\u5F53", model: "light", tau: 1.7, bars: 4 },
+  { id: "sandan", label: "\u4E09\u6BB5\u76F8\u5F53", short: "\u4E09\u6BB5\u76F8\u5F53", model: "light", tau: 1.9, bars: 4 },
+  { id: "shodan", label: "\u521D\u6BB5\u76F8\u5F53", short: "\u521D\u6BB5\u76F8\u5F53", model: "light", tau: 2.3, bars: 3 },
   { id: "dan3", label: "\u4E8C\u7D1A\u76F8\u5F53", short: "\u4E8C\u7D1A\u76F8\u5F53", model: "light", tau: 2.6, bars: 3 },
   { id: "dan1", label: "\u4E94\u7D1A\u76F8\u5F53", short: "\u4E94\u7D1A\u76F8\u5F53", model: "light", tau: 3, bars: 2 },
   { id: "kyu", label: "\u59CB\u3081\u305F\u3066\uFF08\u7D1A\u4F4D\u76F8\u5F53\uFF09", short: "\u7D1A\u4F4D\u76F8\u5F53", model: "light", tau: 3.4, bars: 1 }
 ];
 var CPU_STYLES = [
-  { id: "none", label: "\u88DC\u6B63\u306A\u3057", mag: 0 },
+  { id: "none", label: "\u6A19\u6E96", mag: 0 },
   { id: "naki", label: "\u9CF4\u304D\u578B", mag: 3 },
   { id: "defense", label: "\u5B88\u5099\u578B", mag: 3 },
   { id: "attack", label: "\u653B\u6483\u578B", mag: 3 },
@@ -31470,6 +31588,8 @@ var CPU_STYLE_MAG = {
   top: { naki: 3, defense: 3, attack: 3, some: 2 },
   dan7: { naki: 3, defense: 3, attack: 3, some: 2 },
   dan6: { naki: 1.5, defense: 3, attack: 3, some: 1 },
+  sandan: { naki: 1.5, defense: 3, attack: 3, some: 1.5 },
+  shodan: { naki: 1.5, defense: 3, attack: 3, some: 1.5 },
   dan3: { naki: 1.5, defense: 3, attack: 3, some: 2 },
   dan1: { naki: 1.5, defense: 3, attack: 3, some: 0.5 },
   kyu: { naki: 1.5, defense: 3, attack: 3, some: 1 }
@@ -31692,6 +31812,70 @@ async function createCpuOpponents({ settings, ai: ai2, coachModelId, loadLight, 
   return { seats, policies, forSeat: (id2) => runtimes[id2] };
 }
 
+// src/certification.mjs
+var CERT_FULL_MODEL_ID = "jaklab-v1";
+var CERT_RECENT_GAMES = 15;
+var DISCARD_ACTION = /^(?:[1-9][mps]|5[mps]r|[ESWNPFC])$/;
+function annotateFirstTap(rec, firstTapName) {
+  if (!rec || !firstTapName || !DISCARD_ACTION.test(firstTapName)) return rec;
+  const cand = (rec.qValues || []).find((c) => c.action === firstTapName) || null;
+  rec.firstTap = firstTapName;
+  rec.firstTapQDiff = rec.qBest != null && cand?.q != null ? +(rec.qBest - cand.q).toFixed(4) : null;
+  return rec;
+}
+function judgedQDiff(rec, gameCoachDisplay2) {
+  if (rec.firstTap != null) return rec.firstTapQDiff ?? 0;
+  const shown = rec.coachDisplay ?? gameCoachDisplay2;
+  if (shown !== false) return void 0;
+  return rec.qDiff ?? 0;
+}
+function isDiscardDecision(rec) {
+  if (!rec) return false;
+  if (rec.context !== "zimo" && rec.context !== "fulou") return false;
+  if (rec.autoPlayed) return false;
+  if (rec.actual == null) return false;
+  return DISCARD_ACTION.test(rec.actual);
+}
+function computeCertBlock(records, gameCoachDisplay2 = null) {
+  let discardQDiffSum = 0;
+  let discardN = 0;
+  for (const rec of records || []) {
+    if (!isDiscardDecision(rec)) continue;
+    const q4 = judgedQDiff(rec, gameCoachDisplay2);
+    if (q4 === void 0) continue;
+    discardQDiffSum += q4;
+    discardN++;
+  }
+  return { discardQDiffSum: +discardQDiffSum.toFixed(4), discardN, firstTap: true };
+}
+function certificationEligible(summary) {
+  if (!summary) return false;
+  if (summary.eligible !== true) return false;
+  if (!summary.cert) return false;
+  if (summary.cert.firstTap !== true && summary.coachDisplay !== false) return false;
+  if (summary.gameLength === "tonpuu") return false;
+  if (summary.modelCoach !== CERT_FULL_MODEL_ID) return false;
+  if (summary.modelId !== CERT_FULL_MODEL_ID) return false;
+  return true;
+}
+function aggregateCertification(summaries) {
+  const games = [];
+  (summaries || []).forEach((s, i) => {
+    if (!certificationEligible(s)) return;
+    if (!((s.cert.discardN || 0) >= 1)) return;
+    games.push({ s, i, t: Date.parse(s.savedAt) || 0 });
+  });
+  games.sort((a, b) => a.t - b.t || a.i - b.i);
+  const used = games.slice(-CERT_RECENT_GAMES);
+  const out = { lossSum: 0, discardN: 0, gameN: 0, total: games.length, recent: games.length > CERT_RECENT_GAMES };
+  for (const { s } of used) {
+    out.lossSum += s.cert.discardQDiffSum || 0;
+    out.discardN += s.cert.discardN || 0;
+    out.gameN++;
+  }
+  return out;
+}
+
 // src/human_player.mjs
 var HumanPlayer = class extends BasePlayer {
   constructor(ui2, coach2 = null, settingsFn = null) {
@@ -31700,6 +31884,7 @@ var HumanPlayer = class extends BasePlayer {
     this._coach = coach2;
     this._settingsFn = settingsFn;
     this._lastCoach = null;
+    this._coachSeq = 0;
     this.agreement = { total: 0, agree: 0 };
     this.stats = { decisions: 0, errors: 0 };
   }
@@ -31725,20 +31910,46 @@ var HumanPlayer = class extends BasePlayer {
     };
   }
   async _coachFirst(context) {
+    const seq = ++this._coachSeq;
     this._lastCoach = null;
-    if (!this._coach) return;
+    if (!this._coach) {
+      try {
+        this.ui.onCoachSettled?.(context, null);
+      } catch (_) {
+      }
+      return null;
+    }
     try {
       const rec = await this._coach.maybeDecide(context);
-      if (rec) {
+      if (rec && seq === this._coachSeq) {
         this._lastCoach = { context, record: rec };
         if (this.ui.onCoach) this.ui.onCoach(rec, context);
       }
+      return rec;
     } catch (e) {
       this.stats.errors++;
+      if (seq === this._coachSeq) {
+        try {
+          this.ui.onCoachMissing?.(context, e);
+        } catch (_) {
+        }
+      }
+      return null;
+    } finally {
       try {
-        this.ui.onCoachMissing?.(context, e);
+        this.ui.onCoachSettled?.(context, seq === this._coachSeq ? this._lastCoach?.record || null : null);
       } catch (_) {
       }
+    }
+  }
+  // Certified rank: attach the decision's first tap (taken before any
+  // evaluation was shown) to its coach record. Discards only.
+  _noteFirstTap(tileAction) {
+    const rec = this._lastCoach?.record;
+    if (!rec || !tileAction) return;
+    try {
+      annotateFirstTap(rec, tileToMjai(tileAction));
+    } catch (_) {
     }
   }
   _countAgreement(userAction) {
@@ -31771,7 +31982,7 @@ var HumanPlayer = class extends BasePlayer {
     if (zimo.l !== this._menfeng) return reply({});
     (async () => {
       try {
-        await this._coachFirst("zimo");
+        const coachP = this._coachFirst("zimo");
         const st2 = this._settings();
         const dapaiList = this._validDapai();
         const riichiTiles = dapaiList.filter((p) => this.allow_lizhi(this.shoupai, p));
@@ -31779,6 +31990,7 @@ var HumanPlayer = class extends BasePlayer {
         const canHule = !!this.allow_hule(this.shoupai, null, gangzimo);
         const canPingju = !!this.allow_pingju(this.shoupai);
         if (canHule && st2.autoWin) {
+          await coachP;
           this._markAuto("autowin");
           this._countAgreement("hora");
           return reply({ hule: "-" });
@@ -31788,6 +32000,7 @@ var HumanPlayer = class extends BasePlayer {
         const riichiChoice = !this.shoupai.lizhi && riichiTiles.length > 0;
         const autoTsumo = !!tsumo && !canHule && !canPingju && !kanChoice && (this.shoupai.lizhi || st2.autoTsumogiri && !riichiChoice);
         if (autoTsumo) {
+          await coachP;
           this._markAuto(this.shoupai.lizhi ? "riichi" : "tsumogiri");
           this._countAgreement(tileToMjai(tsumo));
           return reply({ dapai: tsumo });
@@ -31799,6 +32012,9 @@ var HumanPlayer = class extends BasePlayer {
           canHule,
           canPingju
         });
+        const firstTap = this.ui.takeFirstTap?.() ?? null;
+        await coachP;
+        if (r.dapai) this._noteFirstTap(firstTap);
         if (r.hule) this._countAgreement("hora");
         else if (r.gang) this._countAgreement("kan");
         else if (r.daopai) this._countAgreement("ryukyoku");
@@ -31834,18 +32050,21 @@ var HumanPlayer = class extends BasePlayer {
     }
     (async () => {
       try {
-        await this._coachFirst("dapai");
+        const coachP = this._coachFirst("dapai");
         const st2 = this._settings();
         if (canHule && st2.autoWin) {
+          await coachP;
           this._markAuto("autowin");
           this._countAgreement("hora");
           return reply({ hule: "-" });
         }
         if (!canHule && !ponMianzi.length && !chiMianzi.length && !gangMianzi.length) {
+          await coachP;
           this._countAgreement("none");
           return reply({});
         }
         if (st2.noCall && !canHule) {
+          await coachP;
           this._markAuto("nocall");
           this._countAgreement("none");
           return reply({});
@@ -31857,6 +32076,7 @@ var HumanPlayer = class extends BasePlayer {
           chiMianzi,
           gangMianzi
         });
+        await coachP;
         if (r.hule) this._countAgreement("hora");
         else if (r.fulou) {
           const kind = gangMianzi.includes(r.fulou) ? "kan" : ponMianzi.includes(r.fulou) ? "pon" : this._chiName(r.fulou, p);
@@ -31876,9 +32096,12 @@ var HumanPlayer = class extends BasePlayer {
     if (String(fulou.m || "").replace(/\D/g, "").length === 4) return reply({});
     (async () => {
       try {
-        await this._coachFirst("fulou");
+        const coachP = this._coachFirst("fulou");
         const dapaiList = this._validDapai();
         const r = await this.ui.requestDecision("fulou", { dapaiList, riichiTiles: [] });
+        const firstTap = this.ui.takeFirstTap?.() ?? null;
+        await coachP;
+        if (r.dapai) this._noteFirstTap(firstTap);
         if (r.dapai) this._countAgreement(tileToMjai(r.dapai));
         reply(r);
       } catch (e) {
@@ -31929,17 +32152,20 @@ var HumanPlayer = class extends BasePlayer {
     }
     (async () => {
       try {
-        await this._coachFirst("gang");
+        const coachP = this._coachFirst("gang");
         if (!canHule) {
+          await coachP;
           this._countAgreement("none");
           return reply({});
         }
         if (this._settings().autoWin) {
+          await coachP;
           this._markAuto("autowin");
           this._countAgreement("hora");
           return reply({ hule: "-" });
         }
         const r = await this.ui.requestDecision("gang", { canHule });
+        await coachP;
         this._countAgreement(r.hule ? "hora" : "none");
         reply(r);
       } catch (e) {
@@ -31990,14 +32216,17 @@ function safetyTag(tile2, riichiHeLists) {
   if (perOpp.some((t) => t === "genbutsu")) return "\u4E00\u90E8\u73FE\u7269";
   return "\u7121\u30B9\u30B8";
 }
-function doraSetFromIndicators(model) {
+function doraSetFromMarkers(markers) {
   const set = /* @__PURE__ */ new Set();
-  for (const ind of model?.shan?.baopai || []) {
+  for (const ind of markers || []) {
     const s = ind[0], n = +(ind[1] === "0" ? "5" : ind[1]);
     if (s === "z") set.add("z" + (n <= 4 ? n % 4 + 1 : (n - 4) % 3 + 5));
     else set.add(s + (n % 9 + 1));
   }
   return set;
+}
+function doraSetFromIndicators(model) {
+  return doraSetFromMarkers(model?.shan?.baopai);
 }
 function countDora(shoupai, doraSet) {
   let n = 0;
@@ -32417,10 +32646,10 @@ function safeTileInfo(shoupai, model) {
   }
   return { count: tiles.reduce((a, t) => a + t.count, 0), tiles };
 }
-function displayShanten(shoupai, rule, model, context) {
+function displayShanten(shoupai, rule, model, context, rowsFn = null) {
   if (!shoupai) return null;
   if (context === "zimo" || context === "fulou") {
-    const rows = analyzeDiscards(shoupai, rule, model, { shape: false });
+    const rows = rowsFn ? rowsFn() : analyzeDiscards(shoupai, rule, model, { shape: false });
     if (rows.length) return Math.min(...rows.map((r) => r.shanten));
   }
   return import_majiang_core4.default.Util.xiangting(shoupai);
@@ -32554,7 +32783,7 @@ var STATISTICAL_NOTES = {
     sourceImages: []
   }
 };
-function statisticalNoteForCoach(shoupai, rule, model, rec) {
+function statisticalNoteForCoach(shoupai, rule, model, rec, rowsFn = null) {
   if (!shoupai || !model || !rec) return null;
   const opponentsRiichi = (model.shoupai || []).filter((sp) => sp && sp !== shoupai && (sp.lizhi ?? sp._lizhi)).length;
   const wrap = (note2, extra = {}) => ({
@@ -32572,7 +32801,7 @@ function statisticalNoteForCoach(shoupai, rule, model, rec) {
   if (rec.context !== "zimo" && rec.context !== "fulou") return null;
   const recPai = recommendedDiscardOf(rec);
   if (!recPai) return null;
-  const rows = analyzeDiscards(shoupai, rule, model, { shape: false });
+  const rows = rowsFn ? rowsFn() : analyzeDiscards(shoupai, rule, model, { shape: false });
   const row = rows.find((r) => r.pai === recPai);
   if (!row) return null;
   const menzen = !!shoupai.menqian;
@@ -32624,11 +32853,11 @@ function templateComment(rows, recPai) {
   const maxUkeire = Math.max(...rows.filter((r) => r.shanten === minShanten).map((r) => r.ukeire));
   const parts = [];
   if (rec.shanten === minShanten && rec.ukeire === maxUkeire && maxUkeire > 0) {
-    parts.push(`\u53D7\u3051\u5165\u308C\u6700\u5927 (${rec.ukeire}\u679A) \u3067\u6700\u901F\u306E\u624B`);
+    parts.push(`\u53D7\u5165\u6700\u5927 (${rec.ukeire}\u679A) \u3067\u6700\u901F\u306E\u624B`);
   } else if (rec.shanten === minShanten) {
-    parts.push(`\u5411\u8074\u306F\u6700\u901F\u30BF\u30A4 (\u53D7\u3051\u5165\u308C${rec.ukeire}\u679A)`);
+    parts.push(`\u5411\u8074\u306F\u6700\u901F\u30BF\u30A4 (\u53D7\u5165${rec.ukeire}\u679A)`);
   } else {
-    parts.push(`\u724C\u52B9\u7387\u306E\u6700\u901F\u624B\u3067\u306F\u306A\u3044 (\u5411\u8074${rec.shanten} / \u53D7\u3051\u5165\u308C${rec.ukeire}\u679A)`);
+    parts.push(`\u724C\u52B9\u7387\u306E\u6700\u901F\u624B\u3067\u306F\u306A\u3044 (\u5411\u8074${rec.shanten} / \u53D7\u5165${rec.ukeire}\u679A)`);
   }
   if (rec.safety === "\u73FE\u7269") parts.push("\u30EA\u30FC\u30C1\u8005\u306E\u73FE\u7269\u3067\u5B89\u5168");
   else if (rec.safety === "\u30B9\u30B8") parts.push("\u5BFE\u30EA\u30FC\u30C1\u3067\u30B9\u30B8\u306B\u3042\u305F\u308B");
@@ -32637,7 +32866,7 @@ function templateComment(rows, recPai) {
   if (rec.breaksYakuhai) parts.push("\u5F79\u724C\u306E\u5BFE\u5B50\u3092\u5D29\u3059");
   else if (rec.yakuhaiKept?.length) parts.push("\u5F79\u724C\u306E\u5BFE\u5B50/\u523B\u5B50\u3092\u4FDD\u6301");
   if (rec.shape && rec.shape.goodCopies > 0) {
-    parts.push(`\u597D\u5F62\u306B\u5909\u308F\u308B\u30C4\u30E2${rec.shape.goodCopies}\u679A (1\u6BB5\u5148\u306E\u53D7\u3051\u5165\u308C\u671F\u5F85${rec.shape.expectedNextUkeire}\u679A)`);
+    parts.push(`\u597D\u5F62\u306B\u5909\u308F\u308B\u30C4\u30E2${rec.shape.goodCopies}\u679A (1\u6BB5\u5148\u306E\u53D7\u5165\u671F\u5F85${rec.shape.expectedNextUkeire}\u679A)`);
   }
   if (rec.scoreOutlook) {
     parts.push(`\u30C6\u30F3\u30D1\u30A4\u3067\u60F3\u5B9A${rec.scoreOutlook.min.toLocaleString()}\u301C${rec.scoreOutlook.max.toLocaleString()}\u70B9`);
@@ -32693,8 +32922,8 @@ function explainabilityOf(rows, rec) {
   const explainable = keepsValue && (fast || wide || safeBest || safeBack || pairsBasis || floatBasis || shapeBest) && !outlookDominated && !directionContradiction || savedByDirection && keepsValue && !outlookDominated;
   const basis = explainable ? fast ? "efficiency" : safeBest || safeBack ? "safety" : wide ? "wide" : pairsBasis ? "pairs" : floatBasis ? "float" : shapeBest ? "shape" : "direction" : null;
   const conditions = [];
-  if (fast) conditions.push("\u53D7\u3051\u5165\u308C\u6700\u5927\u3067\u6700\u901F\u306E\u624B");
-  if (wide) conditions.push("\u5411\u8074\u306F\u623B\u308B\u304C\u53D7\u3051\u5165\u308C\u6700\u5927\u306E\u624B");
+  if (fast) conditions.push("\u53D7\u5165\u6700\u5927\u3067\u6700\u901F\u306E\u624B");
+  if (wide) conditions.push("\u5411\u8074\u306F\u623B\u308B\u304C\u53D7\u5165\u6700\u5927\u306E\u624B");
   if (safeBest) conditions.push("\u5BFE\u30EA\u30FC\u30C1\u3067\u6700\u3082\u5B89\u5168\u306A\u624B");
   if (safeBack) conditions.push("\u5411\u8074\u3092\u623B\u3057\u3066\u3067\u3082\u5BFE\u30EA\u30FC\u30C1\u3067\u6700\u3082\u5B89\u5168\u306A\u624B");
   if (isBestOutlook) conditions.push("\u6253\u70B9\u898B\u8FBC\u307F\u304C\u6700\u826F\u306E\u624B");
@@ -32763,10 +32992,16 @@ function directionProbeOf(rows, rec) {
     };
   });
 }
-function comparisonOf(rows) {
+function comparisonOf(rows, opts = {}) {
   const ranked = rows.filter((r) => r.candidate && r.candidate.q != null).sort((a, b) => b.candidate.q - a.candidate.q);
   if (ranked.length < 2) return null;
-  const [r1, r2] = ranked;
+  const findByPai = (tile2) => tile2 == null ? null : ranked.find((r) => r.pai === tile2 || r.actionPai === tile2) || null;
+  const recRow = findByPai(opts.recPai) || ranked[0];
+  const focusRow = findByPai(opts.focusPai);
+  const r1 = recRow;
+  const r2 = focusRow && focusRow !== recRow ? focusRow : ranked.find((r) => r !== recRow);
+  if (!r2) return null;
+  const focusDiffers = !!(focusRow && focusRow !== recRow);
   const L = tileLabelJa;
   const pairText = (p) => {
     const ann = [...p.roles || [], ...p.dora ? [`\u30C9\u30E9${p.dora}`] : []];
@@ -32776,7 +33011,7 @@ function comparisonOf(rows) {
   const b1 = breaksOf(r1), b2 = breaksOf(r2);
   const plus2 = [], cost2 = [];
   if (r2.shanten < r1.shanten) plus2.push(`\u5411\u8074\u304C${r1.shanten - r2.shanten}\u3064\u9032\u3080`);
-  if (r2.ukeire > r1.ukeire) plus2.push(`\u53D7\u3051\u5165\u308C+${r2.ukeire - r1.ukeire}\u679A`);
+  if (r2.ukeire > r1.ukeire) plus2.push(`\u53D7\u5165+${r2.ukeire - r1.ukeire}\u679A`);
   if ((SAFETY_RANK[r2.safety] ?? 0) > (SAFETY_RANK[r1.safety] ?? 0)) plus2.push("\u5B89\u5168\u5EA6\u304C\u9AD8\u3044");
   if (b2.length && !b1.length) cost2.push(...b2.map((p) => `${pairText(p)}\u3092\u5D29\u3059`));
   if (r2.discardsDora && !r1.discardsDora) cost2.push("\u30C9\u30E9\u3092\u624B\u653E\u3059");
@@ -32785,7 +33020,7 @@ function comparisonOf(rows) {
   }
   const plus1 = [];
   if (r1.shanten < r2.shanten) plus1.push(`\u5411\u8074\u304C${r2.shanten - r1.shanten}\u3064\u9032\u3080`);
-  if (r1.ukeire > r2.ukeire) plus1.push(`\u53D7\u3051\u5165\u308C+${r1.ukeire - r2.ukeire}\u679A`);
+  if (r1.ukeire > r2.ukeire) plus1.push(`\u53D7\u5165+${r1.ukeire - r2.ukeire}\u679A`);
   if ((SAFETY_RANK[r1.safety] ?? 0) > (SAFETY_RANK[r2.safety] ?? 0)) plus1.push("\u5B89\u5168\u5EA6\u304C\u9AD8\u3044");
   if (b2.length && !b1.length) plus1.push("\u5BFE\u5B50\u3092\u3059\u3079\u3066\u6B8B\u3059");
   if (b1.length && !b2.length) {
@@ -32803,14 +33038,21 @@ function comparisonOf(rows) {
     plus1.push(`${weakest ? "\u6700\u5F31\u306E" : ""}\u6D6E\u304D\u724C\u306E\u51E6\u7406\uFF08${relText}\uFF09`);
   }
   const sentences = [];
-  if (plus2.length && cost2.length) {
-    sentences.push(`${L(r2.pai)}\u5207\u308A\u306F${plus2.join("\u30FB")}\u3060\u304C\u3001${cost2.join("\u30FB")}\u3002`);
-  } else if (plus2.length || cost2.length) {
-    sentences.push(`${L(r2.pai)}\u5207\u308A\u306F${[...plus2, ...cost2].join("\u30FB")}\u3002`);
+  if (plus2.length || cost2.length) {
+    const subject = focusDiffers ? `\u9078\u629E\u4E2D\u306E${L(r2.pai)}\u5207\u308A\u306F\u63A8\u5968\u306E${L(r1.pai)}\u5207\u308A\u306B\u6BD4\u3079` : `${L(r2.pai)}\u5207\u308A\u306F`;
+    if (plus2.length && cost2.length) {
+      sentences.push(`${subject}${plus2.join("\u30FB")}\u3060\u304C\u3001${cost2.join("\u30FB")}\u3002`);
+    } else {
+      sentences.push(`${subject}${[...plus2, ...cost2].join("\u30FB")}\u3002`);
+    }
   }
-  if (plus1.length) sentences.push(`${L(r1.pai)}\u5207\u308A\u306F${plus1.join("\u30FB")}\u3002`);
+  if (plus1.length) {
+    const lead = focusDiffers && !plus2.length && !cost2.length ? `\u9078\u629E\u4E2D\u306E${L(r2.pai)}\u5207\u308A\u306B\u5BFE\u3057\u3001` : "";
+    sentences.push(`${lead}${L(r1.pai)}\u5207\u308A\u306F${plus1.join("\u30FB")}\u3002`);
+  }
   if (b1.length && !b2.length) {
-    sentences.push(`\u305F\u3060\u3057${L(r1.pai)}\u5207\u308A\u306F${b1.map(pairText).join("\u30FB")}\u3092\u5D29\u3059\u3002`);
+    const lead = focusDiffers && !plus2.length && !cost2.length && !plus1.length ? `\u9078\u629E\u4E2D\u306E${L(r2.pai)}\u5207\u308A\u306B\u5BFE\u3057\u3001` : "";
+    sentences.push(`${lead}${lead ? "" : "\u305F\u3060\u3057"}${L(r1.pai)}\u5207\u308A\u306F${b1.map(pairText).join("\u30FB")}\u3092\u5D29\u3059\u3002`);
   }
   if (!sentences.length) return null;
   return { text: sentences.join(""), first: r1.pai, second: r2.pai };
@@ -33216,6 +33458,34 @@ function horaHeadingHTML(r, names, winTileHTML = "") {
 function deltaTotalClass(value) {
   return "delta-total" + (value > 0 ? " delta-positive" : value < 0 ? " delta-negative" : "");
 }
+function doraMarkersFromModel(model) {
+  return [...model?.shan?.baopai || []];
+}
+function uraMarkersFromHule(h) {
+  return Array.isArray(h?.fubaopai) ? h.fubaopai.slice() : [];
+}
+function doraTileSet(r) {
+  return doraSetFromMarkers([...r?.doraMarkers || [], ...r?.uraMarkers || []]);
+}
+function doraYakuCount(r, name2) {
+  return (r?.yaku || []).filter((y) => y.name === name2).reduce((n, y) => n + (Number(y.fanshu) || 0), 0);
+}
+function doraBlockHTML(r, tileSVG2, tileLabel2) {
+  const markers = r?.doraMarkers || [];
+  const ura = r?.uraMarkers || [];
+  if (!markers.length && !ura.length) return "";
+  const group = (label, list, countText) => `<span class="rd-group">
+        <span class="rd-label">${label}</span>
+        <span class="rd-tiles">${list.map((p) => `<span class="rd-tile">${tileSVG2(p, tileLabel2(p))}</span>`).join("")}</span>
+        ${countText ? `<span class="rd-count">${countText}</span>` : ""}
+      </span>`;
+  const doraN = doraYakuCount(r, "\u30C9\u30E9");
+  const uraN = doraYakuCount(r, "\u88CF\u30C9\u30E9");
+  return `<div class="result-dora">
+      ${group("\u30C9\u30E9\u8868\u793A", markers, doraN ? `\u30C9\u30E9${doraN}` : "")}
+      ${ura.length ? group("\u88CF\u30C9\u30E9\u8868\u793A", ura, uraN ? `\u88CF\u30C9\u30E9${uraN}` : "") : ""}
+    </div>`;
+}
 
 // src/tile_art.mjs
 var BODY = `
@@ -33453,7 +33723,7 @@ function tileSVG(p, label = "") {
 }
 
 // src/stats.mjs
-var SUMMARY_SCHEMA = 2;
+var SUMMARY_SCHEMA = 3;
 var CPU_TIER_IDS = new Set(CPU_TIERS.map((t) => t.id));
 var CPU_STYLE_IDS = new Set(CPU_STYLES.map((s) => s.id));
 function cpuFilterValues(cpu) {
@@ -34072,6 +34342,7 @@ function summarizeBundle(bundle) {
     savedAt: meta.savedAt || null,
     mode: meta.mode || "manual",
     status: meta.status || "finished",
+    simulated: meta.simulated === true,
     gameLength: meta.gameLength || (meta.rule?.["\u5834\u6570"] === 2 ? "hanchan" : "tonpuu"),
     qijia: meta.qijia ?? 0,
     modelCoach: meta.model?.coach || null,
@@ -34082,7 +34353,7 @@ function summarizeBundle(bundle) {
     coachDisplay: typeof meta.coachDisplay === "boolean" ? meta.coachDisplay : null,
     cpuTiers: cpuFilter.tiers,
     cpuStyles: cpuFilter.styles,
-    eligible: (meta.mode || "manual") === "manual" && (meta.status || "finished") === "finished" && horaConsistent,
+    eligible: meta.simulated !== true && (meta.mode || "manual") === "manual" && (meta.status || "finished") === "finished" && horaConsistent,
     excludedReason: horaConsistent ? null : "mjai\u3068\u7D50\u679C\u306E\u548C\u4E86\u6570\u304C\u4E0D\u4E00\u81F4\u306E\u305F\u3081\u96C6\u8A08\u304B\u3089\u9664\u5916",
     warnings,
     finalRank: meta.final?.rank?.[0] ?? null,
@@ -34090,7 +34361,11 @@ function summarizeBundle(bundle) {
     finalPoint: meta.final?.point?.[0] ?? null,
     kyokuCount: facts.length,
     stats: c,
-    coachAgg
+    coachAgg,
+    // Raw material for the certified-rank display (vc17): own discard
+    // decisions only, auto-played records excluded. Absent on summaries
+    // written before schema 3 (certificationEligible treats it as ineligible).
+    cert: computeCertBlock(bundle.coach || [], typeof meta.coachDisplay === "boolean" ? meta.coachDisplay : null)
   };
   return summary;
 }
@@ -34147,6 +34422,10 @@ var RANGE_OPTIONS = [
   { key: "50", label: "\u76F4\u8FD150\u5BFE\u5C40", n: 50 },
   { key: "all", label: "\u5168\u671F\u9593", n: Infinity }
 ];
+function startStatsHeading(recentCount) {
+  const n = Number.isFinite(Number(recentCount)) ? Math.max(0, Math.floor(Number(recentCount))) : 0;
+  return n >= 20 ? "\u6700\u8FD1\u306E\u6210\u7E3E\uFF08\u76F4\u8FD120\u5BFE\u5C40\uFF09" : `\u6700\u8FD1\u306E\u6210\u7E3E\uFF08${n}\u5BFE\u5C40\uFF09`;
+}
 function selectSummaries(summaries, { length = "all", range = "all", coachDisplay = "all", modelId = "all", cpuTiers = [], cpuStyles = [] } = {}) {
   const tierSel = Array.isArray(cpuTiers) ? cpuTiers : [];
   const styleSel = Array.isArray(cpuStyles) ? cpuStyles : [];
@@ -34270,6 +34549,146 @@ function aggregateCoach(summaries) {
   return agg;
 }
 
+// src/cert_display.mjs
+var CERT_DAN_INTERCEPT = 8.0639;
+var CERT_DAN_SLOPE = 9.7938;
+var CERT_L_MIN = 0.104;
+var CERT_L_MAX = 1.4515;
+var CERT_START_GAMES = 3;
+var CERT_PROVISIONAL_BELOW = 5;
+var CERT_WIDTH_NUMERATOR = 1.92;
+var CERT_OPEN_TOP = 7.05;
+var CERT_UNIT_LABEL = "\u8A8D\u5B9A\u6BB5\u4F4D\u306E\u76EE\u5B89";
+function danToRank(v) {
+  if (v >= 0.5) return `${Math.round(v)}\u6BB5`;
+  return `${Math.round(1 - v)}\u7D1A`;
+}
+function lossToDan(loss) {
+  const topOpen = loss < CERT_L_MIN;
+  const bottomClamped = loss > CERT_L_MAX;
+  const clamped = Math.max(CERT_L_MIN, Math.min(CERT_L_MAX, loss));
+  return {
+    center: CERT_DAN_INTERCEPT - CERT_DAN_SLOPE * clamped,
+    clamped,
+    topOpen,
+    bottomClamped
+  };
+}
+function certHalfWidth(games) {
+  return CERT_WIDTH_NUMERATOR / Math.sqrt(games);
+}
+function buildDisplay(agg) {
+  if (agg.gameN < CERT_START_GAMES || agg.discardN < 1) return null;
+  const loss = agg.lossSum / agg.discardN;
+  const { center, topOpen, bottomClamped } = lossToDan(loss);
+  const width = certHalfWidth(agg.gameN);
+  const low = center - width;
+  const high = center + width;
+  const lowLabel = danToRank(low);
+  const highLabel = topOpen || high > CERT_OPEN_TOP ? "7\u6BB5\u4EE5\u4E0A" : danToRank(high);
+  const provisional = agg.gameN < CERT_PROVISIONAL_BELOW;
+  return {
+    gameN: agg.gameN,
+    discardN: agg.discardN,
+    lossSum: agg.lossSum,
+    loss,
+    center,
+    width,
+    low,
+    high,
+    lowLabel,
+    highLabel,
+    rangeLabel: `${lowLabel}\u301C${highLabel}`,
+    topOpen,
+    bottomClamped,
+    provisional,
+    title: provisional ? `${CERT_UNIT_LABEL}\uFF08\u66AB\u5B9A\uFF09` : CERT_UNIT_LABEL,
+    recent: !!agg.recent,
+    basisLabel: `${agg.recent ? "\u76F4\u8FD1" : "\u5BFE\u8C61 "}${agg.gameN}\u534A\u8358\uFF08\u6700\u5927${CERT_RECENT_GAMES}\u534A\u8358\uFF09\u30FB\u6253\u724C\u5224\u65AD ${agg.discardN}\u56DE`
+  };
+}
+var CERT_WINDOW_NOTE = `\u65B0\u3057\u3044\u5BFE\u5C40\u304B\u3089\u6700\u5927${CERT_RECENT_GAMES}\u534A\u8358\u5206\u3067\u8A08\u7B97\u3057\u307E\u3059\u3002`;
+function certProgressText(gameN, discardN = 0) {
+  const remaining = Math.max(0, CERT_START_GAMES - gameN);
+  if (remaining > 0) return `\u3042\u3068${remaining}\u534A\u8358\u3067\u76EE\u5B89\u304C\u51FA\u307E\u3059\uFF08\u5BFE\u8C61 ${gameN}\u534A\u8358\uFF09\u3002${CERT_WINDOW_NOTE}`;
+  if (discardN < 1) return `\u5BFE\u8C61 ${gameN}\u534A\u8358\u30FB\u6253\u724C\u5224\u65AD\u304C\u8A18\u9332\u3055\u308C\u308B\u3068\u76EE\u5B89\u304C\u51FA\u307E\u3059\u3002${CERT_WINDOW_NOTE}`;
+  return "";
+}
+function shortageNotice(agg) {
+  const remaining = Math.max(0, CERT_START_GAMES - agg.gameN);
+  const progress = certProgressText(agg.gameN, agg.discardN);
+  return {
+    gameN: agg.gameN,
+    discardN: agg.discardN,
+    remaining,
+    title: CERT_UNIT_LABEL,
+    condition: "\u6771\u98A8\u6226\u306F\u5BFE\u8C61\u5916\u3067\u3059\u3002",
+    progress
+  };
+}
+function certifiedRankSection(summaries) {
+  const agg = aggregateCertification(summaries);
+  const display = buildDisplay(agg);
+  return { display, notice: display ? null : shortageNotice(agg) };
+}
+function certifiedRankHTML(display) {
+  if (!display) return "";
+  return `<div class="st-section st-cert" data-cert-rank>
+    <h3>${display.title}</h3>
+    <div class="st-cert-range">${display.rangeLabel}</div>
+    <div class="st-note">${display.basisLabel}</div>
+  </div>`;
+}
+function certifiedRankSectionHTML(summaries) {
+  const { display, notice } = certifiedRankSection(summaries);
+  if (display) return certifiedRankHTML(display);
+  return `<div class="st-section st-cert" data-cert-rank data-cert-pending>
+    <h3>${notice.title}</h3>
+    <div class="st-note">${notice.condition}</div>
+    <div class="st-note">${notice.progress}</div>
+  </div>`;
+}
+
+// src/cert_home.mjs
+var CERT_HOME_EMPTY = "\u2014";
+function certHomeModel(summaries) {
+  const { display: d, notice } = certifiedRankSection(summaries);
+  const basis = d ? `${d.basisLabel}<br>${CERT_WINDOW_NOTE}` : notice.progress;
+  return {
+    value: d ? d.rangeLabel : CERT_HOME_EMPTY,
+    display: d,
+    popupHTML: `<b>${CERT_UNIT_LABEL}</b><div>AI\u30B3\u30FC\u30C1\u306E\u63A8\u5968\u3068\u306E\u5DEE\uFF08\u640D\u5931\uFF09\u306E\u5C0F\u3055\u3055\u304B\u3089\u63DB\u7B97\u3057\u305F\u6BB5\u4F4D\u306E\u76EE\u5B89\u3067\u3059\u3002</div><div class="ss-cert-basis">${basis}</div>`
+  };
+}
+function renderCertHome(doc, summaries) {
+  const cell = doc.getElementById("ss-cert-cell");
+  const val = doc.getElementById("ss-cert");
+  const pop = doc.getElementById("ss-cert-pop");
+  if (!cell || !val || !pop) return null;
+  const m = certHomeModel(summaries);
+  val.textContent = m.value;
+  pop.innerHTML = m.popupHTML;
+  if (!cell.__certWired) {
+    cell.__certWired = true;
+    const close = () => {
+      pop.hidden = true;
+      cell.setAttribute("aria-expanded", "false");
+    };
+    cell.addEventListener("click", (e) => {
+      e.stopPropagation();
+      pop.hidden = !pop.hidden;
+      cell.setAttribute("aria-expanded", String(!pop.hidden));
+    });
+    doc.addEventListener("click", () => {
+      if (!pop.hidden) close();
+    });
+    doc.addEventListener("keydown", (e) => {
+      if (e.key === "Escape" && !pop.hidden) close();
+    });
+  }
+  return m;
+}
+
 // src/coach_display.mjs
 function mergeCoachDisplay(previous, current) {
   if (previous === true || current === true) return true;
@@ -34281,6 +34700,57 @@ function mergeCoachDisplay(previous, current) {
 var MAX_IMPORT_BYTES = 200 * 1024 * 1024;
 var GAME_ID_RE = /^[A-Za-z0-9._-]{1,80}$/;
 var isObj = (v) => v && typeof v === "object" && !Array.isArray(v);
+var numberIfPresent = (v) => v == null || typeof v === "number" && Number.isFinite(v);
+var stringIfPresent = (v) => v == null || typeof v === "string";
+function validateCoachRecord(r) {
+  if (!isObj(r)) return "coach \u8A18\u9332\u306E\u5F62\u5F0F\u304C\u4E0D\u6B63\u3067\u3059";
+  if (typeof r.context !== "string" || typeof r.recommended !== "string") return "coach \u8A18\u9332\u306E\u5F62\u5F0F\u304C\u4E0D\u6B63\u3067\u3059";
+  if (!stringIfPresent(r.kyoku) || !stringIfPresent(r.actual)) return "coach \u8A18\u9332\u306E\u6587\u5B57\u5217\u304C\u4E0D\u6B63\u3067\u3059";
+  for (const k2 of [
+    "kyokuIndex",
+    "junme",
+    "turn",
+    "mjaiEventCount",
+    "qBest",
+    "pBest",
+    "qActual",
+    "pActual",
+    "qDiff",
+    "probDiff",
+    "shanten",
+    "shantenAfter",
+    "ukeire"
+  ]) {
+    if (!numberIfPresent(r[k2])) return `coach \u8A18\u9332\u306E\u6570\u5024\u304C\u4E0D\u6B63\u3067\u3059 (${k2})`;
+  }
+  if (r.qValues != null) {
+    if (!Array.isArray(r.qValues)) return "coach \u8A18\u9332\u306E\u5F62\u5F0F\u304C\u4E0D\u6B63\u3067\u3059 (qValues)";
+    for (const c of r.qValues) {
+      if (!isObj(c) || typeof c.action !== "string" || !numberIfPresent(c.q) || !numberIfPresent(c.prob)) {
+        return "coach \u8A18\u9332\u306E\u5F62\u5F0F\u304C\u4E0D\u6B63\u3067\u3059 (qValues)";
+      }
+    }
+  }
+  if (r.callNotes != null) {
+    if (!Array.isArray(r.callNotes)) return "coach \u8A18\u9332\u306E\u5F62\u5F0F\u304C\u4E0D\u6B63\u3067\u3059 (callNotes)";
+    for (const n of r.callNotes) {
+      if (!isObj(n) || typeof n.action !== "string" || !numberIfPresent(n.shanten) || !numberIfPresent(n.ukeire)) {
+        return "coach \u8A18\u9332\u306E\u5F62\u5F0F\u304C\u4E0D\u6B63\u3067\u3059 (callNotes)";
+      }
+    }
+  }
+  if (r.riichiTiles != null && !(Array.isArray(r.riichiTiles) && r.riichiTiles.every((t) => typeof t === "string"))) {
+    return "coach \u8A18\u9332\u306E\u5F62\u5F0F\u304C\u4E0D\u6B63\u3067\u3059 (riichiTiles)";
+  }
+  if (r.explainability != null) {
+    if (!isObj(r.explainability)) return "coach \u8A18\u9332\u306E\u5F62\u5F0F\u304C\u4E0D\u6B63\u3067\u3059 (explainability)";
+    const c = r.explainability.conditions;
+    if (c != null && !(Array.isArray(c) && c.every((x) => typeof x === "string"))) {
+      return "coach \u8A18\u9332\u306E\u5F62\u5F0F\u304C\u4E0D\u6B63\u3067\u3059 (explainability)";
+    }
+  }
+  return null;
+}
 function validateBundle(b) {
   if (!isObj(b)) return "\u5BFE\u5C40\u30C7\u30FC\u30BF\u306E\u5F62\u5F0F\u3067\u306F\u3042\u308A\u307E\u305B\u3093";
   if (b.schemaVersion !== 1) return `\u672A\u5BFE\u5FDC\u306E\u30B9\u30AD\u30FC\u30DE\u3067\u3059 (schemaVersion=${b.schemaVersion ?? "\u7121\u3057"})`;
@@ -34291,11 +34761,20 @@ function validateBundle(b) {
   if (m.status !== "finished" && m.status !== "partial") return `status \u304C\u4E0D\u6B63\u3067\u3059 (${m.status})`;
   if (m.mode !== void 0 && m.mode !== "manual" && m.mode !== "auto") return `mode \u304C\u4E0D\u6B63\u3067\u3059 (${m.mode})`;
   if (m.qijia !== void 0 && ![0, 1, 2, 3].includes(m.qijia)) return "qijia \u304C\u4E0D\u6B63\u3067\u3059";
+  if (m.model != null && (!isObj(m.model) || !stringIfPresent(m.model.name) || !stringIfPresent(m.model.coach))) return "\u30E2\u30C7\u30EB\u60C5\u5831\u304C\u4E0D\u6B63\u3067\u3059";
+  if (m.agreement != null) {
+    if (!isObj(m.agreement) || !numberIfPresent(m.agreement.agree) || !numberIfPresent(m.agreement.total) || !numberIfPresent(m.agreement.rate)) return "\u4E00\u81F4\u7387\u306E\u5F62\u5F0F\u304C\u4E0D\u6B63\u3067\u3059";
+  }
+  if (!numberIfPresent(m.reviewCount)) return "reviewCount \u304C\u4E0D\u6B63\u3067\u3059";
   const d = m.final?.defen;
   if (d != null && !(Array.isArray(d) && d.length === 4 && d.every(Number.isFinite))) return "\u6700\u7D42\u70B9\u6570\u304C\u4E0D\u6B63\u3067\u3059";
   if (!Array.isArray(b.mjai) || !b.mjai.length) return "mjai \u30ED\u30B0\u304C\u3042\u308A\u307E\u305B\u3093";
   if (!b.mjai.every((e) => isObj(e) && typeof e.type === "string")) return "mjai \u30ED\u30B0\u306E\u5F62\u5F0F\u304C\u4E0D\u6B63\u3067\u3059";
   if (!Array.isArray(b.coach)) return "coach \u8A18\u9332\u304C\u3042\u308A\u307E\u305B\u3093";
+  for (const r of b.coach) {
+    const reason = validateCoachRecord(r);
+    if (reason) return reason;
+  }
   if (!(Array.isArray(b.results) || isObj(b.results))) return "results \u304C\u3042\u308A\u307E\u305B\u3093";
   try {
     const { facts, horaConsistent } = buildKyokuFacts(b);
@@ -34911,17 +35390,17 @@ var YAKU_GROUPS = [
 var YAKU_NOTE = "\u88DC\u8DB3: \u3053\u306E\u30A2\u30D7\u30EA\u3067\u306F\u30C0\u30D6\u30EB\u5F79\u6E80\u306F\u63A1\u7528\u3057\u3066\u3044\u306A\u3044\uFF08\u5F79\u6E80\u304C\u91CD\u306A\u3063\u3066\u30821\u500D\u5F79\u6E80\uFF09\u3002\u30C9\u30E9\u306F\u5F79\u3067\u306F\u306A\u3044\u304C1\u679A\u306B\u3064\u304D1\u7FFB\u5897\u3048\u308B\u3002";
 var GLOSSARY_TERMS = [
   {
-    "term": "\u5B89\u5168\u724C\uFF08\u3042\u3093\u305C\u3093\u3071\u3044\uFF09",
+    "term": "\u5B89\u5168\u724C",
     "yomi": "\u3042\u3093\u305C\u3093\u3071\u3044",
     "desc": "\u76F8\u624B\u306B\u7D76\u5BFE\u306B\u30ED\u30F3\u3055\u308C\u306A\u3044\u724C\u3002\u30EA\u30FC\u30C1\u3057\u3066\u3044\u308B\u4EBA\u306E\u6368\u3066\u724C\uFF08\u73FE\u7269\uFF09\u306A\u3069"
   },
   {
-    "term": "\u4E00\u767A\uFF08\u3044\u3063\u3071\u3064\uFF09",
+    "term": "\u4E00\u767A",
     "yomi": "\u3044\u3063\u3071\u3064",
     "desc": "\u30EA\u30FC\u30C1\u3057\u305F\u3042\u30681\u5DE1\u4EE5\u5185\u306B\u548C\u4E86\u3059\u308B\u3068\u4ED8\u304F\u5F79"
   },
   {
-    "term": "\u53D7\u3051\u5165\u308C\uFF08\u3046\u3051\u3044\u308C\uFF09",
+    "term": "\u53D7\u3051\u5165\u308C",
     "yomi": "\u3046\u3051\u3044\u308C",
     "desc": "\u305D\u306E\u724C\u3092\u5F15\u304F\u3068\u624B\u304C\u9032\u3080\uFF08\u5411\u8074\u304C\u6E1B\u308B\uFF09\u724C\u306E\u3053\u3068\u3002\u679A\u6570\u304C\u591A\u3044\u307B\u3069\u6709\u5229"
   },
@@ -34931,12 +35410,12 @@ var GLOSSARY_TERMS = [
     "desc": "\u534A\u8358\u306E\u6700\u5F8C\u306E\u5C40\uFF08\u53574\u5C40\uFF09\u306E\u3053\u3068"
   },
   {
-    "term": "\u89AA\uFF08\u304A\u3084\uFF09",
+    "term": "\u89AA",
     "yomi": "\u304A\u3084",
     "desc": "\u305D\u306E\u5C40\u306E\u6700\u521D\u306E\u4EBA\u3002\u548C\u4E86\u70B9\u304C1.5\u500D\u306B\u306A\u308A\u3001\u548C\u4E86\u3084\u30C6\u30F3\u30D1\u30A4\u3067\u9023\u8358\u3059\u308B"
   },
   {
-    "term": "\u4E0A\u5BB6\uFF08\u304B\u307F\u3061\u3083\uFF09",
+    "term": "\u4E0A\u5BB6",
     "yomi": "\u304B\u307F\u3061\u3083",
     "desc": "\u81EA\u5206\u306E\u5DE6\u96A3\u306E\u4EBA"
   },
@@ -34946,32 +35425,32 @@ var GLOSSARY_TERMS = [
     "desc": "\u540C\u3058\u724C4\u679A\u3092\u305D\u308D\u3048\u3066\u5BA3\u8A00\u3059\u308B\u3053\u3068\u3002\u30C9\u30E9\u304C\u5897\u3048\u308B\u3002\u660E\u69D3\u30FB\u6697\u69D3\u30FB\u52A0\u69D3\u306E3\u7A2E\u304C\u3042\u308B"
   },
   {
-    "term": "\u5171\u8A17\uFF08\u304D\u3087\u3046\u305F\u304F\uFF09",
+    "term": "\u5171\u8A17",
     "yomi": "\u304D\u3087\u3046\u305F\u304F",
     "desc": "\u30EA\u30FC\u30C1\u68D2\u306A\u3069\u3001\u5834\u306B\u51FA\u3055\u308C\u3066\u3044\u3066\u6B21\u306E\u548C\u4E86\u8005\u304C\u307E\u3068\u3081\u3066\u3082\u3089\u3046\u70B9\u68D2"
   },
   {
-    "term": "\u73FE\u7269\uFF08\u3052\u3093\u3076\u3064\uFF09",
+    "term": "\u73FE\u7269",
     "yomi": "\u3052\u3093\u3076\u3064",
     "desc": "\u305D\u306E\u76F8\u624B\u304C\u3059\u3067\u306B\u6368\u3066\u3066\u3044\u308B\u724C\u3002\u305D\u306E\u4EBA\u306B\u306F\u7D76\u5BFE\u306B\u30ED\u30F3\u3055\u308C\u306A\u3044"
   },
   {
-    "term": "\u5411\u8074\uFF08\u30B7\u30E3\u30F3\u30C6\u30F3\uFF09",
+    "term": "\u5411\u8074",
     "yomi": "\u3057\u3083\u3093\u3066\u3093",
     "desc": "\u3042\u3068\u4F55\u679A\u3067\u30C6\u30F3\u30D1\u30A4\u306B\u306A\u308B\u304B\u306E\u6570\u3002\u300C\u5411\u80741\u300D\u306F\u3042\u30681\u679A\u6709\u52B9\u306A\u724C\u3092\u5F15\u3051\u3070\u30C6\u30F3\u30D1\u30A4"
   },
   {
-    "term": "\u4E0B\u5BB6\uFF08\u3057\u3082\u3061\u3083\uFF09",
+    "term": "\u4E0B\u5BB6",
     "yomi": "\u3057\u3082\u3061\u3083",
     "desc": "\u81EA\u5206\u306E\u53F3\u96A3\u306E\u4EBA\u3002\u81EA\u5BB6\u304C\u6368\u3066\u305F\u724C\u3092\u30C1\u30FC\u3067\u304D\u308B\u306E\u306F\u4E0B\u5BB6\u3060\u3051"
   },
   {
-    "term": "\u63A8\u5968\u5EA6\uFF08\u3059\u3044\u3057\u3087\u3046\u3069\uFF09",
+    "term": "\u63A8\u5968\u5EA6",
     "yomi": "\u3059\u3044\u3057\u3087\u3046\u3069",
     "desc": "AI\u30B3\u30FC\u30C1\u306E\u8A55\u4FA1\u3092\u5019\u88DC\u5168\u4F53\u306B\u5BFE\u3059\u308B\u5272\u5408\uFF08%\uFF09\u3067\u8868\u3057\u305F\u3082\u306E\u3002\u52DD\u7387\u3067\u306F\u306A\u3044"
   },
   {
-    "term": "\u81EA\u5BB6\uFF08\u3058\u304B\uFF09",
+    "term": "\u81EA\u5BB6",
     "yomi": "\u3058\u304B",
     "desc": "\u81EA\u5206\u306E\u3053\u3068\u3002\u3053\u306E\u30A2\u30D7\u30EA\u3067\u306F\u753B\u9762\u306E\u4E0B\u5074\u306B\u3044\u308B\u306E\u304C\u81EA\u5BB6"
   },
@@ -34986,12 +35465,12 @@ var GLOSSARY_TERMS = [
     "desc": "\u5F15\u3044\u305F\u724C\u3092\u305D\u306E\u307E\u307E\u6368\u3066\u308B\u3053\u3068\u3002\u3053\u306E\u30A2\u30D7\u30EA\u3067\u306F\u3001\u30C4\u30E2\u5207\u308A\u3067\u6368\u3066\u3089\u308C\u305F\u724C\u306F\u6CB3\u306E\u4E2D\u3067\u5C11\u3057\u6697\u304F\u8868\u793A\u3055\u308C\u308B\uFF08\u624B\u51FA\u3057\u306F\u901A\u5E38\u306E\u660E\u308B\u3055\u3002\u8A2D\u5B9A\u3067\u901A\u5E38\u8868\u793A\u306B\u623B\u305B\u308B\uFF09"
   },
   {
-    "term": "\u30C6\u30F3\u30D1\u30A4\uFF08\u8074\u724C\uFF09",
+    "term": "\u30C6\u30F3\u30D1\u30A4",
     "yomi": "\u3066\u3093\u3071\u3044",
     "desc": "\u3042\u30681\u679A\u3067\u548C\u4E86\u3067\u304D\u308B\u72B6\u614B"
   },
   {
-    "term": "\u5BFE\u9762\uFF08\u3068\u3044\u3081\u3093\uFF09",
+    "term": "\u5BFE\u9762",
     "yomi": "\u3068\u3044\u3081\u3093",
     "desc": "\u81EA\u5206\u306E\u5411\u304B\u3044\u5074\u306E\u4EBA"
   },
@@ -35001,7 +35480,7 @@ var GLOSSARY_TERMS = [
     "desc": "\u6301\u3063\u3066\u3044\u308B\u3060\u3051\u30671\u679A1\u7FFB\u5897\u3048\u308B\u30DC\u30FC\u30CA\u30B9\u724C\u3002\u30C9\u30E9\u8868\u793A\u724C\u306E\u6B21\u306E\u724C\u304C\u30C9\u30E9\u306B\u306A\u308B"
   },
   {
-    "term": "\u9CF4\u304D\uFF08\u306A\u304D\uFF09",
+    "term": "\u9CF4\u304D",
     "yomi": "\u306A\u304D",
     "desc": "\u30DD\u30F3\u30FB\u30C1\u30FC\u30FB\u30AB\u30F3\u3067\u4ED6\u4EBA\u306E\u6368\u3066\u724C\u3092\u4F7F\u3063\u3066\u7D44\u3092\u4F5C\u308B\u3053\u3068"
   },
@@ -35011,7 +35490,7 @@ var GLOSSARY_TERMS = [
     "desc": "\u30C6\u30F3\u30D1\u30A4\u3057\u3066\u3044\u306A\u3044\u72B6\u614B\u3002\u6D41\u5C40\u6642\u306B\u30CE\u30FC\u30C6\u30F3\u3060\u3068\u7F70\u7B26\u3092\u6255\u3046"
   },
   {
-    "term": "\u526F\u9732\uFF08\u3075\u3046\u308D\uFF09",
+    "term": "\u526F\u9732",
     "yomi": "\u3075\u3046\u308D",
     "desc": "\u9CF4\u3044\u305F\u72B6\u614B\u306E\u3053\u3068\u3002\u9CF4\u304F\u3068\u4ED8\u3051\u306A\u3044\u5F79\u3084\u3001\u7FFB\u304C\u4E0B\u304C\u308B\u5F79\u304C\u3042\u308B"
   },
@@ -35021,7 +35500,7 @@ var GLOSSARY_TERMS = [
     "desc": "\u81EA\u5206\u306E\u5F85\u3061\u724C\u3092\u81EA\u5206\u3067\u6368\u3066\u3066\u3044\u308B\u306A\u3069\u306E\u7406\u7531\u3067\u3001\u30ED\u30F3\u3067\u304D\u306A\u3044\u72B6\u614B"
   },
   {
-    "term": "\u672C\u5834\uFF08\u307B\u3093\u3070\uFF09",
+    "term": "\u672C\u5834",
     "yomi": "\u307B\u3093\u3070",
     "desc": "\u9023\u8358\u3084\u6D41\u5C40\u3067\u7A4D\u307F\u4E0A\u304C\u3063\u305F\u30AB\u30A6\u30F3\u30BF\u30021\u672C\u5834\u306B\u3064\u304D\u548C\u4E86\u70B9\u306B300\u70B9\u304C\u52A0\u308F\u308B"
   },
@@ -35031,22 +35510,22 @@ var GLOSSARY_TERMS = [
     "desc": "\u4ED6\u4EBA\u306E\u6368\u3066\u724C\u3067\u523B\u5B50\uFF08\u540C\u3058\u724C3\u679A\uFF09\u3092\u4F5C\u308B\u9CF4\u304D\u65B9"
   },
   {
-    "term": "\u5F85\u3061\uFF08\u307E\u3061\uFF09",
+    "term": "\u5F85\u3061",
     "yomi": "\u307E\u3061",
     "desc": "\u30C6\u30F3\u30D1\u30A4\u3067\u5F85\u3063\u3066\u3044\u308B\u548C\u4E86\u724C\u3002\u5F62\u306B\u3088\u3063\u3066\u4E21\u9762\u30FB\u5358\u9A0E\u306A\u3069\u306E\u7A2E\u985E\u304C\u3042\u308B"
   },
   {
-    "term": "\u9580\u524D\uFF08\u30E1\u30F3\u30BC\u30F3\uFF09",
+    "term": "\u9580\u524D",
     "yomi": "\u3081\u3093\u305C\u3093",
     "desc": "\u4E00\u5EA6\u3082\u9CF4\u3044\u3066\u3044\u306A\u3044\u72B6\u614B"
   },
   {
-    "term": "\u5F79\uFF08\u3084\u304F\uFF09",
+    "term": "\u5F79",
     "yomi": "\u3084\u304F",
     "desc": "\u548C\u4E86\u3059\u308B\u305F\u3081\u306E\u6761\u4EF6\u3002\u6700\u4F4E1\u3064\u5FC5\u8981\u3002\u30C9\u30E9\u3060\u3051\u3067\u306F\u548C\u4E86\u3067\u304D\u306A\u3044"
   },
   {
-    "term": "\u5F79\u6E80\uFF08\u3084\u304F\u30DE\u30F3\uFF09",
+    "term": "\u5F79\u6E80",
     "yomi": "\u3084\u304F\u307E\u3093",
     "desc": "\u6700\u3082\u9AD8\u3044\u5F79\u306E\u30B0\u30EB\u30FC\u30D7\u3002\u548C\u4E86\u70B9\u306F\u5B50\u306E32,000\u70B9\u30FB\u89AA\u306E48,000\u70B9"
   },
@@ -35056,7 +35535,7 @@ var GLOSSARY_TERMS = [
     "desc": "\u30C6\u30F3\u30D1\u30A4\u30671,000\u70B9\u3092\u51FA\u3057\u3066\u5BA3\u8A00\u3059\u308B\u3053\u3068\u3002\u5F79\u304C\u4ED8\u304D\u3001\u548C\u4E86\u70B9\u304C\u4E0A\u304C\u308A\u3084\u3059\u3044\u3002\u5BA3\u8A00\u5F8C\u306F\u57FA\u672C\u7684\u306B\u30C4\u30E2\u5207\u308A\u306B\u306A\u308B"
   },
   {
-    "term": "\u6D41\u5C40\uFF08\u308A\u3085\u3046\u304D\u3087\u304F\uFF09",
+    "term": "\u6D41\u5C40",
     "yomi": "\u308A\u3085\u3046\u304D\u3087\u304F",
     "desc": "\u8AB0\u3082\u548C\u4E86\u305B\u305A\u724C\u304C\u5C3D\u304D\u3066\u5C40\u304C\u7D42\u308F\u308B\u3053\u3068"
   },
@@ -35066,7 +35545,7 @@ var GLOSSARY_TERMS = [
     "desc": "\u4ED6\u4EBA\u306E\u6368\u3066\u724C\u3067\u548C\u4E86\u3059\u308B\u3053\u3068"
   },
   {
-    "term": "\u548C\u4E86\uFF08\u3042\u304C\u308A\uFF09",
+    "term": "\u548C\u4E86",
     "yomi": "\u3042\u304C\u308A",
     "desc": "\u5FC5\u8981\u306A\u5F62\u3068\u5F79\u3092\u305D\u308D\u3048\u3066\u5C40\u3092\u7D42\u3048\u308B\u3053\u3068"
   },
@@ -35081,7 +35560,7 @@ var GLOSSARY_TERMS = [
     "desc": "\u5BFE\u5B50\u30922\u7D44\u6301\u3061\u3001\u3069\u3061\u3089\u304B\u306E3\u679A\u76EE\u3092\u5F85\u3064\u5F62"
   },
   {
-    "term": "\u5358\u9A0E\uFF08\u30BF\u30F3\u30AD\uFF09\u5F85\u3061",
+    "term": "\u5358\u9A0E\u5F85\u3061",
     "yomi": "\u305F\u3093\u304D\u307E\u3061",
     "desc": "\u96C0\u982D\u306B\u306A\u308B1\u679A\u3060\u3051\u3092\u5F85\u3064\u5F62"
   },
@@ -35091,22 +35570,22 @@ var GLOSSARY_TERMS = [
     "desc": "\u9806\u5B50\u306E\u7AEF\u3092\u5F85\u3064\u5F62\uFF08\u4F8B: 1\u30FB2\u3092\u6301\u3063\u30663\u5F85\u3061\uFF09"
   },
   {
-    "term": "\u4E21\u9762\uFF08\u30EA\u30E3\u30F3\u30E1\u30F3\uFF09\u5F85\u3061",
+    "term": "\u4E21\u9762\u5F85\u3061",
     "yomi": "\u308A\u3083\u3093\u3081\u3093\u307E\u3061",
     "desc": "\u9806\u5B50\u306E\u4E21\u7AEF\u3092\u5F85\u3064\u5F62\uFF08\u4F8B: 3\u30FB4\u3092\u6301\u3063\u30662\u30685\u5F85\u3061\uFF09\u3002\u6700\u3082\u5F85\u3061\u304C\u5E83\u3044"
   },
   {
-    "term": "\u653E\u9283\uFF08\u307B\u3046\u3058\u3085\u3046\uFF09",
+    "term": "\u653E\u9283",
     "yomi": "\u307B\u3046\u3058\u3085\u3046",
     "desc": "\u4ED6\u4EBA\u306B\u30ED\u30F3\u3055\u308C\u308B\u724C\u3092\u6368\u3066\u3066\u3057\u307E\u3046\u3053\u3068\u3002\u305D\u306E\u5206\u306E\u70B9\u6570\u3092\u6255\u3046"
   },
   {
-    "term": "\u62BC\u3057\u5F15\u304D\uFF08\u304A\u3057\u3072\u304D\uFF09",
+    "term": "\u62BC\u3057\u5F15\u304D",
     "yomi": "\u304A\u3057\u3072\u304D",
     "desc": "\u76F8\u624B\u306E\u30EA\u30FC\u30C1\u306A\u3069\u306B\u5BFE\u3057\u3001\u653B\u3081\u308B\u304B\u5B89\u5168\u306B\u964D\u308A\u308B\u304B\u306E\u5224\u65AD"
   },
   {
-    "term": "\u30C0\u30DE\uFF08\u30C0\u30DE\u30C6\u30F3\uFF09",
+    "term": "\u30C0\u30DE",
     "yomi": "\u3060\u307E",
     "desc": "\u30EA\u30FC\u30C1\u3092\u304B\u3051\u305A\u306B\u30C6\u30F3\u30D1\u30A4\u3057\u3066\u3044\u308B\u72B6\u614B\u3002\u30ED\u30F3\u3060\u3051\u304C\u53EF\u80FD"
   }
@@ -35175,7 +35654,7 @@ function renderYakuHtml(groups = YAKU_GROUPS, note = YAKU_NOTE) {
       return `<h3>${esc(g.title)}</h3><table class="st-table yaku-table yaku-yakuman"><thead><tr><th>\u5F79</th><th>\u8AAC\u660E</th></tr></thead><tbody>${rows2}</tbody></table>`;
     }
     const rows = g.rows.map((r) => {
-      const open = r.open == null ? '<td class="yk-han yk-no" title="\u9CF4\u304F\u3068\u4E0D\u53EF">\u2015<span class="yk-no-note">\u9CF4\u304F\u3068\u4E0D\u53EF</span></td>' : `<td class="yk-han">${esc(r.open)}</td>`;
+      const open = r.open == null ? '<td class="yk-han yk-no">\u4E0D\u53EF</td>' : `<td class="yk-han">${esc(r.open)}</td>`;
       return `<tr><td class="yk-name">${nameHtml(r.name)}</td><td class="yk-han">${esc(r.closed)}</td>${open}<td>${esc(r.desc)}</td></tr>${exampleHtml(r, 4)}`;
     }).join("");
     return `<h3>${esc(g.title)}</h3><table class="st-table yaku-table"><thead><tr><th>\u5F79</th><th>\u9580\u524D</th><th>\u526F\u9732</th><th>\u8AAC\u660E</th></tr></thead><tbody>${rows}</tbody></table>`;
@@ -35205,7 +35684,7 @@ var GUIDE_SECTIONS = [
     ["p6", "p7", "p8"],
     ["p9", "p9"]
   ] },
-  { title: "2. \u9032\u307F\u65B9", paras: [
+  { title: "2. \u9032\u307F\u65B9", links: ["glossary"], paras: [
     "\u81EA\u5206\u306E\u756A\u306F\u300C1\u679A\u5F15\u3044\u3066\u30011\u679A\u6368\u3066\u308B\u300D\u306E\u7E70\u308A\u8FD4\u3057\u3002",
     "\u4ED6\u4EBA\u306E\u6368\u3066\u724C\u306F\u3001\u30DD\u30F3\u30FB\u30C1\u30FC\u3067\u81EA\u5206\u306E\u7D44\u306B\u3067\u304D\u307E\u3059\u3002"
   ] },
@@ -35213,13 +35692,13 @@ var GUIDE_SECTIONS = [
     "\u5F62\u3060\u3051\u3067\u306F\u4E0A\u304C\u308C\u307E\u305B\u3093\u3002\u300C\u5F79\u300D\u304C1\u3064\u5FC5\u8981\u3067\u3059\u3002",
     "\u30C9\u30E9\u306F\u6301\u3064\u3068\u70B9\u304C\u5897\u3048\u308B\u30DC\u30FC\u30CA\u30B9\u724C\u3002\u3042\u30681\u679A\u3067\u30C6\u30F3\u30D1\u30A4\u3001\u5BA3\u8A00\u3059\u308C\u3070\u30EA\u30FC\u30C1\u3067\u5F79\u304C\u4ED8\u304D\u307E\u3059\u3002"
   ] },
-  { title: "4. AI\u30B3\u30FC\u30C1", links: ["glossary"], paras: [
-    "\u8FF7\u3063\u305F\u3089\u3001\u30B3\u30FC\u30C1\u306E\u63A8\u5968\u3069\u304A\u308A\u306B\u5207\u308C\u3070\u5927\u4E08\u592B\u3067\u3059\u3002",
+  { title: "4. AI\u30B3\u30FC\u30C1", paras: [
+    "\u307E\u305A\u81EA\u5206\u3067\u8003\u3048\u3001\u8FF7\u3063\u305F\u3089\u30B3\u30FC\u30C1\u3092\u53C2\u8003\u306B\u3002",
     "\u624B\u724C\u30921\u56DE\u30BF\u30C3\u30D7\u3067\u8A55\u4FA1\u8868\u793A\u3001\u3082\u30461\u56DE\u3067\u5207\u308A\u307E\u3059\u3002"
   ] },
   { title: "5. \u307E\u305A\u306F1\u5C40", paras: [
     "\u70B9\u6570\u8A08\u7B97\u306F\u6C17\u306B\u3057\u306A\u304F\u3066\u5927\u4E08\u592B\u3002\u30B3\u30FC\u30C1\u3068\u4E00\u7DD2\u306B\u6700\u5F8C\u307E\u3067\u6253\u3063\u3066\u307F\u3066\u304F\u3060\u3055\u3044\u3002",
-    "\u3053\u306E\u30AC\u30A4\u30C9\u306F\u3001\u30B9\u30BF\u30FC\u30C8\u753B\u9762\u306E\u300C\u30EB\u30FC\u30EB\u300D\u304B\u3089\u3044\u3064\u3067\u3082\u8AAD\u307F\u76F4\u305B\u307E\u3059\u3002"
+    "\u30B9\u30BF\u30FC\u30C8\u753B\u9762\u306E\u300E\u521D\u3081\u3066\u306E\u65B9\u300F\u304B\u3089\u8AAD\u307F\u76F4\u305B\u307E\u3059\u3002"
   ] }
 ];
 var esc2 = (s) => String(s).replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" })[c]);
@@ -35248,6 +35727,206 @@ function saveGuideSeen(storage) {
   } catch (_) {
     return false;
   }
+}
+
+// src/grandfather.mjs
+var GRANDFATHER_KEY = "ml-grandfather-v1";
+function markGrandfathered(storage, versionCode) {
+  if (versionCode !== 11) return;
+  try {
+    if (storage.getItem(GRANDFATHER_KEY) !== null) return;
+    storage.setItem(GRANDFATHER_KEY, "1");
+  } catch (_) {
+  }
+}
+
+// src/freemium.mjs
+var TRIAL_GAMES = 3;
+function completedGames(bundles = [], summaries = []) {
+  const byId = new Map(summaries.filter((s) => s?.gameId).map((s) => [s.gameId, s]));
+  for (const b of bundles) if (b?.meta?.gameId) byId.set(b.meta.gameId, b.meta);
+  return [...byId.values()].filter((s) => !s.simulated && (s.status ?? "finished") === "finished").sort((a, b) => String(a.endedAt || a.savedAt || "").localeCompare(String(b.endedAt || b.savedAt || "")) || String(a.gameId).localeCompare(String(b.gameId)));
+}
+function coachAccess({ grandfathered = false, status = "unavailable", owned = false, completed = 0 } = {}) {
+  const entitled = grandfathered || status === "ready" && owned;
+  const gate = !grandfathered && status === "ready" && !owned;
+  return {
+    entitled,
+    locked: gate && completed >= TRIAL_GAMES,
+    remaining: Math.max(0, TRIAL_GAMES - completed),
+    gate
+  };
+}
+function createCoachAccess({ native, storage, onChange = () => {
+}, timeoutMs = 15e3 } = {}) {
+  let grandfathered = false, state = { status: "unavailable", owned: false }, timer;
+  let bridge2;
+  try {
+    const versionCode = Number(native?.getVersionCode?.());
+    grandfathered = versionCode === 11;
+    markGrandfathered(storage, versionCode);
+  } catch (_) {
+  }
+  try {
+    grandfathered = grandfathered || storage.getItem(GRANDFATHER_KEY) !== null;
+  } catch (_) {
+  }
+  try {
+    if (["getCoachBillingState", "restoreCoachPurchases", "purchaseCoachUnlock"].every((k2) => typeof native?.[k2] === "function")) bridge2 = native;
+  } catch (_) {
+  }
+  const pwa = !bridge2;
+  const fail = () => receive({ status: "unavailable", owned: false, outcome: "error" });
+  function receive(raw) {
+    clearTimeout(timer);
+    if (!bridge2) {
+      state = { status: "unavailable", owned: false };
+      onChange();
+      return;
+    }
+    try {
+      const s = typeof raw === "string" ? JSON.parse(raw) : raw;
+      if (!s || !["ready", "loading", "unavailable"].includes(s.status) || typeof s.owned !== "boolean") throw Error("state");
+      state = {
+        status: s.status,
+        owned: s.owned,
+        outcome: s.outcome,
+        price: typeof s.price === "string" && s.price.trim() ? s.price.trim() : void 0
+      };
+    } catch (_) {
+      state = { status: "unavailable", owned: false, outcome: "error" };
+    }
+    if (state.status === "loading") timer = setTimeout(fail, timeoutMs);
+    onChange();
+  }
+  function request(method) {
+    if (!bridge2) return;
+    receive({ status: "loading", owned: state.owned });
+    try {
+      bridge2[method]();
+      receive(bridge2.getCoachBillingState());
+    } catch (_) {
+      fail();
+    }
+  }
+  return {
+    get available() {
+      return !!bridge2;
+    },
+    get pwa() {
+      return pwa;
+    },
+    get state() {
+      return { ...state, grandfathered };
+    },
+    // PWA has no billing, so report the real entitlement as purchased/unlimited
+    // for every completed count. Android keeps the same gate as before.
+    access(completed) {
+      if (pwa) return coachAccess({ status: "ready", owned: true, completed });
+      return coachAccess({ ...state, grandfathered, completed });
+    },
+    receive,
+    start() {
+      request("restoreCoachPurchases");
+    },
+    restore() {
+      request("restoreCoachPurchases");
+    },
+    purchase() {
+      request("purchaseCoachUnlock");
+    },
+    dispose() {
+      clearTimeout(timer);
+    }
+  };
+}
+
+// src/freemium_sim.mjs
+var SIM_STORAGE_KEY = "ml-freemium-sim-v1";
+var SIM_OFF = "off";
+var SIM_MODES = Object.freeze([
+  Object.freeze({ id: "new", label: "\u65B0\u898F\uFF08\u30B3\u30FC\u30C1\u306E\u7121\u6599\u4F53\u9A13\uFF1A\u6B8B\u308A3\u5BFE\u5C40\uFF09", completed: 0 }),
+  Object.freeze({ id: "one", label: "\u30B3\u30FC\u30C1\u306E\u7121\u6599\u4F53\u9A13\uFF1A\u6B8B\u308A1\u5BFE\u5C40", completed: 2 }),
+  Object.freeze({ id: "locked", label: "\u30B3\u30FC\u30C1\u306E\u7121\u6599\u4F53\u9A13\u306F\u7D42\u4E86\uFF08\u30ED\u30C3\u30AF\u4E2D\uFF09", completed: 3 })
+]);
+var MODE_BY_ID = new Map(SIM_MODES.map((mode) => [mode.id, mode]));
+var OFF_STATE = Object.freeze({ active: false, mode: SIM_OFF, completed: 0 });
+function simMode(id2) {
+  return MODE_BY_ID.get(id2) || null;
+}
+function sanitizeIds(value) {
+  if (!Array.isArray(value)) return [];
+  const ids = [];
+  for (const id2 of value) if (typeof id2 === "string" && id2.length && !ids.includes(id2)) ids.push(id2);
+  return ids.slice(-100);
+}
+function readSim(storage) {
+  let raw = null;
+  try {
+    raw = storage?.getItem?.(SIM_STORAGE_KEY) ?? null;
+  } catch (_) {
+    return { ...OFF_STATE };
+  }
+  if (!raw) return { ...OFF_STATE };
+  try {
+    const value = JSON.parse(raw);
+    const mode = simMode(value?.mode);
+    if (!mode) return { ...OFF_STATE };
+    const completed = Number.isInteger(value.completed) && value.completed >= 0 ? value.completed : mode.completed;
+    return { active: true, mode: mode.id, completed, ids: sanitizeIds(value.ids) };
+  } catch (_) {
+    return { ...OFF_STATE };
+  }
+}
+function writeSim(storage, modeId) {
+  if (modeId === SIM_OFF) return clearSim(storage);
+  const mode = simMode(modeId);
+  if (!mode) return clearSim(storage);
+  const state = { active: true, mode: mode.id, completed: mode.completed, ids: [] };
+  try {
+    storage?.setItem?.(SIM_STORAGE_KEY, JSON.stringify({ mode: state.mode, completed: state.completed, ids: [] }));
+  } catch (_) {
+    return { ...OFF_STATE };
+  }
+  return state;
+}
+function clearSim(storage) {
+  try {
+    storage?.removeItem?.(SIM_STORAGE_KEY);
+  } catch (_) {
+  }
+  return { ...OFF_STATE };
+}
+function noteSimulatedStart(storage, gameId, state = readSim(storage)) {
+  if (!state?.active) return state || { ...OFF_STATE };
+  const ids = sanitizeIds(state.ids);
+  if (gameId && ids.includes(gameId)) return { ...state, ids };
+  const next = {
+    ...state,
+    completed: state.completed + 1,
+    ids: [...ids, ...gameId ? [gameId] : []].slice(-100)
+  };
+  try {
+    storage?.setItem?.(SIM_STORAGE_KEY, JSON.stringify({ mode: next.mode, completed: next.completed, ids: next.ids }));
+    return next;
+  } catch (_) {
+    return state;
+  }
+}
+function simulatedAccess(state) {
+  if (!state?.active) return null;
+  return coachAccess({ status: "ready", owned: false, grandfathered: false, completed: state.completed });
+}
+function realStateText({ grandfathered = false, status = "unavailable", owned = false, completed = 0, pwa = false } = {}) {
+  if (pwa) return "PWA\uFF08\u5E38\u6642\u30A2\u30F3\u30ED\u30C3\u30AF\uFF09";
+  if (grandfathered) return "\u65E2\u5B58\u8CFC\u5165\u8005\u30D5\u30E9\u30B0\u3042\u308A\uFF08\u7121\u5236\u9650\uFF09";
+  if (status === "ready" && owned) return "\u8CFC\u5165\u6E08\u307F\uFF08\u7121\u5236\u9650\uFF09";
+  return `\u7121\u6599\u30FB\u958B\u59CB${completed}\u5C40`;
+}
+function virtualStateText(state) {
+  if (!state?.active) return "";
+  const access = simulatedAccess(state);
+  return access.locked ? `\u30B7\u30DF\u30E5\u30EC\u30FC\u30B7\u30E7\u30F3\u4E2D: \u672A\u8CFC\u5165\u30FB\u958B\u59CB${state.completed}\u5C40\uFF0F\u30B3\u30FC\u30C1\u306E\u7121\u6599\u4F53\u9A13\u306F\u7D42\u4E86\uFF08\u30ED\u30C3\u30AF\u4E2D\uFF09` : `\u30B7\u30DF\u30E5\u30EC\u30FC\u30B7\u30E7\u30F3\u4E2D: \u672A\u8CFC\u5165\u30FB\u958B\u59CB${state.completed}\u5C40\uFF0F\u30B3\u30FC\u30C1\u306E\u7121\u6599\u4F53\u9A13\uFF1A\u6B8B\u308A${access.remaining}\u5BFE\u5C40`;
 }
 
 // src/about.mjs
@@ -35355,9 +36034,20 @@ function renderAboutHtml(version) {
       <div class="about-app-sub">${escapeHtml(ABOUT_APP_SUBTITLE)}</div>
     </div>
     <dl class="about-meta">
-      <dt>\u30D0\u30FC\u30B8\u30E7\u30F3</dt><dd id="about-version">${escapeHtml(version)}</dd>
+      <dt>\u30D0\u30FC\u30B8\u30E7\u30F3</dt><dd id="about-version" class="about-version">${escapeHtml(version)}</dd>
       <dt>\u958B\u767A\u8005</dt><dd>${escapeHtml(ABOUT_DEVELOPER)}</dd>
     </dl>
+    <div id="freemium-sim-panel" class="freemium-sim-panel" hidden>
+      <div class="fs-title">\u30D5\u30EA\u30FC\u30DF\u30E5\u30EC\u30FC\u30B7\u30E7\u30F3 \u72B6\u614B\u30B7\u30DF\u30E5\u30EC\u30FC\u30B7\u30E7\u30F3</div>
+      <div class="fs-real" id="fs-real-state">\u73FE\u5728\u306E\u5B9F\u72B6\u614B: \u78BA\u8A8D\u4E2D</div>
+      <div class="fs-options" role="radiogroup" aria-label="\u30B7\u30DF\u30E5\u30EC\u30FC\u30B7\u30E7\u30F3\u306E\u72B6\u614B">
+        <button type="button" role="radio" aria-checked="true" data-sim-mode="off">\u30AA\u30D5\uFF08\u5B9F\u72B6\u614B\uFF09</button>
+        ${SIM_MODES.map((mode) => `<button type="button" role="radio" aria-checked="false" data-sim-mode="${escapeHtml(mode.id)}">${escapeHtml(mode.label)}</button>`).join("")}
+      </div>
+      <div class="fs-virtual" id="fs-virtual-state" hidden></div>
+      <button type="button" class="fs-exit" id="fs-exit" hidden>\u30B7\u30DF\u30E5\u30EC\u30FC\u30B7\u30E7\u30F3\u3092\u7D42\u4E86</button>
+      <div class="fs-note">\u30C6\u30B9\u30C8\u7528\u306E\u8868\u793A\u3067\u3059\u3002\u5B9F\u7269\u306E\u8CFC\u5165\u72B6\u614B\u30FB\u65E2\u5B58\u8CFC\u5165\u8005\u30D5\u30E9\u30B0\u30FB\u30B3\u30FC\u30C1\u306E\u7121\u6599\u4F53\u9A13\u306E\u958B\u59CB\u30AB\u30A6\u30F3\u30C8\u306F\u5909\u66F4\u3057\u307E\u305B\u3093\u3002\u7D42\u4E86\u307E\u305F\u306F\u30A2\u30D7\u30EA\u518D\u8D77\u52D5\u3067\u5B9F\u72B6\u614B\u306B\u623B\u308A\u307E\u3059\u3002</div>
+    </div>
     <div class="about-links">
       ${externalLink(ABOUT_PRIVACY_URL, "\u30D7\u30E9\u30A4\u30D0\u30B7\u30FC\u30DD\u30EA\u30B7\u30FC")}
       ${externalLink(ABOUT_TERMS_URL, "\u5229\u7528\u898F\u7D04")}
@@ -36033,128 +36723,202 @@ function createClipStatus({
   };
 }
 
-// src/grandfather.mjs
-var GRANDFATHER_KEY = "ml-grandfather-v1";
-function markGrandfathered(storage) {
-  try {
-    if (storage.getItem(GRANDFATHER_KEY) !== null) return;
-    storage.setItem(GRANDFATHER_KEY, "1");
-  } catch (_) {
-  }
+// src/freemium_ui.mjs
+function startFreeLineText({ gate = false, remaining = 0 } = {}) {
+  if (!gate) return "";
+  return remaining > 0 ? `\u30B3\u30FC\u30C1\u306E\u7121\u6599\u4F53\u9A13\uFF1A\u6B8B\u308A${remaining}\u5BFE\u5C40` : "\u5BFE\u5C40\u306F\u5F15\u304D\u7D9A\u304D\u7121\u6599\u3067\u3059\uFF08\u30B3\u30FC\u30C1\u306A\u3057\uFF09";
+}
+function startConfirmHTML() {
+  return `<div class="start-confirm-card">
+    <h2 id="start-confirm-title">\u65B0\u3057\u3044\u5BFE\u5C40\u3092\u59CB\u3081\u307E\u3059\u304B\uFF1F</h2>
+    <p id="start-confirm-msg">\u7D9A\u304D\u306E\u5BFE\u5C40\u304C\u3042\u308A\u307E\u3059\u3002\u65B0\u3057\u304F\u59CB\u3081\u308B\u3068\u3001\u30B3\u30FC\u30C1\u4F53\u9A13\u30921\u5BFE\u5C40\u5206\u4F7F\u3044\u307E\u3059\u3002</p>
+    <div class="start-confirm-actions">
+      <button type="button" id="start-confirm-ok">\u65B0\u3057\u3044\u5BFE\u5C40\u3092\u59CB\u3081\u308B</button>
+      <button type="button" id="start-confirm-cancel">\u623B\u308B</button>
+    </div></div>`;
+}
+function escHtml(value) {
+  return String(value ?? "").replace(/[&<>"']/g, (c) => ({
+    "&": "&amp;",
+    "<": "&lt;",
+    ">": "&gt;",
+    '"': "&quot;",
+    "'": "&#39;"
+  })[c]);
+}
+function unlockLinkText({ price = "" } = {}) {
+  const shown = String(price ?? "").trim();
+  return shown ? `AI\u30B3\u30FC\u30C1\u3092\u89E3\u9664\uFF08\u8CB7\u3044\u5207\u308A\u30FB${shown}\uFF09` : "AI\u30B3\u30FC\u30C1\u3092\u89E3\u9664\uFF08\u8CB7\u3044\u5207\u308A\uFF09";
+}
+function lockedCoachHTML() {
+  return '<button type="button" class="coach-locked" data-coach-unlock>\u{1F512} \u30B3\u30FC\u30C1\u306F\u30ED\u30C3\u30AF\u4E2D\u3067\u3059</button>';
+}
+function unlockSheetHTML({ price = "" } = {}) {
+  const shown = String(price ?? "").trim();
+  return `<div class="unlock-card"><h2 id="unlock-title">\u30B3\u30FC\u30C1\u3092\u30A2\u30F3\u30ED\u30C3\u30AF</h2>
+    <p>\u5BFE\u5C40\u4E2D\u306E\u63A8\u5968\u30FB\u7D71\u8A08\u306E\u30B3\u30FC\u30C1\u5206\u6790</p>
+    <p class="unlock-price" id="unlock-price"${shown ? "" : " hidden"}>${escHtml(shown)}</p><p>\u8CB7\u3044\u5207\u308A\u30FB\u8FFD\u52A0\u8AB2\u91D1\u306A\u3057\u30FB\u5E83\u544A\u306A\u3057</p>
+    <p id="unlock-status" role="status" aria-live="polite"></p>
+    <button type="button" data-coach-purchase>\u30A2\u30F3\u30ED\u30C3\u30AF\u3059\u308B</button>
+    <button type="button" data-coach-sheet-close>\u9589\u3058\u308B</button></div>`;
+}
+function trialEndHTML({ price = "" } = {}) {
+  const shown = String(price ?? "").trim();
+  return `<div class="trial-end"><p>\u30B3\u30FC\u30C1\u306E\u7121\u6599\u4F53\u9A13\u306F\u7D42\u4E86\u3057\u307E\u3057\u305F</p>
+    <button type="button" data-coach-unlock>\u30A2\u30F3\u30ED\u30C3\u30AF\u3059\u308B${shown ? `\uFF08${escHtml(shown)}\uFF09` : ""}</button></div>`;
+}
+function analysisUnlockHTML() {
+  return '<button type="button" class="analysis-unlock" data-coach-unlock>\u{1F512} \u30B3\u30FC\u30C1\u5206\u6790\u306F\u30A2\u30F3\u30ED\u30C3\u30AF\u3067\u898B\u3089\u308C\u307E\u3059</button>';
 }
 
-// src/main.js
-markGrandfathered({ getItem: (key2) => localStorage.getItem(key2), setItem: (key2, value) => localStorage.setItem(key2, value) });
-var fitDirty = true;
-var NAMES = ["\u3042\u306A\u305F", "AI-1", "AI-2", "AI-3"];
-var MODELS = [
-  { id: "jaklab-v1", version: "V1", label: "V1", name: "V1\uFF08\u81EA\u524D\u30E2\u30C7\u30EB\u30FB43MB\uFF09", file: "models/jaklab_v1.onnx", displayTemperature: 0.725 },
-  // 2026-11-07: 低スペック端末向けに V1 Light もコーチモデルとして選べる（5.8MB・推論が速い）。
-  { id: "jaklab-v1-light", version: "V1 Light", label: "V1 Light", name: "V1 Light\uFF08\u8EFD\u91CF\u30FB5.8MB\uFF09", file: "models/jaklab_v1_light.onnx", displayTemperature: 1 }
-  // 2026-11-06: 他モデル（VoidShine 高精度／mortal_best 標準／mortal_small 軽量）は
-  // アプリ同梱から外した。保存済みの旧モデルIDは init() で既定（V1）に戻る。
-];
-function modelLabel(id2) {
-  const m = MODELS.find((x) => x.id === id2);
-  return m ? m.label || m.name : id2;
-}
-var AUTO = new URLSearchParams(location.search).get("auto") === "1";
-var SHELL = isShell();
-var LENGTH_KEY = "ml-game-length";
-var MODEL_KEY = "ml-model";
-var LIGHT_MODEL_FILE = "models/jaklab_v1_light.onnx";
-var startupFallback = null;
-var cpuStorage = { getItem: (key2) => localStorage.getItem(key2), setItem: (key2, val) => localStorage.setItem(key2, val) };
-var cpuSeats = loadCpuSeats(cpuStorage, location.search);
-function initialGameLength() {
-  const param = new URLSearchParams(location.search).get("length");
-  if (param === "hanchan" || param === "tonpuu") return param;
-  if (AUTO) return "tonpuu";
-  try {
-    const v = localStorage.getItem(LENGTH_KEY);
-    if (v === "hanchan" || v === "tonpuu") return v;
-  } catch (_) {
+// src/freemium_start.mjs
+var START_STORAGE_KEY = "ml-free-starts-v1";
+var emptyState = () => ({ v: 1, base: 0, ids: [] });
+function sanitize(value) {
+  if (!value || value.v !== 1 || !Number.isInteger(value.base) || value.base < 0 || !Array.isArray(value.ids)) return null;
+  const ids = [];
+  for (const id2 of value.ids) {
+    if (typeof id2 === "string" && id2.length && !ids.includes(id2)) ids.push(id2);
   }
-  return "hanchan";
+  return { v: 1, base: value.base, ids: ids.slice(-1e3) };
 }
-var gameLength = initialGameLength();
-var QIJIA = 0;
-var S = {
-  ready: false,
-  started: false,
-  finished: false,
-  decisionPending: false,
-  errors: [],
-  logs: [],
-  provider: null,
-  modelId: null,
-  modelSelected: null,
-  mjaiEvents: 0,
-  inferCount: 0,
-  inferAvgMs: null,
-  coachRecords: 0,
-  agreement: null,
-  defen: null,
-  pendingKind: null,
-  pendingOptions: null,
-  dahaiLog: [],
-  dahaiThisKyoku: [0, 0, 0, 0],
-  probabilityCheck: null,
-  statisticalNotes: [],
-  tileSvgCount: 0,
-  actionButtons: [],
-  ruleSummary: null,
-  reviewCount: 0,
-  reviewRows: [],
-  probe: null,
-  // { running, key, lastResult, error } of the latest probe run
-  historyCount: 0,
-  historySaveStatus: null,
-  saveCompleted: false,
-  gameBundleMeta: null,
-  riichiSeats: [],
-  kyokuIndex: -1,
-  riichiPops: 0,
-  lastResult: null,
-  resultCount: 0,
-  scoreCheck: { checked: 0, ok: true, mismatches: [] },
-  finalBreakdown: null,
-  shell: SHELL
-};
-window.__stage2 = S;
-window.addEventListener("error", (e) => {
-  S.errors.push("error: " + (e.message || e));
-  recordError("E-G501", e.message || String(e), { stage: "uncaught", ifNone: true });
-});
-window.addEventListener("unhandledrejection", (e) => {
-  S.errors.push("rejection: " + (e.reason?.message || e.reason));
-  recordError("E-G501", e.reason?.message || String(e.reason), { stage: "rejection", ifNone: true });
-});
-var log = (m) => {
-  S.logs.push(m);
-  if (!S.ready) diagLogPush(m);
-  const el2 = document.getElementById("status");
-  if (el2) el2.textContent = m;
-  fitDirty = true;
-  console.log("[stage2]", m);
-};
-var audio = new GameAudio({ diagnose: (line) => {
-  diagLogPush(line);
-  console.warn(line);
-} });
-var discardTempo = new DiscardTempo();
-var manualDiscard = false;
-var gameSession = null;
-S.audioStatus = () => ({
-  settings: { ...audio.settings },
-  active: audio.active,
-  unlocked: audio.unlocked,
-  state: audio.context?.state,
-  loaded: audio.buffers.size,
-  music: !!audio.music,
-  sources: audio.sources.size,
-  diagnostics: [...audio.reported]
-});
+function readStartState(storage) {
+  let raw = null;
+  try {
+    raw = storage?.getItem?.(START_STORAGE_KEY) ?? null;
+  } catch (_) {
+    return emptyState();
+  }
+  if (!raw) return emptyState();
+  try {
+    return sanitize(JSON.parse(raw)) || emptyState();
+  } catch (_) {
+    return emptyState();
+  }
+}
+function writeStartState(storage, state) {
+  try {
+    storage?.setItem?.(START_STORAGE_KEY, JSON.stringify(state));
+    return true;
+  } catch (_) {
+    return false;
+  }
+}
+function startCount(state, completed = 0) {
+  const counted = (state?.base || 0) + (state?.ids?.length || 0);
+  const floor = Number.isFinite(Number(completed)) ? Math.max(0, Math.floor(Number(completed))) : 0;
+  return Math.max(counted, floor);
+}
+function hasStart(state, gameId) {
+  return !!gameId && Array.isArray(state?.ids) && state.ids.includes(gameId);
+}
+function syncStartFloor(storage, completed = 0) {
+  const state = readStartState(storage);
+  const floor = Number.isFinite(Number(completed)) ? Math.max(0, Math.floor(Number(completed))) : 0;
+  if (floor > state.base + state.ids.length) {
+    const next = { v: 1, base: floor - state.ids.length, ids: state.ids.slice() };
+    writeStartState(storage, next);
+    return next;
+  }
+  return state;
+}
+function noteStart(storage, gameId, { completed = 0 } = {}) {
+  const state = syncStartFloor(storage, completed);
+  if (hasStart(state, gameId)) {
+    return { state, count: startCount(state, completed), counted: false };
+  }
+  const id2 = gameId || `start-${Date.now()}-${Math.random().toString(36).slice(2, 8)}`;
+  const next = { v: 1, base: state.base, ids: [...state.ids, id2].slice(-1e3) };
+  writeStartState(storage, next);
+  return { state: next, count: startCount(next, completed), counted: true };
+}
+
+// src/sw_reload_gate.mjs
+function createSwReloadGate({ reload, isGameRunning }) {
+  let pending2 = false;
+  let reloaded = false;
+  function apply() {
+    if (reloaded) return false;
+    reloaded = true;
+    pending2 = false;
+    reload();
+    return true;
+  }
+  return {
+    request() {
+      if (isGameRunning()) {
+        pending2 = true;
+        return false;
+      }
+      return apply();
+    },
+    notifyGameEnded() {
+      if (!pending2) return false;
+      if (isGameRunning()) return false;
+      return apply();
+    },
+    get pending() {
+      return pending2;
+    },
+    get reloaded() {
+      return reloaded;
+    }
+  };
+}
+
+// src/stats_scope.mjs
+var HTML_ESCAPE = { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" };
+var defaultEscape = (value) => String(value ?? "").replace(/[&<>"']/g, (ch) => HTML_ESCAPE[ch]);
+function statsSelectFieldHTML(label, id2, optionsHTML) {
+  return `<label class="st-field"><span class="st-field-name">${label}</span> <select id="${id2}">${optionsHTML}</select></label>`;
+}
+function statsMultiFieldHTML(kind, label, options, selected, open, escapeHtml2 = defaultEscape) {
+  const chosen = options.filter((o) => selected.includes(o.id));
+  const summary = chosen.length === 0 ? "\u3059\u3079\u3066" : chosen.length === 1 ? chosen[0].label : `${chosen.length}\u4EF6`;
+  const items = options.map((o) => `<label><input type="checkbox" data-st-cpu-${kind}="${escapeHtml2(o.id)}"${selected.includes(o.id) ? " checked" : ""}><span>${escapeHtml2(o.label)}</span></label>`).join("");
+  return `<div class="st-field st-field-multi"><span class="st-field-name">${escapeHtml2(label)}</span>
+    <details id="st-cpu-${kind}" class="st-multi"${open ? " open" : ""}>
+    <summary>${escapeHtml2(summary)}</summary>
+    <div class="st-multi-list">${items}</div>
+  </details></div>`;
+}
+function statsScopeHTML({
+  picked,
+  available,
+  totalEligible,
+  kyoku,
+  limited,
+  isTonpuu,
+  baseline,
+  showBaseline,
+  lowSample,
+  currentModelProduct,
+  differentModel = false,
+  escapeHtml: escapeHtml2 = defaultEscape
+}) {
+  const baselineName = baseline ? escapeHtml2(baseline.modelName || baseline.modelId || "") : "";
+  const baselineSource = baseline ? differentModel ? `\u65E7\u30E2\u30C7\u30EB\uFF08${baselineName}\uFF09\u306E\u81EA\u5DF1\u5BFE\u6226` : escapeHtml2(baseline.source || "AI\u81EA\u5DF1\u5BFE\u6226") : "";
+  const baselineNotes = [];
+  if (isTonpuu && !baseline) baselineNotes.push("\u6771\u98A8\u7528\u306EAI\u30B3\u30FC\u30C1\u57FA\u6E96\u306F\u307E\u3060\u7528\u610F\u3055\u308C\u3066\u3044\u306A\u3044\u305F\u3081\u3001\u6771\u98A8\u8868\u793A\u3067\u306F\u4F75\u8A18\u3057\u307E\u305B\u3093\u3002");
+  if (showBaseline) {
+    baselineNotes.push(`AI\u30B3\u30FC\u30C1\u57FA\u6E96: ${baselineSource}\uFF08${escapeHtml2(baseline.sourceGames ?? "")}\u5BFE\u5C40\u30FB${isTonpuu ? "\u6771\u98A8" : "\u534A\u8358"}\uFF09`);
+    if (differentModel) baselineNotes.push(`\u203B \u3053\u306E\u57FA\u6E96\u306F\u73FE\u5728\u306EAI\u30B3\u30FC\u30C1\u300C${escapeHtml2(currentModelProduct)}\u300D\u3067\u306F\u306A\u304F\u3001\u65E7\u30E2\u30C7\u30EB\u306B\u3088\u308B\u3082\u306E\u3067\u3059\u3002\u73FE\u5728\u306EAI\u30B3\u30FC\u30C1\u306E\u57FA\u6E96\u3067\u306F\u3042\u308A\u307E\u305B\u3093\u3002`);
+    baselineNotes.push("AI\u30B3\u30FC\u30C1\u57FA\u6E96\u3082\u5404\u6307\u6A19\u3068\u540C\u3058\u5B9A\u7FA9\u3067\u96C6\u8A08\u3057\u3066\u3044\u307E\u3059\u3002");
+  }
+  const list = (items) => `<ul>${items.map((t) => `<li>${t}</li>`).join("")}</ul>`;
+  return `<div class="st-scope">
+    <div class="st-scope-main">\u5BFE\u8C61: \u5B8C\u4E86 ${picked}\u5BFE\u5C40\uFF08\u6761\u4EF6\u4E00\u81F4 ${available}\u5BFE\u5C40\uFF0F\u5168\u671F\u9593 ${totalEligible}\u5BFE\u5C40\uFF09\uFF0F <span class="st-nowrap">${kyoku}\u5C40</span>${limited ? "\uFF0F \u7BC4\u56F2\u6307\u5B9A\u306B\u3088\u308A\u76F4\u8FD1\u5206\u306E\u307F\u96C6\u8A08" : ""}</div>
+    ${lowSample ? '<div class="st-scope-ref"><span class="st-ref">\u53C2\u8003\u5024</span> \u5C40\u6570\u304C30\u672A\u6E80\u306E\u305F\u3081\u3001\u5404\u6307\u6A19\u306F\u53C2\u8003\u5024\u3067\u3059\uFF08\u5DEE\u5206\u3082\u53C2\u8003\u5024\u3068\u3057\u3066\u8868\u793A\u3057\u307E\u3059\uFF09\u3002</div>' : ""}
+    <div class="st-scope-sec"><h4>\u96C6\u8A08\u306E\u6761\u4EF6</h4>${list([
+    "\u30B3\u30FC\u30C1\u8868\u793A\u300C\u6709\u308A\u300D\u306F\u5BFE\u5C40\u4E2D\u306B\u4E00\u5EA6\u3067\u3082ON\u306B\u3057\u305F\u5BFE\u5C40\u3067\u3059\u3002\u8868\u793A\u30FB\u30E2\u30C7\u30EB\u306E\u8A18\u9332\u304C\u306A\u3044\u65E7\u5BFE\u5C40\u306F\u300C\u8A18\u9332\u306A\u3057\u300D\u3067\u78BA\u8A8D\u3067\u304D\u307E\u3059\u3002",
+    "\u76F8\u624B\u306E\u5F37\u3055\u30FB\u30BF\u30A4\u30D7\u306F\u3001\u305D\u306E\u5BFE\u5C40\u306E3\u4EBA\u5168\u54E1\u304C\u9078\u629E\u7BC4\u56F2\u306B\u53CE\u307E\u308B\u5834\u5408\u3060\u3051\u96C6\u8A08\u3057\u307E\u3059\u3002\u76F8\u624B\u8A2D\u5B9A\u306E\u8A18\u9332\u304C\u306A\u3044\u65E7\u5BFE\u5C40\u306F\u3001\u7D5E\u308A\u8FBC\u307F\u4E2D\u306F\u5BFE\u8C61\u5916\u3067\u3059\u3002",
+    "\u96C6\u8A08\u5BFE\u8C61\u306F\u5B8C\u4E86\u3057\u305F\u5BFE\u5C40\u306E\u307F\u3067\u3059\u3002\u4E2D\u65AD\u5BFE\u5C40\u306F\u6BCD\u6570\u306B\u542B\u307E\u308C\u307E\u305B\u3093\u3002"
+  ])}</div>
+    ${baselineNotes.length ? `<div class="st-scope-sec"><h4>AI\u30B3\u30FC\u30C1\u3068\u306E\u6BD4\u8F03</h4>${list(baselineNotes)}</div>` : ""}
+  </div>`;
+}
+
+// src/tile_render.mjs
 var HONOR = ["", "\u6771", "\u5357", "\u897F", "\u5317", "\u767D", "\u767C", "\u4E2D"];
 function tileLabel(p) {
   if (!p || p === "_") return "";
@@ -36224,11 +36988,2985 @@ function kyokuText(k2) {
   return `${{ E: "\u6771", S: "\u5357", W: "\u897F", N: "\u5317" }[x[1]]}${x[2]}\u5C40${x[3] !== "0" ? ` ${x[3]}\u672C\u5834` : ""}`;
 }
 function contextLabel(context) {
-  return { zimo: "\u81EA\u5BB6\u306E\u6253\u724C", dapai: "\u4ED6\u5BB6\u306E\u6253\u724C", fulou: "\u9CF4\u304D\u5F8C", gang: "\u30AB\u30F3" }[context] || context || "-";
+  return { zimo: "\u3042\u306A\u305F\u306E\u6253\u724C", dapai: "\u4ED6\u5BB6\u306E\u6253\u724C", fulou: "\u9CF4\u304D\u5F8C", gang: "\u30AB\u30F3" }[context] || context || "-";
 }
 function actionTilesHTML(tiles) {
   return `<span class="act-tiles">${tiles.map((p) => tileHTML(p, "act-tile")).join("")}</span>`;
 }
+function shoupaiStringHTML(str, markWin = false, doraSet = null) {
+  const parts = String(str).split(",");
+  const tilesOf = (seg) => {
+    const tiles = [];
+    let suit = "";
+    for (const ch of seg) {
+      if ("mpsz".includes(ch)) suit = ch;
+      else if (/\d/.test(ch) && suit) tiles.push(suit + ch);
+    }
+    return tiles;
+  };
+  const isDora = (t) => !!doraSet && (t[1] === "0" || doraSet.has(t[0] + t[1]));
+  const closedTiles = tilesOf(parts[0]);
+  const closed = closedTiles.map((t, i) => `<span class="th-tile${markWin && i === closedTiles.length - 1 ? " win" : ""}${isDora(t) ? " dora" : ""}">${tileSVG(t, tileLabel(t))}</span>`).join("");
+  const melds = parts.slice(1).map((seg) => {
+    const { src, tiles } = meldArrangement(seg);
+    return `<span class="th-meld">${tiles.map((t) => t.back ? `<span class="th-tile">${tileSVG("_", "\u4F0F\u305B\u724C")}</span>` : `<span class="th-tile${t.called ? ` called${src === "kamicha" ? " lean-kamicha" : ""}` : ""}${isDora(t.pai) ? " dora" : ""}">${tileSVG(t.pai, tileLabel(t.pai))}</span>`).join("")}</span>`;
+  }).join("");
+  return `<span class="th-tiles">${closed}</span>${melds}`;
+}
+
+// src/result_panel.mjs
+function resultPanelHTML(r, deps) {
+  const {
+    NAMES: NAMES2,
+    AUTO: AUTO2,
+    gameEnded: gameEnded2,
+    horaHandByKyoku: horaHandByKyoku2,
+    horaHandKey: horaHandKey2,
+    kyushuHandByKyoku: kyushuHandByKyoku2,
+    fmtDelta: fmtDelta2,
+    tileSVG: tileSVG2,
+    tileLabel: tileLabel2,
+    shoupaiStringHTML: shoupaiStringHTML2,
+    horaHeadingHTML: horaHeadingHTML2,
+    deltaTotalClass: deltaTotalClass2
+  } = deps;
+  if (r.type === "hora") {
+    const yakuRows = r.yaku.map((y) => `<div class="yaku-row"><span>${y.name}</span><span>${String(y.fanshu).includes("*") ? "\u5F79\u6E80" : y.fanshu + "\u7FFB"}</span></div>`).join("");
+    const scoreMain = r.damanguan || (r.fanshu ?? 0) >= 13 ? `${r.scoreLabel} ${r.defen.toLocaleString()}\u70B9` : `${r.fanshu}\u7FFB ${r.fu}\u7B26 ${r.defen.toLocaleString()}\u70B9`;
+    const payRows = [0, 1, 2, 3].map((id2) => `<tr${id2 === r.winnerId ? ' class="winner-row"' : ""}>
+        <td>${NAMES2[id2]}</td><td>${fmtDelta2(r.baseById[id2])}</td>
+        ${r.honba ? `<td>${fmtDelta2(r.honbaById[id2])}</td>` : ""}
+        ${r.kyotaku ? `<td>${fmtDelta2(r.kyotakuById[id2])}</td>` : ""}
+        <td class="${deltaTotalClass2(r.deltasById[id2])}">${fmtDelta2(r.deltasById[id2])}</td></tr>`).join("");
+    return `<div class="result-card">
+      ${r.ronCount > 1 ? `<div class="multi-ron">\u30C0\u30D6\u30ED\u30F3 ${r.ronSeq}\u4EF6\u76EE\uFF0F\u5168${r.ronCount}\u4EF6${r.ronSeq === 1 && (r.honba || r.kyotaku) ? "\uFF08\u672C\u5834\u30FB\u4F9B\u8A17\u306F\u3053\u3061\u3089\u306B\uFF09" : ""}</div>` : ""}
+      ${horaHeadingHTML2(r, NAMES2, r.winTile ? `<span class="win-tile">${tileSVG2(r.winTile, tileLabel2(r.winTile))}</span>` : "")}
+      <div class="yaku-list">${yakuRows}</div>
+      ${horaHandByKyoku2.has(horaHandKey2(r)) ? `<div class="tenpai-hands"><div class="tenpai-hand-row">
+        <span class="th-name">${r.winnerName} \u306E\u624B\u724C</span>${shoupaiStringHTML2(horaHandByKyoku2.get(horaHandKey2(r)), true, doraTileSet(r))}
+        <span class="th-waits">\u548C\u4E86\u724C: ${r.winTile ? tileLabel2(r.winTile) : ""}</span>
+      </div></div>` : ""}
+      ${doraBlockHTML(r, tileSVG2, tileLabel2)}
+      <div class="result-score">${scoreMain}${r.scoreLabel && !r.damanguan && (r.fanshu ?? 0) < 13 ? ` <span class="score-label">${r.scoreLabel}</span>` : ""}</div>
+      <table class="pay-table"><thead><tr><th></th><th>\u57FA\u672C</th>${r.honba ? "<th>\u672C\u5834</th>" : ""}${r.kyotaku ? "<th>\u4F9B\u8A17</th>" : ""}<th>\u5897\u6E1B</th></tr></thead>
+      <tbody>${payRows}</tbody></table>
+      ${AUTO2 ? '<div class="result-note">\u81EA\u52D5\u3067\u6B21\u3078\u9032\u307F\u307E\u3059</div>' : '<button type="button" id="result-next">' + (gameEnded2 ? "\u9589\u3058\u308B" : "\u6B21\u3078\u9032\u3080") + "</button>" + (gameEnded2 ? "" : '<div class="result-note">\u30DC\u30BF\u30F3\u3092\u62BC\u3059\u307E\u3067\u6B21\u3078\u9032\u307F\u307E\u305B\u3093</div>')}
+    </div>`;
+  }
+  const rows = [0, 1, 2, 3].map((id2) => `<tr>
+      <td>${NAMES2[id2]}</td>
+      ${r.drawn ?? r.exhaustive ? `<td>${r.tenpaiById[id2] ? '<span class="tenpai-badge">\u30C6\u30F3\u30D1\u30A4</span>' : '<span class="noten-badge">\u30CE\u30FC\u30C6\u30F3</span>'}</td>` : ""}
+      <td class="delta-total">${fmtDelta2(r.deltasById[id2])}</td></tr>`).join("");
+  const noMove = r.deltasById.every((v) => v === 0);
+  const tenpaiHandsHTML = (r.drawn ?? r.exhaustive) && r.tenpaiHands?.length ? `<div class="tenpai-hands">${r.tenpaiHands.map((h) => `<div class="tenpai-hand-row">
+        <span class="th-name">${NAMES2[h.id]} \u30C6\u30F3\u30D1\u30A4</span>${shoupaiStringHTML2(h.hand)}
+        ${h.waits?.length ? `<span class="th-waits">\u5F85\u3061: ${h.waits.map((w) => tileLabel2(w)).join("\u30FB")}</span>` : ""}
+      </div>`).join("")}</div>` : "";
+  const kyushuHand = r.name === "\u4E5D\u7A2E\u4E5D\u724C" ? kyushuHandByKyoku2?.get(r.kyokuIndex) : null;
+  const kyushuHandHTML = kyushuHand ? `<div class="tenpai-hands kyushu-hand"><div class="tenpai-hand-row">
+        <span class="th-name">${NAMES2[kyushuHand.id]}\u306E\u624B\u724C</span>${shoupaiStringHTML2(kyushuHand.hand)}
+      </div></div>` : "";
+  return `<div class="result-card">
+    <div class="result-head">\u6D41\u5C40 \u2015 ${r.name}</div>
+    ${r.name === "\u4E09\u5BB6\u548C" ? '<div class="result-note">3\u4EBA\u304C\u540C\u6642\u306B\u30ED\u30F3\u3057\u305F\u305F\u3081\u6D41\u5C40\uFF08\u89AA\u306E\u9023\u8358\u30FB\u672C\u5834+1\uFF09</div>' : ""}
+    ${kyushuHandHTML}
+    ${noMove ? '<div class="result-note">\u70B9\u6570\u5909\u52D5\u306F\u3042\u308A\u307E\u305B\u3093</div>' : `<table class="pay-table"><thead><tr><th></th>${r.drawn ?? r.exhaustive ? "<th>\u30C6\u30F3\u30D1\u30A4</th>" : ""}<th>\u5897\u6E1B</th></tr></thead><tbody>${rows}</tbody></table>`}
+    ${tenpaiHandsHTML}
+    ${AUTO2 ? '<div class="result-note">\u81EA\u52D5\u3067\u6B21\u3078\u9032\u307F\u307E\u3059</div>' : '<button type="button" id="result-next">' + (gameEnded2 ? "\u9589\u3058\u308B" : "\u6B21\u3078\u9032\u3080") + "</button>" + (gameEnded2 ? "" : '<div class="result-note">\u30DC\u30BF\u30F3\u3092\u62BC\u3059\u307E\u3067\u6B21\u3078\u9032\u307F\u307E\u305B\u3093</div>')}
+  </div>`;
+}
+
+// src/kyushu_hand.mjs
+var KYUSHU_DRAW_NAME = "\u4E5D\u7A2E\u4E5D\u724C";
+var SEAT_LABELS = ["\u6771", "\u5357", "\u897F", "\u5317"];
+function kyushuHandFromPingju(p, pid) {
+  if (!p || p.name !== KYUSHU_DRAW_NAME) return null;
+  const shoupai = Array.isArray(p.shoupai) ? p.shoupai : [];
+  for (let l = 0; l < 4; l++) {
+    const hand = shoupai[l];
+    if (!hand) continue;
+    const id2 = pid?.[l];
+    if (id2 == null) continue;
+    return { id: id2, seat: SEAT_LABELS[l], hand };
+  }
+  return null;
+}
+
+// src/history_db.mjs
+var HISTORY_DB_NAME = "mahjong-local";
+var HISTORY_STORE = "games";
+var SUMMARY_STORE = "summaries";
+var HISTORY_META_STORE = "gameMeta";
+function openHistoryDB() {
+  return new Promise((resolve, reject) => {
+    if (!("indexedDB" in window)) return reject(new Error("IndexedDB unavailable"));
+    const req = indexedDB.open(HISTORY_DB_NAME, 3);
+    req.onupgradeneeded = () => {
+      const db2 = req.result;
+      if (!db2.objectStoreNames.contains(HISTORY_STORE)) {
+        db2.createObjectStore(HISTORY_STORE, { keyPath: "meta.gameId" });
+      }
+      if (!db2.objectStoreNames.contains(SUMMARY_STORE)) {
+        db2.createObjectStore(SUMMARY_STORE, { keyPath: "gameId" });
+      }
+      if (!db2.objectStoreNames.contains(HISTORY_META_STORE)) {
+        db2.createObjectStore(HISTORY_META_STORE, { keyPath: "gameId" });
+      }
+    };
+    req.onsuccess = () => {
+      const db2 = req.result;
+      db2.onversionchange = () => {
+        try {
+          db2.close();
+        } catch (_) {
+        }
+      };
+      resolve(db2);
+    };
+    req.onerror = () => reject(req.error || new Error("IndexedDB open failed"));
+  });
+}
+async function idbRequestIn(storeName, mode, action) {
+  const db2 = await openHistoryDB();
+  return new Promise((resolve, reject) => {
+    const tx2 = db2.transaction(storeName, mode);
+    const store = tx2.objectStore(storeName);
+    let request;
+    try {
+      request = action(store);
+    } catch (e) {
+      db2.close();
+      return reject(e);
+    }
+    tx2.oncomplete = () => {
+      db2.close();
+      resolve(request?.result);
+    };
+    tx2.onerror = () => {
+      db2.close();
+      reject(tx2.error || new Error("IndexedDB transaction failed"));
+    };
+    tx2.onabort = () => {
+      db2.close();
+      reject(tx2.error || new Error("IndexedDB transaction aborted"));
+    };
+  });
+}
+var idbRequest = (mode, action) => idbRequestIn(HISTORY_STORE, mode, action);
+var metaRecord = (bundle) => ({
+  gameId: bundle?.meta?.gameId || null,
+  savedAt: bundle?.meta?.savedAt || null,
+  meta: bundle?.meta || null
+});
+async function idbWriteBundle(bundle, mode) {
+  const db2 = await openHistoryDB();
+  return new Promise((resolve, reject) => {
+    const tx2 = db2.transaction([HISTORY_STORE, HISTORY_META_STORE], mode);
+    tx2.objectStore(HISTORY_STORE).put(bundle);
+    tx2.objectStore(HISTORY_META_STORE).put(metaRecord(bundle));
+    tx2.oncomplete = () => {
+      db2.close();
+      resolve();
+    };
+    tx2.onerror = () => {
+      db2.close();
+      reject(tx2.error || new Error("IndexedDB transaction failed"));
+    };
+    tx2.onabort = () => {
+      db2.close();
+      reject(tx2.error || new Error("IndexedDB transaction aborted"));
+    };
+  });
+}
+var idbPutBundle = (bundle) => idbWriteBundle(bundle, "readwrite");
+var idbPutMeta = (meta) => idbRequestIn(HISTORY_META_STORE, "readwrite", (store) => store.put(meta));
+var idbPutSummary = (summary) => idbRequestIn(SUMMARY_STORE, "readwrite", (store) => store.put(summary));
+var idbGetAllSummaries = async () => await idbRequestIn(SUMMARY_STORE, "readonly", (store) => store.getAll()) || [];
+var idbGetAllMetas = async () => await idbRequestIn(HISTORY_META_STORE, "readonly", (store) => store.getAll()) || [];
+var idbGetAllBundleKeys = async () => await idbRequest("readonly", (store) => store.getAllKeys()) || [];
+var idbGetBundle = (gameId) => idbRequest("readonly", (store) => store.get(gameId));
+var idbGetAllBundles = async () => {
+  const all = await idbRequest("readonly", (store) => store.getAll());
+  return (all || []).sort((a, b) => String(b.meta?.savedAt || "").localeCompare(String(a.meta?.savedAt || "")));
+};
+async function idbDeleteBundle(gameId) {
+  const db2 = await openHistoryDB();
+  return new Promise((resolve, reject) => {
+    const tx2 = db2.transaction([HISTORY_STORE, HISTORY_META_STORE], "readwrite");
+    tx2.objectStore(HISTORY_STORE).delete(gameId);
+    tx2.objectStore(HISTORY_META_STORE).delete(gameId);
+    tx2.oncomplete = () => {
+      db2.close();
+      resolve();
+    };
+    tx2.onerror = () => {
+      db2.close();
+      reject(tx2.error || new Error("IndexedDB transaction failed"));
+    };
+    tx2.onabort = () => {
+      db2.close();
+      reject(tx2.error || new Error("IndexedDB transaction aborted"));
+    };
+  });
+}
+
+// src/back_nav.mjs
+var BACK_STATE_KEY = "mlBackNav";
+function createBackNav({ win = globalThis } = {}) {
+  const history = win?.history;
+  const stack = [];
+  const retired = /* @__PURE__ */ new Set();
+  let seq = 0;
+  const stateFor = (token) => ({ [BACK_STATE_KEY]: token });
+  const stateOf = (event) => event && event.state || history?.state || null;
+  const tokenOf = (state) => state && state[BACK_STATE_KEY] || null;
+  function notifyDepth() {
+    try {
+      const bridge2 = win?.JanLabNative;
+      if (bridge2 && typeof bridge2.setBackDepth === "function") bridge2.setBackDepth(stack.length);
+    } catch (_) {
+    }
+  }
+  function retire(layer) {
+    if (layer) retired.add(layer.token);
+  }
+  function push(id2, onBack) {
+    const token = String(++seq);
+    const layer = { id: id2, token, onBack: typeof onBack === "function" ? onBack : () => {
+    } };
+    stack.push(layer);
+    history?.pushState?.(stateFor(token), "");
+    notifyDepth();
+    return token;
+  }
+  function replaceTop(id2, onBack) {
+    if (!stack.length) return push(id2, onBack);
+    const token = String(++seq);
+    stack[stack.length - 1] = {
+      id: id2,
+      token,
+      onBack: typeof onBack === "function" ? onBack : () => {
+      }
+    };
+    history?.replaceState?.(stateFor(token), "");
+    notifyDepth();
+    return token;
+  }
+  function dismiss(id2) {
+    let index = -1;
+    for (let i = stack.length - 1; i >= 0; i--) {
+      if (stack[i].id === id2) {
+        index = i;
+        break;
+      }
+    }
+    if (index < 0) return false;
+    const layer = stack[index];
+    if (index !== stack.length - 1) {
+      stack.splice(index, 1);
+      retire(layer);
+      notifyDepth();
+      return true;
+    }
+    stack.pop();
+    retire(layer);
+    if (tokenOf(history?.state) === layer.token) history.back();
+    notifyDepth();
+    return true;
+  }
+  function reset() {
+    const count = stack.length;
+    for (const layer of stack) retire(layer);
+    stack.length = 0;
+    if (count > 0) history?.go?.(-count);
+    notifyDepth();
+    return count;
+  }
+  function handlePop(event) {
+    const token = tokenOf(stateOf(event));
+    if (token && retired.has(token)) {
+      return;
+    }
+    let index = token ? stack.findIndex((layer) => layer.token === token) : -1;
+    if (index >= 0 && index === stack.length - 1) {
+      return;
+    }
+    const closing = index >= 0 ? stack.splice(index + 1) : stack.splice(0);
+    for (const layer of closing) retire(layer);
+    for (let i = closing.length - 1; i >= 0; i--) {
+      try {
+        closing[i].onBack();
+      } catch (_) {
+      }
+    }
+    if (closing.length) notifyDepth();
+  }
+  function nativeBack() {
+    const layer = stack[stack.length - 1];
+    if (!layer) return false;
+    stack.pop();
+    retire(layer);
+    if (tokenOf(history?.state) === layer.token) history?.back?.();
+    try {
+      layer.onBack();
+    } catch (_) {
+    }
+    notifyDepth();
+    return true;
+  }
+  function top() {
+    return stack[stack.length - 1] || null;
+  }
+  function depth() {
+    return stack.length;
+  }
+  function has(id2) {
+    return stack.some((layer) => layer.id === id2);
+  }
+  win?.addEventListener?.("popstate", handlePop);
+  try {
+    if (win) win.__mlNativeBack = nativeBack;
+  } catch (_) {
+  }
+  return { push, replaceTop, dismiss, reset, handlePop, nativeBack, top, depth, has };
+}
+
+// src/row_tags.mjs
+function tileNameOf(majiangTile) {
+  const s = majiangTile[0], n = majiangTile[1];
+  if (s === "z") return "ESWNPFC"[+n - 1];
+  if (n === "0") return "5" + s + "r";
+  return n + s;
+}
+function rowTagsHTML(r, key2 = "", opts = {}, cellMoreOpen2 = /* @__PURE__ */ new Set()) {
+  const tags = [];
+  if (r.discardsDora) tags.push('<span class="tag dora">\u30C9\u30E9\u5207</span>');
+  else if (r.doraKept > 0) tags.push(`<span class="tag dora">\u30C9\u30E9${r.doraKept}\u679A</span>`);
+  const ann = (p) => {
+    const a = [...p.roles || [], ...p.dora ? [`\u30C9\u30E9${p.dora}`] : []];
+    return a.length ? `\uFF08${a.join("\u30FB")}\uFF09` : "";
+  };
+  for (const p of r.pairBreaks || []) {
+    tags.push(`<span class="tag yaku">${tileLabel(p.tile)}${p.count >= 3 ? "\u523B\u5B50" : "\u5BFE\u5B50"}\u3092\u5D29\u3059${ann(p)}</span>`);
+  }
+  for (const p of (r.pairKept || []).filter((p2) => p2.yakuhai)) {
+    tags.push(`<span class="tag yaku">${tileLabel(p.tile)}${p.count >= 3 ? "\u523B\u5B50" : "\u5BFE\u5B50"}\u3092\u4FDD\u6301${ann(p)}</span>`);
+  }
+  for (const id3 of r.dirKilled || []) {
+    tags.push(`<span class="tag dirkill">${DIRECTION_LABELS[id3] || id3}\u5D29\u3057</span>`);
+  }
+  let html = tags.join("");
+  if (r.waitDetails?.length) {
+    html += `<div class="waits">\u5F85\u3061 ${r.waitDetails.map((w) => `${tileLabel(w.tile)}(${w.remaining})`).join(" ")}</div>`;
+  }
+  const id2 = `${key2}|${tileNameOf(r.pai)}`;
+  const summaryBits = [], detailBits = [];
+  if (r.floatDiscard) {
+    const f = r.floatDiscard;
+    summaryBits.push(f.related.length ? `\u6D6E\u304D\u724C \u95A2\u9023 \u8A08${f.total}\u679A` : "\u6D6E\u304D\u724C \u52B9\u304F\u724C\u306A\u3057");
+    if (f.related.length) {
+      detailBits.push(`<div class="floats">\u6D6E\u304D\u724C: \u95A2\u9023 ${f.related.map((d) => `${tileLabel(d.tile)}(${d.remaining})`).join(" ")} \u8A08${f.total}\u679A</div>`);
+    }
+  }
+  if (r.shape) {
+    const s = r.shape;
+    summaryBits.push(s.goodTiles.length ? `\u597D\u5F62\u5909\u5316 \u8A08${s.goodCopies}\u679A\u30FB\u53D7\u5165\u671F\u5F85${s.expectedNextUkeire}\u679A` : `\u597D\u5F62\u5909\u5316\u306A\u3057\u30FB\u53D7\u5165\u671F\u5F85${s.expectedNextUkeire}\u679A`);
+    if (s.goodTiles.length) {
+      detailBits.push(`<div class="floats">\u5F62\u306E\u8CEA (1\u6BB5\u5148): \u597D\u5F62\u5909\u5316 ${s.goodTiles.map((g) => `${tileLabel(g.tile)}(${g.remaining})`).join(" ")} \u8A08${s.goodCopies}\u679A</div>`);
+    }
+  }
+  html = summaryBits.length ? `<div class="cell-summary">${summaryBits.join("\uFF0F")}</div>` + html : html;
+  if (detailBits.length) {
+    if (opts.allDetail) {
+      html += `<div class="cell-detail">${detailBits.join("")}</div>`;
+    } else {
+      const open = cellMoreOpen2.has(id2);
+      html += `<button type="button" class="cell-more" data-cell-more="${id2}" aria-expanded="${open}">${open ? "\u5185\u8A33\u3092\u96A0\u3059" : "\u5185\u8A33\u3092\u8868\u793A"}</button><div class="cell-detail"${open ? "" : " hidden"}>${detailBits.join("")}</div>`;
+    }
+  }
+  if (r.scoreOutlook) {
+    const o = r.scoreOutlook;
+    html += `<div class="outlook">\u60F3\u5B9A${o.min.toLocaleString()}\u301C${o.max.toLocaleString()}\u70B9${o.riichiAssumed ? "\uFF08\u30EA\u30FC\u30C1\u524D\u63D0\uFF09" : ""}</div>`;
+  }
+  return html || "-";
+}
+
+// src/coach_view.mjs
+var HTML_ESCAPE2 = { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" };
+var defaultEscape2 = (value) => String(value ?? "").replace(/[&<>"']/g, (ch) => HTML_ESCAPE2[ch]);
+function runnerUpLineHTML(entries, { label = "\u6B21\u70B9", escapeHtml: escapeHtml2 = defaultEscape2 } = {}) {
+  const items = (entries || []).filter((e) => e && e.name != null && e.percent != null).map((e) => `${escapeHtml2(e.name)} ${escapeHtml2(e.percent)}`);
+  if (!items.length) return "";
+  return `<div class="hint runner-up-line">${escapeHtml2(label)}\uFF1A${items.join("\uFF0F")}</div>`;
+}
+function agreementLineHTML(agreement, { escapeHtml: escapeHtml2 = defaultEscape2 } = {}) {
+  if (!agreement) return "";
+  const total = Number(agreement.total) || 0;
+  if (!total) return '<div class="hint agreement-line">AI\u3068\u306E\u4E00\u81F4: -</div>';
+  const agree = Number(agreement.agree) || 0;
+  return `<div class="hint agreement-line">AI\u3068\u306E\u4E00\u81F4: ${escapeHtml2(agree)}/${escapeHtml2(total)} (${escapeHtml2(Math.round(agree / total * 100))}%)</div>`;
+}
+var PROB_DEF = '<details class="prob-def"><summary>\u63A8\u5968\u5EA6\u3068\u306F \u24D8</summary><div class="prob-def-body">\u63A8\u5968\u5EA6\u306F\u3001AI\u30B3\u30FC\u30C1\u306E\u8A55\u4FA1\u3092\u5019\u88DC\u5168\u4F53\u306B\u5BFE\u3059\u308B\u5272\u5408\uFF08\uFF05\uFF09\u3067\u8868\u3057\u305F\u3082\u306E\u3067\u3059\u3002</div></details>';
+var PROB_DEF_INLINE = '<details class="prob-def inline"><summary>\u63A8\u5968\u5EA6\u3068\u306F \u24D8</summary><div class="prob-def-body">\u63A8\u5968\u5EA6\u306F\u3001AI\u30B3\u30FC\u30C1\u306E\u8A55\u4FA1\u3092\u5019\u88DC\u5168\u4F53\u306B\u5BFE\u3059\u308B\u5272\u5408\uFF08\uFF05\uFF09\u3067\u8868\u3057\u305F\u3082\u306E\u3067\u3059\u3002</div></details>';
+function coachSummaryHTML({
+  recommended,
+  recommendedTileArt = "",
+  evalPercent,
+  runnerUpHTML = "",
+  callNotesHTML = "",
+  after = null,
+  agreementHTML = "",
+  memo = "",
+  escapeHtml: escapeHtml2 = defaultEscape2
+} = {}) {
+  const afterHTML = after != null ? `<div class="after-state">\u6253\u724C\u5F8C\uFF1A${escapeHtml2(after)}${PROB_DEF_INLINE}</div>` : PROB_DEF;
+  const metaHTML = agreementHTML ? `<div class="coach-meta">${agreementHTML}</div>` : "";
+  return `<div class="coach-summary">
+    <div class="coach-group coach-conclusion">
+      <div class="rec">\u63A8\u5968: <b class="r1-name">${escapeHtml2(recommended)}</b>${recommendedTileArt}<span class="prob eval">\u63A8\u5968\u5EA6\uFF1A${escapeHtml2(evalPercent)}</span></div>
+      ${runnerUpHTML}${callNotesHTML}${afterHTML}
+    </div>${metaHTML}${memo ? `<div class="east4-memo">${memo}</div>` : ""}</div>`;
+}
+function selectedTileRowHTML({
+  tile: tile2,
+  prob,
+  rank,
+  shanten,
+  ukeire,
+  escapeHtml: escapeHtml2 = defaultEscape2
+} = {}) {
+  return `<div class="sel-info"><span class="r1-subject">\u9078\u629E\u4E2D</span> <b class="r1-name">${escapeHtml2(tile2)}</b> <span class="sel-facts">\u5019\u88DC <b>${escapeHtml2(rank)}</b>\u4F4D\uFF08<b>${escapeHtml2(shanten)}</b>\u5411\u8074\u30FB\u53D7\u5165<b>${escapeHtml2(ukeire)}</b>\u679A\uFF09</span><span class="sel-metric"><span class="r1-mlabel">\u63A8\u5968\u5EA6</span> <b class="prob">${escapeHtml2(prob)}</b></span></div>`;
+}
+
+// src/coach_panel.mjs
+var HTML_ESCAPE3 = { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" };
+var defaultEscape3 = (value) => String(value ?? "").replace(/[&<>"']/g, (ch) => HTML_ESCAPE3[ch]);
+function formatEvalPercent(prob) {
+  if (prob == null || !Number.isFinite(prob)) return "-";
+  return `${Math.round(prob * 100)}%`;
+}
+function shantenAfterLabel(value) {
+  if (value == null || value === "") return null;
+  const n = typeof value === "number" ? value : Number(value);
+  if (!Number.isFinite(n)) return String(value);
+  if (n < 0) return "\u548C\u4E86";
+  if (n === 0) return "\u30C6\u30F3\u30D1\u30A4\uFF080\u30B7\u30E3\u30F3\u30C6\u30F3\uFF09";
+  return `${n}\u30B7\u30E3\u30F3\u30C6\u30F3`;
+}
+function coachHeadHTML(ctx, { expand = false } = {}) {
+  return `<h3 class="coach-head">AI\u30B3\u30FC\u30C1${ctx ? ` <span class="ctx">${ctx}</span>` : ""}${expand ? '<button type="button" class="coach-expand" data-coach-expand aria-label="\u30B3\u30FC\u30C1\u3092\u62E1\u5927\u8868\u793A" title="\u30B3\u30FC\u30C1\u3092\u62E1\u5927\u8868\u793A">\u62E1\u5927</button>' : ""}</h3>`;
+}
+function candidateCompareHTML({
+  sorted,
+  key: key2,
+  recPai,
+  isSelected,
+  selRow = null,
+  selIdx = -1,
+  directions = [],
+  doraNow = 0,
+  safeInfo = null,
+  template = null,
+  comparison = null,
+  cmpExpanded = false,
+  cellMoreOpen: cellMoreOpen2 = /* @__PURE__ */ new Set(),
+  rowTags: rowTags2 = null,
+  escapeHtml: escapeHtml2 = defaultEscape3
+}) {
+  const tags = rowTags2 || ((r, k2, opts) => rowTagsHTML(r, k2, opts, cellMoreOpen2));
+  const cmpVisible = (r, i) => i < 4 || (r.candidate?.prob ?? 0) >= 0.01 || isSelected(r);
+  const hiddenCount = sorted.filter((r, i) => !cmpVisible(r, i)).length;
+  const body = sorted.map((r, i) => {
+    const cls = [r.pai === recPai ? "rec-row" : "", isSelected(r) ? "sel-row" : "", cmpVisible(r, i) ? "" : "cmp-extra"].filter(Boolean).join(" ");
+    return `
+    <tr${cls ? ` class="${cls}"` : ""}>
+      <td><span class="cmp-tile">${tileSVG(r.pai, tileLabel(r.pai))}</span></td><td>${r.shanten}</td><td>${r.ukeire}</td>
+      <td>${r.safety}</td><td>${tags(r, key2)}</td><td><span class="prob">${formatPercent(r.candidate?.prob)}</span></td></tr>`;
+  }).join("") + (hiddenCount ? `
+    <tr class="cmp-toggle-row"><td colspan="6"><button type="button" class="cmp-toggle" data-cmp-toggle="${key2}">${cmpExpanded ? `\u4ED6${hiddenCount}\u4EF6\u3092\u7573\u3080` : `\u4ED6${hiddenCount}\u4EF6\u3092\u8868\u793A`}</button></td></tr>` : "");
+  const selInfo = selRow ? selectedTileRowHTML({
+    tile: tileLabel(selRow.pai),
+    prob: formatPercent(selRow.candidate?.prob),
+    rank: selIdx + 1,
+    shanten: selRow.shanten,
+    ukeire: selRow.ukeire,
+    escapeHtml: escapeHtml2
+  }) : "";
+  const safe = safeInfo ? `<div class="safe-line">\u5BFE\u30EA\u30FC\u30C1\u5B8C\u5168\u5B89\u5168\u724C: ${safeInfo.count > 0 ? `${safeInfo.count}\u679A\u3042\u308A (${safeInfo.tiles.map((t) => tileLabel(t.tile)).join(" ")})` : "\u5B89\u5168\u724C\u306A\u3057"}</div>` : "";
+  const dirLine = `<div class="dir-line">\u624B\u306E\u542B\u307F\uFF08\u63A8\u5B9A\uFF09: ${directions.length ? directions.map((id2) => DIRECTION_LABELS[id2] || id2).join("\u30FB") : "\u306A\u3057"} \uFF0F \u30C9\u30E9 ${doraNow} \u679A</div>`;
+  return `<h3>\u5019\u88DC\u6BD4\u8F03 <span class="ctx">\u4E8B\u5B9F (\u8A08\u7B97)</span></h3>${selInfo}${dirLine}
+    <table class="cmp${cmpExpanded ? " expanded" : ""}"><thead><tr><th>\u724C</th><th>\u5411\u8074</th><th>\u53D7\u5165</th><th>\u5B89\u5168</th><th>\u69CB\u6210\u30FB\u6253\u70B9</th><th>\u63A8\u5968\u5EA6</th></tr></thead>
+    <tbody>${body}</tbody></table>${safe}
+    <div class="template">\u88DC\u8DB3 (\u8A08\u7B97\u30D9\u30FC\u30B9): ${template || "\u7406\u7531\u306F\u4E0D\u660E"}</div>${comparison ? `<div class="compare">\u6BD4\u8F03: ${comparison.text}</div>` : ""}`;
+}
+function explainConditionsHTML(conds, escapeHtml2 = defaultEscape3) {
+  return `<div class="probe-conds"><h4>\u3053\u306E\u63A8\u5968\u3092\u8AAC\u660E\u3067\u304D\u308B\u6761\u4EF6</h4><ul>${conds.map((c) => `<li>${escapeHtml2(c)}</li>`).join("")}</ul></div>`;
+}
+
+// src/drill_data.mjs
+var DRILL_SCHEMA_VERSION = 1;
+var DRILL_KIND = "mahjong-local-drill-problems";
+var TILE_ACTION = /^(?:[1-9][mps]|[ESWNPCF]|5[mps]r)$/;
+function isDiscardAction(action) {
+  return typeof action === "string" && TILE_ACTION.test(action);
+}
+function gameById(data, gameId) {
+  return (data.games || []).find((g) => g.id === gameId) || null;
+}
+function drillEventPrefix(data, problem) {
+  const game2 = gameById(data, problem.gameId);
+  if (!game2) throw new Error(`unknown game: ${problem.gameId}`);
+  if (!Number.isInteger(problem.eventCount) || problem.eventCount < 1) {
+    throw new Error(`invalid eventCount: ${problem.eventCount}`);
+  }
+  if (problem.eventCount > game2.events.length) {
+    throw new Error(`eventCount ${problem.eventCount} exceeds game ${problem.gameId} (${game2.events.length})`);
+  }
+  return game2.events.slice(0, problem.eventCount);
+}
+function drillScene(data, problem) {
+  const game2 = gameById(data, problem.gameId);
+  if (!game2) throw new Error(`unknown game: ${problem.gameId}`);
+  return sceneSnapshot(foldMjaiScene(game2.events, problem.eventCount), game2.qijia ?? 0);
+}
+function sceneFingerprint(scene) {
+  return JSON.stringify({
+    center: scene.center,
+    seats: scene.seats.map((s) => ({
+      l: s.l,
+      id: s.id,
+      defen: s.defen,
+      wind: s.wind,
+      closed: s.closed,
+      drawnTile: s.drawnTile,
+      fulou: s.fulou,
+      lizhi: s.lizhi,
+      he: s.he
+    }))
+  });
+}
+function actorSeat(scene, actor) {
+  return scene.seats[actor] || null;
+}
+function meldTileCount(fulou) {
+  return (fulou || []).reduce((sum, m) => sum + String(m).replace(/[^0-9]/g, "").length, 0);
+}
+function sceneHasAction(scene, actor, action) {
+  const seat = actorSeat(scene, actor);
+  if (!seat || !isDiscardAction(action)) return false;
+  const tile2 = tileFromMjai(action);
+  if (seat.closed.includes(tile2)) return true;
+  const base = tile2.replace("0", "5");
+  return seat.closed.some((t) => t.replace("0", "5") === base);
+}
+
+// src/drill_engine.mjs
+var import_majiang_core6 = __toESM(require_lib(), 1);
+function drillMaskEvent(ev2, viewer) {
+  if (ev2.type === "start_game") return { ...ev2, id: viewer };
+  if (ev2.type === "start_kyoku") {
+    return {
+      ...ev2,
+      tehais: ev2.tehais.map((h, a) => a === viewer ? h : Array(13).fill("?"))
+    };
+  }
+  if (ev2.type === "tsumo" && ev2.actor !== viewer) return { ...ev2, pai: "?" };
+  return ev2;
+}
+function replayDrillBrain(events, actor, BrainClass = MortalBrain) {
+  const brain = new BrainClass(actor, 4);
+  for (let i = 0; i < events.length; i++) {
+    brain.feed(drillMaskEvent(events[i], actor));
+    if (i < events.length - 1 && brain.pending) brain.consume();
+  }
+  return brain;
+}
+async function inferDrillPosition(ai2, events, actor, BrainClass = MortalBrain) {
+  if (!ai2) throw new Error("AI model is not ready");
+  const brain = replayDrillBrain(events, actor, BrainClass);
+  if (brain.feedErrors) {
+    throw new Error(`drill replay feed errors: ${brain.feedErrors} (${brain.firstError || "unknown"})`);
+  }
+  if (!brain.pending) throw new Error("drill replay did not reach a decision point");
+  brain.consume();
+  return ai2.infer(brain);
+}
+function groupString(tiles) {
+  const groups = { m: [], p: [], s: [], z: [] };
+  for (const t of tiles || []) {
+    if (groups[t[0]]) groups[t[0]].push(t[1]);
+  }
+  return ["m", "p", "s", "z"].filter((s) => groups[s].length).map((s) => s + groups[s].join("")).join("");
+}
+function shoupaiOf(seat) {
+  const arr = (seat?.closed || []).slice();
+  const drawn = seat?.drawnTile || null;
+  if (drawn) {
+    const i = arr.indexOf(drawn);
+    if (i >= 0) arr.splice(i, 1);
+  }
+  let str = groupString(arr);
+  if (seat?.fulou?.length) str += "," + seat.fulou.join(",");
+  const shoupai = import_majiang_core6.default.Shoupai.fromString(str);
+  if (drawn) shoupai.zimo(drawn);
+  return shoupai;
+}
+function sceneShoupaiModel(scene, actor) {
+  if (!scene?.seats?.[actor]) throw new Error(`missing drill seat ${actor}`);
+  const targetSeat = scene.seats[actor];
+  const target = shoupaiOf(targetSeat);
+  const model = {
+    zhuangfeng: scene.center?.zhuangfeng || 0,
+    shoupai: new Array(4),
+    he: new Array(4),
+    shan: { baopai: (scene.center?.baopai || []).slice() }
+  };
+  for (const seat of scene.seats) {
+    model.shoupai[seat.l] = seat === targetSeat ? target : shoupaiOf(seat);
+    model.he[seat.l] = { _pai: (seat.he || []).slice() };
+  }
+  return { shoupai: target, model };
+}
+function normalizedAction(action) {
+  if (action === "5mr") return "5m";
+  if (action === "5pr") return "5p";
+  if (action === "5sr") return "5s";
+  return action;
+}
+function candidateFor(row, qAll) {
+  const action = tileToMjai(row.pai);
+  return qAll.find((c) => c.action === action) || qAll.find((c) => normalizedAction(c.action) === normalizedAction(action)) || null;
+}
+function explainDrillScene(scene, actor, qAll, opts = {}) {
+  const rule = specRule();
+  const { shoupai, model } = sceneShoupaiModel(scene, actor);
+  const rows = analyzeDiscards(shoupai, rule, model);
+  const candidates = Array.isArray(qAll) ? qAll : [];
+  for (const row of rows) row.candidate = candidateFor(row, candidates);
+  const sorted = rows.slice().sort((a, b) => (b.candidate?.q ?? -Infinity) - (a.candidate?.q ?? -Infinity));
+  sorted.floats = rows.floats || [];
+  const recommended = opts.recommended || null;
+  const recRow = recommended ? sorted.find((r) => candidateFor(r, candidates)?.action === recommended || normalizedAction(candidateFor(r, candidates)?.action || "") === normalizedAction(recommended)) || sorted.find((r) => rowMatchesAction(r, recommended, candidates)) : sorted[0] || null;
+  const selected = opts.selected || null;
+  const selRow = selected ? sorted.find((r) => rowMatchesAction(r, selected, candidates)) || null : null;
+  let comparison = null;
+  try {
+    comparison = comparisonOf(sorted, { recPai: recRow?.pai, focusPai: selRow?.pai });
+  } catch (_) {
+    comparison = null;
+  }
+  const minShanten = rows.length ? Math.min(...rows.map((r) => r.shanten)) : null;
+  let safeInfo = null;
+  let explainability = null;
+  let doraNow = 0;
+  try {
+    safeInfo = safeTileInfo(shoupai, model);
+  } catch (_) {
+    safeInfo = null;
+  }
+  try {
+    doraNow = countDora(shoupai, doraSetFromIndicators(model));
+  } catch (_) {
+    doraNow = 0;
+  }
+  try {
+    const qValues = sorted.map((r) => r.candidate).filter(Boolean);
+    explainability = recommended ? explainabilityOf(sorted, { recommended, qValues, context: "zimo" }) : null;
+  } catch (_) {
+    explainability = null;
+  }
+  return {
+    rows: sorted,
+    recRow,
+    selRow,
+    minShanten,
+    ukeire: recRow?.ukeire ?? null,
+    template: recRow ? templateComment(rows, recRow.pai) : null,
+    comparison: comparison?.text || null,
+    directions: rows[0]?.dirBefore || [],
+    doraNow,
+    safeInfo,
+    explainability
+  };
+}
+function rowMatchesAction(row, action, candidates) {
+  const c = candidateFor(row, candidates);
+  return !!c && (c.action === action || normalizedAction(c.action) === normalizedAction(action));
+}
+
+// src/drill_difficulty.mjs
+var DRILL_DIFFICULTY_SAMPLES = 32;
+var DRILL_DIFFICULTY_TIER = "shodan";
+var DRILL_DIFFICULTY_SEED = "drill-difficulty-20261113";
+var DIFFICULTY_LEVELS = [
+  { id: "easy", label: "\u3084\u3055\u3057\u3044", min: 0.8 },
+  { id: "normal", label: "\u3075\u3064\u3046", min: 0.5 },
+  { id: "hard", label: "\u3080\u305A\u304B\u3057\u3044", min: -Infinity }
+];
+function difficultyTier(matchRate) {
+  if (!Number.isFinite(matchRate)) throw new Error(`invalid matchRate: ${matchRate}`);
+  if (matchRate >= 0.8) return "easy";
+  if (matchRate >= 0.5) return "normal";
+  return "hard";
+}
+function difficultyLevel(matchRate) {
+  return DIFFICULTY_LEVELS.find((level) => level.id === difficultyTier(matchRate));
+}
+function difficultySeed(baseSeed, problemId) {
+  const text = `${baseSeed}|${problemId}`;
+  let h = 2166136261;
+  for (let i = 0; i < text.length; i++) {
+    h ^= text.charCodeAt(i);
+    h = Math.imul(h, 16777619);
+  }
+  return h >>> 0;
+}
+var RED_FIVE_BASE = { 34: 4, 35: 13, 36: 22 };
+function tileIndexOf(actionIdx) {
+  if (actionIdx < 0 || actionIdx > 36) return -1;
+  return RED_FIVE_BASE[actionIdx] ?? actionIdx;
+}
+function sampleAgreement({
+  q: q4,
+  mask,
+  recommendedIdx,
+  samples = DRILL_DIFFICULTY_SAMPLES,
+  seed = 0,
+  tierId = DRILL_DIFFICULTY_TIER
+}) {
+  if (!q4 || !mask) throw new Error("q and mask are required");
+  if (!Number.isInteger(recommendedIdx) || recommendedIdx < 0) {
+    throw new Error(`invalid recommendedIdx: ${recommendedIdx}`);
+  }
+  if (!Number.isInteger(samples) || samples < 1) throw new Error(`invalid samples: ${samples}`);
+  const want = tileIndexOf(recommendedIdx);
+  let greedy = -1;
+  for (let j = 0; j < mask.length; j++) {
+    if (mask[j] && (greedy < 0 || q4[j] > q4[greedy])) greedy = j;
+  }
+  const policy = new CpuPolicy({ tierId, styleId: "none", seed });
+  let hits = 0;
+  for (let i = 0; i < samples; i++) {
+    const { actionIdx, dahaiIdx } = policy.choose(null, q4, mask, greedy);
+    const picked = actionIdx === 37 ? dahaiIdx : actionIdx;
+    if (tileIndexOf(picked) === want) hits++;
+  }
+  return hits / samples;
+}
+
+// src/drill_logic.mjs
+var DRILL_SET_SIZE = 10;
+var DRILL_CORRECT_GAP_PT = 10;
+var DRILL_CLOSE_GAP_PT = 30;
+var DRILL_RESULTS_KEY = "ml-drill-results";
+var DRILL_RESULTS_LIMIT = 200;
+var DRILL_T_FIRST_MS = 2e4;
+var DRILL_T_NEXT_MS = 1e4;
+var DRILL_VERDICT_LABELS = { correct: "\u6B63\u89E3", close: "\u60DC\u3057\u3044", wrong: "\u4E0D\u6B63\u89E3" };
+function probOf(probabilities, action) {
+  if (action == null || probabilities == null) return null;
+  if (Array.isArray(probabilities)) {
+    const found = probabilities.find((c) => c && c.action === action);
+    return found && Number.isFinite(found.prob) ? found.prob : null;
+  }
+  const value = probabilities[action];
+  return Number.isFinite(value) ? value : null;
+}
+function judgeDrillAnswer({ selected, recommended, probabilities } = {}) {
+  const selectedProb = probOf(probabilities, selected);
+  const recommendedProb = probOf(probabilities, recommended);
+  if (selected != null && selected === recommended) {
+    return { verdict: "correct", selectedProb, recommendedProb, gapPt: 0 };
+  }
+  if (selectedProb == null || recommendedProb == null) {
+    return { verdict: "wrong", selectedProb, recommendedProb, gapPt: null };
+  }
+  const gapPt = Math.abs(selectedProb - recommendedProb) * 100;
+  let verdict = "wrong";
+  if (gapPt <= DRILL_CORRECT_GAP_PT + 1e-9) verdict = "correct";
+  else if (gapPt <= DRILL_CLOSE_GAP_PT + 1e-9) verdict = "close";
+  return { verdict, selectedProb, recommendedProb, gapPt };
+}
+function verdictLabel(verdict) {
+  return DRILL_VERDICT_LABELS[verdict] || verdict || "";
+}
+function drillDifficulty(problem) {
+  const rate2 = problem?.matchRate;
+  if (!Number.isFinite(rate2)) return null;
+  return difficultyLevel(rate2);
+}
+function drillLocked({ pwa = false, status = "unavailable", owned = false, grandfathered = false } = {}) {
+  if (pwa) return false;
+  if (status !== "ready") return false;
+  return !owned && !grandfathered;
+}
+function drillResultDate(date = /* @__PURE__ */ new Date()) {
+  const d = date instanceof Date ? date : new Date(date);
+  if (!Number.isFinite(d.getTime())) return null;
+  const pad = (n) => String(n).padStart(2, "0");
+  return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}`;
+}
+function readDrillResults(storage) {
+  try {
+    const raw = storage?.getItem?.(DRILL_RESULTS_KEY);
+    const parsed = raw ? JSON.parse(raw) : [];
+    if (!Array.isArray(parsed)) return [];
+    return parsed.filter((r) => r && typeof r.date === "string" && Number.isFinite(r.correct)).map((r) => ({ date: r.date, correct: r.correct }));
+  } catch (_) {
+    return [];
+  }
+}
+function saveDrillResult(storage, record) {
+  if (!record || typeof record.date !== "string" || !Number.isFinite(record.correct)) return false;
+  try {
+    const rows = readDrillResults(storage);
+    rows.push({ date: record.date, correct: record.correct });
+    storage?.setItem?.(DRILL_RESULTS_KEY, JSON.stringify(rows.slice(-DRILL_RESULTS_LIMIT)));
+    return true;
+  } catch (_) {
+    return false;
+  }
+}
+function createStreamingDrillSession({
+  total = DRILL_SET_SIZE,
+  key: key2 = "any|any",
+  supply,
+  firstMs = DRILL_T_FIRST_MS,
+  nextMs = DRILL_T_NEXT_MS
+} = {}) {
+  const items = [];
+  const pending2 = /* @__PURE__ */ new Map();
+  const signal = { aborted: false };
+  let skipResolve = null;
+  let skipPromise = new Promise((resolve) => {
+    skipResolve = resolve;
+  });
+  let index = 0;
+  const session = {
+    get key() {
+      return key2;
+    },
+    get items() {
+      return items;
+    },
+    get total() {
+      return total;
+    },
+    get index() {
+      return index;
+    },
+    get problem() {
+      return items[index]?.problem || null;
+    },
+    get data() {
+      return items[index]?.data || null;
+    },
+    get origin() {
+      return items[index]?.origin || null;
+    },
+    get judgement() {
+      return items[index]?.judgement || null;
+    },
+    get answeredCount() {
+      return items.filter((it) => it.judgement).length;
+    },
+    get complete() {
+      return items.length === total && items.every((it) => it.judgement);
+    },
+    get aborted() {
+      return signal.aborted;
+    },
+    get filledCount() {
+      return items.length;
+    },
+    get fallbackCount() {
+      return items.filter((it) => it.origin === "pool" && it.fallback).length;
+    },
+    filled(i) {
+      return !!items[i];
+    },
+    // Slots are filled strictly in order; asking again returns the same promise.
+    fill(i) {
+      if (items[i]) return Promise.resolve(items[i]);
+      if (pending2.has(i)) return pending2.get(i);
+      if (i !== items.length) return Promise.reject(new Error(`slot ${i} requested before slot ${items.length}`));
+      const usedIds = new Set(items.map((it) => it.problem.id));
+      const p = Promise.resolve(supply(i, {
+        deadlineMs: i === 0 ? firstMs : nextMs,
+        usedIds,
+        signal,
+        skip: skipPromise
+      })).then((got) => {
+        pending2.delete(i);
+        if (signal.aborted || !got?.problem) return null;
+        const item = {
+          problem: got.problem,
+          data: got.data,
+          origin: got.origin || "pool",
+          fallback: !!got.fallback,
+          judgement: null
+        };
+        items[i] = item;
+        skipPromise = new Promise((resolve) => {
+          skipResolve = resolve;
+        });
+        return item;
+      }, (e) => {
+        pending2.delete(i);
+        throw e;
+      });
+      pending2.set(i, p);
+      return p;
+    },
+    // "収録済みの問題ではじめる": give up waiting for the current slot.
+    skipWait() {
+      if (pending2.size) skipResolve?.();
+    },
+    answer(judgement) {
+      if (signal.aborted || !items[index] || items[index].judgement) return null;
+      items[index].judgement = judgement;
+      return judgement;
+    },
+    next() {
+      if (index < items.length - 1) index++;
+      return session.problem;
+    },
+    abort() {
+      signal.aborted = true;
+      skipResolve?.();
+    },
+    result(date = /* @__PURE__ */ new Date()) {
+      if (signal.aborted || !session.complete) return null;
+      return {
+        date: drillResultDate(date),
+        correct: items.filter((it) => it.judgement?.verdict === "correct").length
+      };
+    }
+  };
+  return session;
+}
+function finalizeDrillSession(session, storage, date = /* @__PURE__ */ new Date()) {
+  const record = session?.result?.(date);
+  if (!record) return null;
+  saveDrillResult(storage, record);
+  return record;
+}
+
+// src/drill_generator.mjs
+var import_majiang_core7 = __toESM(require_lib(), 1);
+
+// src/drill_scene.mjs
+var SCENE_IDS = ["any", "early", "mid", "late", "riichi", "allLast"];
+var SCENE_LIMITS = {
+  earlyMaxJunme: 6,
+  midMinJunme: 7,
+  lateMaxPaishu: 24,
+  allLastMaxGap: 8e3
+};
+function junmeAt(events, eventCount, actor) {
+  let draws = 0;
+  const n = Math.min(eventCount, events.length);
+  for (let i = n - 1; i >= 0; i--) {
+    const ev2 = events[i];
+    if (ev2.type === "start_kyoku") break;
+    if (ev2.type === "tsumo" && ev2.actor === actor) draws++;
+  }
+  return Math.max(1, draws);
+}
+function isMenzen(fulou) {
+  return (fulou || []).every((m) => !/[-=+]/.test(String(m)));
+}
+function standingsOf(scores) {
+  const order = [0, 1, 2, 3].sort((a, b) => scores[b] - scores[a] || (winsTie(a, b, 0) ? -1 : 1));
+  const out = [];
+  order.forEach((actor, i) => {
+    out[actor] = {
+      rank: i + 1,
+      gapUp: i === 0 ? Infinity : scores[order[i - 1]] - scores[actor],
+      gapDown: i === 3 ? Infinity : scores[actor] - scores[order[i + 1]]
+    };
+  });
+  return out;
+}
+function minShantenAfter(scene, actor) {
+  const { shoupai, model } = sceneShoupaiModel(scene, actor);
+  const rows = analyzeDiscards(shoupai, specRule(), model, { shape: false });
+  return rows.length ? Math.min(...rows.map((r) => r.shanten)) : null;
+}
+function factsFromScene({ scene, events, eventCount, actor, length = "hanchan" }) {
+  const hero = scene.seats[actor];
+  const c = scene.center;
+  const standing = standingsOf(scene.seats.map((s) => s.defen))[actor];
+  let shanten;
+  return {
+    actor,
+    length,
+    zhuangfeng: c.zhuangfeng,
+    jushu: c.jushu,
+    junme: junmeAt(events, eventCount, actor),
+    paishu: c.paishu,
+    oppRiichi: scene.seats.some((s, i) => i !== actor && s.lizhi === true),
+    heroRiichi: hero.lizhi === true,
+    menzen: isMenzen(hero.fulou),
+    gapUp: standing.gapUp,
+    gapDown: standing.gapDown,
+    rank: standing.rank,
+    get minShantenAfter() {
+      if (shanten === void 0) shanten = minShantenAfter(scene, actor);
+      return shanten;
+    }
+  };
+}
+function sceneFacts(data, problem) {
+  const scene = drillScene(data, problem);
+  const game2 = (data.games || []).find((g) => g.id === problem.gameId);
+  return factsFromScene({
+    scene,
+    events: game2.events,
+    eventCount: problem.eventCount,
+    actor: problem.actor,
+    length: game2.length || "hanchan"
+  });
+}
+function isAllLast(facts) {
+  if (facts.length === "tonpuu") {
+    return facts.zhuangfeng === 0 && facts.jushu === 3 || facts.zhuangfeng >= 1;
+  }
+  return facts.zhuangfeng === 1 && facts.jushu === 3 || facts.zhuangfeng >= 2;
+}
+function matchesScene(sceneId, facts, limits = SCENE_LIMITS) {
+  switch (sceneId) {
+    case "any":
+      return true;
+    case "early":
+      return facts.junme <= limits.earlyMaxJunme && !facts.oppRiichi && facts.menzen && facts.minShantenAfter >= 1;
+    case "mid":
+      return facts.junme >= limits.midMinJunme && facts.paishu > limits.lateMaxPaishu && !facts.oppRiichi;
+    case "late":
+      return facts.paishu <= limits.lateMaxPaishu;
+    case "riichi":
+      return facts.oppRiichi && !facts.heroRiichi;
+    case "allLast":
+      return isAllLast(facts) && Math.min(facts.gapUp, facts.gapDown) <= limits.allLastMaxGap;
+    default:
+      throw new Error(`unknown scene: ${sceneId}`);
+  }
+}
+function sceneTags(facts, limits = SCENE_LIMITS) {
+  return SCENE_IDS.filter((id2) => matchesScene(id2, facts, limits));
+}
+
+// src/drill_gen_core.mjs
+var CLARITY_BAND = { minQGap: 1, minPBest: 0.95, minPGapPt: 50, temperature: 0.3 };
+var PREDICT_PASS = {
+  any: () => true,
+  easy: (p) => p >= 0.65,
+  normal: (p) => p >= 0.35 && p < 0.92,
+  hard: (p) => p < 0.65
+};
+var DIFFICULTY_IDS = ["any", "easy", "normal", "hard"];
+function parseKey(key2) {
+  const [scene, difficulty] = String(key2).split("|");
+  if (!SCENE_IDS.includes(scene) || !DIFFICULTY_IDS.includes(difficulty)) throw new Error(`invalid key: ${key2}`);
+  return { scene, difficulty };
+}
+function discardOnlyDecision(rec) {
+  if (!rec || rec.context !== "zimo" && rec.context !== "fulou") return false;
+  const q4 = rec.qValues;
+  if (!Array.isArray(q4) || q4.length < 2) return false;
+  return q4.every((c) => c && isDiscardAction(c.action));
+}
+function sortedByQ(qAll) {
+  return qAll.slice().sort((a, b) => b.q - a.q);
+}
+function answerFromQAll(qAll) {
+  const q4 = sortedByQ(qAll || []);
+  if (q4.length < 2) return null;
+  if (!isDiscardAction(q4[0].action)) return null;
+  if (!(q4[1].q < q4[0].q)) return null;
+  const probs = softmaxProbabilities(q4.map((c) => c.q), CLARITY_BAND.temperature);
+  const qBest = +Number(q4[0].q).toFixed(4);
+  const secondQ = +Number(q4[1].q).toFixed(4);
+  return {
+    recommended: q4[0].action,
+    qBest,
+    secondQ,
+    qGap: +(qBest - secondQ).toFixed(4),
+    pBest: +probs[0].toFixed(6),
+    pGapPt: +((probs[0] - probs[1]) * 100).toFixed(2)
+  };
+}
+function passesClarity(answer, band = CLARITY_BAND) {
+  if (!answer) return false;
+  return answer.qGap >= band.minQGap && answer.pBest >= band.minPBest && answer.pGapPt >= band.minPGapPt;
+}
+function qMaskFromQAll(qAll) {
+  const q4 = new Float64Array(ACTION_NAMES.length);
+  const mask = new Uint8Array(ACTION_NAMES.length);
+  for (const candidate of qAll || []) {
+    const idx = IDX[candidate.action];
+    if (idx == null) throw new Error(`unknown action: ${candidate.action}`);
+    q4[idx] = candidate.q;
+    mask[idx] = 1;
+  }
+  return { q: q4, mask };
+}
+var RED_FIVE_BASE2 = { 34: 4, 35: 13, 36: 22 };
+var tileIndexOf2 = (i) => RED_FIVE_BASE2[i] ?? i;
+function predictedMatch(lightQAll, tierId = DRILL_DIFFICULTY_TIER) {
+  const tau = cpuTier(tierId).tau;
+  const cands = (lightQAll || []).filter((c) => IDX[c.action] != null);
+  if (!cands.length) return 0;
+  const qmax = Math.max(...cands.map((c) => c.q));
+  const w = cands.map((c) => Math.exp((c.q - qmax) / tau));
+  const sum = w.reduce((a, b) => a + b, 0);
+  const best = cands.reduce((a, b) => b.q > a.q ? b : a);
+  const want = tileIndexOf2(IDX[best.action]);
+  let hit = 0;
+  cands.forEach((c, i) => {
+    if (tileIndexOf2(IDX[c.action]) === want) hit += w[i];
+  });
+  return hit / sum;
+}
+function measureMatchRate(lightQAll, recommended, problemId, opts = {}) {
+  const recommendedIdx = IDX[recommended];
+  if (recommendedIdx == null) throw new Error(`unknown recommended action ${recommended}`);
+  const { q: q4, mask } = qMaskFromQAll(lightQAll);
+  if (!mask[recommendedIdx]) throw new Error(`${problemId}: recommended ${recommended} is not a Light candidate`);
+  return sampleAgreement({
+    q: q4,
+    mask,
+    recommendedIdx,
+    samples: opts.samples ?? DRILL_DIFFICULTY_SAMPLES,
+    tierId: opts.tierId ?? DRILL_DIFFICULTY_TIER,
+    seed: difficultySeed(opts.seed ?? DRILL_DIFFICULTY_SEED, problemId)
+  });
+}
+var MOVES = [1e3, 1300, 2e3, 2600, 3900, 5200, 7700, 8e3, 12e3];
+var int = (rng, n) => Math.floor(rng() * n);
+function pickWeighted(rng, table) {
+  let u = rng();
+  for (const [value, weight] of table) {
+    u -= weight;
+    if (u < 0) return value;
+  }
+  return table[table.length - 1][0];
+}
+function scatterScores(rng, moves) {
+  for (let attempt = 0; attempt < 50; attempt++) {
+    const s = [25e3, 25e3, 25e3, 25e3];
+    let ok2 = true;
+    for (let i = 0; i < moves && ok2; i++) {
+      const amount = MOVES[int(rng, MOVES.length)];
+      const from = int(rng, 4);
+      let to2 = int(rng, 3);
+      if (to2 >= from) to2++;
+      s[from] -= amount;
+      s[to2] += amount;
+      if (s[from] < 1e3) ok2 = false;
+    }
+    if (ok2) return s;
+  }
+  return [25e3, 25e3, 25e3, 25e3];
+}
+function headGapOk(defenByActor, limits = SCENE_LIMITS) {
+  const st2 = standingsOf(defenByActor);
+  return st2.some((x) => Math.min(x.gapUp, x.gapDown) <= limits.allLastMaxGap);
+}
+function makeKyokuHead(sceneId, rng = Math.random, qijia = 0) {
+  const allLast = sceneId === "allLast";
+  let zhuangfeng;
+  let jushu;
+  if (allLast) {
+    zhuangfeng = 1;
+    jushu = 3;
+  } else {
+    const n = int(rng, 7);
+    zhuangfeng = n < 4 ? 0 : 1;
+    jushu = n % 4;
+  }
+  const changbang = pickWeighted(rng, [[0, 0.7], [1, 0.2], [2, 0.1]]);
+  const lizhibang = pickWeighted(rng, [[0, 0.85], [1, 0.15]]);
+  const played = zhuangfeng * 4 + jushu;
+  let byActor = null;
+  const tries = allLast ? 20 : 1;
+  for (let t = 0; t < tries; t++) {
+    const moves = allLast ? 5 + int(rng, 4) : played + int(rng, 3);
+    const s = scatterScores(rng, moves);
+    if (lizhibang) {
+      const payers = [0, 1, 2, 3].filter((a) => s[a] - 1e3 * lizhibang >= 1e3);
+      s[payers[int(rng, payers.length)]] -= 1e3 * lizhibang;
+    }
+    byActor = s;
+    if (!allLast || headGapOk(s)) break;
+  }
+  const defen = [0, 0, 0, 0];
+  byActor.forEach((v, actor) => {
+    defen[(actor + qijia) % 4] = v;
+  });
+  return { zhuangfeng, jushu, changbang, lizhibang, defen };
+}
+function likenessKey(scene, actor) {
+  const hero = scene.seats[actor];
+  return JSON.stringify({
+    actor,
+    zhuangfeng: scene.center.zhuangfeng,
+    jushu: scene.center.jushu,
+    dora: scene.center.baopai,
+    closed: hero.closed.slice().sort(),
+    fulou: hero.fulou
+  });
+}
+function sceneUsable(scene, actor, recommended) {
+  const hero = scene?.seats?.[actor];
+  if (!hero) return false;
+  if (hero.closed.length + meldTileCount(hero.fulou) !== 14) return false;
+  return sceneHasAction(scene, actor, recommended);
+}
+function buildProblem({
+  id: id2,
+  game: game2,
+  actor,
+  eventCount,
+  kyoku,
+  junme,
+  context,
+  answer,
+  matchRate,
+  scenes
+}) {
+  return {
+    id: id2,
+    gameId: game2.id,
+    actor,
+    eventCount,
+    kyoku,
+    junme,
+    context,
+    answer: { ...answer },
+    matchRate,
+    scenes: scenes.slice(),
+    origin: "generated"
+  };
+}
+
+// src/drill_generator.mjs
+var GEN_LIMITS = {
+  candidatesPerKyoku: 3,
+  // K: coach evaluations per kyoku (1.3 [C])
+  problemsPerKyoku: 2,
+  // 3.3: at most two problems from one kyoku
+  evalsPerSlot: 40,
+  // 4.4
+  kyokusPerSlot: 15,
+  msPerSlot: 12e4,
+  kyokuWatchdogMs: 6e4,
+  // 1.3 [B]
+  watchdogStrikes: 3,
+  // consecutive timed-out kyokus => unavailable
+  stockMax: 30
+  // 5.3
+};
+var NEVER = new Promise(() => {
+});
+function shuffle(list, rng) {
+  const a = list.slice();
+  for (let i = a.length - 1; i > 0; i--) {
+    const j = Math.floor(rng() * (i + 1));
+    [a[i], a[j]] = [a[j], a[i]];
+  }
+  return a;
+}
+var pad4 = (n) => String(n).padStart(4, "0");
+function createDrillGenerator({
+  getCoachRuntime,
+  getLightRuntime,
+  BrainClass,
+  getModelId = () => "unknown",
+  now = () => Date.now(),
+  rng = Math.random,
+  limits = {},
+  documentRef = null,
+  timers = { setTimeout: (...a) => setTimeout(...a), clearTimeout: (...a) => clearTimeout(...a) }
+} = {}) {
+  const lim = { ...GEN_LIMITS, ...limits };
+  const runId = `${Math.floor(rng() * 36 ** 4).toString(36).padStart(4, "0")}${Math.floor(rng() * 36 ** 4).toString(36).padStart(4, "0")}`;
+  const listeners = { problem: /* @__PURE__ */ new Set(), giveup: /* @__PURE__ */ new Set(), progress: /* @__PURE__ */ new Set(), unavailable: /* @__PURE__ */ new Set() };
+  const emit = (name2, arg) => {
+    for (const cb2 of listeners[name2]) {
+      try {
+        cb2(arg);
+      } catch (_) {
+      }
+    }
+  };
+  let stock = [];
+  const seen = /* @__PURE__ */ new Set();
+  let target = null;
+  let loopToken = 0;
+  let looping = false;
+  let hidden = false;
+  let currentRun = null;
+  let wakeUp = null;
+  let problemSeq = 0;
+  let attempt = { evals: 0, kyokus: 0, ms: 0 };
+  let strikes = 0;
+  const stats = {
+    available: true,
+    kyokus: 0,
+    kyokusFailed: 0,
+    kyokusAborted: 0,
+    watchdogs: 0,
+    lightInfers: 0,
+    coachInfers: 0,
+    coachReused: 0,
+    decisions: 0,
+    discardOnly: 0,
+    usable: 0,
+    sceneOk: 0,
+    predOk: 0,
+    evaluated: 0,
+    clarityFail: 0,
+    duplicate: 0,
+    accepted: 0,
+    giveUps: 0,
+    byTier: { easy: 0, normal: 0, hard: 0 },
+    errors: [],
+    kyokuMs: 0
+  };
+  const gate = { open: true, waiters: [], closedAt: 0, pausedMs: 0 };
+  const activeNow = () => now() - gate.pausedMs - (gate.open ? 0 : now() - gate.closedAt);
+  function pause() {
+    if (gate.open) {
+      gate.open = false;
+      gate.closedAt = now();
+    }
+  }
+  function resume() {
+    if (gate.open) return;
+    gate.pausedMs += now() - gate.closedAt;
+    gate.open = true;
+    const w = gate.waiters.splice(0);
+    for (const fn of w) fn();
+  }
+  const gateWait = () => gate.open ? null : new Promise((resolve) => gate.waiters.push(resolve));
+  function wake() {
+    const fn = wakeUp;
+    wakeUp = null;
+    if (fn) fn();
+  }
+  const idle = () => new Promise((resolve) => {
+    wakeUp = resolve;
+  });
+  const currentModelId = () => getModelId();
+  function dropForeignModels() {
+    const id2 = currentModelId();
+    stock = stock.filter((it) => it.modelId === id2);
+  }
+  function matches(item, key2) {
+    const { scene, difficulty } = parseKey(key2);
+    return item.tags.includes(scene) && (difficulty === "any" || item.tier === difficulty);
+  }
+  function countFor(key2) {
+    const id2 = currentModelId();
+    return stock.filter((it) => it.modelId === id2 && matches(it, key2)).length;
+  }
+  function trimStock() {
+    const keep = target?.key;
+    while (stock.length > lim.stockMax) {
+      let idx = keep ? stock.findIndex((it) => !matches(it, keep)) : -1;
+      if (idx < 0) idx = 0;
+      stock.splice(idx, 1);
+    }
+  }
+  function dataFor(item) {
+    return {
+      schemaVersion: DRILL_SCHEMA_VERSION,
+      kind: DRILL_KIND,
+      source: "generated",
+      seed: runId,
+      generatedAt: new Date(now()).toISOString(),
+      model: { id: item.modelId },
+      selection: {
+        minQGap: CLARITY_BAND.minQGap,
+        maxQGap: null,
+        minPBest: CLARITY_BAND.minPBest,
+        minPGapPt: CLARITY_BAND.minPGapPt,
+        probabilityTemperature: CLARITY_BAND.temperature
+      },
+      difficulty: {
+        method: "light-match-rate",
+        tier: DRILL_DIFFICULTY_TIER,
+        tau: cpuTier(DRILL_DIFFICULTY_TIER).tau,
+        samples: DRILL_DIFFICULTY_SAMPLES,
+        seed: DRILL_DIFFICULTY_SEED
+      },
+      games: [item.game],
+      problems: [item.problem]
+    };
+  }
+  async function runKyoku(scene) {
+    const run = { aborted: false, failed: null, finish: null, startedAt: activeNow() };
+    currentRun = run;
+    const outcome = new Promise((resolve) => {
+      run.finish = resolve;
+    });
+    const lightRt = await getLightRuntime();
+    if (run.aborted) {
+      return { ok: false, timeout: false, failure: null, qijia: 0, head: null, events: [], decisionLog: [], run };
+    }
+    if (!lightRt) throw new Error("light runtime is not available");
+    const qijia = Math.floor(rng() * 4);
+    const head = makeKyokuHead(scene, rng, qijia);
+    const bridge2 = new MjaiBridge(qijia);
+    const brains = [];
+    for (let a = 0; a < 4; a++) {
+      const b = new BrainClass(a, 4);
+      brains.push(b);
+      bridge2.registerBrain(b);
+    }
+    const decisionLog = [];
+    const fail = (e) => {
+      if (!run.failed) run.failed = e || new Error("failed");
+      run.finish?.({ ok: false });
+    };
+    const gated = {
+      infer: async (brain) => {
+        const g = gateWait();
+        if (g) await g;
+        if (run.aborted || run.failed) return NEVER;
+        try {
+          stats.lightInfers++;
+          return await lightRt.infer(brain);
+        } catch (e) {
+          fail(e);
+          return NEVER;
+        }
+      }
+    };
+    const players = [0, 1, 2, 3].map((id2) => new MortalPlayer(id2, bridge2, gated, null, decisionLog));
+    const junme = [0, 0, 0, 0];
+    let paishu = 70;
+    let reached = false;
+    const shouldStop = () => {
+      if (scene === "early") return reached || junme.every((n) => n > 6);
+      if (scene === "mid") return paishu <= 24;
+      if (scene === "riichi") return !reached && paishu <= 10;
+      return false;
+    };
+    let game2;
+    const onEvents = (evs, paipu) => {
+      for (const ev2 of evs) {
+        if (ev2.type === "start_kyoku") {
+          junme.fill(0);
+          paishu = 70;
+          reached = false;
+        } else if (ev2.type === "tsumo") {
+          junme[ev2.actor]++;
+          paishu--;
+        } else if (ev2.type === "reach") reached = true;
+      }
+      if (paipu.hule || paipu.pingju || shouldStop()) {
+        game2.stop(() => run.finish?.({ ok: true }));
+      }
+    };
+    class GenGame extends withTenhouKandora(import_majiang_core7.default.Game) {
+      kaiju() {
+        super.kaiju(qijia);
+        bridge2.startGame(this._model.player);
+      }
+      add_paipu(p) {
+        super.add_paipu(p);
+        const evs = bridge2.feedPaipu(p, { moreHora: !!(p.hule && this._hule.length) });
+        onEvents(evs, p);
+      }
+    }
+    game2 = new GenGame(
+      players,
+      () => run.finish?.({ ok: true }),
+      specRule({ length: "hanchan" }),
+      `mahjong-local drill ${runId}`
+    );
+    game2._model.defen = head.defen.slice();
+    game2._model.zhuangfeng = head.zhuangfeng;
+    game2._model.jushu = head.jushu;
+    game2._model.changbang = head.changbang;
+    game2._model.lizhibang = head.lizhibang;
+    let watchdog = null;
+    const watch = new Promise((resolve) => {
+      const tick = () => {
+        if (run.aborted || run.failed) {
+          resolve({ ok: false });
+          return;
+        }
+        if (activeNow() - run.startedAt > lim.kyokuWatchdogMs) {
+          resolve({ ok: false, timeout: true });
+          return;
+        }
+        watchdog = timers.setTimeout(tick, 1e3);
+      };
+      watchdog = timers.setTimeout(tick, 1e3);
+    });
+    game2.kaiju();
+    game2.start();
+    const result = await Promise.race([outcome, watch]);
+    timers.clearTimeout(watchdog);
+    if (!result.ok && !run.failed) run.aborted = true;
+    game2.stop(() => {
+    });
+    stats.kyokuMs += activeNow() - run.startedAt;
+    const errors = players.reduce((n, p) => n + p.stats.errors, 0) + brains.reduce((n, b) => n + b.feedErrors, 0);
+    return {
+      ok: result.ok && !run.failed && errors === 0 && !run.aborted,
+      timeout: !!result.timeout,
+      failure: run.failed,
+      qijia,
+      head,
+      events: bridge2.events,
+      decisionLog,
+      run
+    };
+  }
+  function candidatesOf(kyoku, tgt) {
+    const { events, decisionLog, qijia } = kyoku;
+    const out = [];
+    for (const rec of decisionLog) {
+      stats.decisions++;
+      if (!discardOnlyDecision(rec)) continue;
+      stats.discardOnly++;
+      const q4 = rec.qValues.slice().sort((a, b) => b.q - a.q);
+      if (!(q4[1].q < q4[0].q)) continue;
+      const last = events[rec.mjaiEventCount - 1];
+      if (!last || last.actor !== rec.actor) continue;
+      if (rec.context === "zimo" ? last.type !== "tsumo" : !["chi", "pon", "daiminkan"].includes(last.type)) continue;
+      let sceneObj;
+      try {
+        sceneObj = sceneSnapshot(foldMjaiScene(events, rec.mjaiEventCount), qijia);
+      } catch (_) {
+        continue;
+      }
+      if (!sceneUsable(sceneObj, rec.actor, q4[0].action)) continue;
+      stats.usable++;
+      const facts = factsFromScene({ scene: sceneObj, events, eventCount: rec.mjaiEventCount, actor: rec.actor });
+      if (!matchesScene(tgt.scene, facts)) continue;
+      stats.sceneOk++;
+      const pred = predictedMatch(q4);
+      if (!PREDICT_PASS[tgt.difficulty](pred)) continue;
+      stats.predOk++;
+      out.push({ rec, scene: sceneObj, facts, pred });
+    }
+    return out;
+  }
+  function limitHit() {
+    return attempt.evals >= lim.evalsPerSlot || attempt.kyokus >= lim.kyokusPerSlot || attempt.ms >= lim.msPerSlot;
+  }
+  function giveUp() {
+    stats.giveUps++;
+    attempt = { evals: 0, kyokus: 0, ms: 0 };
+    emit("giveup", { key: target?.key, giveUps: stats.giveUps });
+  }
+  async function evaluate(kyoku, cand, tgt, coachRt, lightRt, accepted) {
+    const { rec } = cand;
+    const prefix = kyoku.events.slice(0, rec.mjaiEventCount);
+    let qAll;
+    if (coachRt === lightRt) {
+      qAll = rec.qValues;
+      stats.coachReused++;
+    } else {
+      const g = gateWait();
+      if (g) await g;
+      if (kyoku.run.aborted) return null;
+      stats.coachInfers++;
+      const gatedCoach = { infer: (b) => coachRt.infer(b) };
+      const res = await inferDrillPosition(gatedCoach, prefix, rec.actor, BrainClass);
+      qAll = res?.qAll;
+    }
+    stats.evaluated++;
+    attempt.evals++;
+    if (!Array.isArray(qAll) || !qAll.length || !qAll.every((c) => c && /^(?:[1-9][mps]|[ESWNPCF]|5[mps]r)$/.test(c.action))) {
+      stats.clarityFail++;
+      return null;
+    }
+    const answer = answerFromQAll(qAll);
+    if (!answer || !passesClarity(answer) || !sceneUsable(cand.scene, rec.actor, answer.recommended)) {
+      stats.clarityFail++;
+      return null;
+    }
+    const fp = sceneFingerprint(cand.scene);
+    const lk2 = likenessKey(cand.scene, rec.actor);
+    if (seen.has(fp) || seen.has(lk2)) {
+      stats.duplicate++;
+      return null;
+    }
+    const id2 = `gen-${runId}-${pad4(++problemSeq)}`;
+    const game2 = {
+      id: `gen-${runId}-k${pad4(problemSeq)}`,
+      qijia: kyoku.qijia,
+      length: "hanchan",
+      events: prefix
+    };
+    const matchRate = measureMatchRate(rec.qValues, answer.recommended, id2);
+    const item = {
+      problem: buildProblem({
+        id: id2,
+        game: game2,
+        actor: rec.actor,
+        eventCount: rec.mjaiEventCount,
+        kyoku: rec.kyoku,
+        junme: cand.facts.junme,
+        context: rec.context,
+        answer,
+        matchRate,
+        scenes: sceneTags(cand.facts)
+      }),
+      game: game2,
+      tags: null,
+      tier: difficultyTier(matchRate),
+      pred: cand.pred,
+      lightQ: rec.qValues,
+      modelId: currentModelId()
+    };
+    item.tags = item.problem.scenes;
+    seen.add(fp);
+    seen.add(lk2);
+    accepted.push(item);
+    return item;
+  }
+  async function oneKyoku() {
+    const tgt = target;
+    const kyoku = await runKyoku(tgt.scene);
+    stats.kyokus++;
+    attempt.kyokus++;
+    attempt.ms += kyoku.run ? activeNow() - kyoku.run.startedAt : 0;
+    emit("progress", { kyokus: stats.kyokus, key: tgt.key });
+    if (kyoku.run.aborted && !kyoku.timeout) {
+      stats.kyokusAborted++;
+      return;
+    }
+    if (kyoku.timeout) {
+      stats.watchdogs++;
+      stats.kyokusFailed++;
+      if (++strikes >= lim.watchdogStrikes) {
+        stats.available = false;
+        emit("unavailable", { reason: "watchdog" });
+      }
+      return;
+    }
+    if (!kyoku.ok) {
+      stats.kyokusFailed++;
+      if (kyoku.failure) {
+        stats.errors.push(String(kyoku.failure?.message || kyoku.failure));
+        stats.available = false;
+        emit("unavailable", { reason: "inference", error: String(kyoku.failure?.message || kyoku.failure) });
+      }
+      return;
+    }
+    strikes = 0;
+    const cands = shuffle(candidatesOf(kyoku, tgt), rng);
+    const picked = [];
+    const actors = /* @__PURE__ */ new Set();
+    for (const c of cands) {
+      if (actors.has(c.rec.actor)) continue;
+      actors.add(c.rec.actor);
+      picked.push(c);
+      if (picked.length >= lim.candidatesPerKyoku) break;
+    }
+    const coachRt = getCoachRuntime();
+    const lightRt = await getLightRuntime();
+    const accepted = [];
+    const modelAtStart = currentModelId();
+    for (const cand of picked) {
+      if (kyoku.run.aborted || tgt !== target || modelAtStart !== currentModelId()) break;
+      if (accepted.length >= lim.problemsPerKyoku) break;
+      let item;
+      try {
+        item = await evaluate(kyoku, cand, tgt, coachRt, lightRt, accepted);
+      } catch (e) {
+        stats.errors.push(String(e?.message || e));
+        stats.available = false;
+        emit("unavailable", { reason: "evaluate", error: String(e?.message || e) });
+        return;
+      }
+      if (limitHit() && !item) break;
+      if (!item) continue;
+      stock.push(item);
+      stats.accepted++;
+      stats.byTier[item.tier]++;
+      trimStock();
+      emit("problem", item);
+      if (target && matches(item, target.key)) attempt = { evals: 0, kyokus: 0, ms: 0 };
+    }
+    if (limitHit()) giveUp();
+  }
+  async function loop(token) {
+    looping = true;
+    try {
+      while (token === loopToken) {
+        if (!stats.available || !target || hidden) {
+          await idle();
+          continue;
+        }
+        dropForeignModels();
+        if (countFor(target.key) >= target.want) {
+          await idle();
+          continue;
+        }
+        try {
+          await oneKyoku();
+        } catch (e) {
+          stats.errors.push(String(e?.message || e));
+          stats.available = false;
+          emit("unavailable", { reason: "exception", error: String(e?.message || e) });
+        } finally {
+          currentRun = null;
+        }
+        await new Promise((resolve) => timers.setTimeout(resolve, 0));
+      }
+    } finally {
+      if (token === loopToken) looping = false;
+    }
+  }
+  function abortRun() {
+    if (currentRun) {
+      currentRun.aborted = true;
+      currentRun.finish?.({ ok: false });
+    }
+  }
+  function start() {
+    if (looping) return;
+    loopToken++;
+    const token = loopToken;
+    loop(token);
+  }
+  const onVisibility = () => {
+    hidden = !!documentRef?.hidden;
+    if (hidden) abortRun();
+    else wake();
+  };
+  documentRef?.addEventListener?.("visibilitychange", onVisibility);
+  return {
+    // Set what to build. `want` is how many matching stock items to keep.
+    setTarget(key2, { want = 10 } = {}) {
+      const parsed = parseKey(key2);
+      const changed = !target || target.key !== key2;
+      target = { key: key2, scene: parsed.scene, difficulty: parsed.difficulty, want };
+      if (changed) {
+        abortRun();
+        attempt = { evals: 0, kyokus: 0, ms: 0 };
+      }
+      if (!looping) start();
+      wake();
+    },
+    // Stop for good (until the next setTarget): the running kyoku is dropped,
+    // the stock stays.
+    stop() {
+      target = null;
+      abortRun();
+      loopToken++;
+      looping = false;
+      wake();
+    },
+    // Gate: inference waits while paused (answering, just-rendered screen).
+    pause,
+    resume,
+    take(key2) {
+      dropForeignModels();
+      const idx = stock.findIndex((it) => matches(it, key2));
+      if (idx < 0) return null;
+      const [item] = stock.splice(idx, 1);
+      wake();
+      return { problem: item.problem, data: dataFor(item), origin: "generated", tier: item.tier };
+    },
+    count: countFor,
+    // The model changed (setEnabled(false) path): drop the running kyoku and foreign stock.
+    invalidate() {
+      abortRun();
+      dropForeignModels();
+      wake();
+    },
+    get stats() {
+      return stats;
+    },
+    get stockSize() {
+      return stock.length;
+    },
+    get stockBytes() {
+      return JSON.stringify(stock).length;
+    },
+    get available() {
+      return stats.available;
+    },
+    get runId() {
+      return runId;
+    },
+    on(name2, cb2) {
+      listeners[name2].add(cb2);
+      return () => listeners[name2].delete(cb2);
+    },
+    onProblem(cb2) {
+      return this.on("problem", cb2);
+    },
+    destroy() {
+      this.stop();
+      documentRef?.removeEventListener?.("visibilitychange", onVisibility);
+    }
+  };
+}
+
+// src/drill_pool.mjs
+function createPoolIndex(poolData) {
+  let tags = null;
+  const compute = () => {
+    tags = /* @__PURE__ */ new Map();
+    for (const p of poolData.problems || []) {
+      let t = ["any"];
+      try {
+        t = sceneTags(sceneFacts(poolData, p));
+      } catch (_) {
+      }
+      tags.set(p.id, t);
+    }
+  };
+  return {
+    get data() {
+      return poolData;
+    },
+    tagsOf(problem) {
+      if (!tags) compute();
+      return tags.get(problem.id) || ["any"];
+    },
+    tierOf(problem) {
+      return Number.isFinite(problem.matchRate) ? difficultyTier(problem.matchRate) : null;
+    },
+    get tagged() {
+      return !!tags;
+    },
+    scene(problem) {
+      return drillScene(poolData, problem);
+    }
+  };
+}
+function pickOne(list, rng) {
+  return list[Math.floor(rng() * list.length)];
+}
+function pickFallback(index, key2, usedIds = /* @__PURE__ */ new Set(), rng = Math.random) {
+  const { scene, difficulty } = parseKey(key2);
+  const all = (index.data.problems || []).filter((p) => p && p.id != null && !usedIds.has(p.id));
+  const pool = all.length ? all : index.data.problems || [];
+  const sceneOk = (p) => scene === "any" || index.tagsOf(p).includes(scene);
+  const diffOk = (p) => difficulty === "any" || index.tierOf(p) === difficulty;
+  const both = pool.filter((p) => sceneOk(p) && diffOk(p));
+  if (both.length) return { problem: pickOne(both, rng), data: index.data, origin: "pool", level: 1 };
+  const onlyScene = pool.filter(sceneOk);
+  if (onlyScene.length) return { problem: pickOne(onlyScene, rng), data: index.data, origin: "pool", level: 2 };
+  return { problem: pickOne(pool, rng), data: index.data, origin: "pool", level: 3 };
+}
+
+// src/drill_supply.mjs
+var DRILL_GIVEUP_LIMIT = 3;
+function createDrillSupplier({
+  generator,
+  poolIndex,
+  key: key2,
+  rng = Math.random,
+  giveUpLimit = DRILL_GIVEUP_LIMIT,
+  timers = { setTimeout: (...a) => setTimeout(...a), clearTimeout: (...a) => clearTimeout(...a) }
+} = {}) {
+  let giveUps = 0;
+  const offGive = generator?.on?.("giveup", () => {
+    giveUps++;
+  });
+  const fromPool = (usedIds) => ({ ...pickFallback(poolIndex, key2, usedIds, rng), fallback: true });
+  return {
+    get giveUps() {
+      return giveUps;
+    },
+    dispose() {
+      offGive?.();
+    },
+    // Returns { problem, data, origin, fallback }
+    async supply(slot, { deadlineMs, usedIds, signal, skip } = {}) {
+      if (!generator || !generator.available || giveUps >= giveUpLimit) return fromPool(usedIds);
+      const stocked = generator.take(key2);
+      if (stocked) return { ...stocked, fallback: false };
+      return new Promise((resolve) => {
+        let done = false;
+        const offs = [];
+        let timer = null;
+        const finish = (value) => {
+          if (done) return;
+          done = true;
+          offs.forEach((off) => off());
+          timers.clearTimeout(timer);
+          resolve(value);
+        };
+        offs.push(generator.on("problem", () => {
+          const got = generator.take(key2);
+          if (got) finish({ ...got, fallback: false });
+        }));
+        offs.push(generator.on("giveup", () => finish(fromPool(usedIds))));
+        offs.push(generator.on("unavailable", () => finish(fromPool(usedIds))));
+        timer = timers.setTimeout(() => finish(fromPool(usedIds)), deadlineMs);
+        skip?.then(() => finish(fromPool(usedIds)));
+        if (signal?.aborted) finish(fromPool(usedIds));
+      });
+    }
+  };
+}
+
+// src/drill_choice.mjs
+var DRILL_CHOICE_KEY = "ml-drill-choice-v1";
+var SCENE_CHOICES = [
+  { id: "any", label: "\u304A\u307E\u304B\u305B", note: "\u3044\u308D\u3044\u308D\u306A\u5834\u9762\u304B\u3089", wide: true },
+  { id: "early", label: "\u5E8F\u76E4\uFF08\u624B\u4F5C\u308A\uFF09", note: "\u624B\u4F5C\u308A\u3092\u8003\u3048\u308B" },
+  { id: "mid", label: "\u4E2D\u76E4", note: "\u62BC\u3059\u30FB\u5F15\u304F\u306E\u5206\u304B\u308C\u76EE" },
+  { id: "late", label: "\u7D42\u76E4", note: "\u6B8B\u308A\u5C11\u306A\u3044\u5DE1\u76EE" },
+  { id: "riichi", label: "\u30EA\u30FC\u30C1\u304C\u6765\u3066\u3044\u308B\u5834\u9762", note: "\u5B89\u5168\u306B\u5207\u308B\u304B\u52DD\u8CA0\u304B" },
+  { id: "allLast", label: "\u30AA\u30FC\u30E9\u30B9\u30FB\u7D42\u76E4\u306E\u70B9\u6570\u52DD\u8CA0", note: "\u9806\u4F4D\u3068\u70B9\u5DEE\u3092\u610F\u8B58", wide: true }
+];
+var DIFFICULTY_CHOICES = [
+  { id: "any", label: "\u304A\u307E\u304B\u305B" },
+  { id: "easy", label: "\u3084\u3055\u3057\u3044" },
+  { id: "normal", label: "\u3075\u3064\u3046" },
+  { id: "hard", label: "\u3080\u305A\u304B\u3057\u3044" }
+];
+var DEFAULT_DRILL_CHOICE = Object.freeze({ scene: "any", difficulty: "any" });
+function normalizeDrillChoice(value) {
+  const scene = SCENE_CHOICES.some((s) => s.id === value?.scene) ? value.scene : "any";
+  const difficulty = DIFFICULTY_CHOICES.some((d) => d.id === value?.difficulty) ? value.difficulty : "any";
+  return { scene, difficulty };
+}
+function drillChoiceKey(choice) {
+  const c = normalizeDrillChoice(choice);
+  return `${c.scene}|${c.difficulty}`;
+}
+function isAnyAny(choice) {
+  const c = normalizeDrillChoice(choice);
+  return c.scene === "any" && c.difficulty === "any";
+}
+function readDrillChoice(storage) {
+  try {
+    const raw = storage?.getItem?.(DRILL_CHOICE_KEY);
+    if (!raw) return { ...DEFAULT_DRILL_CHOICE };
+    const parsed = JSON.parse(raw);
+    if (!parsed || typeof parsed !== "object") return { ...DEFAULT_DRILL_CHOICE };
+    return normalizeDrillChoice(parsed);
+  } catch (_) {
+    return { ...DEFAULT_DRILL_CHOICE };
+  }
+}
+function saveDrillChoice(storage, choice) {
+  try {
+    storage?.setItem?.(DRILL_CHOICE_KEY, JSON.stringify(normalizeDrillChoice(choice)));
+    return true;
+  } catch (_) {
+    return false;
+  }
+}
+
+// src/drill_coach.mjs
+var HTML_ESCAPE4 = { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" };
+var esc3 = (value) => String(value ?? "").replace(/[&<>"']/g, (ch) => HTML_ESCAPE4[ch]);
+function drillCoachHTML({
+  problem,
+  explain,
+  recommendedProb = null,
+  agreement = null,
+  key: key2 = "drill",
+  cellMoreOpen: cellMoreOpen2 = /* @__PURE__ */ new Set(),
+  cmpExpanded = false
+}) {
+  const head = coachHeadHTML(`${esc3(kyokuText(problem.kyoku))} / \u3042\u306A\u305F\u306E\u6253\u724C`);
+  const rows = explain?.rows || [];
+  const recRow = explain?.recRow;
+  if (!recRow || !rows.length) {
+    return `<div id="drill-same-coach">${head}<div class="hint">\u3053\u306E\u5C40\u9762\u306E\u30B3\u30FC\u30C1\u8A55\u4FA1\u3092\u53D6\u5F97\u3067\u304D\u307E\u305B\u3093\u3067\u3057\u305F\u3002</div></div>`;
+  }
+  const recProb = recRow.candidate?.prob ?? recommendedProb ?? problem.answer?.pBest ?? null;
+  const subs = rows.filter((r) => r.candidate && r !== recRow).slice(0, 2).map((r) => ({ name: tileLabel(r.pai), percent: formatPercent(r.candidate.prob) }));
+  const recArt = `<span class="rec-tile" aria-hidden="true">${tileSVG(recRow.pai, "")}</span>`;
+  const selIdx = explain.selRow ? rows.indexOf(explain.selRow) : -1;
+  const summary = coachSummaryHTML({
+    recommended: tileLabel(recRow.pai),
+    recommendedTileArt: recArt,
+    evalPercent: formatEvalPercent(recProb),
+    runnerUpHTML: runnerUpLineHTML(subs, { escapeHtml: esc3 }),
+    after: shantenAfterLabel(recRow.shanten),
+    agreementHTML: agreementLineHTML(agreement, { escapeHtml: esc3 }),
+    escapeHtml: esc3
+  });
+  const compare = candidateCompareHTML({
+    sorted: rows,
+    key: key2,
+    recPai: recRow.pai,
+    isSelected: (r) => r === explain.selRow,
+    selRow: explain.selRow,
+    selIdx,
+    directions: explain.directions || [],
+    doraNow: explain.doraNow || 0,
+    safeInfo: explain.safeInfo || null,
+    template: explain.template,
+    comparison: explain.comparison ? { text: explain.comparison } : null,
+    cmpExpanded,
+    cellMoreOpen: cellMoreOpen2,
+    escapeHtml: esc3
+  });
+  const conds = explain.explainability?.conditions || [];
+  return `<div id="drill-same-coach">${head}${summary}</div>
+    <div id="drill-same-explain">${compare}${conds.length ? explainConditionsHTML(conds, esc3) : ""}</div>`;
+}
+
+// src/drill_ui.mjs
+var POS_CLASS = ["bottom", "right", "top", "left"];
+var POS_NAME = ["\u3042\u306A\u305F", "AI-1", "AI-2", "AI-3"];
+function esc4(value) {
+  return String(value ?? "").replace(/[&<>"']/g, (c) => ({
+    "&": "&amp;",
+    "<": "&lt;",
+    ">": "&gt;",
+    '"': "&quot;",
+    "'": "&#39;"
+  })[c]);
+}
+function idLabel(id2) {
+  const t = String(id2 ?? "");
+  return t.startsWith("gen-") ? `gen-\u2026${t.slice(-4)}` : t;
+}
+function pct(rate2) {
+  return Number.isFinite(rate2) ? `${Math.round(rate2 * 100)}%` : "-";
+}
+function displaySeats(scene, actor) {
+  const target = scene.seats[actor];
+  if (!target) return [];
+  return scene.seats.map((seat) => {
+    const dpos = (seat.l - target.l + 4) % 4;
+    return { ...seat, dpos, displayName: POS_NAME[dpos] };
+  });
+}
+function centerKyoku(scene) {
+  const c = scene.center;
+  return `${"\u6771\u5357\u897F\u5317"[c.zhuangfeng] || "?"}${c.jushu + 1}\u5C40`;
+}
+function pondHTMLFor(seat) {
+  const heTiles = riverTiles(seat.he).map((t) => tileHTML(
+    t.face,
+    `discard${t.tsumogiri ? " tsumogiri" : ""}${t.riichi ? " riichi-d" : ""}`
+  )).join("");
+  const stick = seat.lizhi ? '<span class="riichi-stick" role="img" aria-label="\u30EA\u30FC\u30C1\u68D2"><svg class="riichi-stick-art" viewBox="0 0 64 12"><rect x="1" y="1.5" width="62" height="9" rx="4.5" fill="#f7f2df" stroke="#9a917c"/><circle cx="32" cy="6" r="3.4" fill="#c0272d"/></svg></span>' : "";
+  return `${stick}<div class="he">${heTiles}</div>`;
+}
+function seatHTMLFor(seat, isSelf, ctx) {
+  const rel = seat.dpos;
+  const melds = (seat.fulou || []).map((m) => meldHTML(m, rel)).join("");
+  const closed = seat.closed || [];
+  const drawnAt = seat.drawnTile ? closed.length - 1 : -1;
+  const hand = isSelf ? closed.map((p, i) => {
+    const action = tileToMjai(p);
+    const selected = ctx.selectedIndex === i ? " selected" : "";
+    const locked = ctx.answered ? " answered" : "";
+    const drawn = i === drawnAt ? " drawn" : "";
+    return `<button type="button" class="tile hand drill-tile${p[1] === "0" ? " red" : ""}${selected}${locked}${drawn}"
+        data-drill-tile="${esc4(action)}" data-idx="${i}" data-pai="${esc4(p)}"
+        ${ctx.answered ? "disabled" : ""} aria-label="${esc4(tileLabel(p))}">${tileSVG(p, tileLabel(p))}</button>`;
+  }).join("") : closed.map(() => tileHTML("_", "opp")).join("");
+  const head = `<div class="seat-info${seat.lizhi ? " riichi-on" : ""}">
+      <span class="seat-name">${seat.dealer ? "\u25CF " : ""}${esc4(seat.displayName)}</span>
+      <span class="seat-wind">${esc4(seat.wind)}</span>
+      <span class="seat-score">${Number(seat.defen || 0).toLocaleString()}\u70B9</span>
+      ${seat.lizhi ? '<span class="riichi-badge">\u30EA\u30FC\u30C1</span>' : ""}
+      ${seat.dpos === ctx.turnPos ? '<span class="turn-badge">\u756A</span>' : ""}
+    </div>`;
+  const handZone = `<div class="hand-row"><span class="hand">${hand}</span><span class="melds">${melds}</span></div>`;
+  return `<div class="seat replay-seat-${POS_CLASS[rel]} pos-${POS_CLASS[rel]}">
+    ${head}${handZone}
+  </div>`;
+}
+function createDrillUi({
+  root,
+  storage,
+  dataUrl = "drill_problems.json",
+  getRuntime,
+  isReady,
+  getBilling,
+  backNav: backNav2,
+  documentRef = document,
+  fetchImpl = fetch,
+  now = () => /* @__PURE__ */ new Date(),
+  rng = Math.random,
+  getLightRuntime = null,
+  getModelId = () => "unknown",
+  BrainClass = null,
+  genDelayMs = null
+} = {}) {
+  const doc = documentRef;
+  const win = doc?.defaultView || (typeof window !== "undefined" ? window : null);
+  const squareBand = win?.matchMedia?.("(min-aspect-ratio: 4/5) and (max-aspect-ratio: 5/4)") || null;
+  const portraitNarrow = win?.matchMedia?.("(orientation: portrait) and (max-width: 1050px)") || null;
+  const landscapeShort = win?.matchMedia?.("(orientation: landscape) and (max-height: 700px)") || null;
+  const button = root?.querySelector?.("#ss-drill-btn") || doc?.getElementById("ss-drill-btn");
+  const titleEl = button?.querySelector?.(".ss-drill-title") || null;
+  const subEl = button?.querySelector?.(".ss-drill-sub") || null;
+  let overlay = null;
+  let data = null;
+  let loadPromise = null;
+  let session = null;
+  const drillCellMore = /* @__PURE__ */ new Set();
+  let busy = false;
+  let open = false;
+  let ready = false;
+  let locked = false;
+  let record = null;
+  let openGen = 0;
+  let sheet = null;
+  let sheetOpen = false;
+  let sheetChoice = readDrillChoice(storage);
+  let starting = false;
+  let generator = null;
+  let poolIndex = null;
+  let setsStarted = 0;
+  let lastChoice = { ...sheetChoice };
+  let waitTimer = null;
+  let holdTimer = null;
+  const delayParam = genDelayMs ?? Number(new URLSearchParams(win?.location?.search || "").get("drillGenDelay"));
+  const genDelay = Number.isFinite(delayParam) && delayParam > 0 ? delayParam : 0;
+  function ensureGenerator() {
+    if (generator || !BrainClass || !getLightRuntime) return generator;
+    generator = createDrillGenerator({
+      getCoachRuntime: () => getRuntime?.(),
+      // ?drillGenDelay=ms (test only) slows every kyoku start down.
+      getLightRuntime: async () => {
+        if (genDelay) await new Promise((r) => setTimeout(r, genDelay));
+        return getLightRuntime();
+      },
+      BrainClass,
+      getModelId,
+      documentRef: doc,
+      rng
+    });
+    generator.on("problem", () => {
+      if (sheetOpen) updateSheetStatus();
+    });
+    generator.on("unavailable", () => {
+      if (sheetOpen) updateSheetStatus();
+    });
+    return generator;
+  }
+  function holdGate(ms2) {
+    if (!generator) return;
+    if (holdTimer) {
+      clearTimeout(holdTimer);
+      holdTimer = null;
+    }
+    if (ms2 > 0) {
+      generator.pause();
+      holdTimer = setTimeout(() => {
+        holdTimer = null;
+        generator?.resume();
+      }, ms2);
+    } else {
+      generator.resume();
+    }
+  }
+  function stopGeneratorIfIdle() {
+    if (!open && !sheetOpen) {
+      if (holdTimer) {
+        clearTimeout(holdTimer);
+        holdTimer = null;
+      }
+      generator?.resume();
+      generator?.stop();
+    }
+  }
+  function ensureOverlay() {
+    if (overlay) return overlay;
+    overlay = doc.createElement("div");
+    overlay.id = "drill-screen";
+    overlay.className = "drill-screen";
+    overlay.hidden = true;
+    overlay.setAttribute("role", "dialog");
+    overlay.setAttribute("aria-modal", "true");
+    overlay.setAttribute("aria-label", "\u4F55\u5207\u308B\u30C9\u30EA\u30EB");
+    doc.body.append(overlay);
+    overlay.addEventListener("click", onClick);
+    return overlay;
+  }
+  function syncButton() {
+    if (!button) return;
+    button.classList.toggle("locked", locked);
+    button.disabled = !locked && !ready;
+    if (locked) button.setAttribute("data-coach-unlock", "");
+    else button.removeAttribute("data-coach-unlock");
+    if (titleEl) titleEl.textContent = locked ? "\u{1F512} \u4F55\u5207\u308B\u30C9\u30EA\u30EB" : "\u4F55\u5207\u308B\u30C9\u30EA\u30EB";
+    if (subEl) {
+      subEl.textContent = locked ? "" : "10\u554F1\u30BB\u30C3\u30C8\u30FBAI\u30B3\u30FC\u30C1\u306E\u89E3\u8AAC\u3064\u304D";
+      subEl.hidden = locked;
+    }
+    button.setAttribute("aria-label", locked ? "\u4F55\u5207\u308B\u30C9\u30EA\u30EB\uFF08AI\u30B3\u30FC\u30C1\u3092\u89E3\u9664\u3059\u308B\u3068\u904A\u3079\u307E\u3059\uFF09" : "\u4F55\u5207\u308B\u30C9\u30EA\u30EB");
+  }
+  function refreshLock() {
+    const state = getBilling?.() || {};
+    locked = drillLocked(state);
+    syncButton();
+  }
+  function setEnabled(on) {
+    ready = !!on;
+    syncButton();
+    if (!ready && generator) {
+      generator.invalidate();
+      generator.stop();
+      if (sheetOpen) closeSheet();
+    }
+  }
+  async function loadData() {
+    if (data) return data;
+    if (!loadPromise) {
+      loadPromise = (async () => {
+        const res = await fetchImpl(dataUrl);
+        if (!res.ok) throw new Error(`HTTP ${res.status}`);
+        const parsed = await res.json();
+        if (!parsed || !Array.isArray(parsed.problems) || !parsed.problems.length) {
+          throw new Error("\u554F\u984C\u30C7\u30FC\u30BF\u304C\u7A7A\u3067\u3059");
+        }
+        data = parsed;
+        return parsed;
+      })().catch((e) => {
+        loadPromise = null;
+        throw e;
+      });
+    }
+    return loadPromise;
+  }
+  function measureBoardCell(table) {
+    const cs2 = win?.getComputedStyle?.(table);
+    if (!cs2) return { width: 0, height: 0 };
+    const gapC = parseFloat(cs2.columnGap) || 0;
+    const gapR = parseFloat(cs2.rowGap) || 0;
+    const cols = (cs2.gridTemplateColumns || "").split(" ").map(parseFloat).filter(Number.isFinite);
+    const sideCols = cols.length >= 3 ? cols[0] + cols[cols.length - 1] : 120;
+    const top = table.querySelector(".replay-seat-top");
+    const self2 = table.querySelector(".drill-self-area") || table.querySelector(".replay-self-area");
+    return {
+      width: table.clientWidth - sideCols - 2 * gapC,
+      height: table.clientHeight - (top?.offsetHeight || 0) - (self2?.offsetHeight || 0) - 2 * gapR
+    };
+  }
+  function fitDrillBoard() {
+    if (!open || !overlay || overlay.hidden) return;
+    overlay.classList.toggle("drill-square", !!squareBand?.matches);
+    const table = overlay.querySelector(".drill-table");
+    const board = table?.querySelector(".drill-board");
+    if (!table || !board) return;
+    board.style.width = "";
+    board.style.height = "";
+    if (landscapeShort?.matches) return;
+    if (portraitNarrow?.matches && !squareBand?.matches) return;
+    if (!table.clientHeight) return;
+    const cell = measureBoardCell(table);
+    const size = squareBand?.matches ? Math.max(120, Math.min(660, cell.width, cell.height)) : Math.max(240, Math.min(660, cell.width, cell.height));
+    board.style.width = Math.floor(size) + "px";
+  }
+  let fitFrame = 0;
+  function scheduleDrillFit() {
+    if (!open || !overlay || overlay.hidden || !win?.requestAnimationFrame) {
+      fitDrillBoard();
+      return;
+    }
+    if (fitFrame) win.cancelAnimationFrame?.(fitFrame);
+    fitFrame = win.requestAnimationFrame(() => {
+      fitFrame = 0;
+      fitDrillBoard();
+    });
+  }
+  function setOverlay(html) {
+    const el2 = ensureOverlay();
+    el2.innerHTML = html;
+    el2.hidden = false;
+    const scroll = el2.querySelector(".drill-scroll");
+    if (scroll) scroll.scrollTop = 0;
+    scheduleDrillFit();
+  }
+  function headerHTML({ title = "\u4F55\u5207\u308B\u30C9\u30EA\u30EB", meta = "", progress = "", close: close2 = true } = {}) {
+    return `<div class="drill-head">
+      ${close2 ? '<button type="button" class="drill-back" data-drill-close aria-label="\u30C9\u30EA\u30EB\u3092\u9589\u3058\u308B">\u2190</button>' : '<span class="drill-back" aria-hidden="true"></span>'}
+      <div class="drill-head-main"><div class="drill-head-title">${esc4(title)}</div>${meta ? `<div class="drill-head-meta">${meta}</div>` : ""}</div>
+      ${progress ? `<div class="drill-progress">${progress}</div>` : ""}
+    </div>`;
+  }
+  function dotsHTML(index, total) {
+    return `<div class="drill-dots" aria-hidden="true">${Array.from({ length: total }, (_, i) => `<span class="${i < index ? "done" : i === index ? "now" : ""}"></span>`).join("")}</div>`;
+  }
+  function boardHTML(scene, actor, ctx) {
+    const seats = displaySeats(scene, actor);
+    const byPos = Object.fromEntries(seats.map((s) => [s.dpos, s]));
+    const turnPos = scene.center?.lunban != null && scene.seats[actor] ? (scene.center.lunban - scene.seats[actor].l + 4) % 4 : -1;
+    const seatCtx = { ...ctx, turnPos };
+    const seat = (pos) => seatHTMLFor(byPos[pos], pos === 0, seatCtx);
+    const c = scene.center || {};
+    const dora = (c.baopai || []).map((p) => tileHTML(p, "dora-tile")).join("");
+    return `<div class="replay-table drill-table">
+      ${seat(2)}${seat(3)}
+      <div class="replay-board drill-board">
+        <div class="replay-center drill-center">
+          <div class="round"><span class="round-kyoku">${esc4(centerKyoku(scene))}</span> <span>${esc4(c.changbang || 0)}\u672C\u5834</span></div>
+          <div class="center-meta"><span class="cm-item">\u6B8B\u308A ${esc4(c.paishu ?? "-")}\u679A</span> <span class="cm-item">\u4F9B\u8A17 ${esc4(c.lizhibang || 0)}</span></div>
+          <div class="dora"><span class="dora-label">\u30C9\u30E9</span>${dora}</div>
+        </div>
+        ${seats.map((s) => `<div class="board-pond bp-${s.dpos}${s.lizhi ? " riichi-on" : ""}">${pondHTMLFor(s)}</div>`).join("")}
+      </div>
+      ${seat(1)}
+      <div class="replay-self-area drill-self-area">${seat(0)}</div>
+    </div>`;
+  }
+  function questionPanelHTML(problem, currentIndex, total, dots) {
+    const level = drillDifficulty(problem);
+    return `<section class="drill-panel">
+      <div class="drill-panel-title">AI\u30B3\u30FC\u30C1 <span>\u56DE\u7B54\u5F8C\u306B\u5224\u5B9A\u3068\u89E3\u8AAC</span></div>
+      <div class="drill-hint">\u5207\u308B\u724C\u30921\u679A\u30BF\u30C3\u30D7\u3057\u3066\u304F\u3060\u3055\u3044\u3002</div>
+      <div class="drill-hint-sub">\u30BF\u30C3\u30D7\u3059\u308B\u3068\u300C\u6B63\u89E3\uFF0F\u60DC\u3057\u3044\uFF0F\u4E0D\u6B63\u89E3\u300D\u306E\u5224\u5B9A\u3068\u3001\u30B3\u30FC\u30C1\u306E\u89E3\u8AAC\u304C\u51FA\u307E\u3059\u3002</div>
+      <div class="drill-set-row"><span>\u3053\u306E\u30BB\u30C3\u30C8\u306E\u9032\u307F\u5177\u5408</span><b>${currentIndex + 1} / ${total}</b></div>
+      ${dots}
+      <div class="drill-diff-card">
+        <div class="drill-diff-title">\u3053\u306E\u554F\u984C\u306E\u96E3\u6613\u5EA6 ${level ? `<span class="drill-diff-badge diff-${esc4(level.id)}">${esc4(level.label)}</span>` : ""}</div>
+        <p>\u521D\u6BB5\u76F8\u5F53\u306EAI\u304C\u540C\u3058\u724C\u3092\u9078\u3093\u3060\u5272\u5408 ${pct(problem.matchRate)}\u3002\u96E3\u6613\u5EA6\u306F\u8868\u793A\u3068\u4E26\u3073\u9806\u306E\u88DC\u52A9\u3067\u3059\u3002</p>
+      </div>
+      <p class="drill-footnote">10\u554F1\u30BB\u30C3\u30C8\u3002\u56DE\u7B54\u3059\u308B\u3068\u305D\u306E\u5834\u3067\u5224\u5B9A\u3068\u89E3\u8AAC\u304C\u51FA\u3066\u3001\u6700\u5F8C\u306B\u6B63\u89E3\u6570\u3068\u554F\u984C\u3054\u3068\u306E\u4E00\u89A7\u3092\u78BA\u8A8D\u3067\u304D\u307E\u3059\u3002</p>
+    </section>`;
+  }
+  function judgedPanelHTML(problem, judgement, explain, currentIndex, total, dots, error = null) {
+    const level = drillDifficulty(problem);
+    const items = (session?.items || []).filter((it) => it.judgement);
+    const agreement = { agree: items.filter((it) => it.judgement.verdict === "correct").length, total: items.length };
+    const coach2 = drillCoachHTML({
+      problem,
+      explain,
+      recommendedProb: judgement.recommendedProb,
+      agreement,
+      key: `drill|${session?.index ?? 0}`,
+      cellMoreOpen: drillCellMore
+    });
+    return `<section class="drill-panel">
+      <div class="drill-verdict ${judgement.verdict}">
+        <span class="drill-verdict-badge">${esc4(verdictLabel(judgement.verdict))}</span>
+        <span class="drill-verdict-text">${judgement.verdict === "correct" ? "\u63A8\u5968\u3069\u304A\u308A\u306E\u6253\u724C\u3067\u3059" : judgement.verdict === "close" ? "\u63A8\u5968\u306B\u8FD1\u3044\u6253\u724C\u3067\u3059" : "\u63A8\u5968\u3068\u306F\u9055\u3046\u6253\u724C\u3067\u3059"}</span>
+        ${level ? `<span class="drill-diff-badge diff-${esc4(level.id)}">${esc4(level.label)}</span>` : ""}
+      </div>
+      ${error ? '<div class="drill-hint-sub drill-error-note">AI\u306E\u518D\u8A08\u7B97\u306B\u5931\u6557\u3057\u305F\u305F\u3081\u3001\u63A8\u5968\u5EA6\u306E\u6BD4\u8F03\u3068\u300C\u60DC\u3057\u3044\u300D\u306E\u5224\u5B9A\u306F\u51FA\u305B\u307E\u305B\u3093\u3067\u3057\u305F\u3002</div>' : ""}
+      <div class="drill-same">${coach2}</div>
+      <div class="drill-note">\u521D\u6BB5\u76F8\u5F53\u306E\u4E00\u81F4\u7387 ${pct(problem.matchRate)}\u30FB\u96E3\u6613\u5EA6 ${level ? esc4(level.label) : "-"}</div>
+      <div class="drill-set-row"><span>\u3053\u306E\u30BB\u30C3\u30C8\u306E\u9032\u307F\u5177\u5408</span><b>${currentIndex + 1} / ${total}</b></div>
+      ${dots}
+      <div class="drill-actions"><button type="button" class="drill-primary" data-drill-next>${currentIndex + 1 >= total ? "\u7D50\u679C\u3092\u898B\u308B" : "\u6B21\u306E\u554F\u984C\u3078"}</button></div>
+    </section>`;
+  }
+  function renderQuestion() {
+    const problem = session.problem;
+    const scene = drillScene(session.data, problem);
+    const actor = problem.actor;
+    const selectedIndex = null;
+    setOverlay(`${headerHTML({
+      meta: `${esc4(kyokuText(problem.kyoku))}\u30FB${esc4(problem.junme)}\u5DE1\u76EE`,
+      progress: `\u7B2C${session.index + 1}\u554F <small>/ ${session.total}</small>`
+    })}
+    <div class="drill-scroll">
+      <div class="drill-stage"><div class="drill-board-wrap">${boardHTML(scene, actor, { selectedIndex, answered: false })}</div></div>
+      <div class="drill-side">${questionPanelHTML(problem, session.index, session.total, dotsHTML(session.index, session.total))}</div>
+    </div>`);
+  }
+  function renderJudged(entry) {
+    const problem = session.problem;
+    const scene = drillScene(session.data, problem);
+    const actor = problem.actor;
+    setOverlay(`${headerHTML({
+      meta: `${esc4(kyokuText(problem.kyoku))}\u30FB${esc4(problem.junme)}\u5DE1\u76EE`,
+      progress: `\u7B2C${session.index + 1}\u554F <small>/ ${session.total}</small>`
+    })}
+    <div class="drill-scroll">
+      <div class="drill-stage"><div class="drill-board-wrap">${boardHTML(scene, actor, {
+      selectedIndex: entry.selectedIndex,
+      answered: true
+    })}</div></div>
+      <div class="drill-side">${judgedPanelHTML(problem, entry.judgement, entry.explain, session.index, session.total, dotsHTML(session.index, session.total), entry.error)}</div>
+    </div>`);
+  }
+  function renderResult() {
+    const total = session.total;
+    const correct = record ? record.correct : 0;
+    const items = session.items;
+    const byDiff = { easy: 0, normal: 0, hard: 0 };
+    const byVerdict = { correct: 0, close: 0, wrong: 0 };
+    for (const it of items) {
+      const level = drillDifficulty(it.problem);
+      if (level && byDiff[level.id] != null) byDiff[level.id]++;
+      if (it.judgement && byVerdict[it.judgement.verdict] != null) byVerdict[it.judgement.verdict]++;
+    }
+    const barPct = total ? Math.round(correct / total * 100) : 0;
+    setOverlay(`${headerHTML({
+      title: "\u30BB\u30C3\u30C8\u7D50\u679C",
+      meta: `${total}\u554F\u30FBAI\u30B3\u30FC\u30C1\u306E\u89E3\u8AAC\u3064\u304D`,
+      progress: `${correct} <small>/ ${total}</small>`
+    })}
+    <div class="drill-scroll drill-single">
+      <section class="drill-result-card">
+        <div class="drill-result-hero"><b>${correct}</b><span>/ ${total}</span></div>
+        <div class="drill-result-legend">\u3084\u3055\u3057\u3044 ${byDiff.easy}\u30FB\u3075\u3064\u3046 ${byDiff.normal}\u30FB\u3080\u305A\u304B\u3057\u3044 ${byDiff.hard}</div>
+        <div class="drill-result-bar"><i style="width:${barPct}%"></i></div>
+        <div class="drill-result-legend">\u6B63\u89E3 ${byVerdict.correct}\u3000\u60DC\u3057\u3044 ${byVerdict.close}\u3000\u4E0D\u6B63\u89E3 ${byVerdict.wrong}</div>
+        ${session.fallbackCount > 0 ? '<div class="drill-result-legend drill-fallback-note">\u4E00\u90E8\u306F\u53CE\u9332\u6E08\u307F\u306E\u554F\u984C\u304B\u3089\u51FA\u984C\u3057\u307E\u3057\u305F</div>' : ""}
+      </section>
+      <section class="drill-result-list">
+        <div class="drill-list-head"><h3>\u554F\u984C\u3054\u3068\u306E\u5224\u5B9A</h3><span>\u96E3\u6613\u5EA6\u3082\u4F75\u8A18</span></div>
+        ${items.map((it, i) => {
+      const level = drillDifficulty(it.problem);
+      const v = it.judgement?.verdict || "wrong";
+      return `<div class="drill-result-row">
+        <div class="drill-result-q"><b>\u7B2C${i + 1}\u554F</b><span>${esc4(kyokuText(it.problem.kyoku))}\u30FB${esc4(it.problem.junme)}\u5DE1\u76EE</span><small>${esc4(idLabel(it.problem.id))}</small></div>
+        <div class="drill-result-tags">
+          ${level ? `<span class="drill-diff-badge diff-${esc4(level.id)}">${esc4(level.label)}</span>` : ""}
+          <span class="drill-verdict-badge ${v}">${esc4(verdictLabel(v))}</span>
+        </div>
+      </div>`;
+    }).join("")}
+      </section>
+      <div class="drill-result-actions">
+        <button type="button" class="drill-secondary" data-drill-retry>\u3082\u3046\u4E00\u5EA6</button>
+        <button type="button" class="drill-primary" data-drill-start>\u30B9\u30BF\u30FC\u30C8\u3078</button>
+      </div>
+    </div>`);
+  }
+  function close(fromBack = false) {
+    if (!open) return;
+    if (fitFrame && win?.cancelAnimationFrame) {
+      win.cancelAnimationFrame(fitFrame);
+      fitFrame = 0;
+    }
+    if (session && !session.complete && !session.aborted) session.abort();
+    clearWait();
+    session = null;
+    record = null;
+    busy = false;
+    open = false;
+    openGen++;
+    if (overlay) overlay.hidden = true;
+    if (!fromBack && backNav2?.top?.()?.id === "drill") backNav2.dismiss("drill");
+    stopGeneratorIfIdle();
+  }
+  function ensureSheet() {
+    if (sheet) return sheet;
+    sheet = doc.createElement("div");
+    sheet.id = "drill-sheet";
+    sheet.className = "drill-sheet";
+    sheet.hidden = true;
+    sheet.setAttribute("role", "dialog");
+    sheet.setAttribute("aria-modal", "true");
+    sheet.setAttribute("aria-label", "\u4F55\u5207\u308B\u30C9\u30EA\u30EB \u5834\u9762\u3068\u96E3\u6613\u5EA6");
+    doc.body.append(sheet);
+    sheet.addEventListener("click", onSheetClick);
+    return sheet;
+  }
+  const sceneLabel = (id2) => SCENE_CHOICES.find((c) => c.id === id2)?.label || "";
+  const diffLabel = (id2) => DIFFICULTY_CHOICES.find((c) => c.id === id2)?.label || "";
+  function sheetStatusText() {
+    const key2 = drillChoiceKey(sheetChoice);
+    const instant = isAnyAny(sheetChoice) || !generator || !generator.available || generator.count(key2) >= 1;
+    return instant ? "\u3059\u3050\u306B\u59CB\u3081\u3089\u308C\u307E\u3059" : "\u6700\u521D\u306E\u554F\u984C\u306E\u4F5C\u6210\u306B\u5C11\u3057\u6642\u9593\u304C\u304B\u304B\u308B\u3053\u3068\u304C\u3042\u308A\u307E\u3059";
+  }
+  function updateSheetStatus() {
+    const el2 = sheet?.querySelector("[data-sheet-status]");
+    if (el2) {
+      const text = sheetStatusText();
+      el2.textContent = text;
+      el2.classList.toggle("instant", text === "\u3059\u3050\u306B\u59CB\u3081\u3089\u308C\u307E\u3059");
+    }
+  }
+  function renderSheet() {
+    const c = sheetChoice;
+    const scenes = SCENE_CHOICES.map((o) => `<button type="button" class="drill-sc${o.wide ? " wide" : ""}${o.id === c.scene ? " on" : ""}"
+      data-sheet-scene="${o.id}" aria-pressed="${o.id === c.scene}"><b>${esc4(o.label)}</b><i>${esc4(o.note)}</i></button>`).join("");
+    const diffs = DIFFICULTY_CHOICES.map((o) => `<button type="button" class="${o.id === c.difficulty ? "on" : ""}"
+      data-sheet-diff="${o.id}" aria-pressed="${o.id === c.difficulty}">${esc4(o.label)}</button>`).join("");
+    const el2 = ensureSheet();
+    el2.innerHTML = `<div class="drill-scrim" data-sheet-close></div>
+      <div class="drill-sheet-body">
+        <div class="drill-grab"></div>
+        <div class="drill-sh-head"><div class="drill-sh-title">\u4F55\u5207\u308B\u30C9\u30EA\u30EB</div>
+          <button type="button" class="drill-sh-close" data-sheet-close aria-label="\u9589\u3058\u308B">\u2715</button></div>
+        <div class="drill-sh-label">\u5834\u9762</div><div class="drill-scenes">${scenes}</div>
+        <div class="drill-sh-label">\u96E3\u6613\u5EA6</div><div class="drill-diffs">${diffs}</div>
+        <div class="drill-sum">\u9078\u629E\u4E2D: \u5834\u9762\uFF1A<b>${esc4(sceneLabel(c.scene))}</b>\uFF0F\u96E3\u6613\u5EA6\uFF1A<b>${esc4(diffLabel(c.difficulty))}</b>\uFF0F${DRILL_SET_SIZE}\u554F</div>
+        <div class="drill-sh-status" data-sheet-status></div>
+        <button type="button" class="drill-go" data-sheet-go${starting ? " disabled" : ""}>\u306F\u3058\u3081\u308B</button>
+      </div>`;
+    el2.hidden = false;
+    updateSheetStatus();
+  }
+  function openSheet() {
+    if (sheetOpen || open || locked || !ready || !isReady?.()) return;
+    sheetOpen = true;
+    starting = false;
+    sheetChoice = readDrillChoice(storage);
+    renderSheet();
+    backNav2?.push?.("drill-sheet", () => closeSheet(true));
+    const gen = ensureGenerator();
+    if (gen) {
+      gen.setTarget(drillChoiceKey(sheetChoice), { want: 2 });
+      updateSheetStatus();
+    }
+  }
+  function closeSheet(fromBack = false, { keepGenerator = false, handOver = false } = {}) {
+    if (!sheetOpen) return;
+    sheetOpen = false;
+    if (sheet) sheet.hidden = true;
+    if (!fromBack && !handOver && backNav2?.top?.()?.id === "drill-sheet") backNav2.dismiss("drill-sheet");
+    if (!keepGenerator) stopGeneratorIfIdle();
+  }
+  function onSheetClick(e) {
+    const t = e.target?.closest?.("[data-sheet-scene], [data-sheet-diff], [data-sheet-go], [data-sheet-close]");
+    if (!t) return;
+    if (t.matches("[data-sheet-close]")) {
+      closeSheet();
+      return;
+    }
+    if (t.matches("[data-sheet-scene]") || t.matches("[data-sheet-diff]")) {
+      sheetChoice = normalizeDrillChoice(t.matches("[data-sheet-scene]") ? { ...sheetChoice, scene: t.dataset.sheetScene } : { ...sheetChoice, difficulty: t.dataset.sheetDiff });
+      renderSheet();
+      generator?.setTarget(drillChoiceKey(sheetChoice), { want: 2 });
+      updateSheetStatus();
+      return;
+    }
+    if (t.matches("[data-sheet-go]")) startFromSheet();
+  }
+  function startFromSheet() {
+    if (starting) return;
+    starting = true;
+    const choice = normalizeDrillChoice(sheetChoice);
+    saveDrillChoice(storage, choice);
+    closeSheet(false, { keepGenerator: true, handOver: true });
+    beginRun(choice).finally(() => {
+      starting = false;
+    });
+  }
+  function clearWait() {
+    if (waitTimer) {
+      clearInterval(waitTimer);
+      waitTimer = null;
+    }
+  }
+  function chipsHTML(choice) {
+    return `<div class="drill-wait-chips"><span>${esc4(sceneLabel(choice.scene))}</span><span>${esc4(diffLabel(choice.difficulty))}</span></div>`;
+  }
+  function renderWait(run, slot, choice) {
+    const first = slot === 0;
+    const k02 = generator?.stats?.kyokus || 0;
+    const t02 = Date.now();
+    const head = first ? headerHTML() : headerHTML({
+      meta: `${esc4(sceneLabel(choice.scene))}\u30FB${esc4(diffLabel(choice.difficulty))}`,
+      progress: `\u7B2C${slot + 1}\u554F <small>/ ${run.total}</small>`
+    });
+    setOverlay(`${head}<div class="drill-scroll drill-single"><div class="drill-wait">
+      <div class="drill-ring" aria-hidden="true"></div>
+      <h2 data-wait-title>${first ? "\u554F\u984C\u3092\u4F5C\u6210\u4E2D\u2026" : "\u6B21\u306E\u554F\u984C\u3092\u4F5C\u6210\u4E2D\u2026"}</h2>
+      ${chipsHTML(choice)}
+      ${first ? "" : dotsHTML(slot, run.total)}
+      <p class="drill-wait-progress" data-wait-progress aria-live="polite">\u7D4C\u904E 0 \u79D2</p>
+      <p class="drill-wait-note">${first ? "\u6700\u521D\u306E1\u554F\u3060\u3051\u5C11\u3057\u304A\u5F85\u3061\u304F\u3060\u3055\u3044\u3002\u6B8B\u308A\u306F\u904A\u3093\u3067\u3044\u308B\u9593\u306B\u6E96\u5099\u3057\u307E\u3059\u3002" : "\u6E96\u5099\u304C\u3067\u304D\u6B21\u7B2C\u3001\u7D9A\u304D\u3092\u8868\u793A\u3057\u307E\u3059\u3002"}</p>
+      <button type="button" class="drill-secondary" data-drill-skip>\u53CE\u9332\u6E08\u307F\u306E\u554F\u984C\u3067\u306F\u3058\u3081\u308B</button>
+      <button type="button" class="drill-wait-cancel" data-drill-close>\u623B\u308B</button>
+    </div></div>`);
+    clearWait();
+    waitTimer = setInterval(() => {
+      const el2 = overlay?.querySelector?.("[data-wait-progress]");
+      if (!el2) return;
+      const sec = Math.floor((Date.now() - t02) / 1e3);
+      const k2 = Math.max(0, (generator?.stats?.kyokus || 0) - k02);
+      el2.textContent = k2 > 0 ? `${k2}\u5C40\u3092\u8ABF\u3079\u307E\u3057\u305F\u30FB\u7D4C\u904E ${sec} \u79D2` : `\u7D4C\u904E ${sec} \u79D2`;
+    }, 500);
+  }
+  async function fillSlot(run, slot, choice) {
+    const p = run.fill(slot);
+    let settled = false;
+    p.then(() => {
+      settled = true;
+    }, () => {
+      settled = true;
+    });
+    let timer = null;
+    await Promise.race([p.catch(() => null), new Promise((r) => {
+      timer = setTimeout(r, 40);
+    })]);
+    clearTimeout(timer);
+    if (!settled && open && session === run) renderWait(run, slot, choice);
+    try {
+      return await p;
+    } finally {
+      clearWait();
+    }
+  }
+  function makeSupply(choice, key2) {
+    const gen = ensureGenerator();
+    const poolFirst = isAnyAny(choice) && setsStarted === 0;
+    const useGen = !!gen && !poolFirst;
+    const supplier = createDrillSupplier({ generator: useGen ? gen : null, poolIndex, key: key2, rng });
+    if (gen) gen.setTarget(key2, { want: useGen ? DRILL_SET_SIZE * 2 : DRILL_SET_SIZE });
+    return (slot, ctx) => supplier.supply(slot, ctx).then((r) => poolFirst ? { ...r, fallback: false } : r);
+  }
+  async function beginRun(choice = { scene: "any", difficulty: "any" }) {
+    if (open || locked || !isReady?.()) {
+      if (backNav2?.top?.()?.id === "drill-sheet") backNav2.dismiss("drill-sheet");
+      stopGeneratorIfIdle();
+      return;
+    }
+    open = true;
+    const gen = ++openGen;
+    session = null;
+    record = null;
+    ensureOverlay();
+    setOverlay(`${headerHTML()}<div class="drill-scroll drill-single"><div class="drill-loading">\u554F\u984C\u3092\u8AAD\u307F\u8FBC\u307F\u4E2D\u2026</div></div>`);
+    if (backNav2?.top?.()?.id === "drill-sheet") backNav2.replaceTop("drill", () => close(true));
+    else backNav2?.push?.("drill", () => close(true));
+    try {
+      await startRun(normalizeDrillChoice(choice), gen);
+    } catch (e) {
+      if (!open || gen !== openGen) return;
+      setOverlay(`${headerHTML()}<div class="drill-scroll drill-single"><div class="drill-error">
+        <p>\u554F\u984C\u30C7\u30FC\u30BF\u3092\u8AAD\u307F\u8FBC\u3081\u307E\u305B\u3093\u3067\u3057\u305F\u3002</p><p class="drill-hint-sub">${esc4(e?.message || e)}</p>
+        <button type="button" class="drill-secondary" data-drill-close>\u623B\u308B</button></div></div>`);
+    }
+  }
+  async function startRun(choice, gen) {
+    const loaded = await loadData();
+    if (!open || gen !== openGen) return;
+    if (!poolIndex) poolIndex = createPoolIndex(loaded);
+    lastChoice = choice;
+    const key2 = drillChoiceKey(choice);
+    const run = createStreamingDrillSession({ total: DRILL_SET_SIZE, key: key2, supply: makeSupply(choice, key2) });
+    session = run;
+    setsStarted++;
+    const item = await fillSlot(run, 0, choice);
+    if (!open || gen !== openGen || session !== run || !item) return;
+    renderQuestion();
+  }
+  async function answerTile(action, index) {
+    if (busy || !session || session.judgement || session.aborted) return;
+    busy = true;
+    const run = session;
+    const problem = session.problem;
+    const sdata = session.data;
+    const scene = drillScene(sdata, problem);
+    holdGate(0);
+    generator?.pause();
+    const recommended = problem.answer?.recommended || null;
+    let entry = {
+      selected: action,
+      selectedIndex: index,
+      recommended,
+      judgement: judgeDrillAnswer({ selected: action, recommended, probabilities: [] }),
+      explain: null
+    };
+    setOverlay(`${headerHTML({
+      meta: `${esc4(kyokuText(problem.kyoku))}\u30FB${esc4(problem.junme)}\u5DE1\u76EE`,
+      progress: `\u7B2C${session.index + 1}\u554F <small>/ ${session.total}</small>`
+    })}
+    <div class="drill-scroll">
+      <div class="drill-stage"><div class="drill-board-wrap">${boardHTML(scene, problem.actor, { selectedIndex: index, answered: true })}</div></div>
+      <div class="drill-side"><section class="drill-panel"><div class="drill-loading">\u5224\u5B9A\u3068\u89E3\u8AAC\u3092\u4F5C\u6210\u4E2D\u2026</div>
+        <div class="drill-hint-sub">\u540C\u3058\u724C\u3092\u9078\u3073\u76F4\u3059\u3053\u3068\u306F\u3067\u304D\u307E\u305B\u3093\u3002</div></section></div>
+    </div>`);
+    try {
+      const events = drillEventPrefix(sdata, problem);
+      const inferred = await inferDrillPosition(getRuntime?.(), events, problem.actor);
+      const probabilities = inferred?.qAll || [];
+      entry.judgement = judgeDrillAnswer({ selected: action, recommended, probabilities });
+      try {
+        entry.explain = explainDrillScene(scene, problem.actor, probabilities, { recommended, selected: action });
+      } catch (e) {
+        entry.explain = { error: String(e?.message || e) };
+      }
+    } catch (e) {
+      entry.error = String(e?.message || e);
+      entry.judgement = judgeDrillAnswer({ selected: action, recommended, probabilities: [] });
+    }
+    if (!open || session !== run) return;
+    busy = false;
+    session.answer(entry.judgement);
+    if (session.complete && !record) record = finalizeDrillSession(session, storage, now());
+    renderJudged(entry);
+    holdGate(300);
+  }
+  async function nextQuestion() {
+    if (!session || busy) return;
+    const run = session;
+    if (run.index + 1 >= run.total) {
+      if (!record) record = finalizeDrillSession(run, storage, now());
+      renderResult();
+      return;
+    }
+    busy = true;
+    let item = null;
+    try {
+      item = await fillSlot(run, run.index + 1, lastChoice);
+    } finally {
+      if (session === run) busy = false;
+    }
+    if (!open || session !== run || !item) return;
+    run.next();
+    renderQuestion();
+  }
+  async function retry() {
+    if (!poolIndex || busy || !open) return;
+    record = null;
+    busy = true;
+    const gen = openGen;
+    session?.abort?.();
+    try {
+      await startRun(lastChoice, gen);
+    } catch (e) {
+    } finally {
+      if (gen === openGen) busy = false;
+    }
+  }
+  function onClick(e) {
+    const target = e.target?.closest?.("[data-drill-tile], [data-drill-close], [data-drill-next], [data-drill-retry], [data-drill-start], [data-drill-skip]");
+    if (!target) return;
+    if (target.matches("[data-drill-tile]")) {
+      answerTile(target.dataset.drillTile, Number(target.dataset.idx));
+      return;
+    }
+    if (target.matches("[data-drill-close]")) {
+      close();
+      return;
+    }
+    if (target.matches("[data-drill-skip]")) {
+      session?.skipWait();
+      return;
+    }
+    if (target.matches("[data-drill-next]")) {
+      nextQuestion();
+      return;
+    }
+    if (target.matches("[data-drill-retry]")) {
+      retry();
+      return;
+    }
+    if (target.matches("[data-drill-start]")) {
+      close();
+      return;
+    }
+  }
+  if (button) button.addEventListener("click", openSheet);
+  win?.addEventListener?.("resize", scheduleDrillFit);
+  squareBand?.addEventListener?.("change", scheduleDrillFit);
+  portraitNarrow?.addEventListener?.("change", scheduleDrillFit);
+  landscapeShort?.addEventListener?.("change", scheduleDrillFit);
+  doc?.addEventListener?.("keydown", (e) => {
+    if (e.key === "Escape" && sheetOpen) {
+      e.stopPropagation();
+      closeSheet();
+      return;
+    }
+    if (e.key === "Escape" && open) {
+      e.stopPropagation();
+      close();
+    }
+  });
+  return {
+    open: beginRun,
+    // starts a set directly (default おまかせ×おまかせ); the button opens the sheet
+    openSheet,
+    closeSheet,
+    close,
+    refreshLock,
+    setEnabled,
+    get isOpen() {
+      return open;
+    },
+    get sheetOpen() {
+      return sheetOpen;
+    },
+    get generatorStats() {
+      return generator ? { ...generator.stats, stockSize: generator.stockSize, available: generator.available } : null;
+    },
+    get session() {
+      return session;
+    },
+    get locked() {
+      return locked;
+    }
+  };
+}
+
+// src/main.js
+var backNav = createBackNav({ win: window });
+var billing = createCoachAccess({
+  native: globalThis.JanLabNative,
+  storage: { getItem: (key2) => localStorage.getItem(key2), setItem: (key2, value) => localStorage.setItem(key2, value) },
+  onChange: refreshCoachAccess
+});
+var simStorage = {
+  getItem: (key2) => sessionStorage.getItem(key2),
+  setItem: (key2, value) => sessionStorage.setItem(key2, value),
+  removeItem: (key2) => sessionStorage.removeItem(key2)
+};
+var startStorage = {
+  getItem: (key2) => localStorage.getItem(key2),
+  setItem: (key2, value) => localStorage.setItem(key2, value)
+};
+function currentSimState() {
+  return readSim(simStorage);
+}
+var billingHistoryReady = Promise.resolve();
+var gameTrialEligible = true;
+var drillUi = null;
+var sessionCompletions = /* @__PURE__ */ new Map();
+var fitDirty = true;
+var NAMES = ["\u3042\u306A\u305F", "AI-1", "AI-2", "AI-3"];
+var MODELS = [
+  { id: "jaklab-v1", version: "V1", label: "V1", product: "V1\uFF08\u516B\u6BB5\u76F8\u5F53\uFF09", name: "V1\uFF08\u81EA\u524D\u30E2\u30C7\u30EB\u30FB43MB\uFF09", file: "models/jaklab_v1.onnx", displayTemperature: 2, softvalue: true },
+  // 2026-11-07: 低スペック端末向けに V1 Light もコーチモデルとして選べる（5.8MB・推論が速い）。
+  { id: "jaklab-v1-light", version: "V1 Light", label: "V1 Light", product: "V1 Light\uFF08\u4E03\u6BB5\u76F8\u5F53\uFF09", name: "V1 Light\uFF08\u8EFD\u91CF\u30FB5.8MB\uFF09", file: "models/jaklab_v1_light.onnx", displayTemperature: 1, softvalue: "light" }
+  // 2026-11-06: 他モデル（VoidShine 高精度／mortal_best 標準／mortal_small 軽量）は
+  // アプリ同梱から外した。保存済みの旧モデルIDは init() で既定（V1）に戻る。
+];
+function modelProductLabel(id2) {
+  const m = MODELS.find((x) => x.id === id2);
+  return m ? m.product || m.label || m.name : id2;
+}
+function modelLabel(id2) {
+  const m = MODELS.find((x) => x.id === id2);
+  return m ? m.label || m.name : id2;
+}
+var AUTO = new URLSearchParams(location.search).get("auto") === "1";
+var SHELL = isShell();
+var LENGTH_KEY = "ml-game-length";
+var MODEL_KEY = "ml-model";
+var LIGHT_MODEL_FILE = "models/jaklab_v1_light.onnx";
+var startupFallback = null;
+var cpuStorage = { getItem: (key2) => localStorage.getItem(key2), setItem: (key2, val) => localStorage.setItem(key2, val) };
+var cpuSeats = loadCpuSeats(cpuStorage, location.search);
+function initialGameLength() {
+  const param = new URLSearchParams(location.search).get("length");
+  if (param === "hanchan" || param === "tonpuu") return param;
+  if (AUTO) return "tonpuu";
+  try {
+    const v = localStorage.getItem(LENGTH_KEY);
+    if (v === "hanchan" || v === "tonpuu") return v;
+  } catch (_) {
+  }
+  return "hanchan";
+}
+var gameLength = initialGameLength();
+var QIJIA = 0;
+var S = {
+  ready: false,
+  started: false,
+  finished: false,
+  decisionPending: false,
+  errors: [],
+  logs: [],
+  provider: null,
+  modelId: null,
+  modelSelected: null,
+  mjaiEvents: 0,
+  inferCount: 0,
+  inferAvgMs: null,
+  coachRecords: 0,
+  agreement: null,
+  defen: null,
+  pendingKind: null,
+  pendingOptions: null,
+  dahaiLog: [],
+  dahaiThisKyoku: [0, 0, 0, 0],
+  probabilityCheck: null,
+  statisticalNotes: [],
+  tileSvgCount: 0,
+  actionButtons: [],
+  ruleSummary: null,
+  reviewCount: 0,
+  reviewRows: [],
+  probe: null,
+  // { running, key, lastResult, error } of the latest probe run
+  historyCount: 0,
+  historySaveStatus: null,
+  saveCompleted: false,
+  gameBundleMeta: null,
+  riichiSeats: [],
+  kyokuIndex: -1,
+  riichiPops: 0,
+  lastResult: null,
+  resultCount: 0,
+  scoreCheck: { checked: 0, ok: true, mismatches: [] },
+  finalBreakdown: null,
+  shell: SHELL
+};
+window.__stage2 = S;
+var lazyStage2State = {
+  reachLabelCheck: () => {
+    const records = coach?.records || [];
+    const reachRecs = records.filter((r) => r.context === "zimo" && (r.qValues || []).some((c) => c.action === "reach"));
+    return {
+      records: reachRecs.length,
+      withTiles: reachRecs.filter((r) => Array.isArray(r.riichiTiles) && r.riichiTiles.length).length,
+      labelOk: reachRecs.filter((r) => {
+        const d = reachDeclareAction(r);
+        return d && r.riichiTiles.includes(d);
+      }).length
+    };
+  },
+  autoPlayed: () => (coach?.records || []).filter((r) => r.autoPlayed).length,
+  shapeRecords: () => {
+    let eager = 0, pending2 = 0, withShapeBasis = 0;
+    for (const r of coach?.records || []) {
+      if (r.shapeEager === true) eager++;
+      if (r.shapePending === true) pending2++;
+      if (r.explainability?.checks?.shapeGoodCopies != null) withShapeBasis++;
+    }
+    return { eager, pending: pending2, withShapeBasis };
+  },
+  statisticalNotes: () => (coach?.records || []).filter((r) => r.statisticalNote).map((r) => r.statisticalNote),
+  actionButtons: () => [...document.querySelectorAll("#actions .act")].map((el2) => ({
+    act: el2.dataset.act,
+    text: el2.textContent.trim().replace(/\s+/g, " "),
+    width: Math.round(el2.getBoundingClientRect().width),
+    height: Math.round(el2.getBoundingClientRect().height)
+  })),
+  tileSvgCount: () => document.querySelectorAll("#table svg.tile-art").length
+};
+for (const [key2, compute] of Object.entries(lazyStage2State)) {
+  Object.defineProperty(S, key2, { configurable: true, enumerable: true, get: compute });
+}
+var swReloadGate = null;
+window.addEventListener("error", (e) => {
+  S.errors.push("error: " + (e.message || e));
+  recordError("E-G501", e.message || String(e), { stage: "uncaught", ifNone: true });
+});
+window.addEventListener("unhandledrejection", (e) => {
+  S.errors.push("rejection: " + (e.reason?.message || e.reason));
+  recordError("E-G501", e.reason?.message || String(e.reason), { stage: "rejection", ifNone: true });
+});
+var log = (m) => {
+  S.logs.push(m);
+  if (!S.ready) diagLogPush(m);
+  const el2 = document.getElementById("status");
+  if (el2) el2.textContent = m;
+  fitDirty = true;
+  console.log("[stage2]", m);
+};
+var audio = new GameAudio({ diagnose: (line) => {
+  diagLogPush(line);
+  console.warn(line);
+} });
+var discardTempo = new DiscardTempo();
+var manualDiscard = false;
+var gameSession = null;
+S.audioStatus = () => ({
+  settings: { ...audio.settings },
+  active: audio.active,
+  unlocked: audio.unlocked,
+  state: audio.context?.state,
+  loaded: audio.buffers.size,
+  music: !!audio.music,
+  sources: audio.sources.size,
+  diagnostics: [...audio.reported]
+});
 function labelEventsFor(rec) {
   if (!rec) return null;
   if (coach?.records?.includes(rec)) return bridge?.events || null;
@@ -36268,6 +40006,7 @@ var game = null;
 var pending = null;
 var preparingDecision = null;
 var riichiArmed = false;
+var riichiNotice = "";
 var selectedAction = null;
 var selectedIdx = null;
 var currentCoach = null;
@@ -36275,12 +40014,14 @@ var coachMissing = null;
 var coachEnabled = true;
 var assistEnabled = false;
 var explainCache = null;
+var decisionRowsCache = null;
 var explainAudit = { checked: 0, fulouChecked: 0, skippedNonDiscard: 0, missing: [] };
 var explainabilityStats = { total: 0, withVerdict: 0, unexplained: 0, outOfScope: 0 };
 var lastResultText = "";
 var kyokuResult = null;
 var horaHandByKyoku = /* @__PURE__ */ new Map();
 var horaHandKey = (r) => `${r.kyokuIndex}:${r.winnerId}`;
+var kyushuHandByKyoku = /* @__PURE__ */ new Map();
 var kyokuResultsAll = [];
 var pendingCheckResults = [];
 var kyokuScoresStart = null;
@@ -36291,9 +40032,6 @@ var prevLizhiByPos = {};
 var gameStartedAt = null;
 var endHandled = false;
 var historyCache = [];
-var HISTORY_DB_NAME = "mahjong-local";
-var HISTORY_STORE = "games";
-var SUMMARY_STORE = "summaries";
 var HISTORY_LIMIT = 50;
 var $ = (id2) => document.getElementById(id2);
 function resetCoachDisplay(kind = null) {
@@ -36303,13 +40041,22 @@ function resetCoachDisplay(kind = null) {
   coachMissing = null;
   S.coachMissing = null;
   riichiArmed = false;
+  riichiNotice = "";
   selectedAction = S.selectedAction = null;
   selectedIdx = S.selectedIdx = null;
   explainCache = null;
+  decisionRowsCache = null;
 }
+var lastFirstTap = null;
 var ui = {
+  // HumanPlayer reads this right after requestDecision resolves.
+  takeFirstTap() {
+    const t = lastFirstTap;
+    lastFirstTap = null;
+    return t;
+  },
   onCoach(rec, context) {
-    rec.coachDisplay = coachEnabled;
+    rec.coachDisplay = coachEnabled && !liveCoachLocked();
     currentCoach = { record: rec, context };
     coachMissing = null;
     explainCache = null;
@@ -36354,6 +40101,7 @@ var ui = {
     S.pendingKind = kind;
     S.pendingOptions = options;
     riichiArmed = false;
+    riichiNotice = "";
     selectedAction = null;
     S.selectedAction = null;
     selectedIdx = null;
@@ -36363,7 +40111,9 @@ var ui = {
       pending = {
         kind,
         options,
+        firstTap: null,
         resolve: (r) => {
+          lastFirstTap = pending?.firstTap ?? null;
           if (r?.dapai) manualDiscard = true;
           pending = null;
           S.decisionPending = false;
@@ -36504,6 +40254,10 @@ function captureHora(h) {
     ronSeq,
     ronCount,
     winTile: winTileMjai ? tileFromMjai(winTileMjai) : null,
+    // Display-only: the table indicators (with every kandora) and the
+    // ura indicators majiang-core exposes only on a riichi win.
+    doraMarkers: doraMarkersFromModel(seat0.model),
+    uraMarkers: uraMarkersFromHule(h),
     yaku: (h.hupai || []).map((x) => ({ name: x.name, fanshu: x.fanshu })),
     fu: h.fu ?? null,
     fanshu: h.fanshu ?? null,
@@ -36530,13 +40284,13 @@ function capturePingju(p) {
     if (p.shoupai && p.shoupai[l]) {
       let waits = [];
       try {
-        const sp = import_majiang_core6.default.Shoupai.fromString(p.shoupai[l]);
+        const sp = import_majiang_core8.default.Shoupai.fromString(p.shoupai[l]);
         for (const s of ["m", "p", "s", "z"]) {
           const max = s === "z" ? 7 : 9;
           for (let n = 1; n <= max; n++) {
             try {
               const probe = sp.clone().zimo(s + n);
-              if (import_majiang_core6.default.Util.xiangting(probe) === -1) waits.push(s + n);
+              if (import_majiang_core8.default.Util.xiangting(probe) === -1) waits.push(s + n);
             } catch (_) {
             }
           }
@@ -36548,6 +40302,8 @@ function capturePingju(p) {
     }
   }
   const name2 = p.name || "\u8352\u724C\u5E73\u5C40";
+  const kyushuHand = kyushuHandFromPingju(p, pid);
+  if (kyushuHand) kyushuHandByKyoku.set(bridge.kyokuIndex, kyushuHand);
   return {
     type: "ryukyoku",
     kyokuIndex: bridge.kyokuIndex,
@@ -36565,25 +40321,6 @@ function capturePingju(p) {
     reachDeductById: reachDeductions(),
     tenpaiHands
   };
-}
-function shoupaiStringHTML(str, markWin = false) {
-  const parts = String(str).split(",");
-  const tilesOf = (seg) => {
-    const tiles = [];
-    let suit = "";
-    for (const ch of seg) {
-      if ("mpsz".includes(ch)) suit = ch;
-      else if (/\d/.test(ch) && suit) tiles.push(suit + ch);
-    }
-    return tiles;
-  };
-  const closedTiles = tilesOf(parts[0]);
-  const closed = closedTiles.map((t, i) => `<span class="th-tile${markWin && i === closedTiles.length - 1 ? " win" : ""}">${tileSVG(t, tileLabel(t))}</span>`).join("");
-  const melds = parts.slice(1).map((seg) => {
-    const { src, tiles } = meldArrangement(seg);
-    return `<span class="th-meld">${tiles.map((t) => t.back ? `<span class="th-tile">${tileSVG("_", "\u4F0F\u305B\u724C")}</span>` : `<span class="th-tile${t.called ? ` called${src === "kamicha" ? " lean-kamicha" : ""}` : ""}">${tileSVG(t.pai, tileLabel(t.pai))}</span>`).join("")}</span>`;
-  }).join("");
-  return `<span class="th-tiles">${closed}</span>${melds}`;
 }
 function registerResult(r) {
   kyokuResultsAll.push(r);
@@ -36628,6 +40365,8 @@ function storeResumeSnapshot(phase) {
     startedAt: gameStartedAt,
     gameLength,
     qijia: QIJIA,
+    startCounted: true,
+    trialEligible: gameTrialEligible,
     cpuSeats: S.cpu?.seats.map((s) => ({ tierId: s.tier.id, styleId: s.style.id })),
     zhuangfeng: "ESWN".indexOf(sk2.bakaze),
     jushu: (sk2.kyoku || 1) - 1,
@@ -36678,6 +40417,29 @@ function clearResumeSnapshot() {
   S.resumeSnapshot = null;
   S.resumeAvailable = null;
 }
+function reconcileLegacyResumeStart() {
+  if (billing.pwa) return false;
+  const s = resumeAvailable;
+  if (!s || !s.gameId || s.startCounted) return false;
+  const completed = completedCoachHistory().length;
+  const state = syncStartFloor(startStorage, completed);
+  if (hasStart(state, s.gameId)) {
+    s.startCounted = true;
+    s.trialEligible = s.trialEligible ?? startCount(state, completed) - 1 < TRIAL_GAMES;
+  } else {
+    const total = startCount(state, completed);
+    s.trialEligible = total < TRIAL_GAMES;
+    s.startCounted = true;
+    noteStart(startStorage, s.gameId, { completed });
+  }
+  try {
+    localStorage.setItem(RESUME_KEY, JSON.stringify(s));
+  } catch (_) {
+  }
+  resumeAvailable = s;
+  S.resumeAvailable = s;
+  return true;
+}
 function noteKyokuStart() {
   const defen = seat0?.model?.defen;
   if (!defen) return;
@@ -36687,46 +40449,6 @@ function noteKyokuStart() {
   kyokuScoresStart = now;
 }
 var fmtDelta = (v) => (v > 0 ? "+" : "") + v.toLocaleString();
-function resultPanelHTML(r) {
-  if (r.type === "hora") {
-    const yakuRows = r.yaku.map((y) => `<div class="yaku-row"><span>${y.name}</span><span>${String(y.fanshu).includes("*") ? "\u5F79\u6E80" : y.fanshu + "\u7FFB"}</span></div>`).join("");
-    const scoreMain = r.damanguan || (r.fanshu ?? 0) >= 13 ? `${r.scoreLabel} ${r.defen.toLocaleString()}\u70B9` : `${r.fanshu}\u7FFB ${r.fu}\u7B26 ${r.defen.toLocaleString()}\u70B9`;
-    const payRows = [0, 1, 2, 3].map((id2) => `<tr${id2 === r.winnerId ? ' class="winner-row"' : ""}>
-        <td>${NAMES[id2]}</td><td>${fmtDelta(r.baseById[id2])}</td>
-        ${r.honba ? `<td>${fmtDelta(r.honbaById[id2])}</td>` : ""}
-        ${r.kyotaku ? `<td>${fmtDelta(r.kyotakuById[id2])}</td>` : ""}
-        <td class="${deltaTotalClass(r.deltasById[id2])}">${fmtDelta(r.deltasById[id2])}</td></tr>`).join("");
-    return `<div class="result-card">
-      ${r.ronCount > 1 ? `<div class="multi-ron">\u30C0\u30D6\u30ED\u30F3 ${r.ronSeq}\u4EF6\u76EE\uFF0F\u5168${r.ronCount}\u4EF6${r.ronSeq === 1 && (r.honba || r.kyotaku) ? "\uFF08\u672C\u5834\u30FB\u4F9B\u8A17\u306F\u3053\u3061\u3089\u306B\uFF09" : ""}</div>` : ""}
-      ${horaHeadingHTML(r, NAMES, r.winTile ? `<span class="win-tile">${tileSVG(r.winTile, tileLabel(r.winTile))}</span>` : "")}
-      <div class="yaku-list">${yakuRows}</div>
-      ${horaHandByKyoku.has(horaHandKey(r)) ? `<div class="tenpai-hands"><div class="tenpai-hand-row">
-        <span class="th-name">${r.winnerName} \u306E\u624B\u724C</span>${shoupaiStringHTML(horaHandByKyoku.get(horaHandKey(r)), true)}
-        <span class="th-waits">\u548C\u4E86\u724C: ${r.winTile ? tileLabel(r.winTile) : ""}</span>
-      </div></div>` : ""}
-      <div class="result-score">${scoreMain}${r.scoreLabel && !r.damanguan && (r.fanshu ?? 0) < 13 ? ` <span class="score-label">${r.scoreLabel}</span>` : ""}</div>
-      <table class="pay-table"><thead><tr><th></th><th>\u57FA\u672C</th>${r.honba ? "<th>\u672C\u5834</th>" : ""}${r.kyotaku ? "<th>\u4F9B\u8A17</th>" : ""}<th>\u5897\u6E1B</th></tr></thead>
-      <tbody>${payRows}</tbody></table>
-      ${AUTO ? '<div class="result-note">\u81EA\u52D5\u3067\u6B21\u3078\u9032\u307F\u307E\u3059</div>' : '<button type="button" id="result-next">' + (gameEnded ? "\u9589\u3058\u308B" : "\u6B21\u3078\u9032\u3080") + "</button>" + (gameEnded ? "" : '<div class="result-note">\u30DC\u30BF\u30F3\u3092\u62BC\u3059\u307E\u3067\u6B21\u3078\u9032\u307F\u307E\u305B\u3093</div>')}
-    </div>`;
-  }
-  const rows = [0, 1, 2, 3].map((id2) => `<tr>
-      <td>${NAMES[id2]}</td>
-      ${r.drawn ?? r.exhaustive ? `<td>${r.tenpaiById[id2] ? '<span class="tenpai-badge">\u30C6\u30F3\u30D1\u30A4</span>' : '<span class="noten-badge">\u30CE\u30FC\u30C6\u30F3</span>'}</td>` : ""}
-      <td class="delta-total">${fmtDelta(r.deltasById[id2])}</td></tr>`).join("");
-  const noMove = r.deltasById.every((v) => v === 0);
-  const tenpaiHandsHTML = (r.drawn ?? r.exhaustive) && r.tenpaiHands?.length ? `<div class="tenpai-hands">${r.tenpaiHands.map((h) => `<div class="tenpai-hand-row">
-        <span class="th-name">${NAMES[h.id]} \u30C6\u30F3\u30D1\u30A4</span>${shoupaiStringHTML(h.hand)}
-        ${h.waits?.length ? `<span class="th-waits">\u5F85\u3061: ${h.waits.map((w) => tileLabel(w)).join("\u30FB")}</span>` : ""}
-      </div>`).join("")}</div>` : "";
-  return `<div class="result-card">
-    <div class="result-head">\u6D41\u5C40 \u2015 ${r.name}</div>
-    ${r.name === "\u4E09\u5BB6\u548C" ? '<div class="result-note">3\u4EBA\u304C\u540C\u6642\u306B\u30ED\u30F3\u3057\u305F\u305F\u3081\u6D41\u5C40\uFF08\u89AA\u306E\u9023\u8358\u30FB\u672C\u5834+1\uFF09</div>' : ""}
-    ${noMove ? '<div class="result-note">\u70B9\u6570\u5909\u52D5\u306F\u3042\u308A\u307E\u305B\u3093</div>' : `<table class="pay-table"><thead><tr><th></th>${r.drawn ?? r.exhaustive ? "<th>\u30C6\u30F3\u30D1\u30A4</th>" : ""}<th>\u5897\u6E1B</th></tr></thead><tbody>${rows}</tbody></table>`}
-    ${tenpaiHandsHTML}
-    ${AUTO ? '<div class="result-note">\u81EA\u52D5\u3067\u6B21\u3078\u9032\u307F\u307E\u3059</div>' : '<button type="button" id="result-next">' + (gameEnded ? "\u9589\u3058\u308B" : "\u6B21\u3078\u9032\u3080") + "</button>" + (gameEnded ? "" : '<div class="result-note">\u30DC\u30BF\u30F3\u3092\u62BC\u3059\u307E\u3067\u6B21\u3078\u9032\u307F\u307E\u305B\u3093</div>')}
-  </div>`;
-}
 var resultPanelShownFor = void 0;
 function renderResultPanel() {
   const el2 = $("kyoku-result");
@@ -36741,7 +40463,7 @@ function renderResultPanel() {
   }
   if (resultPanelShownFor === kyokuResult) return;
   resultPanelShownFor = kyokuResult;
-  el2.innerHTML = resultPanelHTML(kyokuResult);
+  el2.innerHTML = resultPanelHTML(kyokuResult, { NAMES, AUTO, gameEnded, horaHandByKyoku, horaHandKey, kyushuHandByKyoku, fmtDelta, tileSVG, tileLabel, shoupaiStringHTML, horaHeadingHTML, deltaTotalClass });
   el2.style.display = "flex";
   el2.querySelector("#result-next")?.addEventListener("click", () => {
     if (gameEnded) {
@@ -36800,13 +40522,15 @@ function seatHTML(seat, isSelf, readOnly = false, turnL = snapshotTurnL) {
   const melds = seat.fulou.map((m) => meldHTML(m, seat.pos)).join("");
   const rec = readOnly ? null : recommendedTileMajiang(currentCoach?.record);
   const assist = isSelf && !readOnly && assistEnabled ? assistInfo(seat) : null;
+  const riichiTiles = !readOnly && riichiArmed ? pending?.options?.riichiTiles : null;
   const hand = isSelf ? seat.closedEntries.map((entry, i) => {
     const p = entry.pai;
     const clickable = !readOnly && pending && (pending.kind === "zimo" || pending.kind === "fulou") && pending.options.dapaiList.includes(entry.action) ? " clickable" : "";
-    const hl = rec && rec === p && coachEnabled && selectedAction ? " recommended" : "";
+    const riichiMark = riichiTiles?.includes(entry.action) ? " riichi-declare" : riichiTiles && clickable ? " riichi-blocked" : "";
+    const hl = rec && rec === p && coachEnabled && !liveCoachLocked() && selectedAction ? " recommended" : "";
     const sel = !readOnly && i === selectedIdx ? " selected" : "";
     const ast = assist ? assistClass(assist, seat, entry, i) : "";
-    return `<button type="button" class="tile hand${p[1] === "0" ? " red" : ""}${clickable}${hl}${sel}${ast}${entry.drawn ? " drawn" : ""}"
+    return `<button type="button" class="tile hand${p[1] === "0" ? " red" : ""}${clickable}${riichiMark}${hl}${sel}${ast}${entry.drawn ? " drawn" : ""}"
           data-tile="${entry.action}" data-pai="${p}" data-idx="${i}" data-drawn="${entry.drawn ? "1" : "0"}"
           aria-label="${entry.drawn ? "\u30C4\u30E2\u724C " : ""}${tileLabel(p)}">${tileSVG(p, tileLabel(p))}</button>`;
   }).join("") : seat.closed.map(() => tileHTML("_", "opp")).join("");
@@ -36847,10 +40571,11 @@ function decisionButtonsHTML() {
       b.push(`<button type="button" class="act call" data-act="gang" data-m="${m}"><span class="act-label">\u30AB\u30F3</span>${actionTilesHTML(mianziTiles(m))}</button>`);
     }
     if ((o.riichiTiles || []).length) {
-      b.push(act("riichi", riichiArmed ? "\u30EA\u30FC\u30C1\u5BA3\u8A00\u4E2D" : "\u30EA\u30FC\u30C1", "", `riichi${riichiArmed ? " armed" : ""}`));
+      b.push(act("riichi", riichiArmed ? "\u30EA\u30FC\u30C1\u89E3\u9664" : "\u30EA\u30FC\u30C1", "", `riichi${riichiArmed ? " armed" : ""}`));
     }
     if (o.canPingju) b.push(act("daopai", "\u4E5D\u7A2E\u4E5D\u724C", "", "minor"));
-    b.push(`<div class="action-status prompt">${riichiArmed ? "\u30EA\u30FC\u30C1\u3059\u308B\u724C\u3092\u9078\u3093\u3067\u304F\u3060\u3055\u3044" : selectedAction ? "\u3082\u3046\u4E00\u5EA6\u30BF\u30C3\u30D7\u3067\u6253\u724C\u3057\u307E\u3059" : "\u724C\u3092\u30BF\u30C3\u30D7\u3067\u9078\u629E\uFF08\u3082\u3046\u4E00\u5EA6\u30BF\u30C3\u30D7\u3067\u6253\u724C\uFF09"}</div>`);
+    const prompt = riichiArmed ? `\u30EA\u30FC\u30C1\u3059\u308B\u724C\u3092\u9078\u3093\u3067\u304F\u3060\u3055\u3044\uFF08\u91D1\u8272\u306E\u724C\u3002\u3084\u3081\u308B\u5834\u5408\u306F\u300C\u30EA\u30FC\u30C1\u89E3\u9664\u300D\uFF09${riichiNotice ? `<span class="riichi-error">${escHtml2(riichiNotice)}</span>` : ""}` : selectedAction ? "\u3082\u3046\u4E00\u5EA6\u30BF\u30C3\u30D7\u3067\u6253\u724C\u3057\u307E\u3059" : "\u724C\u3092\u30BF\u30C3\u30D7\u3067\u9078\u629E\uFF08\u3082\u3046\u4E00\u5EA6\u30BF\u30C3\u30D7\u3067\u6253\u724C\uFF09";
+    b.push(`<div class="action-status prompt${riichiArmed && riichiNotice ? " riichi-error" : ""}">${prompt}</div>`);
   } else if (pending.kind === "dapai") {
     if (o.canHule) b.push(act("hule", "\u30ED\u30F3", "", "win"));
     for (const m of o.ponMianzi || []) {
@@ -36871,35 +40596,71 @@ function decisionButtonsHTML() {
   }
   return `<div class="action-bar" data-kind="${pending.kind}">${b.join("")}</div>`;
 }
-function coachHTML(replayRec) {
-  const replay = arguments.length > 0;
-  if (!replay && !coachEnabled) return '<h3>AI\u30B3\u30FC\u30C1</h3><div class="hint">AI\u30B3\u30FC\u30C1 OFF\uFF08\u5B9F\u6226\u5F62\u5F0F\uFF09</div>';
+function coachHeadingLabel(rec, context, replay) {
+  const ctx = context || rec?.context;
+  if (ctx === "zimo") {
+    if (replay) return "\u3042\u306A\u305F\u306E\u6253\u724C";
+    if (AUTO) return contextLabel(ctx);
+    const myTurn = preparingDecision === "zimo" || preparingDecision === "fulou" || pending?.kind === "zimo" || pending?.kind === "fulou";
+    return myTurn ? "\u3042\u306A\u305F\u306E\u624B\u756A" : "\u3042\u306A\u305F\u306E\u76F4\u524D\u306E\u6253\u724C";
+  }
+  return contextLabel(ctx);
+}
+function liveHeadCtx() {
+  const rec = currentCoach?.record;
+  const kyoku = rec?.kyoku || bridge?.kyokuLabel || "";
+  const context = currentCoach?.context || rec?.context || pending?.kind || preparingDecision;
+  return [kyoku ? kyokuText(kyoku) : "", context ? coachHeadingLabel(rec, context, false) : ""].filter(Boolean).join(" / ");
+}
+function coachHTML(replayRec, opts = {}) {
+  const sheet = !!opts.sheet;
+  const replay = opts.replay ?? (arguments.length > 0 && arguments[0] !== void 0);
+  const head = (ctx) => coachHeadHTML(ctx, { expand: !replay });
+  if (!replay && liveCoachLocked()) return lockedCoachHTML();
+  if (!replay && !coachEnabled) return head() + '<div class="hint">AI\u30B3\u30FC\u30C1 OFF\uFF08\u5B9F\u6226\u5F62\u5F0F\uFF09</div>';
   let rec = replay ? replayRec : currentCoach?.record;
   if (!replay && AUTO && coach?.records?.length) rec = coach.records[coach.records.length - 1];
-  if (!replay && !rec && coachMissing && (pending || preparingDecision)) return '<h3>AI\u30B3\u30FC\u30C1</h3><div class="hint">\u3053\u306E\u624B\u756A\u306F\u30B3\u30FC\u30C1\u306E\u8A55\u4FA1\u3092\u53D6\u5F97\u3067\u304D\u307E\u305B\u3093\u3067\u3057\u305F\uFF08\u63A8\u5968\u306A\u3057\uFF09\u3002</div>';
+  if (!replay && !rec && coachMissing && (pending || preparingDecision)) return head(escHtml2(liveHeadCtx())) + '<div class="hint">\u3053\u306E\u624B\u756A\u306F\u30B3\u30FC\u30C1\u306E\u8A55\u4FA1\u3092\u53D6\u5F97\u3067\u304D\u307E\u305B\u3093\u3067\u3057\u305F\uFF08\u63A8\u5968\u306A\u3057\uFF09\u3002</div>';
   if (!replay && !AUTO && (preparingDecision || pending?.kind === "zimo" || pending?.kind === "fulou") && !selectedAction) {
     const memo0 = east4Memo();
     S.east4Memo = memo0;
-    return `<h3>AI\u30B3\u30FC\u30C1</h3><div class="hint">\u724C\u3092\u9078\u3076\u3068\u8A55\u4FA1\u3092\u8868\u793A\u3057\u307E\u3059\uFF08\u9078\u629E\u3057\u305F\u724C\u3092\u3082\u3046\u4E00\u5EA6\u30BF\u30C3\u30D7\u3067\u6253\u724C\uFF09\u3002</div>${memo0 ? `<div class="east4-memo">${memo0}</div>` : ""}`;
+    return `${head(escHtml2(liveHeadCtx()))}<div class="hint">\u724C\u3092\u9078\u3076\u3068\u8A55\u4FA1\u3092\u8868\u793A\u3057\u307E\u3059\uFF08\u9078\u629E\u3057\u305F\u724C\u3092\u3082\u3046\u4E00\u5EA6\u30BF\u30C3\u30D7\u3067\u6253\u724C\uFF09\u3002</div>${memo0 ? `<div class="east4-memo">${memo0}</div>` : ""}`;
   }
-  if (!rec) return '<h3>AI\u30B3\u30FC\u30C1</h3><div class="hint">\u3042\u306A\u305F\u306E\u624B\u756A\u3067\u63A8\u5968\u3092\u8868\u793A\u3057\u307E\u3059</div>';
+  if (!rec) return head(escHtml2(liveHeadCtx())) + '<div class="hint">\u3042\u306A\u305F\u306E\u624B\u756A\u3067\u63A8\u5968\u3092\u8868\u793A\u3057\u307E\u3059</div>';
   const best = rec.top3?.[0];
   const isReaction = rec.context === "dapai" || rec.context === "gang";
   const subs = (isReaction ? (rec.qValues || []).map((c, i) => ({ ...c, rank: i + 1 })) : (rec.top3 || []).map((c, i) => ({ ...c, rank: i + 1 }))).filter((c) => c.action !== best?.action).slice(0, isReaction ? 8 : 2);
   const top3 = subs.map((c) => `<div class="qrow"><span class="qname">${c.rank}\u4F4D ${actionLabel(c.action, rec)}</span><span class="prob">${formatPercent(c.prob)}</span></div>`).join("");
-  const callNotes = (rec.callNotes || []).map((n) => `<div class="hint">${actionLabel(n.action, rec)}\u5F8C: \u6700\u826F\u306E\u6253\u724C\u3067${n.shanten === 0 ? "\u30C6\u30F3\u30D1\u30A4" : `${n.shanten}\u5411\u8074`}\u30FB\u53D7\u3051\u5165\u308C${n.ukeire}\u679A</div>`).join("");
-  let agr = "";
-  if (!replay && !AUTO && seat0?.agreement) {
-    const a = seat0.agreement;
-    agr = a.total ? `<div class="hint">AI\u3068\u306E\u4E00\u81F4: ${a.agree}/${a.total} (${Math.round(a.agree / a.total * 100)}%)</div>` : '<div class="hint">AI\u3068\u306E\u4E00\u81F4: -</div>';
-  }
+  const runnerUps = subs.map((c) => ({ name: actionLabel(c.action, rec), percent: formatPercent(c.prob) }));
+  const callNotes = (rec.callNotes || []).map((n) => `<div class="hint">${actionLabel(n.action, rec)}\u5F8C: \u6700\u826F\u306E\u6253\u724C\u3067${n.shanten === 0 ? "\u30C6\u30F3\u30D1\u30A4" : `${escHtml2(n.shanten)}\u5411\u8074`}\u30FB\u53D7\u5165${escHtml2(n.ukeire)}\u679A</div>`).join("");
+  const agr = !replay && !AUTO ? agreementLineHTML(seat0?.agreement, { escapeHtml: escHtml2 }) : "";
   const memo = replay ? null : east4Memo();
   if (!replay) S.east4Memo = memo;
-  return `<h3>AI\u30B3\u30FC\u30C1 <span class="ctx">${kyokuText(rec.kyoku)} / ${contextLabel(replay ? rec.context : currentCoach?.context || rec.context)}</span></h3>
-    <div class="rec">\u63A8\u5968: <b>${actionLabel(rec.recommended, rec)}</b>
-      <span class="prob big">${formatPercent(best?.prob ?? rec.pBest)}</span></div>
-    ${subs.length ? `<div class="top3"><div class="hint">${isReaction ? "\u5168\u5019\u88DC" : "\u6B21\u70B9\u5019\u88DC"}</div>${top3}</div>` : ""}${callNotes}
-    <div class="hint">\u63A8\u5968\u5EA6\u306F\u3001AI\u30B3\u30FC\u30C1\u306E\u8A55\u4FA1\u3092\u5019\u88DC\u5168\u4F53\u306B\u5BFE\u3059\u308B\u5272\u5408\uFF08\uFF05\uFF09\u3067\u8868\u3057\u305F\u3082\u306E\u3067\u3059\u3002\u5411\u8074\uFF08\u6700\u826F\u306E\u6253\u724C\u5F8C\uFF09: ${rec.shantenAfter != null ? rec.shantenAfter : rec.shanten != null ? rec.shanten : "-"}</div>${agr}${memo ? `<div class="east4-memo">${memo}</div>` : ""}`;
+  const showSubs = subs.length > 0 && (!sheet || isReaction);
+  const recTile = recommendedTileMajiang(rec);
+  const recTileArt = recTile ? `<span class="rec-tile" aria-hidden="true">${tileSVG(recTile, "")}</span>` : "";
+  const after = shantenAfterLabel(rec.shantenAfter != null ? rec.shantenAfter : rec.shanten);
+  const headingContext = replay ? rec.context : currentCoach?.context || rec.context;
+  const headHTML = head(`${escHtml2(kyokuText(rec.kyoku))} / ${escHtml2(coachHeadingLabel(rec, headingContext, replay))}`);
+  if (sheet) {
+    return `${headHTML}
+    <div class="rec">\u63A8\u5968: <b>${actionLabel(rec.recommended, rec)}</b>${recTileArt}
+      <span class="prob eval">\u63A8\u5968\u5EA6\uFF1A${formatEvalPercent(best?.prob ?? rec.pBest)}</span></div>
+    ${showSubs ? `<div class="top3"><div class="hint">\u5168\u5019\u88DC</div>${top3}</div>` : ""}${callNotes}
+    ${after != null ? `<div class="after-state">\u6253\u724C\u5F8C\uFF1A${escHtml2(after)}</div>` : ""}
+    <details class="prob-def"><summary>\u63A8\u5968\u5EA6\u3068\u306F \u24D8</summary><div class="prob-def-body">\u63A8\u5968\u5EA6\u306F\u3001AI\u30B3\u30FC\u30C1\u306E\u8A55\u4FA1\u3092\u5019\u88DC\u5168\u4F53\u306B\u5BFE\u3059\u308B\u5272\u5408\uFF08\uFF05\uFF09\u3067\u8868\u3057\u305F\u3082\u306E\u3067\u3059\u3002</div></details>${agr}${memo ? `<div class="east4-memo">${memo}</div>` : ""}`;
+  }
+  return headHTML + coachSummaryHTML({
+    recommended: actionLabel(rec.recommended, rec),
+    recommendedTileArt: recTileArt,
+    evalPercent: formatEvalPercent(best?.prob ?? rec.pBest),
+    runnerUpHTML: showSubs ? runnerUpLineHTML(runnerUps, { label: isReaction ? "\u5168\u5019\u88DC" : "\u6B21\u70B9", escapeHtml: escHtml2 }) : "",
+    callNotesHTML: callNotes,
+    after,
+    agreementHTML: agr,
+    memo,
+    escapeHtml: escHtml2
+  });
 }
 function isFinalKyokuContext() {
   const m = (bridge.kyokuLabel || "").match(/^([ESWN])(\d)/);
@@ -36923,8 +40684,24 @@ function east4Memo() {
   const { direct, other, tsumo } = reversalTargets(diff, tieWins);
   return `\u30AA\u30FC\u30E9\u30B9\u6761\u4EF6\u30E1\u30E2: \u73FE\u5728${myRank}\u4F4D\u30011\u3064\u4E0A\u306E ${NAMES[above]} \u3068\u306E\u5DEE\u306F ${diff.toLocaleString()} \u70B9\u3002\u9006\u8EE2\u306E\u76EE\u5B89: \u76F4\u6483\u30ED\u30F3 ${direct.toLocaleString()} \u70B9\u4EE5\u4E0A / \u4ED6\u5BB6\u304B\u3089\u306E\u30ED\u30F3 ${other.toLocaleString()} \u70B9\u4EE5\u4E0A / \u30C4\u30E2 ${tsumo.toLocaleString()} \u70B9\u4EE5\u4E0A\uFF08\u30C4\u30E2\u306F\u4E0A\u306E\u9806\u4F4D\u306E\u652F\u6255\u3044\u5206\u3060\u3051\u5DEE\u304C\u3055\u3089\u306B\u7E2E\u307F\u307E\u3059\u3002\u672C\u5834\u30FB\u4F9B\u8A17\u3092\u9664\u304F\u76EE\u5B89\u3002${tieWins ? "\u540C\u70B9\u306A\u3089\u8D77\u5BB6\u306B\u8FD1\u3044\u81EA\u5206\u304C\u4E0A\u4F4D" : "\u540C\u70B9\u3067\u306F\u8D77\u5BB6\u306B\u8FD1\u3044\u76F8\u624B\u304C\u4E0A\u4F4D\u306E\u305F\u3081\u3001\u4E0A\u56DE\u308B\u5FC5\u8981\u3042\u308A"}\uFF09`;
 }
-function explainHTML() {
-  if (!coachEnabled || AUTO) return "";
+function decisionRows(shape) {
+  if (!seat0?.shoupai) return [];
+  const key2 = `${bridge?.events?.length ?? -1}:${seat0.shoupai.toString()}`;
+  if (!decisionRowsCache || decisionRowsCache.key !== key2) {
+    decisionRowsCache = { key: key2, plain: null, shaped: null };
+  }
+  const slot = shape ? "shaped" : "plain";
+  if (!decisionRowsCache[slot]) {
+    decisionRowsCache[slot] = shape ? analyzeDiscards(seat0.shoupai, seat0._rule, seat0.model) : analyzeDiscards(seat0.shoupai, seat0._rule, seat0.model, { shape: false });
+  }
+  return decisionRowsCache[slot];
+}
+function currentDecisionRows() {
+  return decisionRows(!AUTO);
+}
+function explainHTML(opts = {}) {
+  const sheet = !!opts.sheet;
+  if (!coachEnabled || liveCoachLocked() || AUTO) return "";
   if (!pending || pending.kind !== "zimo" && pending.kind !== "fulou") return "";
   if (!selectedAction) return "";
   const rec = currentCoach?.record;
@@ -36932,14 +40709,14 @@ function explainHTML() {
   const key2 = bridge.events.length + ":" + pending.kind;
   if (!explainCache || explainCache.key !== key2) {
     try {
-      const rows2 = analyzeDiscards(seat0.shoupai, seat0._rule, seat0.model);
+      const rows2 = currentDecisionRows();
       const recPai2 = recommendedTileMajiang(rec);
       explainCache = {
         key: key2,
         rows: rows2,
         template: templateComment(rows2, recPai2),
         recPai: recPai2,
-        statisticalNote: rec.statisticalNote || statisticalNoteForCoach(seat0.shoupai, seat0._rule, seat0.model, rec),
+        statisticalNote: rec.statisticalNote || statisticalNoteForCoach(seat0.shoupai, seat0._rule, seat0.model, rec, currentDecisionRows),
         safeInfo: safeTileInfo(seat0.shoupai, seat0.model),
         directions: rows2[0]?.dirBefore || [],
         doraNow: countDora(seat0.shoupai, doraSetFromIndicators(seat0.model))
@@ -36968,9 +40745,11 @@ function explainHTML() {
   const qByName = new Map((rec.qValues || []).map((c) => [c.action, c]));
   const sorted = rows.map((r) => ({ ...r, candidate: qByName.get(tileNameOf(r.pai)) })).sort((a, b) => (b.candidate?.q ?? -Infinity) - (a.candidate?.q ?? -Infinity));
   sorted.floats = rows.floats || [];
+  const selIdx = sorted.findIndex((r) => r.actionPai === selectedAction);
+  const selRow = selIdx >= 0 ? sorted[selIdx] : null;
   let comparison = null;
   try {
-    comparison = comparisonOf(sorted);
+    comparison = comparisonOf(sorted, { recPai, focusPai: selRow?.actionPai });
   } catch (_) {
     comparison = null;
   }
@@ -37016,26 +40795,76 @@ function explainHTML() {
   const cmpExpanded = cmpExpandKey === key2;
   const cmpVisible = (r, i) => i < 4 || (r.candidate?.prob ?? 0) >= 0.01 || r.actionPai === selectedAction;
   const hiddenCount = sorted.filter((r, i) => !cmpVisible(r, i)).length;
-  const body = sorted.map((r, i) => {
-    const cls = [r.pai === recPai ? "rec-row" : "", r.actionPai === selectedAction ? "sel-row" : "", cmpVisible(r, i) ? "" : "cmp-extra"].filter(Boolean).join(" ");
-    return `
-    <tr${cls ? ` class="${cls}"` : ""}>
-      <td><span class="cmp-tile">${tileSVG(r.pai, tileLabel(r.pai))}</span></td><td>${r.shanten}</td><td>${r.ukeire}</td>
-      <td>${r.safety}</td><td>${rowTags(r)}</td><td><span class="prob">${formatPercent(r.candidate?.prob)}</span></td></tr>`;
-  }).join("") + (hiddenCount ? `
-    <tr class="cmp-toggle-row"><td colspan="6"><button type="button" class="cmp-toggle" data-cmp-toggle="${key2}">${cmpExpanded ? `\u4ED6${hiddenCount}\u4EF6\u3092\u7573\u3080` : `\u4ED6${hiddenCount}\u4EF6\u3092\u8868\u793A`}</button></td></tr>` : "");
-  const selIdx = sorted.findIndex((r) => r.actionPai === selectedAction);
-  const selRow = selIdx >= 0 ? sorted[selIdx] : null;
-  const selInfo = selRow ? `<div class="sel-info">\u9078\u629E\u4E2D: <b>${tileLabel(selRow.pai)}</b> \u2014 \u63A8\u5968\u5EA6 <span class="prob">${formatPercent(selRow.candidate?.prob)}</span> / \u5019\u88DC\u4E2D ${selIdx + 1} \u4F4D\uFF08\u5411\u8074 ${selRow.shanten}\u30FB\u53D7\u3051\u5165\u308C ${selRow.ukeire}\u679A\uFF09</div>` : "";
+  const selInfoSheet = selRow ? `<div class="sel-info">\u9078\u629E\u4E2D: <b>${tileLabel(selRow.pai)}</b> \u2014 \u63A8\u5968\u5EA6 <span class="prob">${formatPercent(selRow.candidate?.prob)}</span> / \u5019\u88DC ${selIdx + 1}\u4F4D\uFF08${selRow.shanten}\u5411\u8074\u30FB\u53D7\u5165${selRow.ukeire}\u679A\uFF09</div>` : "";
   const stats = statisticalNote ? `<div class="stats-note"><span class="stats-label">\u53C2\u8003\uFF08\u4E00\u822C\u7D71\u8A08\uFF09</span>: ${statisticalNote.text}\u3002<span class="stats-source">${statisticalNote.source}</span></div>` : "";
   const safe = safeInfo ? `<div class="safe-line">\u5BFE\u30EA\u30FC\u30C1\u5B8C\u5168\u5B89\u5168\u724C: ${safeInfo.count > 0 ? `${safeInfo.count}\u679A\u3042\u308A (${safeInfo.tiles.map((t) => tileLabel(t.tile)).join(" ")})` : "\u5B89\u5168\u724C\u306A\u3057"}</div>` : "";
   const verdict = rec.explainability;
-  const verdictHTML = verdict && !verdict.outOfScope && !verdict.explainable && !rec.probe ? `<div class="verdict-note">\u3053\u306E\u63A8\u5968\u306F\u8A08\u7B97\u8981\u7D20\uFF08\u5411\u8074\u30FB\u53D7\u3051\u5165\u308C\u30FB\u5B89\u5168\u30FB\u30C9\u30E9\u30FB\u6253\u70B9\uFF09\u3067\u306F\u8AAC\u660E\u304C\u3064\u304D\u307E\u305B\u3093\u3002${verdict.qShape === "close" ? "\u305F\u3060\u3057\u63A8\u5968\u5EA6\u306F\u4E0A\u4F4D\u304C\u62EE\u6297\u3057\u3066\u304A\u308A\u3001\u30E2\u30C7\u30EB\u7684\u306B\u3082\u50C5\u5DEE\u306E\u5224\u65AD\u3067\u3059\u3002" : verdict.qShape === "strong" ? "\u30E2\u30C7\u30EB\u304C\u5F37\u304F\u63A8\u3057\u3066\u3044\u307E\u3059\u304C\u3001\u6839\u62E0\u306F\u5206\u89E3\u3067\u304D\u307E\u305B\u3093\u3002" : ""}</div>` : "";
+  const verdictHTML = verdict && !verdict.outOfScope && !verdict.explainable && !rec.probe ? `<div class="verdict-note">\u3053\u306E\u63A8\u5968\u306F\u8A08\u7B97\u8981\u7D20\uFF08\u5411\u8074\u30FB\u53D7\u5165\u30FB\u5B89\u5168\u30FB\u30C9\u30E9\u30FB\u6253\u70B9\uFF09\u3067\u306F\u8AAC\u660E\u304C\u3064\u304D\u307E\u305B\u3093\u3002${verdict.qShape === "close" ? "\u305F\u3060\u3057\u63A8\u5968\u5EA6\u306F\u4E0A\u4F4D\u304C\u62EE\u6297\u3057\u3066\u304A\u308A\u3001\u30E2\u30C7\u30EB\u7684\u306B\u3082\u50C5\u5DEE\u306E\u5224\u65AD\u3067\u3059\u3002" : verdict.qShape === "strong" ? "\u30E2\u30C7\u30EB\u304C\u5F37\u304F\u63A8\u3057\u3066\u3044\u307E\u3059\u304C\u3001\u6839\u62E0\u306F\u5206\u89E3\u3067\u304D\u307E\u305B\u3093\u3002" : ""}</div>` : "";
   const dirLine = `<div class="dir-line">\u624B\u306E\u542B\u307F\uFF08\u63A8\u5B9A\uFF09: ${directions.length ? directions.map((id2) => DIRECTION_LABELS[id2] || id2).join("\u30FB") : "\u306A\u3057"} \uFF0F \u30C9\u30E9 ${doraNow} \u679A</div>`;
-  return `<h3>\u5019\u88DC\u6BD4\u8F03 <span class="ctx">\u4E8B\u5B9F (\u8A08\u7B97)</span></h3>${selInfo}${dirLine}
-    <table class="cmp${cmpExpanded ? " expanded" : ""}"><thead><tr><th>\u724C</th><th>\u5411\u8074</th><th>\u53D7\u5165</th><th>\u5B89\u5168</th><th>\u69CB\u6210\u30FB\u6253\u70B9</th><th>\u63A8\u5968\u5EA6</th></tr></thead>
-    <tbody>${body}</tbody></table>${safe}
-    <div class="template">\u88DC\u8DB3 (\u8A08\u7B97\u30D9\u30FC\u30B9): ${template || "\u7406\u7531\u306F\u4E0D\u660E"}</div>${comparison ? `<div class="compare">\u6BD4\u8F03: ${comparison.text}</div>` : ""}${verdictHTML}${stats}${probeSectionHTML(rec, "current")}`;
+  if (sheet) {
+    const showSafety = sheetSafetyVisible(sorted);
+    const rowsHtml = sheetCandidateTableHTML(sorted, key2, recPai, cmpExpanded, cmpVisible, hiddenCount, showSafety);
+    return `<h3>\u5019\u88DC\u6BD4\u8F03 <span class="ctx">\u4E8B\u5B9F (\u8A08\u7B97)</span></h3>${selInfoSheet}${dirLine}
+    ${rowsHtml}
+    ${comparison ? `<div class="compare">\u6BD4\u8F03: ${comparison.text}</div>` : ""}
+    ${probeButtonHTML(rec, "sheet")}
+    <button type="button" class="sheet-detail-toggle" data-sheet-detail aria-expanded="${sheetDetailOpen}">${sheetDetailOpen ? "\u8A73\u7D30\u3092\u96A0\u3059" : "\u8A73\u7D30\u3092\u8868\u793A"}</button>
+    <div class="sheet-detail"${sheetDetailOpen ? "" : " hidden"}>
+      <div class="template">\u88DC\u8DB3 (\u8A08\u7B97\u30D9\u30FC\u30B9): ${template || "\u7406\u7531\u306F\u4E0D\u660E"}</div>${verdictHTML}${stats}${safe}${probeDetailHTML(rec, "sheet")}
+    </div>`;
+  }
+  return candidateCompareHTML({
+    sorted,
+    key: key2,
+    recPai,
+    isSelected: (r) => r.actionPai === selectedAction,
+    selRow,
+    selIdx,
+    directions,
+    doraNow,
+    safeInfo,
+    template,
+    comparison,
+    cmpExpanded,
+    rowTags,
+    escapeHtml: escHtml2
+  }) + `${verdictHTML}${stats}${probeSectionHTML(rec, "current")}`;
+}
+var coachSheetOpen = false;
+var sheetDetailOpen = false;
+function coachPanelHTML() {
+  return clipButtonHTML() + coachHTML() + '<div class="clip-status" role="status"></div>';
+}
+function renderCoachSheet() {
+  if (!coachSheetOpen) return;
+  const body = $("coach-sheet-body");
+  if (!body) return;
+  const scrollTop = body.scrollTop;
+  const html = coachHTML(void 0, { sheet: true }) + '<div class="clip-status" role="status"></div>' + explainHTML({ sheet: true });
+  if (body.innerHTML !== html) body.innerHTML = html;
+  const status = body.querySelector(".clip-status");
+  if (status) status.textContent = clipStatus.message;
+  body.scrollTop = scrollTop;
+}
+function openCoachSheet() {
+  if (coachSheetOpen) return;
+  const sheet = $("coach-sheet");
+  if (!sheet) return;
+  coachSheetOpen = true;
+  S.coachSheetOpen = true;
+  sheet.style.display = "flex";
+  renderCoachSheet();
+  $("coach-sheet-close")?.focus?.();
+  backNav.push("coach-sheet", closeCoachSheet);
+}
+function closeCoachSheet() {
+  if (!coachSheetOpen) return;
+  coachSheetOpen = false;
+  S.coachSheetOpen = false;
+  const sheet = $("coach-sheet");
+  if (sheet) sheet.style.display = "none";
+  document.querySelector("#coach [data-coach-expand]")?.focus?.();
+  backNav.dismiss("coach-sheet");
 }
 var probeOpened = /* @__PURE__ */ new WeakSet();
 var probeRunning = null;
@@ -37057,17 +40886,17 @@ function probeResultHTML(rec) {
   const probed = !!rec.probe;
   let h = "";
   if (conds.length) {
-    h += `<div class="probe-conds"><h4>\u3053\u306E\u63A8\u5968\u3092\u8AAC\u660E\u3067\u304D\u308B\u6761\u4EF6</h4><ul>${conds.map((c) => `<li>${c}</li>`).join("")}</ul></div>`;
+    h += explainConditionsHTML(conds, escHtml2);
   } else if (probed && !rec.explainability?.outOfScope) {
     h += '<div class="probe-none">\u8AAC\u660E\u3067\u304D\u308B\u6761\u4EF6\u306F\u898B\u3064\u304B\u308A\u307E\u305B\u3093\u3067\u3057\u305F</div>';
   }
   if (probed && dirs.length) {
-    const probOf = (action) => (rec.qValues || []).find((c) => c.action === action)?.prob ?? null;
-    const baseProb = rec.pBest ?? probOf(rec.recommended);
+    const probOf2 = (action) => (rec.qValues || []).find((c) => c.action === action)?.prob ?? null;
+    const baseProb = rec.pBest ?? probOf2(rec.recommended);
     h += `<div class="probe-dirs"><div class="hint">\u65B9\u91DD\u5225\u306E\u6700\u5584\u624B\uFF08\u63A8\u5968\u3068\u7570\u306A\u308B\u65B9\u91DD\u306E\u307F\uFF09</div>${dirs.map((d) => {
-      const bp = probOf(d.bestAction);
+      const bp = probOf2(d.bestAction);
       const diff = bp != null && baseProb != null ? bp - baseProb : null;
-      return `<div class="probe-dir">${d.label}\u3092\u6B8B\u3059\u6700\u5584\u306F ${tileLabel(d.bestPai)}${bp != null ? `\uFF08\u63A8\u5968\u5EA6 ${formatPercent(bp)}${diff != null ? `\u3001\u63A8\u5968\u3068\u306E\u5DEE ${formatPercent(diff)}` : ""}\uFF09` : ""}</div>`;
+      return `<div class="probe-dir">${escHtml2(d.label)}\u3092\u6B8B\u3059\u6700\u5584\u306F ${tileLabel(d.bestPai)}${bp != null ? `\uFF08\u63A8\u5968\u5EA6 ${formatPercent(bp)}${diff != null ? `\u3001\u63A8\u5968\u3068\u306E\u5DEE ${formatPercent(diff)}` : ""}\uFF09` : ""}</div>`;
     }).join("")}</div>`;
   }
   if (probed && !flips.length && !dirs.length) {
@@ -37090,6 +40919,21 @@ function probeSectionHTML(rec, key2) {
   if (!rec || rec.context !== "zimo" && rec.context !== "fulou") return "";
   probeTargets.set(key2, { rec });
   return `<div class="probe-sec"><div class="probe-body" id="probe-body-${key2.replace(/:/g, "-")}">${probeInnerHTML(rec, key2)}</div></div>`;
+}
+function probeButtonHTML(rec, key2) {
+  if (!rec || rec.context !== "zimo" && rec.context !== "fulou") return "";
+  probeTargets.set(key2, { rec });
+  if (probeRunning === rec) return '<div class="probe-progress">\u8A08\u7B97\u4E2D\u2026\uFF08\u5C40\u9762\u306E\u8981\u7D20\u3092\u5909\u3048\u3066\u63A8\u8AD6\u3057\u76F4\u3057\u3066\u3044\u307E\u3059\uFF09</div>';
+  if (rec.probe) return "";
+  return `<div class="probe-sec sheet-probe-btn"><button type="button" class="probe-btn" data-probe-btn="${key2}">\u306A\u305C\uFF1F\uFF08\u63A8\u5968\u306E\u6839\u62E0\u3092\u691C\u8A3C\uFF09</button></div>`;
+}
+function probeDetailHTML(rec, key2) {
+  if (!rec || rec.context !== "zimo" && rec.context !== "fulou") return "";
+  const hasConditions = (rec.explainability?.conditions || []).length > 0;
+  if (!rec.probe && !hasConditions && probeRunning !== rec) return "";
+  probeTargets.set(key2, { rec });
+  const running = probeRunning === rec ? '<div class="probe-progress">\u8A08\u7B97\u4E2D\u2026\uFF08\u5C40\u9762\u306E\u8981\u7D20\u3092\u5909\u3048\u3066\u63A8\u8AD6\u3057\u76F4\u3057\u3066\u3044\u307E\u3059\uFF09</div>' : "";
+  return `<div class="probe-sec sheet-probe"><div class="probe-body" id="probe-body-${key2.replace(/:/g, "-")}">${probeResultHTML(rec)}${running}</div></div>`;
 }
 function refreshProbeBodies(rec) {
   for (const [key2, t] of probeTargets) {
@@ -37123,7 +40967,7 @@ async function executeProbe(rec, key2) {
         lastBundle.coach = JSON.parse(JSON.stringify(coach.records));
         await idbPutBundle(lastBundle);
       } else {
-        const owner = [sceneViewer?.bundle, ...historyCache].find((b) => b?.coach?.includes(rec));
+        const owner = [sceneViewer?.bundle, lastBundle].find((b) => b?.coach?.includes(rec));
         if (owner) await idbPutBundle(owner);
       }
     } catch (e) {
@@ -37137,46 +40981,30 @@ async function executeProbe(rec, key2) {
     refreshProbeBodies(rec);
   }
 }
-function rowTags(r) {
-  const tags = [];
-  if (r.discardsDora) tags.push('<span class="tag dora">\u30C9\u30E9\u5207</span>');
-  else if (r.doraKept > 0) tags.push(`<span class="tag dora">\u30C9\u30E9${r.doraKept}\u679A</span>`);
-  const ann = (p) => {
-    const a = [...p.roles || [], ...p.dora ? [`\u30C9\u30E9${p.dora}`] : []];
-    return a.length ? `\uFF08${a.join("\u30FB")}\uFF09` : "";
-  };
-  for (const p of r.pairBreaks || []) {
-    tags.push(`<span class="tag yaku">${tileLabel(p.tile)}${p.count >= 3 ? "\u523B\u5B50" : "\u5BFE\u5B50"}\u3092\u5D29\u3059${ann(p)}</span>`);
-  }
-  for (const p of (r.pairKept || []).filter((p2) => p2.yakuhai)) {
-    tags.push(`<span class="tag yaku">${tileLabel(p.tile)}${p.count >= 3 ? "\u523B\u5B50" : "\u5BFE\u5B50"}\u3092\u4FDD\u6301${ann(p)}</span>`);
-  }
-  for (const id2 of r.dirKilled || []) {
-    tags.push(`<span class="tag dirkill">${DIRECTION_LABELS[id2] || id2}\u5D29\u3057</span>`);
-  }
-  let html = tags.join("");
-  if (r.waitDetails?.length) {
-    html += `<div class="waits">\u5F85\u3061 ${r.waitDetails.map((w) => `${tileLabel(w.tile)}(${w.remaining})`).join(" ")}</div>`;
-  }
-  if (r.floatDiscard) {
-    const f = r.floatDiscard;
-    html += `<div class="floats">\u6D6E\u304D\u724C: ${f.related.length ? `\u95A2\u9023 ${f.related.map((d) => `${tileLabel(d.tile)}(${d.remaining})`).join(" ")} \u8A08${f.total}\u679A` : "\u52B9\u304F\u724C\u306A\u3057"}</div>`;
-  }
-  if (r.shape) {
-    const s = r.shape;
-    html += `<div class="floats">\u5F62\u306E\u8CEA (1\u6BB5\u5148): ${s.goodTiles.length ? `\u597D\u5F62\u5909\u5316 ${s.goodTiles.map((g) => `${tileLabel(g.tile)}(${g.remaining})`).join(" ")} \u8A08${s.goodCopies}\u679A` : "\u597D\u5F62\u5909\u5316\u306A\u3057"}\u30FB\u53D7\u3051\u5165\u308C\u671F\u5F85${s.expectedNextUkeire}\u679A</div>`;
-  }
-  if (r.scoreOutlook) {
-    const o = r.scoreOutlook;
-    html += `<div class="outlook">\u60F3\u5B9A${o.min.toLocaleString()}\u301C${o.max.toLocaleString()}\u70B9${o.riichiAssumed ? "\uFF08\u30EA\u30FC\u30C1\u524D\u63D0\uFF09" : ""}</div>`;
-  }
-  return html || "-";
+var cellMoreOpen = /* @__PURE__ */ new Set();
+function rowTags(r, key2 = "", opts = {}) {
+  return rowTagsHTML(r, key2, opts, cellMoreOpen);
 }
-function tileNameOf(majiangTile) {
-  const s = majiangTile[0], n = majiangTile[1];
-  if (s === "z") return "ESWNPFC"[+n - 1];
-  if (n === "0") return "5" + s + "r";
-  return n + s;
+function sheetSafetyVisible(rows) {
+  return rows.some((r) => r.safety && r.safety !== "-" && r.safety !== "\u2015");
+}
+function sheetCandidateTableHTML(sorted, key2, recPai, cmpExpanded, cmpVisible, hiddenCount, showSafety) {
+  const cols = showSafety ? 5 : 4;
+  const body = sorted.map((r, i) => {
+    const visible = cmpVisible(r, i);
+    const cls = [r.pai === recPai ? "rec-row" : "", r.actionPai === selectedAction ? "sel-row" : "", visible ? "" : "cmp-extra"].filter(Boolean).join(" ");
+    const moreKey = `sheet|${key2}|${tileNameOf(r.pai)}`;
+    const open = cellMoreOpen.has(moreKey);
+    return `
+    <tr${cls ? ` class="${cls}"` : ""}>
+      <td><span class="cmp-tile">${tileSVG(r.pai, tileLabel(r.pai))}</span>
+        <button type="button" class="cell-more sheet-more" data-sheet-more="${moreKey}" aria-expanded="${open}">${open ? "\u5185\u8A33\u3092\u96A0\u3059" : "\u5185\u8A33\u3092\u8868\u793A"}</button></td>
+      <td>${r.shanten}</td><td>${r.ukeire}</td>${showSafety ? `<td>${r.safety === "-" ? "\u2015" : r.safety}</td>` : ""}<td><span class="prob">${formatPercent(r.candidate?.prob)}</span></td>
+    </tr>
+    <tr class="sheet-row-detail${visible ? "" : " cmp-extra"}"${open ? "" : " hidden"}><td colspan="${cols}">${rowTags(r, `${key2}:sheet`, { allDetail: true })}</td></tr>`;
+  }).join("") + (hiddenCount ? `
+    <tr class="cmp-toggle-row"><td colspan="${cols}"><button type="button" class="cmp-toggle" data-cmp-toggle="${key2}">${cmpExpanded ? `\u4ED6${hiddenCount}\u4EF6\u3092\u7573\u3080` : `\u4ED6${hiddenCount}\u4EF6\u3092\u8868\u793A`}</button></td></tr>` : "");
+  return `<table class="cmp sheet-cmp cols-${cols}${cmpExpanded ? " expanded" : ""}"><thead><tr><th>\u724C</th><th>\u5411\u8074</th><th>\u53D7\u5165</th>${showSafety ? "<th>\u5B89\u5168</th>" : ""}<th>\u63A8\u5968\u5EA6</th></tr></thead><tbody>${body}</tbody></table>`;
 }
 function buildReviewRows(records) {
   return (records || []).map((r, i) => ({ r, i })).filter(({ r }) => r && r.actual && r.recommended && r.actual !== r.recommended).map(({ r, i }) => {
@@ -37207,20 +41035,19 @@ function reviewHTML(records) {
   S.reviewRows = rows;
   S.reviewCount = rows.length;
   if (!rows.length) {
-    return `<div class="review"><h3>\u632F\u308A\u8FD4\u308A\uFF08AI\u3068\u5916\u3057\u305F\u5224\u65AD\uFF09</h3>
-      <div class="review-none">AI\u3068\u5916\u3057\u305F\u5224\u65AD\u306F\u3042\u308A\u307E\u305B\u3093\u3067\u3057\u305F\u3002</div></div>`;
+    return `<div class="review"><h3>\u632F\u308A\u8FD4\u308A</h3>
+      <div class="review-none">\u30B3\u30FC\u30C1\u3068\u7570\u306A\u308B\u9078\u629E\u306F\u3042\u308A\u307E\u305B\u3093\u3067\u3057\u305F\u3002</div></div>`;
   }
-  const body = rows.map((r) => `<tr class="review-row" data-rec-index="${r.recIndex}" title="\u30BF\u30C3\u30D7\u3067\u5834\u9762\u3092\u8868\u793A">
-      <td>${kyokuText(r.kyoku) || "-"} / ${r.junme ?? "-"}\u5DE1\u76EE</td><td>${contextLabel(r.context)}</td>
+  const body = rows.map((r) => `<tr class="review-row">
+      <td>${escHtml2(kyokuText(r.kyoku) || "-")} / ${escHtml2(r.junme ?? "-")}\u5DE1\u76EE</td><td>${escHtml2(contextLabel(r.context))}</td>
       <td>${actionLabel(r.recommended, r)}<br><span class="prob">${formatPercent(r.pBest)}</span></td>
       <td>${actionLabel(r.actual, r)}<br><span class="prob">${formatPercent(r.pActual)}</span></td>
       <td><span class="prob">${formatPercent(r.probDiff)}</span></td>
     </tr>${r.context === "zimo" || r.context === "fulou" ? `<tr class="probe-row"><td colspan="5">${probeSectionHTML(r.rec, `review:${r.recIndex}`)}</td></tr>` : ""}`).join("");
-  return `<div class="review"><h3>\u632F\u308A\u8FD4\u308A\uFF08AI\u3068\u5916\u3057\u305F\u5224\u65AD\uFF1A${rows.length}\u4EF6\uFF09</h3>
+  return `<div class="review"><h3>\u632F\u308A\u8FD4\u308A</h3>
     <div class="review-list"><table class="review-table"><thead><tr>
       <th>\u5C40 / \u5DE1\u76EE</th><th>\u5834\u9762</th><th>\u63A8\u5968</th><th>\u5B9F\u6253</th><th>\u63A8\u5968\u5EA6\u5DEE</th>
-    </tr></thead><tbody>${body}</tbody></table></div>
-    <div class="hint">\u5404\u884C\u3092\u30BF\u30C3\u30D7\u3059\u308B\u3068\u3001\u305D\u306E\u5224\u65AD\u6642\u70B9\u306E\u5834\u9762\u3092\u8868\u793A\u3057\u307E\u3059\uFF08\u5834\u9762\u30D3\u30E5\u30FC\u30A2\uFF09\u3002</div></div>`;
+    </tr></thead><tbody>${body}</tbody></table></div></div>`;
 }
 var sceneViewer = null;
 var clips = createClipStore();
@@ -37234,13 +41061,14 @@ var clipStatus = createClipStatus({
   }
 });
 function clipButtonHTML() {
-  return '<button type="button" class="clip-save" data-clip-save aria-label="\u4ECA\u306E\u5C40\u9762\u3092\u30AF\u30EA\u30C3\u30D7" title="\u4ECA\u306E\u5C40\u9762\u3092\u30AF\u30EA\u30C3\u30D7"><svg viewBox="0 0 20 28" aria-hidden="true" focusable="false"><path d="M4 3A3 3 0 0 1 7 0h6a3 3 0 0 1 3 3v24l-6-4.5L4 27V3Z"/></svg></button>';
+  return '<button type="button" class="clip-save" data-clip-save aria-label="\u4ECA\u306E\u5C40\u9762\u3092\u30AF\u30EA\u30C3\u30D7" title="\u4ECA\u306E\u5C40\u9762\u3092\u30AF\u30EA\u30C3\u30D7"><span class="clip-label">\u4FDD\u5B58</span></button>';
 }
 function stopReplay() {
   if (replayTimer !== null) clearInterval(replayTimer);
   replayTimer = null;
 }
 function openReplay(bundle, eventCount = null, savedRecord = void 0) {
+  const wasOpen = !!sceneViewer;
   stopReplay();
   const steps = replaySteps(bundle);
   if (!steps.length) return;
@@ -37259,6 +41087,7 @@ function openReplay(bundle, eventCount = null, savedRecord = void 0) {
   };
   clipStatus.clear();
   renderSceneViewer();
+  if (!wasOpen) backNav.push("scene", closeSceneViewer);
 }
 function replayCurrent() {
   const v = sceneViewer;
@@ -37300,13 +41129,13 @@ function renderReplayViewer() {
   const qijia = v.bundle?.meta?.qijia ?? v.clip?.qijia ?? 0;
   const snap = sceneSnapshot(scene, qijia), c = snap.center;
   const byPos = Object.fromEntries(snap.seats.map((s) => [s.pos, s]));
-  const round = `${"\u6771\u5357\u897F\u5317"[c.zhuangfeng]}${c.jushu + 1}\u5C40 ${c.changbang}\u672C\u5834`;
+  const round = `${escHtml2("\u6771\u5357\u897F\u5317"[c.zhuangfeng])}${escHtml2(c.jushu + 1)}\u5C40 ${escHtml2(c.changbang)}\u672C\u5834`;
   const seat = (pos) => `<div class="seat replay-seat-${["bottom", "right", "top", "left"][pos]} pos-${["bottom", "right", "top", "left"][pos]}${byPos[pos].lizhi ? " seat-riichi" : ""}">${seatHTML(byPos[pos], pos === 0, true, c.lunban)}</div>`;
   const mini = (s) => `<div class="center-player pos-${s.pos}${s.l === c.lunban ? " active" : ""}"><span class="cp-wind">${s.wind}</span><span class="cp-name">${s.name}</span><b>${s.defen.toLocaleString()}</b></div>`;
   const nav = !!v.bundle, index = v.index ?? 0;
   const currentKyoku = v.steps?.[index].kyokuIndex;
   $("scene-viewer").innerHTML = `<div class="sv-card replay-card" role="dialog" aria-modal="true" aria-label="\u5BFE\u5C40\u306E\u518D\u751F">
-    <div class="sv-head"><div class="sv-title">\u5BFE\u5C40\u306E\u518D\u751F \u2015 ${round} \uFF0F ${scene.turn}\u624B\u76EE${record ? ` \u30FB ${contextLabel(record.context)}` : ""}</div>
+    <div class="sv-head"><div class="sv-title">\u5BFE\u5C40\u306E\u518D\u751F \u2015 ${round} \uFF0F ${escHtml2(scene.turn)}\u624B\u76EE${record ? ` \u30FB ${escHtml2(contextLabel(record.context))}` : ""}</div>
     <div class="sv-nav"><button type="button" data-scene-close>\u9589\u3058\u308B</button></div></div>
     <div class="sv-nav replay-nav">
       <button type="button" data-replay-prev-kyoku ${!nav || !v.steps.some((s) => s.kyokuIndex < currentKyoku) ? "disabled" : ""}>\u524D\u306E\u5C40</button>
@@ -37319,8 +41148,8 @@ function renderReplayViewer() {
     <div class="replay-table">${seat(2)}${seat(3)}
       <div class="replay-board"><div class="replay-center">
         <div class="center-players">${[2, 3, 1, 0].map((p) => mini(byPos[p])).join("")}</div>
-        <div class="round">${"\u6771\u5357\u897F\u5317"[c.zhuangfeng]}${c.jushu + 1}\u5C40 <span>${c.changbang}\u672C\u5834</span></div><div class="center-meta">\u6B8B\u308A ${c.paishu}\u679A\u3000\u4F9B\u8A17 ${c.lizhibang}</div>
-        <div class="dora"><span>\u30C9\u30E9\u8868\u793A</span>${c.baopai.map((p) => tileHTML(p, "dora-tile")).join("")}</div></div>
+        <div class="round"><span class="round-kyoku">${escHtml2("\u6771\u5357\u897F\u5317"[c.zhuangfeng])}${escHtml2(c.jushu + 1)}\u5C40</span> <span>${escHtml2(c.changbang)}\u672C\u5834</span></div><div class="center-meta"><span class="cm-item">\u6B8B\u308A ${escHtml2(c.paishu)}\u679A</span> <span class="cm-item">\u4F9B\u8A17 ${escHtml2(c.lizhibang)}</span></div>
+        <div class="dora"><span class="dora-label">\u30C9\u30E9\u8868\u793A</span>${c.baopai.map((p) => tileHTML(p, "dora-tile")).join("")}</div></div>
       ${snap.seats.map((s) => `<div class="board-pond bp-${s.pos}${s.lizhi ? " riichi-on" : ""}">${pondHTML(s, scene.lastDapai ? (scene.lastDapai.actor - scene.oya + 4) % 4 : -1)}</div>`).join("")}</div>
       ${seat(1)}<div class="replay-self-area">${seat(0)}</div></div>
     ${record ? `<section class="replay-coach clip-panel">${clipButtonHTML()}${coachHTML(record)}<div class="clip-status" role="status"></div></section>` : ""}
@@ -37376,6 +41205,7 @@ async function saveSceneClip() {
 async function openClips() {
   clipStatus.clear();
   const el2 = $("clips-view");
+  const wasOpen = el2.style.display === "flex";
   let items = [], error = "";
   try {
     items = await clips.list();
@@ -37388,11 +41218,15 @@ async function openClips() {
   el2.querySelectorAll("[data-clip-label]").forEach((node) => {
     node.textContent = clipLabel(items[Number(node.dataset.clipLabel)]);
   });
-  el2.querySelector("[data-clips-close]").onclick = () => {
-    el2.style.display = "none";
-  };
+  el2.querySelector("[data-clips-close]").onclick = closeClips;
   el2.querySelectorAll("[data-clip-delete]").forEach((btn) => {
     btn.onclick = async () => {
+      const ok2 = await askConfirm({
+        title: "\u30AF\u30EA\u30C3\u30D7\u306E\u524A\u9664",
+        message: "\u3053\u306E\u5C40\u9762\u30AF\u30EA\u30C3\u30D7\u3092\u524A\u9664\u3057\u307E\u3059\u3002\u5143\u306B\u623B\u305B\u307E\u305B\u3093\u3002",
+        okLabel: "\u524A\u9664"
+      });
+      if (!ok2) return;
       btn.disabled = true;
       try {
         await clips.delete(items[Number(btn.dataset.clipDelete)].id);
@@ -37408,7 +41242,8 @@ async function openClips() {
       const clip = items[Number(btn.dataset.clipOpen)];
       let bundles = [];
       try {
-        bundles = await idbGetAllBundles();
+        const b = await idbGetBundle(clip.gameId);
+        if (b) bundles = [b];
       } catch (_) {
       }
       const resolved = resolveClip(clip, bundles);
@@ -37418,10 +41253,17 @@ async function openClips() {
         sceneViewer = { replay: true, clip };
         clipStatus.clear();
         renderSceneViewer();
+        backNav.push("scene", closeSceneViewer);
       }
     };
   });
   el2.style.display = "flex";
+  if (!wasOpen) backNav.push("clips", closeClips);
+}
+function closeClips() {
+  const el2 = $("clips-view");
+  if (el2) el2.style.display = "none";
+  backNav.dismiss("clips");
 }
 document.addEventListener("visibilitychange", () => {
   if (document.hidden) {
@@ -37429,72 +41271,6 @@ document.addEventListener("visibilitychange", () => {
     if (sceneViewer?.replay) renderSceneViewer();
   }
 });
-function sceneSeatHTML(st2, seat, qijia) {
-  const actor = (seat - qijia + 4) % 4;
-  const pl = st2.players[actor];
-  const dealerSeat = (st2.oya + qijia) % 4;
-  const wind = "\u6771\u5357\u897F\u5317"[(seat - dealerSeat + 4) % 4];
-  const posName = ["pos-bottom", "pos-right", "pos-top", "pos-left"][seat];
-  const pond = pl.pond.filter((d) => !d.called).map((d) => tileHTML(
-    tileFromMjai(d.pai),
-    `discard${d.tsumogiri ? " tsumogiri" : ""}${d.riichi ? " riichi-d" : ""}`
-  )).join("");
-  const melds = pl.melds.map((m) => meldHTML(m, seat)).join("");
-  let hand;
-  if (seat === 0) {
-    const tiles = pl.hand.map((t) => tileFromMjai(t));
-    let drawnPai = null;
-    if (pl.drawn) {
-      const dp = tileFromMjai(pl.drawn);
-      const di = tiles.indexOf(dp);
-      if (di >= 0) {
-        tiles.splice(di, 1);
-        drawnPai = dp;
-      }
-    }
-    const key2 = (p) => "mpsz".indexOf(p[0]) * 100 + (p[1] === "0" ? 5 : +p[1]) * 10 + (p[1] === "0" ? 1 : 0);
-    tiles.sort((a, b) => key2(a) - key2(b));
-    hand = tiles.map((p) => tileHTML(p, "hand sv-tile")).join("") + (drawnPai ? tileHTML(drawnPai, "hand sv-tile drawn") : "");
-  } else {
-    hand = pl.hand.map(() => tileHTML("_", "opp")).join("");
-  }
-  return `<div class="sv-seat ${posName}">
-    <div class="seat-info"><span class="seat-wind">${wind}</span> <span class="seat-name">${NAMES[seat]}</span>
-      <span class="seat-score">${(st2.scores[actor] ?? 0).toLocaleString()}</span>
-      ${pl.riichi ? '<span class="riichi-badge">\u30EA\u30FC\u30C1</span>' : ""}</div>
-    <div class="sv-pond">${pond || '<span class="sv-empty">\uFF08\u6CB3\u306A\u3057\uFF09</span>'}</div>
-    <div class="sv-under"><span class="sv-melds">${melds}</span><span class="sv-hand">${hand}</span></div>
-  </div>`;
-}
-function sceneCandidateHTML(rec) {
-  const qs2 = rec.qValues || [];
-  if (!qs2.length) return '<div class="hint">\u5019\u88DC\u30C7\u30FC\u30BF\u304C\u3042\u308A\u307E\u305B\u3093</div>';
-  const keep = /* @__PURE__ */ new Set();
-  qs2.forEach((c, i) => {
-    if (i < 4 || (c.prob ?? 0) >= 0.01) keep.add(i);
-  });
-  const ri2 = qs2.findIndex((c) => c.action === rec.recommended);
-  const ai2 = qs2.findIndex((c) => c.action === rec.actual);
-  if (ri2 >= 0) keep.add(ri2);
-  if (ai2 >= 0) keep.add(ai2);
-  const expanded = !!sceneViewer?.expanded;
-  const rows = qs2.map((c, i) => {
-    if (!expanded && !keep.has(i)) return "";
-    const mark = [i === ri2 ? "\u63A8\u5968" : "", i === ai2 ? "\u5B9F\u6253" : ""].filter(Boolean).join("\u30FB");
-    return `<tr${i === ai2 ? ' class="sv-actual"' : ""}><td>${actionLabel(c.action, rec)}</td>
-      <td>${formatPercent(c.prob)}</td><td>${mark}</td></tr>`;
-  }).join("");
-  const hidden = qs2.length - keep.size;
-  const toggle = !expanded && hidden > 0 ? `<tr class="cmp-toggle-row"><td colspan="3"><button type="button" class="cmp-toggle" data-sv-toggle>\u4ED6${hidden}\u4EF6\u3092\u8868\u793A</button></td></tr>` : expanded && hidden > 0 ? `<tr class="cmp-toggle-row"><td colspan="3"><button type="button" class="cmp-toggle" data-sv-toggle>\u4ED6${hidden}\u4EF6\u3092\u7573\u3080</button></td></tr>` : "";
-  return `<table class="cmp sv-cmp"><thead><tr><th>\u5019\u88DC</th><th>\u63A8\u5968\u5EA6</th><th></th></tr></thead><tbody>${rows}${toggle}</tbody></table>`;
-}
-function openSceneViewer(recIndex, bundle = lastBundle) {
-  stopReplay();
-  clipStatus.clear();
-  if (!bundle?.coach?.length || !bundle?.mjai?.length) return;
-  sceneViewer = { bundle, index: Math.max(0, Math.min(recIndex, bundle.coach.length - 1)), expanded: false };
-  renderSceneViewer();
-}
 function closeSceneViewer() {
   stopReplay();
   clipStatus.clear();
@@ -37504,57 +41280,15 @@ function closeSceneViewer() {
     el2.style.display = "none";
     el2.innerHTML = "";
   }
+  backNav.dismiss("scene");
 }
 function stepSceneViewer(delta) {
-  if (sceneViewer?.replay) {
-    stopReplay();
-    moveReplay(delta);
-    return;
-  }
-  if (!sceneViewer) return;
-  clipStatus.clear();
-  const next = sceneViewer.index + delta;
-  if (next < 0 || next >= sceneViewer.bundle.coach.length) return;
-  sceneViewer.index = next;
-  sceneViewer.expanded = false;
-  renderSceneViewer();
+  if (!sceneViewer?.replay) return;
+  stopReplay();
+  moveReplay(delta);
 }
 function renderSceneViewer() {
-  if (sceneViewer?.replay) {
-    renderReplayViewer();
-    return;
-  }
-  const el2 = $("scene-viewer");
-  if (!el2 || !sceneViewer) return;
-  const { bundle, index } = sceneViewer;
-  const rec = bundle.coach[index];
-  const qijia = bundle.meta?.qijia ?? 0;
-  const st2 = foldMjaiScene(bundle.mjai, rec.mjaiEventCount ?? 0, qijia);
-  const round = `${{ E: "\u6771", S: "\u5357", W: "\u897F", N: "\u5317" }[st2.bakaze] || st2.bakaze}${st2.kyoku}\u5C40${st2.honba ? ` ${st2.honba}\u672C\u5834` : ""}`;
-  const dora = st2.doraMarkers.map((m) => tileHTML(tileFromMjai(m), "dora-tile")).join("");
-  const seats = [2, 3, 1, 0].map((s) => sceneSeatHTML(st2, s, qijia)).join("");
-  el2.innerHTML = `<div class="sv-card">
-    <div class="sv-head">
-      <div class="sv-title">\u5834\u9762\u30D3\u30E5\u30FC\u30A2 \u2015 ${kyokuText(rec.kyoku) || round} / ${rec.junme ?? "-"}\u5DE1\u76EE \u30FB ${contextLabel(rec.context)}\uFF08\u5224\u65AD ${index + 1} / ${bundle.coach.length}\uFF09</div>
-      <div class="sv-nav">
-        <button type="button" data-scene-prev ${index <= 0 ? "disabled" : ""}>\u2190 \u524D\u306E\u5224\u65AD</button>
-        <button type="button" data-scene-next ${index >= bundle.coach.length - 1 ? "disabled" : ""}>\u6B21\u306E\u5224\u65AD \u2192</button>
-        <button type="button" data-scene-close>\u9589\u3058\u308B</button>
-      </div>
-    </div>
-    <div class="sv-meta">\u63A8\u5968: <b>${actionLabel(rec.recommended, rec)}</b>
-      <span class="prob">${formatPercent(rec.pBest)}</span>
-      \uFF0F \u5B9F\u6253: <b>${actionLabel(rec.actual, rec)}</b>
-      <span class="prob">${formatPercent(rec.pActual)}</span>
-      ${rec.shantenAfter != null ? `\uFF0F \u5411\u8074\uFF08\u6700\u826F\u306E\u6253\u724C\u5F8C\uFF09 ${rec.shantenAfter}` : ""}</div>
-    <div class="sv-board">${seats}
-      <div class="sv-center"><div class="round">${round}</div>
-        <div class="sv-dora">\u30C9\u30E9\u8868\u793A ${dora}</div>
-        <div class="center-meta">\u4F9B\u8A17 ${st2.kyotaku} \u672C</div></div>
-    </div>
-    <div class="sv-cand">${sceneCandidateHTML(rec)}</div>
-  </div>`;
-  el2.style.display = "flex";
+  if (sceneViewer?.replay) renderReplayViewer();
 }
 function agreementFromRecords(records) {
   const judged = (records || []).filter((r) => r && r.actual != null && r.agreement != null);
@@ -37595,6 +41329,7 @@ function buildGameBundle(paipu, { partial = false } = {}) {
     meta: {
       gameId,
       status: partial ? "partial" : "finished",
+      simulated: currentSimState().active,
       resumedFrom: resumedFrom || null,
       resumeSnapshot: partial ? resumeSnapshot : null,
       savedAt: endedAt,
@@ -37651,68 +41386,42 @@ function buildGameBundle(paipu, { partial = false } = {}) {
     results: JSON.parse(JSON.stringify(kyokuResultsAll))
   };
 }
-function openHistoryDB() {
-  return new Promise((resolve, reject) => {
-    if (!("indexedDB" in window)) return reject(new Error("IndexedDB unavailable"));
-    const req = indexedDB.open(HISTORY_DB_NAME, 2);
-    req.onupgradeneeded = () => {
-      const db2 = req.result;
-      if (!db2.objectStoreNames.contains(HISTORY_STORE)) {
-        db2.createObjectStore(HISTORY_STORE, { keyPath: "meta.gameId" });
-      }
-      if (!db2.objectStoreNames.contains(SUMMARY_STORE)) {
-        db2.createObjectStore(SUMMARY_STORE, { keyPath: "gameId" });
-      }
-    };
-    req.onsuccess = () => resolve(req.result);
-    req.onerror = () => reject(req.error || new Error("IndexedDB open failed"));
-  });
-}
-async function idbRequestIn(storeName, mode, action) {
-  const db2 = await openHistoryDB();
-  return new Promise((resolve, reject) => {
-    const tx2 = db2.transaction(storeName, mode);
-    const store = tx2.objectStore(storeName);
-    let request;
-    try {
-      request = action(store);
-    } catch (e) {
-      db2.close();
-      return reject(e);
-    }
-    tx2.oncomplete = () => {
-      db2.close();
-      resolve(request?.result);
-    };
-    tx2.onerror = () => {
-      db2.close();
-      reject(tx2.error || new Error("IndexedDB transaction failed"));
-    };
-    tx2.onabort = () => {
-      db2.close();
-      reject(tx2.error || new Error("IndexedDB transaction aborted"));
-    };
-  });
-}
-var idbRequest = (mode, action) => idbRequestIn(HISTORY_STORE, mode, action);
-var idbPutBundle = (bundle) => idbRequest("readwrite", (store) => store.put(bundle));
-var idbPutSummary = (summary) => idbRequestIn(SUMMARY_STORE, "readwrite", (store) => store.put(summary));
-var idbGetAllSummaries = async () => await idbRequestIn(SUMMARY_STORE, "readonly", (store) => store.getAll()) || [];
-var idbGetAllBundles = async () => {
-  const all = await idbRequest("readonly", (store) => store.getAll());
-  return (all || []).sort((a, b) => String(b.meta?.savedAt || "").localeCompare(String(a.meta?.savedAt || "")));
-};
-var idbDeleteBundle = (gameId) => idbRequest("readwrite", (store) => store.delete(gameId));
 async function refreshHistory() {
-  historyCache = await idbGetAllBundles();
-  for (const old of historyCache.slice(HISTORY_LIMIT)) {
+  statsBundleCache.clear();
+  let metas = await idbGetAllMetas();
+  const keys = await idbGetAllBundleKeys();
+  const have = new Set(metas.map((m) => m?.gameId).filter(Boolean));
+  const missing = keys.filter((k2) => !have.has(k2));
+  if (missing.length) {
+    for (const gid of missing) {
+      try {
+        const bundle = await idbGetBundle(gid);
+        if (bundle?.meta) await idbPutMeta(metaRecord(bundle));
+      } catch (e) {
+        S.errors.push("history meta: " + (e.message || e));
+      }
+    }
+    metas = await idbGetAllMetas();
+  }
+  const keySet = new Set(keys);
+  for (const m of metas) {
+    if (m?.gameId && !keySet.has(m.gameId)) {
+      try {
+        await idbRequestIn(HISTORY_META_STORE, "readwrite", (store) => store.delete(m.gameId));
+      } catch (e) {
+        S.errors.push("history meta: " + (e.message || e));
+      }
+    }
+  }
+  metas = metas.filter((m) => m?.gameId && keySet.has(m.gameId)).sort((a, b) => String(b.meta?.savedAt || "").localeCompare(String(a.meta?.savedAt || "")));
+  for (const old of metas.slice(HISTORY_LIMIT)) {
     try {
-      await idbDeleteBundle(old.meta.gameId);
+      await idbDeleteBundle(old.gameId);
     } catch (e) {
       S.errors.push("history prune: " + (e.message || e));
     }
   }
-  historyCache = historyCache.slice(0, HISTORY_LIMIT);
+  historyCache = metas.slice(0, HISTORY_LIMIT).map((m) => ({ meta: m.meta }));
   S.historyCount = historyCache.length;
   return historyCache;
 }
@@ -37732,7 +41441,9 @@ async function loadSummaries() {
     const existing = byId.get(gid);
     if (existing && existing.schema === SUMMARY_SCHEMA) continue;
     try {
-      const s = summarizeBundle(b);
+      const bundle = await idbGetBundle(gid);
+      if (!bundle) continue;
+      const s = summarizeBundle(bundle);
       await idbPutSummary(s);
       if (existing) {
         const i = summariesCache.indexOf(existing);
@@ -37796,13 +41507,25 @@ function historyItemLabel(bundle) {
   const date = m.savedAt ? new Date(m.savedAt).toLocaleString("ja-JP") : "-";
   const defen = m.final?.defen || [];
   const isPartial = m.status === "partial";
-  const standings = defen.map((d, id2) => ({ name: NAMES[id2], defen: d, rank: m.final?.rank?.[id2] })).sort((a, b) => (a.rank ?? 99) - (b.rank ?? 99)).map((x) => isPartial || !(x.rank >= 1 && x.rank <= 4) ? `${x.name} ${Number(x.defen).toLocaleString()}\u70B9` : `${x.rank}\u4F4D ${x.name} ${Number(x.defen).toLocaleString()}`).join(" / ");
-  const agr = m.agreement?.total ? `\u4E00\u81F4 ${m.agreement.agree}/${m.agreement.total} (${Math.round(m.agreement.rate * 100)}%)` : "\u4E00\u81F4 -";
+  const standings = defen.map((d, id2) => ({ name: NAMES[id2], defen: d, rank: m.final?.rank?.[id2] })).sort((a, b) => (a.rank ?? 99) - (b.rank ?? 99)).map((x) => {
+    const ranked = !isPartial && x.rank >= 1 && x.rank <= 4;
+    const who = ranked ? `${x.rank}\u4F4D ${x.name}` : x.name;
+    const score = `${Number(x.defen).toLocaleString()}${ranked ? "" : "\u70B9"}`;
+    return `<span class="history-standing"><span class="history-standing-who">${who}</span><span class="history-standing-score">${score}</span></span>`;
+  }).join("");
+  const agr = m.agreement?.total ? `\u4E00\u81F4 ${escHtml2(m.agreement.agree)}/${escHtml2(m.agreement.total)} (${escHtml2(Math.round(m.agreement.rate * 100))}%)` : "\u4E00\u81F4 -";
   const length = m.gameLength === "hanchan" || m.gameLength == null && m.rule?.["\u5834\u6570"] === 2 ? "\u534A\u8358" : "\u6771\u98A8";
   const partialTag = m.status === "partial" ? "\u3010\u4E2D\u65AD\u3011 " : "";
-  return `${partialTag}${date} / ${m.mode === "auto" ? "\u30AA\u30FC\u30C8" : "\u624B\u52D5"} / ${length} / ${m.model?.name || m.model?.coach || "-"}<br>${standings}<br>${agr} / \u5916\u3057 ${m.reviewCount ?? 0}\u4EF6`;
+  const mainLine = [
+    `${partialTag}${date}`,
+    m.mode === "auto" ? "\u30AA\u30FC\u30C8" : "\u624B\u52D5",
+    length,
+    m.model?.name || m.model?.coach || "-"
+  ].map((t) => `<span class="history-part">${escHtml2(t)}</span>`).join(" / ");
+  return `<span class="history-line history-line-main">${mainLine}</span><span class="history-line history-line-standings">${standings}</span><span class="history-line history-line-agreement">${agr} / \u5916\u3057 ${escHtml2(m.reviewCount ?? 0)}\u4EF6</span>`;
 }
 var historyImportMsg = "";
+var historyManageOpen = false;
 async function importLogText(text) {
   if (S.started && !gameEnded) return { fileError: "\u5BFE\u5C40\u4E2D\u306F\u8AAD\u307F\u8FBC\u3081\u307E\u305B\u3093", imported: 0, duplicates: 0, rejected: [] };
   await refreshHistory().catch(() => {
@@ -37826,30 +41549,42 @@ async function importLogText(text) {
 function renderHistoryPanel() {
   const el2 = $("history");
   if (!el2) return;
-  const items = historyCache.map((bundle) => `<div class="history-item" data-game-id="${bundle.meta.gameId}">
+  const items = historyCache.map((bundle) => `<div class="history-item" data-game-id="${escHtml2(bundle.meta.gameId)}">
       <div class="history-meta">${historyItemLabel(bundle)}</div>
       <div class="history-actions">
-        <button type="button" class="history-replay" data-game-id="${bundle.meta.gameId}">\u518D\u751F</button>
-        <button type="button" class="history-download" data-game-id="${bundle.meta.gameId}">\u30C0\u30A6\u30F3\u30ED\u30FC\u30C9</button>
-        <button type="button" class="history-delete" data-game-id="${bundle.meta.gameId}">\u524A\u9664</button>
+        <button type="button" class="history-replay" data-game-id="${escHtml2(bundle.meta.gameId)}">\u518D\u751F</button>
+        <button type="button" class="history-download" data-game-id="${escHtml2(bundle.meta.gameId)}">\u30C0\u30A6\u30F3\u30ED\u30FC\u30C9</button>
+        <button type="button" class="history-delete" data-game-id="${escHtml2(bundle.meta.gameId)}">\u524A\u9664</button>
       </div>
     </div>`).join("");
-  el2.innerHTML = `<div class="history-card">
-    <div class="history-head"><h2>\u5BFE\u5C40\u5C65\u6B74\uFF08IndexedDB\u30FB\u76F4\u8FD1${HISTORY_LIMIT}\u4EF6\uFF09</h2>
-      <div><button type="button" id="history-clips">\u30AF\u30EA\u30C3\u30D7\u4E00\u89A7</button>
-      <button type="button" id="history-download-all">\u4E00\u62EC\u30C0\u30A6\u30F3\u30ED\u30FC\u30C9</button>
-      <button type="button" id="history-import">\u30ED\u30B0\u3092\u8AAD\u307F\u8FBC\u3080</button>
-      <input type="file" id="history-import-file" accept=".json,application/json" hidden>
-      <button type="button" id="history-clear">\u5168\u524A\u9664</button>
-      <button type="button" id="history-close">\u9589\u3058\u308B</button></div></div>
-    <div class="history-note">\u300C\u30C0\u30A6\u30F3\u30ED\u30FC\u30C9\u300D\u300C\u4E00\u62EC\u30C0\u30A6\u30F3\u30ED\u30FC\u30C9\u300D\u306F\u5BFE\u5C40ID\u30FB\u4FDD\u5B58\u65E5\u6642\u30FB\u7D50\u679C\u30FB\u30B3\u30FC\u30C1\u8A18\u9332\u30FB\u724C\u8B5C\u3092\u542B\u3080 .json \u5F62\u5F0F\u3067\u3059\u3002\u300C\u30ED\u30B0\u3092\u8AAD\u307F\u8FBC\u3080\u300D\u3067\u623B\u305B\u307E\u3059\u3002</div>
-    ${historyImportMsg ? `<div class="history-import-result" role="status"></div>` : ""}
-    <div class="history-list">${items || '<div class="history-empty">\u4FDD\u5B58\u6E08\u307F\u306E\u5BFE\u5C40\u306F\u3042\u308A\u307E\u305B\u3093\u3002</div>'}</div>
+  const hasHistory = historyCache.length > 0;
+  const manageOpen = historyManageOpen || !!historyImportMsg;
+  el2.innerHTML = `<div class="history-card sheet-card">
+    <div class="st-head sheet-head history-head"><h2>\u5BFE\u5C40\u5C65\u6B74</h2>
+      <button type="button" class="st-close" id="history-close">\u9589\u3058\u308B</button></div>
+    <div class="sheet-body history-body">
+    <div class="history-list">${items || '<div class="history-empty">\u4FDD\u5B58\u6E08\u307F\u306E\u5BFE\u5C40\u306F\u3042\u308A\u307E\u305B\u3093\u3002</div>'}
+      ${hasHistory ? `<div class="history-limit">\u76F4\u8FD1${HISTORY_LIMIT}\u4EF6</div>` : ""}</div>
+    <div class="history-tools"><button type="button" id="history-clips">\u30AF\u30EA\u30C3\u30D7\u4E00\u89A7</button></div>
+    <details class="history-manage"${manageOpen ? " open" : ""}>
+      <summary>\u30C7\u30FC\u30BF\u7BA1\u7406</summary>
+      <div class="history-manage-body">
+        <div class="history-manage-actions">
+          <button type="button" id="history-import">\u30ED\u30B0\u3092\u8AAD\u307F\u8FBC\u3080</button>
+          <input type="file" id="history-import-file" accept=".json,application/json" hidden>
+          ${hasHistory ? '<button type="button" id="history-download-all">\u4E00\u62EC\u30C0\u30A6\u30F3\u30ED\u30FC\u30C9</button>' : ""}
+        </div>
+        ${historyImportMsg ? `<div class="history-import-result" role="status"></div>` : ""}
+        <div class="history-note">\u300C\u30C0\u30A6\u30F3\u30ED\u30FC\u30C9\u300D\u300C\u4E00\u62EC\u30C0\u30A6\u30F3\u30ED\u30FC\u30C9\u300D\u306F\u5BFE\u5C40ID\u30FB\u4FDD\u5B58\u65E5\u6642\u30FB\u7D50\u679C\u30FB\u30B3\u30FC\u30C1\u8A18\u9332\u30FB\u724C\u8B5C\u3092\u542B\u3080 .json \u5F62\u5F0F\u3067\u3059\u3002\u300C\u30ED\u30B0\u3092\u8AAD\u307F\u8FBC\u3080\u300D\u3067\u623B\u305B\u307E\u3059\u3002</div>
+        ${hasHistory ? '<div class="history-clear-row"><button type="button" id="history-clear">\u5168\u524A\u9664</button></div>' : ""}
+      </div>
+    </details>
+    </div>
   </div>`;
-  $("history-close").addEventListener("click", () => {
-    el2.style.display = "none";
-    historyImportMsg = "";
+  el2.querySelector(".history-manage")?.addEventListener("toggle", (ev2) => {
+    historyManageOpen = ev2.currentTarget.open;
   });
+  $("history-close").addEventListener("click", closeHistory);
   const resEl = el2.querySelector(".history-import-result");
   if (resEl) resEl.textContent = historyImportMsg;
   $("history-import").addEventListener("click", () => $("history-import-file").click());
@@ -37877,12 +41612,21 @@ function renderHistoryPanel() {
     renderHistoryPanel();
   });
   $("history-clips").addEventListener("click", openClips);
-  el2.querySelectorAll(".history-replay").forEach((btn) => btn.addEventListener("click", () => {
-    const bundle = historyCache.find((b) => b.meta.gameId === btn.dataset.gameId);
-    if (bundle) openReplay(bundle);
+  el2.querySelectorAll(".history-replay").forEach((btn) => btn.addEventListener("click", async () => {
+    try {
+      const bundle = await idbGetBundle(btn.dataset.gameId);
+      if (bundle) openReplay(bundle);
+    } catch (e) {
+      S.errors.push("history: " + (e.message || e));
+    }
   }));
-  $("history-download-all").addEventListener("click", () => {
-    if (historyCache.length) downloadJson("mahjong-local_history.json", historyCache);
+  $("history-download-all")?.addEventListener("click", async () => {
+    try {
+      const all = await idbGetAllBundles();
+      if (all.length) downloadJson("mahjong-local_history.json", all);
+    } catch (e) {
+      S.errors.push("history: " + (e.message || e));
+    }
   });
   const historyAction = async (fn) => {
     let err = null;
@@ -37907,33 +41651,64 @@ function renderHistoryPanel() {
       );
     }
   };
-  $("history-clear").addEventListener("click", () => historyAction(async () => {
-    let failed = null;
-    for (const bundle of [...historyCache]) {
-      try {
-        await idbDeleteBundle(bundle.meta.gameId);
-      } catch (e) {
-        failed = failed || e;
+  $("history-clear")?.addEventListener("click", async () => {
+    if (!historyCache.length) return;
+    const ok2 = await askConfirm({
+      title: "\u5C65\u6B74\u306E\u5168\u524A\u9664",
+      message: `\u4FDD\u5B58\u6E08\u307F\u306E\u5BFE\u5C40\u5C65\u6B74 ${historyCache.length} \u4EF6\u3092\u3059\u3079\u3066\u524A\u9664\u3057\u307E\u3059\u3002\u5143\u306B\u623B\u305B\u307E\u305B\u3093\u3002`,
+      okLabel: "\u3059\u3079\u3066\u524A\u9664"
+    });
+    if (!ok2) return;
+    historyAction(async () => {
+      let failed = null;
+      for (const bundle of [...historyCache]) {
+        try {
+          await idbDeleteBundle(bundle.meta.gameId);
+        } catch (e) {
+          failed = failed || e;
+        }
       }
+      if (failed) throw failed;
+    });
+  });
+  el2.querySelectorAll(".history-download").forEach((btn) => btn.addEventListener("click", async () => {
+    try {
+      const bundle = await idbGetBundle(btn.dataset.gameId);
+      if (bundle) downloadJson(`mahjong-local_${bundle.meta.gameId}.json`, bundle);
+    } catch (e) {
+      S.errors.push("history: " + (e.message || e));
     }
-    if (failed) throw failed;
   }));
-  el2.querySelectorAll(".history-download").forEach((btn) => btn.addEventListener("click", () => {
-    const bundle = historyCache.find((b) => b.meta.gameId === btn.dataset.gameId);
-    if (bundle) downloadJson(`mahjong-local_${bundle.meta.gameId}.json`, bundle);
+  el2.querySelectorAll(".history-delete").forEach((btn) => btn.addEventListener("click", async () => {
+    const ok2 = await askConfirm({
+      title: "\u5C65\u6B74\u306E\u524A\u9664",
+      message: "\u3053\u306E\u5BFE\u5C40\u5C65\u6B74\u3092\u524A\u9664\u3057\u307E\u3059\u3002\u5143\u306B\u623B\u305B\u307E\u305B\u3093\u3002",
+      okLabel: "\u524A\u9664"
+    });
+    if (!ok2) return;
+    historyAction(() => idbDeleteBundle(btn.dataset.gameId));
   }));
-  el2.querySelectorAll(".history-delete").forEach((btn) => btn.addEventListener("click", () => historyAction(() => idbDeleteBundle(btn.dataset.gameId))));
 }
 async function openHistory() {
   clipStatus.clear();
   historyImportMsg = "";
+  historyManageOpen = false;
   try {
     await refreshHistory();
   } catch (e) {
     S.errors.push("history load: " + (e.message || e));
   }
+  const el2 = $("history");
+  const wasOpen = el2.style.display === "flex";
   renderHistoryPanel();
-  $("history").style.display = "flex";
+  el2.style.display = "flex";
+  if (!wasOpen) backNav.push("history", closeHistory);
+}
+function closeHistory() {
+  const el2 = $("history");
+  if (el2) el2.style.display = "none";
+  historyImportMsg = "";
+  backNav.dismiss("history");
 }
 async function savePartialGame() {
   if (!bridge || gameEnded || endHandled || !bridge.events?.length) return;
@@ -37960,7 +41735,7 @@ async function saveFinishedGame(bundle) {
   }
   S.saveCompleted = true;
   const status = $("save-status");
-  if (status) status.textContent = S.historySaveStatus === "saved" ? `\u4FDD\u5B58: IndexedDB\u3078\u5B8C\u4E86 (${S.historyCount}\u4EF6)` : withCode("\u4FDD\u5B58: IndexedDB\u3078\u306E\u4FDD\u5B58\u306B\u5931\u6557\u3057\u307E\u3057\u305F", "E-D301");
+  if (status) status.textContent = S.historySaveStatus === "saved" ? "\u4FDD\u5B58\u6E08\u307F" : withCode("\u4FDD\u5B58: IndexedDB\u3078\u306E\u4FDD\u5B58\u306B\u5931\u6557\u3057\u307E\u3057\u305F", "E-D301");
 }
 var dahaiLogSeen = 0;
 function updateDahaiLog() {
@@ -37992,10 +41767,45 @@ function updateLastResult() {
 var PHONE_LANDSCAPE = window.matchMedia("(orientation: landscape) and (max-height: 700px)");
 var PHONE_PORTRAIT = window.matchMedia("(orientation: portrait) and (max-width: 1050px)");
 var COLUMN_LAYOUT = window.matchMedia("(orientation: portrait) and (max-width: 1050px)");
+var SQUARE_BAND = window.matchMedia("(min-aspect-ratio: 4/5) and (max-aspect-ratio: 5/4)");
+function applyLayoutMode() {
+  const app = $("app");
+  if (!app) return;
+  const square = SQUARE_BAND.matches;
+  app.classList.toggle("layout-square", square);
+  S.layoutMode = square ? "square" : PHONE_LANDSCAPE.matches ? "landscape" : PHONE_PORTRAIT.matches ? "portrait" : "grid";
+}
 var fitBoardKey = null;
 function fitBoard() {
   const board = $("board"), wrap = $("table-wrap");
   if (!board || !wrap) return;
+  if (SQUARE_BAND.matches) {
+    const table = $("table");
+    if (!table) return;
+    const top2 = $("seat-top"), self3 = $("self-area");
+    const tcs = getComputedStyle(table);
+    const gapC = parseFloat(tcs.columnGap) || 0;
+    const gapR = parseFloat(tcs.rowGap) || 0;
+    const cols = (tcs.gridTemplateColumns || "").split(" ").map(parseFloat).filter(Number.isFinite);
+    const sideCols = cols.length >= 3 ? cols[0] + cols[cols.length - 1] : 120;
+    const cellW = table.clientWidth - sideCols - 2 * gapC;
+    const cellH = table.clientHeight - (top2?.offsetHeight || 0) - (self3?.offsetHeight || 0) - 2 * gapR;
+    const size2 = Math.max(120, Math.min(660, cellW, cellH));
+    const key3 = [
+      "sq",
+      window.innerWidth,
+      window.innerHeight,
+      table.clientWidth,
+      table.clientHeight,
+      top2?.offsetHeight,
+      self3?.offsetHeight,
+      Math.floor(size2)
+    ].join("|");
+    if (key3 === fitBoardKey) return;
+    fitBoardKey = key3;
+    board.style.width = Math.floor(size2) + "px";
+    return;
+  }
   if (PHONE_LANDSCAPE.matches || PHONE_PORTRAIT.matches) {
     board.style.width = "";
     fitBoardKey = null;
@@ -38023,8 +41833,8 @@ var fitNaturalHeight = 0;
 function measureNaturalHeight() {
   const app = $("app"), table = $("table");
   if (!app) return 0;
-  if (!COLUMN_LAYOUT.matches) {
-    const vh = window.innerHeight;
+  if (!COLUMN_LAYOUT.matches || SQUARE_BAND.matches) {
+    const vh2 = window.innerHeight;
     const saved = {
       height: app.style.height,
       width: app.style.width,
@@ -38033,28 +41843,28 @@ function measureNaturalHeight() {
     };
     if (saved.scaled) app.classList.remove("fit-scaled");
     app.style.transform = "";
-    app.style.height = vh + "px";
+    app.style.height = vh2 + "px";
     app.style.width = window.innerWidth + "px";
     const overflow = (el2) => el2 ? Math.max(0, el2.scrollHeight - el2.clientHeight) : 0;
-    const extra = Math.max(
-      overflow($("side")),
-      overflow($("controls")),
-      overflow($("table-wrap")),
-      overflow(table)
-    );
+    const extra = SQUARE_BAND.matches ? Math.max(overflow($("table-wrap")), overflow(table)) : Math.max(overflow($("controls")), overflow($("table-wrap")), overflow(table));
     if (saved.scaled) app.classList.add("fit-scaled");
     app.style.height = saved.height;
     app.style.width = saved.width;
     app.style.transform = saved.transform;
-    return vh + extra;
+    return vh2 + extra;
   }
+  const vh = window.innerHeight;
+  const side = $("side");
+  const prevSideHeight = side ? side.style.height : "";
+  if (side) side.style.height = "0px";
   const prevTableHeight = table ? table.style.height : "";
   if (table) table.style.height = table.offsetHeight + "px";
   app.classList.add("fit-measuring");
-  const natural = app.offsetHeight;
+  const tableStack = app.offsetHeight;
   app.classList.remove("fit-measuring");
   if (table) table.style.height = prevTableHeight;
-  return natural;
+  if (side) side.style.height = prevSideHeight;
+  return Math.max(vh, tableStack);
 }
 function resetFitScale() {
   const app = $("app");
@@ -38080,6 +41890,7 @@ function fitViewportScale(force = false) {
     return;
   }
   const measured = measureNaturalHeight();
+  S.fitCalcCount = (S.fitCalcCount | 0) + 1;
   const vh = window.innerHeight;
   const natural = measured > vh + 0.5 ? measured + 2 : measured;
   const scale = natural > vh + 0.5 ? Math.min(1, vh / natural) : 1;
@@ -38101,6 +41912,7 @@ function fitViewportScale(force = false) {
   }
 }
 function refitViewport() {
+  applyLayoutMode();
   const app = $("app");
   if (app) {
     if (!app.classList.contains("fit-scaled")) app.style.height = window.innerHeight + "px";
@@ -38131,6 +41943,7 @@ function refitAfterResume() {
 function initViewportFit() {
   window.addEventListener("resize", refitViewport);
   window.addEventListener("orientationchange", refitAfterResume);
+  SQUARE_BAND.addEventListener?.("change", refitViewport);
   window.addEventListener("pageshow", refitAfterResume);
   window.addEventListener("focus", refitAfterResume);
   document.addEventListener("visibilitychange", () => {
@@ -38142,18 +41955,43 @@ function initViewportFit() {
   }, { passive: true });
   refitViewport();
 }
+var CONTROLS_COLLAPSED_KEY = "ml-controls-collapsed";
+var controlsCollapsed = false;
+function applyControlsCollapsed(collapsed) {
+  controlsCollapsed = !!collapsed;
+  const app = $("app");
+  if (app) app.classList.toggle("controls-collapsed", controlsCollapsed);
+  const btn = $("controlsToggle");
+  if (btn) {
+    const label = controlsCollapsed ? "\u64CD\u4F5C\u3092\u8868\u793A" : "\u64CD\u4F5C\u3092\u7573\u3080";
+    btn.setAttribute("aria-expanded", String(!controlsCollapsed));
+    btn.setAttribute("aria-label", label);
+    btn.title = label;
+  }
+  S.controlsCollapsed = controlsCollapsed;
+}
+function toggleControls() {
+  applyControlsCollapsed(!controlsCollapsed);
+  try {
+    localStorage.setItem(CONTROLS_COLLAPSED_KEY, controlsCollapsed ? "1" : "0");
+  } catch (_) {
+  }
+  fitBoardKey = null;
+  fitDirty = true;
+  refitViewport();
+}
 function updateSelChip() {
   const chip = $("sel-chip");
   if (!chip) return;
   const le = S.lastExplain;
   let html = "";
-  if (coachEnabled && !AUTO && pending && selectedAction && le && le.context === pending.kind && le.rows?.length) {
+  if (coachEnabled && !liveCoachLocked() && !AUTO && pending && selectedAction && le && le.context === pending.kind && le.rows?.length) {
     const pai = selectedAction.replace(/_$/, "");
     const idx = le.rows.findIndex((r) => r.pai === pai);
     if (idx >= 0) {
       const r = le.rows[idx];
       const verdict = le.recPai === pai ? '<span class="sel-chip-ok">\u63A8\u5968\u3069\u304A\u308A</span>' : `<span class="sel-chip-rec">\u63A8\u5968\u306F ${tileLabel(le.recPai)}</span>`;
-      html = `<span class="sel-chip-tile">${tileSVG(r.pai, tileLabel(r.pai))}</span><span>\u63A8\u5968\u5EA6 <b class="prob">${formatPercent(r.prob)}</b></span><span>${r.shanten}\u5411\u8074\u30FB\u53D7\u5165${r.ukeire}\u679A</span><span>\u5019\u88DC ${idx + 1}\u4F4D</span>${verdict}`;
+      html = `<span class="sel-chip-tile">${tileSVG(r.pai, tileLabel(r.pai))}</span><span class="band-name">${tileLabel(r.pai)}</span><span class="band-metric"><span class="band-label">\u63A8\u5968\u5EA6</span> <b class="prob">${formatPercent(r.prob)}</b></span><span class="band-fact">${r.shanten}\u5411\u8074\u30FB\u53D7\u5165${r.ukeire}\u679A</span><span class="band-rank">\u5019\u88DC ${idx + 1}\u4F4D</span>${verdict}`;
     }
   }
   setHTML(chip, html);
@@ -38162,24 +42000,51 @@ function updateSelChip() {
     const area = $("self-area");
     const sel = document.querySelector("#seat-bottom .tile.hand.selected");
     if (area && sel) {
+      const scale = fitScale > 0 ? fitScale : 1;
       const a = area.getBoundingClientRect(), t = sel.getBoundingClientRect();
-      const cx2 = t.left + t.width / 2 - a.left;
+      const cx2 = (t.left + t.width / 2 - a.left) / scale;
       const half = chip.offsetWidth / 2;
-      chip.style.left = Math.max(half + 2, Math.min(a.width - half - 2, cx2)) + "px";
+      const areaW = a.width / scale;
+      chip.style.left = Math.max(half + 2, Math.min(areaW - half - 2, cx2)) + "px";
       const act = $("actions");
       const ar = act && act.offsetHeight > 0 && act.children.length ? act.getBoundingClientRect() : null;
       const anchorTop = ar && ar.top < t.top ? ar.top : t.top;
-      chip.style.bottom = a.bottom - anchorTop + 6 + "px";
+      const areaH = a.height / scale;
+      const chipH = chip.offsetHeight || 22;
+      const actionsTop = ar ? (ar.top - a.top) / scale : Infinity;
+      let top = (anchorTop - a.top) / scale - chipH - 12;
+      const ownRiver = document.querySelector("#board .bp-0");
+      if (ownRiver) {
+        const riverBottom = (ownRiver.getBoundingClientRect().bottom - a.top) / scale + 2;
+        if (top < riverBottom) top = riverBottom;
+      }
+      if (ar && top + chipH > actionsTop - 2) top = (ar.bottom - a.top) / scale + 2;
+      chip.style.bottom = Math.max(0, areaH - top - chipH) + "px";
     }
   }
 }
 var regionHTML = /* @__PURE__ */ new Map();
-var FIT_REGIONS = /* @__PURE__ */ new Set(["coach", "explain", "actions", "seat-top", "seat-bottom", "controls", "status"]);
+var FIT_REGIONS = /* @__PURE__ */ new Set(["actions", "seat-top", "seat-bottom", "controls", "status"]);
+var regionHeights = /* @__PURE__ */ new Map();
+var fitHeightCheckPending = /* @__PURE__ */ new Set();
+function flushRegionHeightChecks() {
+  if (!fitHeightCheckPending.size) return;
+  for (const id2 of fitHeightCheckPending) {
+    const el2 = $(id2);
+    if (!el2) continue;
+    const h = el2.offsetHeight;
+    if (regionHeights.get(id2) !== h) {
+      regionHeights.set(id2, h);
+      fitDirty = true;
+    }
+  }
+  fitHeightCheckPending.clear();
+}
 function setHTML(el2, html) {
   if (!el2) return;
   if (regionHTML.get(el2.id) === html) return;
   regionHTML.set(el2.id, html);
-  if (FIT_REGIONS.has(el2.id)) fitDirty = true;
+  if (FIT_REGIONS.has(el2.id)) fitHeightCheckPending.add(el2.id);
   el2.innerHTML = html;
 }
 function render() {
@@ -38191,27 +42056,6 @@ function render() {
   }
   if (coach) {
     S.coachRecords = coach.records.length;
-    const reachRecs = coach.records.filter((r) => r.context === "zimo" && (r.qValues || []).some((c2) => c2.action === "reach"));
-    S.reachLabelCheck = {
-      records: reachRecs.length,
-      withTiles: reachRecs.filter((r) => Array.isArray(r.riichiTiles) && r.riichiTiles.length).length,
-      labelOk: reachRecs.filter((r) => {
-        const d = reachDeclareAction(r);
-        return d && r.riichiTiles.includes(d);
-      }).length
-    };
-    let autoPlayed = 0, eager = 0, pending2 = 0, withShapeBasis = 0;
-    const notes = [];
-    for (const r of coach.records) {
-      if (r.autoPlayed) autoPlayed++;
-      if (r.shapeEager === true) eager++;
-      if (r.shapePending === true) pending2++;
-      if (r.explainability?.checks?.shapeGoodCopies != null) withShapeBasis++;
-      if (r.statisticalNote) notes.push(r.statisticalNote);
-    }
-    S.autoPlayed = autoPlayed;
-    S.shapeRecords = { eager, pending: pending2, withShapeBasis };
-    S.statisticalNotes = notes;
     const latest = coach.records[coach.records.length - 1];
     if (latest?.qValues?.length) {
       S.probabilityCheck = {
@@ -38252,26 +42096,23 @@ function render() {
     ${seat.lizhi ? '<span class="riichi-badge">\u30EA\u30FC\u30C1</span>' : ""}</div>` : "";
   setHTML($("center"), `
     <div class="center-players">${mini(byPos[2])}${mini(byPos[3])}${mini(byPos[1])}${mini(byPos[0])}</div>
-    <div class="round">${"\u6771\u5357\u897F\u5317"[c.zhuangfeng]}${c.jushu + 1}\u5C40 <span>${c.changbang}\u672C\u5834</span></div>
-    <div class="center-meta">\u6B8B\u308A ${c.paishu}\u679A\u3000\u4F9B\u8A17 ${c.lizhibang}</div>
-    <div class="dora"><span>\u30C9\u30E9\u8868\u793A</span>${c.baopai.map((p) => tileHTML(p, "dora-tile")).join("")}</div>
+    <div class="round"><span class="round-kyoku">${"\u6771\u5357\u897F\u5317"[c.zhuangfeng]}${c.jushu + 1}\u5C40</span> <span>${c.changbang}\u672C\u5834</span></div>
+    <div class="center-meta"><span class="cm-item">\u6B8B\u308A ${c.paishu}\u679A</span> <span class="cm-item">\u4F9B\u8A17 ${c.lizhibang}</span></div>
+    <div class="dora"><span class="dora-label">\u30C9\u30E9\u8868\u793A</span>${c.baopai.map((p) => tileHTML(p, "dora-tile")).join("")}</div>
     <div class="result">${lastResultText}</div>`);
   setHTML($("actions"), decisionButtonsHTML());
   $("actions").classList.toggle("has-actions", !!(pending || preparingDecision) && !AUTO);
-  S.actionButtons = [...document.querySelectorAll("#actions .act")].map((el2) => ({
-    act: el2.dataset.act,
-    text: el2.textContent.trim().replace(/\s+/g, " "),
-    width: Math.round(el2.getBoundingClientRect().width),
-    height: Math.round(el2.getBoundingClientRect().height)
-  }));
-  S.tileSvgCount = document.querySelectorAll("#table svg.tile-art").length;
   $("coach").classList.add("clip-panel");
-  setHTML($("coach"), clipButtonHTML() + coachHTML() + '<div class="clip-status" role="status"></div>');
+  const coachHtml = coachPanelHTML();
+  setHTML($("coach"), coachHtml);
   $("coach").querySelector(".clip-status").textContent = clipStatus.message;
-  setHTML($("explain"), explainHTML());
+  const explainHtml = explainHTML();
+  setHTML($("explain"), explainHtml);
+  renderCoachSheet(coachHtml, explainHtml);
   renderResultPanel();
   wireButtons();
   updateSelChip();
+  flushRegionHeightChecks();
   fitBoard();
   fitViewportScale();
 }
@@ -38285,14 +42126,21 @@ function wireButtons() {
       const idx = +el2.dataset.idx;
       if (!pending.options.dapaiList.includes(action)) return;
       if (selectedAction !== action || selectedIdx !== idx) {
+        if (!selectedAction && pending.firstTap == null) pending.firstTap = action;
         selectedAction = action;
         S.selectedAction = action;
         selectedIdx = idx;
         S.selectedIdx = idx;
+        riichiNotice = "";
         render();
         return;
       }
-      if (riichiArmed && pending.options.riichiTiles?.includes(action)) {
+      if (riichiArmed) {
+        if (!pending.options.riichiTiles?.includes(action)) {
+          riichiNotice = "\u3053\u306E\u724C\u3067\u306F\u30EA\u30FC\u30C1\u3067\u304D\u307E\u305B\u3093";
+          render();
+          return;
+        }
         pending.resolve({ dapai: action + "*" });
       } else pending.resolve({ dapai: action });
     });
@@ -38304,6 +42152,7 @@ function wireButtons() {
       const act = el2.dataset.act;
       if (act === "riichi") {
         riichiArmed = !riichiArmed;
+        riichiNotice = "";
         render();
         return;
       }
@@ -38362,6 +42211,22 @@ var view2 = {
   say() {
   }
 };
+function schedulePendingSwReload(savePromise) {
+  if (!swReloadGate?.pending) return;
+  const card = $("end")?.querySelector(".end-card");
+  if (card) {
+    const note = document.createElement("p");
+    note.className = "result-note sw-update-note";
+    note.textContent = "\u30A2\u30D7\u30EA\u306E\u66F4\u65B0\u3092\u9069\u7528\u3057\u3066\u3044\u307E\u3059\u2026";
+    card.appendChild(note);
+  }
+  const settled = Promise.race([
+    Promise.resolve(savePromise).catch(() => {
+    }),
+    new Promise((resolve) => setTimeout(resolve, 2e3))
+  ]);
+  settled.then(() => setTimeout(() => swReloadGate?.notifyGameEnded(), 1200));
+}
 function showEnd(paipu) {
   if (endHandled) return;
   endHandled = true;
@@ -38373,6 +42238,8 @@ function showEnd(paipu) {
   gameEnded = true;
   kyokuResult = null;
   const bundle = buildGameBundle(paipu);
+  sessionCompletions.set(bundle.meta.gameId, { meta: bundle.meta });
+  const trialEnded = currentCoachAccess().locked;
   lastBundle = bundle;
   S.lastBundle = bundle;
   S.gameBundleMeta = bundle.meta;
@@ -38409,33 +42276,44 @@ function showEnd(paipu) {
       <td>${b.rank}\u4F4D</td><td class="nm">${b.name}</td><td class="num">${b.defen.toLocaleString()}</td>
       <td class="num">${b.base.toFixed(1)}</td><td class="num">${b.uma > 0 ? "+" : ""}${b.uma}</td>
       <td class="num">${b.oka ? "+" + b.oka : "\u2015"}</td><td class="num delta-total">${b.point ?? "-"}</td></tr>`).join("");
-  const breakdownHTML = `<div class="final-breakdown"><h3>\u6700\u7D42\u30DD\u30A4\u30F3\u30C8\u5185\u8A33</h3>
+  const breakdownHTML = `<div class="final-breakdown" id="final-breakdown" hidden>
     <div class="fb-wrap"><table class="pay-table fb-final"><thead><tr><th>\u9806\u4F4D</th><th class="nm">\u540D\u524D</th><th>\u7D20\u70B9</th><th>\u7D20\u70B9<wbr>\u63DB\u7B97</th><th>\u30A6\u30DE</th><th>\u30AA\u30AB</th><th>\u6700\u7D42</th></tr></thead>
     <tbody>${breakdownRows}</tbody></table></div>
     <div class="result-note">\u7D20\u70B9\u63DB\u7B97 = (\u7D20\u70B9 \u2212 ${basis.returnPoints.toLocaleString()}) \xF7 1,000\u3002\u30A6\u30DE\u306F\u9806\u4F4D\u70B9 ${rankPts.join(" / ")}\u3001\u30AA\u30AB +${basis.oka} \u306F1\u4F4D\u3078\u30020.1\u30DD\u30A4\u30F3\u30C8\u5358\u4F4D\u3067\u30011\u4F4D\u306E\u6700\u7D42\u30DD\u30A4\u30F3\u30C8\u306F\u4ED63\u4EBA\u306E\u5408\u8A08\u306E\u7B26\u53F7\u53CD\u8EE2\uFF08\u5408\u8A08\u30BC\u30ED\uFF09\u3067\u3059${remainKyotaku ? `\u30021\u4F4D\u306E\u7D20\u70B9\u306B\u306F\u6B8B\u308A\u4F9B\u8A17\u30EA\u30FC\u30C1\u68D2 +${(remainKyotaku * 1e3).toLocaleString()} \u304C\u542B\u307E\u308C\u307E\u3059` : ""}\u3002</div></div>`;
   const agr = S.agreement && S.agreement.total ? `<p>AI\u30B3\u30FC\u30C1\u3068\u306E\u4E00\u81F4\u7387: ${S.agreement.agree}/${S.agreement.total} (${Math.round(S.agreement.agree / S.agreement.total * 100)}%)</p>` : "";
-  const infer = ai ? `<p>\u63A8\u8AD6: ${ai.inferCount}\u56DE / \u5E73\u5747 ${ai.inferCount ? (ai.inferMs / ai.inferCount).toFixed(1) : "-"}ms</p>` : "";
   const review = reviewHTML(coach?.records || []);
   $("end").innerHTML = `<div class="end-card">
     <h2>\u5BFE\u5C40\u7D42\u4E86</h2>
-    <table class="standings">${rows}</table>${agr}${infer}
-    ${breakdownHTML}
-    <p id="save-status" class="save-status">\u5BFE\u5C40\u30C7\u30FC\u30BF\u3092\u4FDD\u5B58\u4E2D\u2026</p>
+    <table class="standings">${rows}</table>${agr}
     ${review}
+    <button id="breakdown-toggle" type="button" class="breakdown-toggle" aria-expanded="false" aria-controls="final-breakdown">\u30DD\u30A4\u30F3\u30C8\u5185\u8A33\u3092\u898B\u308B</button>
+    ${breakdownHTML}
+    <button id="again" type="button" class="end-continue">\u30B9\u30BF\u30FC\u30C8\u306B\u623B\u308B</button>
+    ${trialEnded ? trialEndHTML({ price: currentBillingPrice() }) : ""}
+    <p id="save-status" class="save-status">\u4FDD\u5B58\u4E2D\u2026</p>
     <button id="dl-bundle" type="button">\u5BFE\u5C40\u30ED\u30B0\uFF08.json\uFF09\u3092\u30C0\u30A6\u30F3\u30ED\u30FC\u30C9</button>
     <p class="result-note">\u5BFE\u5C40ID\u30FB\u4FDD\u5B58\u65E5\u6642\u30FB\u7D50\u679C\u30FB\u30B3\u30FC\u30C1\u8A18\u9332\u30FB\u724C\u8B5C\u3092\u307E\u3068\u3081\u3066\u4FDD\u5B58\u3057\u307E\u3059\u3002\u300C\u5BFE\u5C40\u5C65\u6B74\u300D\u306E\u300C\u30ED\u30B0\u3092\u8AAD\u307F\u8FBC\u3080\u300D\u3067\u623B\u305B\u307E\u3059\u3002</p>
-    <button id="open-history-end" type="button">\u5BFE\u5C40\u5C65\u6B74</button>
-    <button id="again">\u30B9\u30BF\u30FC\u30C8\u753B\u9762\u306B\u623B\u308B</button></div>`;
+    <button id="open-history-end" type="button">\u5BFE\u5C40\u5C65\u6B74</button></div>`;
   $("end").style.display = "flex";
+  $("breakdown-toggle").addEventListener("click", () => {
+    const toggle = $("breakdown-toggle"), panel = $("final-breakdown");
+    const open = toggle.getAttribute("aria-expanded") !== "true";
+    toggle.setAttribute("aria-expanded", String(open));
+    toggle.textContent = open ? "\u30DD\u30A4\u30F3\u30C8\u5185\u8A33\u3092\u9589\u3058\u308B" : "\u30DD\u30A4\u30F3\u30C8\u5185\u8A33\u3092\u898B\u308B";
+    panel.hidden = !open;
+  });
   $("dl-bundle").addEventListener("click", () => downloadJson(`mahjong-local_${bundle.meta.gameId}.json`, bundle));
   $("open-history-end").addEventListener("click", openHistory);
   $("again").addEventListener("click", returnToStart);
-  saveFinishedGame(bundle);
+  const savePromise = saveFinishedGame(bundle);
+  schedulePendingSwReload(savePromise);
   render();
 }
 var returningToStart = false;
 async function returnToStart() {
   if (returningToStart) return;
+  backNav.reset();
+  resolveStartConfirm(false);
   returningToStart = true;
   clipStatus.clear();
   if (gameSession) gameSession.active = false;
@@ -38450,13 +42328,16 @@ async function returnToStart() {
   game = bridge = coach = seat0 = null;
   pending = resultWaiter = null;
   preparingDecision = currentCoach = coachMissing = explainCache = null;
+  decisionRowsCache = null;
   selectedAction = selectedIdx = null;
   riichiArmed = manualDiscard = false;
+  riichiNotice = "";
   gameEnded = endHandled = false;
   kyokuResult = kyokuScoresStart = lastBundle = null;
   kyokuResultsAll = [];
   pendingCheckResults = [];
   horaHandByKyoku.clear();
+  kyushuHandByKyoku.clear();
   prevLizhiByPos = {};
   resultPanelShownFor = void 0;
   currentGameId = gameStartedAt = gameModel = gameCoachDisplay = null;
@@ -38507,8 +42388,7 @@ async function returnToStart() {
 async function attachResumePrefix(resume, prepared) {
   S.resumePrefixLoaded = false;
   try {
-    const all = await idbGetAllBundles();
-    const prev = all.find((b) => b.meta?.gameId === resume.gameId);
+    const prev = await idbGetBundle(resume.gameId);
     if (!prev) {
       gameCoachDisplay = mergeCoachDisplay(void 0, gameCoachDisplay);
       return;
@@ -38529,11 +42409,101 @@ async function attachResumePrefix(resume, prepared) {
     recordError("E-D302", e, { stage: "resume-prefix" });
   }
 }
+var startConfirmResolve = null;
+var startConfirmPromise = null;
+var startGatePromise = null;
+function needsNewGameConfirm() {
+  if (AUTO || resumeRequest || !resumeAvailable) return false;
+  const access = currentCoachAccess();
+  return access.gate && !access.locked && access.remaining > 0;
+}
+function resolveStartConfirm(ok2) {
+  const el2 = $("start-confirm");
+  if (el2) el2.hidden = true;
+  S.startConfirmOpen = false;
+  const resolve = startConfirmResolve;
+  startConfirmResolve = null;
+  startConfirmPromise = null;
+  if (!ok2) {
+    const b = $("ss-start-btn");
+    if (b) b.focus();
+  }
+  if (resolve) resolve(ok2);
+  if (!ok2) backNav.dismiss("start-confirm");
+}
+function askStartConfirm() {
+  if (startConfirmPromise) return startConfirmPromise;
+  const el2 = $("start-confirm");
+  if (!el2) return Promise.resolve(true);
+  startConfirmPromise = new Promise((resolve) => {
+    startConfirmResolve = resolve;
+    el2.hidden = false;
+    S.startConfirmOpen = true;
+    $("start-confirm-cancel")?.focus();
+    backNav.push("start-confirm", () => resolveStartConfirm(false));
+  });
+  return startConfirmPromise;
+}
+var confirmResolve = null;
+function resolveConfirm(ok2) {
+  const el2 = $("confirm-dialog");
+  if (el2) {
+    el2.hidden = true;
+    el2.innerHTML = "";
+  }
+  const resolve = confirmResolve;
+  confirmResolve = null;
+  if (resolve) resolve(!!ok2);
+  backNav.dismiss("confirm");
+}
+function askConfirm({ title, message, okLabel = "\u524A\u9664\u3059\u308B", cancelLabel = "\u3084\u3081\u308B" }) {
+  const el2 = $("confirm-dialog");
+  if (!el2) return Promise.resolve(false);
+  if (confirmResolve) resolveConfirm(false);
+  return new Promise((resolve) => {
+    confirmResolve = resolve;
+    el2.innerHTML = `<div class="start-confirm-card">
+      <h2 id="confirm-dialog-title">${escHtml2(title)}</h2>
+      <p>${escHtml2(message)}</p>
+      <div class="start-confirm-actions">
+        <button type="button" id="confirm-dialog-ok">${escHtml2(okLabel)}</button>
+        <button type="button" id="confirm-dialog-cancel">${escHtml2(cancelLabel)}</button>
+      </div></div>`;
+    el2.hidden = false;
+    $("confirm-dialog-ok")?.addEventListener("click", () => resolveConfirm(true));
+    $("confirm-dialog-cancel")?.addEventListener("click", () => resolveConfirm(false));
+    el2.onclick = (e) => {
+      if (e.target === el2) resolveConfirm(false);
+    };
+    $("confirm-dialog-cancel")?.focus();
+    backNav.push("confirm", () => resolveConfirm(false));
+  });
+}
 async function startGame(userGesture = false) {
   if (S.started || returningToStart) return;
   if (!ai || !S.ready || S.modelSwapping) return;
+  if (startGatePromise) return startGatePromise;
+  startGatePromise = (async () => {
+    await billingHistoryReady;
+    reconcileLegacyResumeStart();
+    if (!needsNewGameConfirm()) return true;
+    return askStartConfirm();
+  })();
+  let confirmed;
+  try {
+    confirmed = await startGatePromise;
+  } finally {
+    startGatePromise = null;
+  }
+  if (!confirmed) return;
+  if (S.started || returningToStart || !ai || !S.ready || S.modelSwapping) {
+    backNav.dismiss("start-confirm");
+    return;
+  }
   clipStatus.clear();
   S.started = true;
+  if (backNav.top()?.id === "start-confirm") backNav.replaceTop("game", returnToStart);
+  else backNav.push("game", returnToStart);
   audio.startGame(!!userGesture && !!navigator.userActivation?.isActive);
   const ssEl = $("start-screen");
   if (ssEl) ssEl.hidden = true;
@@ -38544,19 +42514,32 @@ async function startGame(userGesture = false) {
   } catch (e) {
     if (!session.active) return;
     S.errors.push("startGame: " + (e?.message || e));
-    S.started = false;
-    audio.stopGame();
-    game = null;
-    const btn = $("startBtn");
-    if (btn) btn.disabled = false;
     recordError("E-G501", e, { stage: "start" });
     try {
-      log(withCode("\u5BFE\u5C40\u306E\u958B\u59CB\u306B\u5931\u6557\u3057\u307E\u3057\u305F\u3002\u3082\u3046\u4E00\u5EA6\u304A\u8A66\u3057\u304F\u3060\u3055\u3044", "E-G501"));
+      await returnToStart();
+    } catch (_) {
+    }
+    const ssEl2 = $("start-screen");
+    if (ssEl2) ssEl2.hidden = false;
+    const msg = withCode("\u5BFE\u5C40\u306E\u958B\u59CB\u306B\u5931\u6557\u3057\u307E\u3057\u305F\u3002\u30B9\u30BF\u30FC\u30C8\u753B\u9762\u306B\u623B\u308A\u307E\u3057\u305F\u3002\u3082\u3046\u4E00\u5EA6\u304A\u8A66\u3057\u304F\u3060\u3055\u3044", "E-G501");
+    try {
+      log(msg);
+    } catch (_) {
+    }
+    try {
+      setModelLoadStatus(msg, false);
     } catch (_) {
     }
   }
 }
 async function startGameInner(session) {
+  await billingHistoryReady;
+  const sim = currentSimState();
+  const completed = completedCoachHistory().length;
+  const startState = syncStartFloor(startStorage, completed);
+  const trialCount = sim.active ? sim.completed : startCount(startState, completed);
+  const realAccessAtStart = billing.access(startCount(startState, completed));
+  const consumeRealStart = !sim.active && realAccessAtStart.gate && !realAccessAtStart.locked;
   const sessionUi = Object.fromEntries(Object.entries(ui).map(([key2, fn]) => [
     key2,
     (...args) => session.active ? fn(...args) : new Promise(() => {
@@ -38566,15 +42549,18 @@ async function startGameInner(session) {
   });
   const resume = resumeRequest;
   resumeRequest = null;
+  gameTrialEligible = resume ? resume.trialEligible ?? (trialCount > 0 && trialCount - 1 < TRIAL_GAMES) : trialCount < TRIAL_GAMES;
   if (resume) {
     gameLength = resume.gameLength === "tonpuu" ? "tonpuu" : "hanchan";
     const ls2 = $("lengthSel");
     if (ls2) ls2.value = gameLength;
     currentGameId = resume.gameId;
     resumedFrom = { gameId: resume.gameId, kyokuIndex: resume.kyokuIndex, startedAt: resume.startedAt };
+  } else {
+    currentGameId = makeGameId((/* @__PURE__ */ new Date()).toISOString());
   }
   S.gameLength = gameLength;
-  gameCoachDisplay = coachEnabled;
+  gameCoachDisplay = coachEnabled && !liveCoachLocked();
   gameStartedAt = resume?.startedAt || (/* @__PURE__ */ new Date()).toISOString();
   {
     const gm = MODELS.find((m) => m.id === S.modelId) || MODELS[0];
@@ -38685,8 +42671,8 @@ async function startGameInner(session) {
     }
     return notes;
   };
-  coach.shantenProvider = (context) => displayShanten(seat0.shoupai, seat0._rule, seat0.model, context);
-  coach.statisticsProvider = (rec) => statisticalNoteForCoach(seat0.shoupai, seat0._rule, seat0.model, rec);
+  coach.shantenProvider = (context) => displayShanten(seat0.shoupai, seat0._rule, seat0.model, context, currentDecisionRows);
+  coach.statisticsProvider = (rec) => statisticalNoteForCoach(seat0.shoupai, seat0._rule, seat0.model, rec, currentDecisionRows);
   coach.explainabilityProvider = (rec) => {
     if (rec.context === "dapai" || rec.context === "gang") {
       if (rec.context === "dapai") {
@@ -38702,7 +42688,7 @@ async function startGameInner(session) {
       return null;
     }
     const eagerShape = !AUTO;
-    const rows = eagerShape ? analyzeDiscards(seat0.shoupai, seat0._rule, seat0.model) : analyzeDiscards(seat0.shoupai, seat0._rule, seat0.model, { shape: false });
+    const rows = currentDecisionRows();
     rec.riichiTiles = rows.filter((r) => r.shanten === 0 && (typeof seat0.allow_lizhi !== "function" || seat0.allow_lizhi(seat0.shoupai, r.pai))).map((r) => tileNameOf(r.pai));
     rec.shapeEager = eagerShape;
     rec.shapePending = !eagerShape;
@@ -38772,7 +42758,7 @@ async function startGameInner(session) {
       if (session.active) return fn(...args);
     }
   ]));
-  class BridgeGame extends withDiscardTempo(withTenhouKandora(import_majiang_core6.default.Game)) {
+  class BridgeGame extends withDiscardTempo(withTenhouKandora(import_majiang_core8.default.Game)) {
     dapai(p) {
       if (session.active) super.dapai(p);
     }
@@ -38813,6 +42799,10 @@ async function startGameInner(session) {
     specRule({ length: gameLength }),
     "mahjong-local stage2"
   );
+  if (!resume) {
+    if (sim.active) noteSimulatedStart(simStorage, currentGameId, sim);
+    else if (consumeRealStart) noteStart(startStorage, currentGameId, { completed });
+  }
   discardTempo.reset();
   manualDiscard = false;
   game.discardTempo = discardTempo;
@@ -38868,7 +42858,34 @@ function startScreenStatsData() {
     kyokuTotal: agg.kyoku
   };
 }
+function renderStartFreeLine() {
+  const el2 = $("ss-start-free");
+  if (!el2) return;
+  const text = summariesLoaded ? startFreeLineText(currentCoachAccess()) : "";
+  el2.textContent = text;
+  el2.hidden = !text;
+}
+function renderStartUnlockLink() {
+  const el2 = $("ss-unlock-link");
+  if (!el2) return;
+  const show = summariesLoaded && currentCoachAccess().locked;
+  if (!show) {
+    el2.hidden = true;
+    return;
+  }
+  el2.textContent = unlockLinkText({ price: currentBillingPrice() });
+  el2.hidden = false;
+}
+function renderStartModelLock() {
+  const el2 = $("ss-model-lock");
+  if (!el2) return;
+  el2.hidden = !(summariesLoaded && currentCoachAccess().locked);
+}
 function renderStartScreenStats() {
+  renderSimBadge();
+  renderStartFreeLine();
+  renderStartUnlockLink();
+  renderStartModelLock();
   const card = $("ss-stats-card");
   if (!card) return;
   const d = startScreenStatsData();
@@ -38878,9 +42895,12 @@ function renderStartScreenStats() {
     return;
   }
   card.hidden = false;
+  const title = $("ss-stats-title");
+  if (title) title.textContent = startStatsHeading(d.recentCount);
   $("ss-avg-rank").textContent = d.avgRank != null ? d.avgRank.toFixed(2) : "-";
-  $("ss-agree").textContent = d.agreeRate != null ? `${Math.round(d.agreeRate * 100)}%` : "-";
+  $("ss-agree").textContent = currentCoachAccess().locked ? "\u{1F512}" : d.agreeRate != null ? `${Math.round(d.agreeRate * 100)}%` : "-";
   $("ss-games").textContent = String(d.finishedCount);
+  S.certHome = renderCertHome(document, summariesCache);
 }
 var aiBaseline = null;
 var aiBaselineTonpuu = null;
@@ -38893,10 +42913,11 @@ var statsUi = {
   cpuStyles: [],
   cpuOpen: { tier: false, style: false },
   open: /* @__PURE__ */ new Set(),
+  untalliedOpen: /* @__PURE__ */ new Set(),
   mmSort: "diff",
   mmFilter: "all"
 };
-var escHtml = (s) => String(s ?? "").replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" })[c]);
+var escHtml2 = (s) => String(s ?? "").replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" })[c]);
 async function loadAiBaseline() {
   if (aiBaseline) return aiBaseline;
   try {
@@ -39004,51 +43025,95 @@ function openStatsView() {
   clipStatus.clear();
   const el2 = $("stats-view");
   if (!el2) return;
+  const wasOpen = el2.style.display === "flex";
   el2.style.display = "flex";
   renderStatsView();
   Promise.all([loadAiBaseline(), loadAiBaselineTonpuu()]).then(() => {
     if (el2.style.display !== "none") renderStatsView();
   });
+  if (!wasOpen) backNav.push("stats", closeStatsView);
 }
 function closeStatsView() {
   const el2 = $("stats-view");
   if (el2) el2.style.display = "none";
+  backNav.dismiss("stats");
 }
-function statsSectionHTML(sec, agg, baseline, showBaseline, lowSample) {
-  const rows = sec.rows.map((r) => {
-    const m = agg.metrics[r.k] || { v: null, n: 0 };
-    const ideal = showBaseline && !NO_BASELINE_KEYS.has(r.k) ? baseline?.metrics?.[r.k] : null;
-    const idealV = ideal && typeof ideal === "object" ? ideal.v : ideal;
-    const open = statsUi.open.has(r.k);
-    return `<tr class="st-row${open ? " open" : ""}" data-stats-metric="${r.k}" tabindex="0" role="button" aria-expanded="${open}">
+function statsTableHeadHTML() {
+  return '<thead><tr><th>\u6307\u6A19</th><th class="st-num">\u81EA\u5206</th><th class="st-num">AI\u30B3\u30FC\u30C1\u57FA\u6E96</th><th class="st-num">\u5DEE</th><th></th></tr></thead>';
+}
+function statsRowHTML(r, m, ideal, showBaseline, lowSample) {
+  const idealV = ideal && typeof ideal === "object" ? ideal.v : ideal;
+  const open = statsUi.open.has(r.k);
+  return `<tr class="st-row${open ? " open" : ""}" data-stats-metric="${r.k}" tabindex="0" role="button" aria-expanded="${open}">
       <td><span class="st-lab">${r.label}</span><span class="st-chev" aria-hidden="true"></span></td>
-      <td class="st-num"><div class="st-cell"><span class="st-v">${fmtMetric(r.fmt, m.v)}</span>${lowSample && m.v != null ? '<span class="st-ref">\u53C2\u8003\u5024</span>' : "<span></span>"}</div></td>
-      <td class="st-num">${showBaseline ? fmtMetric(r.fmt, idealV ?? null) : "\u2015"}</td>
+      <td class="st-num st-own"><div class="st-cell"><span class="st-v${m.v == null ? " is-na" : ""}">${fmtMetric(r.fmt, m.v)}</span>${lowSample && m.v != null ? '<span class="st-ref">\u53C2\u8003\u5024</span>' : "<span></span>"}</div></td>
+      <td class="st-num st-base">${showBaseline ? fmtMetric(r.fmt, idealV ?? null) : "\u2015"}</td>
       <td class="st-num">${showBaseline ? fmtDiff(r.fmt, m.v, idealV ?? null) : "\u2015"}</td>
       <td class="st-den">n=${m.n ?? 0}</td>
-    </tr>${open ? `<tr class="st-desc"><td colspan="5">${escHtml(r.d)}</td></tr>` : ""}`;
-  }).join("");
+    </tr>${open ? `<tr class="st-desc"><td colspan="5">${escHtml2(r.d)}</td></tr>` : ""}`;
+}
+function statsSectionHTML(sec, agg, baseline, showBaseline, lowSample) {
+  const measured = [];
+  const untallied = [];
+  for (const r of sec.rows) {
+    const m = agg.metrics[r.k] || { v: null, n: 0 };
+    const ideal = showBaseline && !NO_BASELINE_KEYS.has(r.k) ? baseline?.metrics?.[r.k] : null;
+    (m.n > 0 ? measured : untallied).push(statsRowHTML(r, m, ideal, showBaseline, lowSample));
+  }
+  const open = statsUi.untalliedOpen.has(sec.id);
   return `<div class="st-section"><h3>${sec.title}</h3>
-    <table class="st-table"><thead><tr><th>\u6307\u6A19</th><th class="st-num">\u81EA\u5206</th><th class="st-num">AI\u30B3\u30FC\u30C1\u57FA\u6E96</th><th class="st-num">\u5DEE</th><th></th></tr></thead>
-    <tbody>${rows}</tbody></table></div>`;
+    ${measured.length ? `<table class="st-table">${statsTableHeadHTML()}<tbody>${measured.join("")}</tbody></table>` : ""}
+    ${untallied.length ? `<details class="st-untallied" data-st-untallied="${sec.id}"${open ? " open" : ""}>
+      <summary>\u672A\u96C6\u8A08\u306E\u9805\u76EE\u3092\u8868\u793A\uFF08${untallied.length}\uFF09</summary>
+      <table class="st-table st-table-folded">${statsTableHeadHTML()}<tbody>${untallied.join("")}</tbody></table>
+    </details>` : ""}
+  </div>`;
 }
 function yakuTableHTML(title, yakuCounts, total) {
   const entries = Object.entries(yakuCounts || {}).sort((a, b) => b[1] - a[1]).slice(0, 12);
   if (!entries.length || !total) return "";
-  const rows = entries.map(([name2, n]) => `<tr><td>${escHtml(name2)}</td><td class="st-num">${n}\u56DE</td><td class="st-num">${(n / total * 100).toFixed(1)}%</td></tr>`).join("");
+  const rows = entries.map(([name2, n]) => `<tr><td>${escHtml2(name2)}</td><td class="st-num">${n}\u56DE</td><td class="st-num">${(n / total * 100).toFixed(1)}%</td></tr>`).join("");
   return `<div class="st-section"><h3>${title}</h3>
     <table class="st-table"><thead><tr><th>\u5F79</th><th>\u56DE\u6570</th><th>\u5272\u5408</th></tr></thead><tbody>${rows}</tbody></table></div>`;
 }
+var statsBundleCache = /* @__PURE__ */ new Map();
+var statsBundleLoading = /* @__PURE__ */ new Set();
+async function hydrateStatsBundles(ids) {
+  const missing = [...ids].filter((id2) => id2 && !statsBundleCache.has(id2) && !statsBundleLoading.has(id2));
+  if (!missing.length) return false;
+  let changed = false;
+  await Promise.all(missing.map(async (id2) => {
+    statsBundleLoading.add(id2);
+    try {
+      const b = await idbGetBundle(id2);
+      if (b) {
+        statsBundleCache.set(id2, b);
+        changed = true;
+      }
+    } catch (e) {
+      S.errors.push("stats bundle: " + (e.message || e));
+    } finally {
+      statsBundleLoading.delete(id2);
+    }
+  }));
+  return changed;
+}
 function statsMismatchRowsLive(pickedIds) {
   const rows = [];
+  let pending2 = false;
   for (const b of historyCache) {
     if (!pickedIds.has(b.meta?.gameId)) continue;
     if ((b.meta?.mode || "manual") !== "manual" || b.meta?.status === "partial") continue;
-    for (const row of buildReviewRows(b.coach || [])) {
+    const bundle = statsBundleCache.get(b.meta.gameId);
+    if (!bundle) {
+      pending2 = true;
+      continue;
+    }
+    for (const row of buildReviewRows(bundle.coach || [])) {
       rows.push({ row, gameId: b.meta.gameId, savedAt: b.meta?.savedAt, source: "live" });
     }
   }
-  return arrangeMismatchRows(rows, (x) => x.row, (x) => x.row.recIndex);
+  return { rows: arrangeMismatchRows(rows, (x) => x.row, (x) => x.row.recIndex), pending: pending2 };
 }
 var MM_CTX_FILTER = { self: "zimo", other: "dapai" };
 function arrangeMismatchRows(rows, rec, idxOf) {
@@ -39065,25 +43130,20 @@ function mismatchControlsHTML() {
   const o = (cur, v, l) => `<option value="${v}"${cur === v ? " selected" : ""}>${l}</option>`;
   return `<div class="st-mm-ctl">
     <label>\u4E26\u3073\u9806 <select data-mm-sort>${o(statsUi.mmSort, "diff", "\u63A8\u5968\u5EA6\u5DEE\u9806")}${o(statsUi.mmSort, "recent", "\u65B0\u3057\u3044\u9806")}</select></label>
-    <label>\u5834\u9762 <select data-mm-filter>${o(statsUi.mmFilter, "all", "\u5168\u90E8")}${o(statsUi.mmFilter, "self", "\u81EA\u5BB6\u306E\u6253\u724C")}${o(statsUi.mmFilter, "other", "\u4ED6\u5BB6\u306E\u6253\u724C")}</select></label>
+    <label>\u5834\u9762 <select data-mm-filter>${o(statsUi.mmFilter, "all", "\u5168\u90E8")}${o(statsUi.mmFilter, "self", "\u3042\u306A\u305F\u306E\u6253\u724C")}${o(statsUi.mmFilter, "other", "\u4ED6\u5BB6\u306E\u6253\u724C")}</select></label>
   </div>`;
-}
-function cpuMultiHTML(kind, label, options, selected, open) {
-  const chosen = options.filter((o) => selected.includes(o.id));
-  const summary = chosen.length === 0 ? `${label}: \u3059\u3079\u3066` : chosen.length === 1 ? `${label}: ${chosen[0].label}` : `${label}: ${chosen.length}\u4EF6`;
-  const items = options.map((o) => `<label><input type="checkbox" data-st-cpu-${kind}="${escHtml(o.id)}"${selected.includes(o.id) ? " checked" : ""}><span>${escHtml(o.label)}</span></label>`).join("");
-  return `<details id="st-cpu-${kind}" class="st-multi"${open ? " open" : ""}>
-    <summary>${escHtml(summary)}</summary>
-    <div class="st-multi-list">${items}</div>
-  </details>`;
 }
 function renderStatsView() {
   const el2 = $("stats-view");
   if (!el2) return;
   const sel = selectSummaries(summariesCache, statsUi);
   const agg = aggregateMetrics(sel.picked);
-  const coachAgg = aggregateCoach(sel.picked);
-  const pickedIds = new Set(sel.picked.map((s) => s.gameId));
+  const analysisLocked = liveCoachLocked();
+  const trialIds = new Set(completedCoachHistory().slice(0, TRIAL_GAMES).map((s) => s.gameId));
+  const analysisPicked = analysisLocked ? summariesCache.filter((s) => s.eligible && trialIds.has(s.gameId)) : sel.picked;
+  const coachAgg = aggregateCoach(analysisPicked);
+  const pickedIds = new Set(analysisPicked.map((s) => s.gameId));
+  let mismatchPending = false;
   const lowSample = agg.kyoku < 30;
   const isTonpuu = statsUi.length === "tonpuu";
   const baseline = isTonpuu ? aiBaselineTonpuu : aiBaseline;
@@ -39092,50 +43152,80 @@ function renderStatsView() {
   const lenBtn = (key2, label) => `<button type="button" class="st-chip${statsUi.length === key2 ? " on" : ""}" data-stats-length="${key2}">${label}</button>`;
   const rangeOpts = RANGE_OPTIONS.map((r) => `<option value="${r.key}"${statsUi.range === r.key ? " selected" : ""}>${r.label}</option>`).join("");
   const options = (current, entries) => entries.map(([v, label]) => `<option value="${v}"${current === v ? " selected" : ""}>${label}</option>`).join("");
-  let html = `<div class="stats-card">
-    <div class="st-head"><h2>\u7D71\u8A08\u30FB\u5206\u6790</h2><button type="button" class="st-close" data-stats-close>\u9589\u3058\u308B</button></div>
+  let html = `<div class="stats-card sheet-card">
+    <div class="st-head sheet-head"><h2>\u7D71\u8A08\u30FB\u5206\u6790</h2><button type="button" class="st-close" data-stats-close>\u9589\u3058\u308B</button></div>
+    <div class="sheet-body">
+    ${certifiedRankSectionHTML(summariesCache)}
     <div class="st-filters">
       <span class="st-chipset">${lenBtn("all", "\u3059\u3079\u3066")}${lenBtn("tonpuu", "\u6771\u98A8")}${lenBtn("hanchan", "\u534A\u8358")}</span>
-      <label>\u7BC4\u56F2 <select id="st-range">${rangeOpts}</select></label>
-      <label>\u30B3\u30FC\u30C1\u8868\u793A <select id="st-coach-display">${options(statsUi.coachDisplay, [["all", "\u3059\u3079\u3066"], ["on", "\u6709\u308A"], ["off", "\u7121\u3057"], ["unknown", "\u8A18\u9332\u306A\u3057"]])}</select></label>
-      <label>\u4F7F\u7528\u30E2\u30C7\u30EB <select id="st-model">${options(statsUi.modelId, [["all", "\u3059\u3079\u3066"], ...MODELS.map((m) => [m.id, m.label]), ["unknown", "\u8A18\u9332\u306A\u3057"]])}</select></label>
-      ${cpuMultiHTML("tier", "\u76F8\u624B\u306E\u5F37\u3055", CPU_TIERS, statsUi.cpuTiers, statsUi.cpuOpen.tier)}
-      ${cpuMultiHTML("style", "\u76F8\u624B\u306E\u30BF\u30A4\u30D7", CPU_STYLES, statsUi.cpuStyles, statsUi.cpuOpen.style)}
+      ${statsSelectFieldHTML("\u7BC4\u56F2", "st-range", rangeOpts)}
+      ${statsSelectFieldHTML("\u30B3\u30FC\u30C1\u8868\u793A", "st-coach-display", options(statsUi.coachDisplay, [["all", "\u3059\u3079\u3066"], ["on", "\u6709\u308A"], ["off", "\u7121\u3057"], ["unknown", "\u8A18\u9332\u306A\u3057"]]))}
+      ${statsSelectFieldHTML("\u4F7F\u7528\u30E2\u30C7\u30EB", "st-model", options(statsUi.modelId, [["all", "\u3059\u3079\u3066"], ...MODELS.map((m) => [m.id, modelProductLabel(m.id)]), ["unknown", "\u8A18\u9332\u306A\u3057"]]))}
+      <div class="st-cpu-row">
+        ${statsMultiFieldHTML("tier", "\u76F8\u624B\u306E\u5F37\u3055", CPU_TIERS, statsUi.cpuTiers, statsUi.cpuOpen.tier, escHtml2)}
+        ${statsMultiFieldHTML("style", "\u76F8\u624B\u306E\u30BF\u30A4\u30D7", CPU_STYLES, statsUi.cpuStyles, statsUi.cpuOpen.style, escHtml2)}
+      </div>
     </div>
-    <div class="st-scope">\u5BFE\u8C61: \u5B8C\u4E86 ${sel.picked.length}\u5BFE\u5C40\uFF08\u6761\u4EF6\u4E00\u81F4 ${sel.available}\u5BFE\u5C40\uFF0F\u5168\u671F\u9593 ${totalEligible}\u5BFE\u5C40\uFF09\uFF0F ${agg.kyoku}\u5C40
-      ${sel.limited ? `\uFF0F \u7BC4\u56F2\u6307\u5B9A\u306B\u3088\u308A\u76F4\u8FD1\u5206\u306E\u307F\u96C6\u8A08` : ""}
-      <br>\u30B3\u30FC\u30C1\u8868\u793A\u300C\u6709\u308A\u300D\u306F\u5BFE\u5C40\u4E2D\u306B\u4E00\u5EA6\u3067\u3082ON\u306B\u3057\u305F\u5BFE\u5C40\u3067\u3059\u3002\u8868\u793A\u30FB\u30E2\u30C7\u30EB\u306E\u8A18\u9332\u304C\u306A\u3044\u65E7\u5BFE\u5C40\u306F\u300C\u8A18\u9332\u306A\u3057\u300D\u3067\u78BA\u8A8D\u3067\u304D\u307E\u3059\u3002
-      <br>\u76F8\u624B\u306E\u5F37\u3055\u30FB\u30BF\u30A4\u30D7\u306F\u3001\u305D\u306E\u5BFE\u5C40\u306E3\u4EBA\u5168\u54E1\u304C\u9078\u629E\u7BC4\u56F2\u306B\u53CE\u307E\u308B\u5834\u5408\u3060\u3051\u96C6\u8A08\u3057\u307E\u3059\u3002\u76F8\u624B\u8A2D\u5B9A\u306E\u8A18\u9332\u304C\u306A\u3044\u65E7\u5BFE\u5C40\u306F\u3001\u7D5E\u308A\u8FBC\u307F\u4E2D\u306F\u5BFE\u8C61\u5916\u3067\u3059\u3002
-      <br>\u96C6\u8A08\u5BFE\u8C61\u306F\u5B8C\u4E86\u3057\u305F\u5BFE\u5C40\u306E\u307F\u3067\u3059\u3002\u4E2D\u65AD\u5BFE\u5C40\u306F\u6BCD\u6570\u306B\u542B\u307E\u308C\u307E\u305B\u3093\u3002
-      ${isTonpuu && !baseline ? "<br>\u6771\u98A8\u7528\u306EAI\u30B3\u30FC\u30C1\u57FA\u6E96\u306F\u307E\u3060\u7528\u610F\u3055\u308C\u3066\u3044\u306A\u3044\u305F\u3081\u3001\u6771\u98A8\u8868\u793A\u3067\u306F\u4F75\u8A18\u3057\u307E\u305B\u3093\u3002" : ""}
-      ${showBaseline ? `<br>AI\u30B3\u30FC\u30C1\u57FA\u6E96: ${escHtml(baseline.source || "AI\u81EA\u5DF1\u5BFE\u6226")}\uFF08${baseline.sourceGames ?? ""}\u5BFE\u5C40\u30FB${isTonpuu ? "\u6771\u98A8" : "\u534A\u8358"}\uFF09${baseline.modelId && baseline.modelId !== S.modelId ? `<br>\u203B \u3053\u306E\u57FA\u6E96\u306F\u65E7\u30E2\u30C7\u30EB\uFF08${escHtml(baseline.modelName || baseline.modelId)}\uFF09\u306E\u81EA\u5DF1\u5BFE\u6226\u306B\u3088\u308B\u3082\u306E\u3067\u3001\u73FE\u5728\u306EAI\u30B3\u30FC\u30C1\uFF08${escHtml(modelLabel(S.modelId))}\uFF09\u306E\u57FA\u6E96\u3067\u306F\u3042\u308A\u307E\u305B\u3093\u3002` : ""}` : ""}
-      ${showBaseline ? "<br>AI\u30B3\u30FC\u30C1\u57FA\u6E96\u3082\u5404\u6307\u6A19\u3068\u540C\u3058\u5B9A\u7FA9\u3067\u96C6\u8A08\u3057\u3066\u3044\u307E\u3059\u3002" : ""}
-      ${lowSample ? '<br><span class="st-ref">\u53C2\u8003\u5024</span> \u5C40\u6570\u304C30\u672A\u6E80\u306E\u305F\u3081\u3001\u5404\u6307\u6A19\u306F\u53C2\u8003\u5024\u3067\u3059\uFF08\u5DEE\u5206\u3082\u53C2\u8003\u5024\u3068\u3057\u3066\u8868\u793A\u3057\u307E\u3059\uFF09\u3002' : ""}
-    </div>`;
+    ${statsScopeHTML({
+    picked: sel.picked.length,
+    available: sel.available,
+    totalEligible,
+    kyoku: agg.kyoku,
+    limited: sel.limited,
+    isTonpuu,
+    baseline,
+    showBaseline,
+    lowSample,
+    currentModelProduct: modelProductLabel(S.modelId),
+    differentModel: !!(baseline?.modelId && baseline.modelId !== S.modelId),
+    escapeHtml: escHtml2
+  })}`;
   if (!sel.picked.length) {
     html += '<div class="st-empty">\u3053\u306E\u6761\u4EF6\u3067\u96C6\u8A08\u3067\u304D\u308B\u5BFE\u5C40\uFF08\u5B8C\u4E86\uFF09\u306F\u3042\u308A\u307E\u305B\u3093\u3002\u6761\u4EF6\u3092\u5909\u66F4\u3059\u308B\u304B\u3001\u5BFE\u5C40\u3092\u7D42\u3048\u308B\u3068\u7D71\u8A08\u304C\u8868\u793A\u3055\u308C\u307E\u3059\u3002</div>';
   } else {
     for (const sec of METRIC_SECTIONS) html += statsSectionHTML(sec, agg, baseline, showBaseline, lowSample);
     html += yakuTableHTML("\u548C\u4E86\u5F79\u306E\u5185\u8A33", agg.counters.horaYaku, agg.counters.hora);
     html += yakuTableHTML("\u653E\u9283\u6642\u306E\u76F8\u624B\u306E\u5F79", agg.counters.dealInYaku, agg.counters.dealInTimes);
-    const noAnalysis = sel.picked.filter((s) => !(s.coachAgg?.judged > 0)).length;
+  }
+  if (sel.picked.length || analysisLocked) {
     const rate2 = coachAgg.judged ? coachAgg.agree / coachAgg.judged : null;
     const ctxRows = ["zimo", "dapai", "fulou", "gang"].map((ctx) => {
       const b = coachAgg.byContext[ctx];
       if (!b || !b.judged) return "";
       return `<tr><td>${contextLabel(ctx)}</td><td class="st-num">${(b.agree / b.judged * 100).toFixed(1)}%</td><td class="st-den">${b.agree}/${b.judged}</td></tr>`;
     }).join("");
-    html += `<div class="st-section"><h3>AI\u30B3\u30FC\u30C1\u5206\u6790</h3>
-      <div class="st-hero"><div class="st-hero-v">${rate2 != null ? (rate2 * 100).toFixed(1) + "%" : "\u2015"}</div>
-      <div class="st-hero-k">\u30B3\u30FC\u30C1\u3068\u306E\u4E00\u81F4\u7387\uFF08${coachAgg.agree}/${coachAgg.judged} \u5224\u65AD\uFF09</div></div>
-      ${coachAgg.judged ? `<div class="st-note">\u81EA\u52D5\u518D\u751F\uFF08\u30EA\u30FC\u30C1\u5F8C\u30C4\u30E2\u5207\u308A\u7B49\uFF09\u306E\u5224\u65AD: ${coachAgg.autoPlayed}\u4EF6\u3092\u542B\u3080 \uFF0F \u5E73\u5747\u63A8\u5968\u5EA6\u5DEE: ${coachAgg.probDiffN ? (coachAgg.probDiffSum / coachAgg.probDiffN * 100).toFixed(1) + "%" : "\u2015"}</div>` : '<div class="st-note">\u5206\u6790\u8A18\u9332\u306A\u3057\u3002\u5BFE\u5C40\u4E2D\u306E\u5206\u6790\u8A18\u9332\u304C\u3042\u308B\u5224\u65AD\u306E\u307F\u3092\u96C6\u8A08\u3057\u307E\u3059\u3002</div>'}
-      ${ctxRows ? `<table class="st-table"><thead><tr><th>\u5834\u9762</th><th>\u4E00\u81F4\u7387</th><th></th></tr></thead><tbody>${ctxRows}</tbody></table>` : ""}
-      <div class="st-note">\u5206\u6790\u8A18\u9332\u306A\u3057: ${noAnalysis}\u5BFE\u5C40\uFF08\u901A\u5E38\u306E\u6210\u7E3E\u306B\u306F\u542B\u307F\u3001\u4E00\u81F4\u7387\u306E\u6BCD\u6570\u306B\u306F\u542B\u307F\u307E\u305B\u3093\uFF09\u3002</div>
-      <div id="st-live-mismatch">${statsMismatchListHTML(statsMismatchRowsLive(pickedIds), "live")}</div>
-    </div>`;
+    const heroHTML = `<div class="st-hero"><div class="st-hero-v">${rate2 != null ? (rate2 * 100).toFixed(1) + "%" : "\u2015"}</div>
+      <div class="st-hero-k">\u30B3\u30FC\u30C1\u3068\u306E\u4E00\u81F4\u7387\uFF08${coachAgg.agree}/${coachAgg.judged} \u5224\u65AD\uFF09</div></div>`;
+    if (analysisLocked) {
+      html += `<div class="st-section analysis-preview"><h3>AI\u30B3\u30FC\u30C1\u5206\u6790\uFF08\u7121\u6599\u4F53\u9A13\u306E\u30B5\u30F3\u30D7\u30EB\uFF09</h3>
+        <div class="coach-sample" inert>
+        ${heroHTML}
+        ${ctxRows ? `<table class="st-table"><thead><tr><th>\u5834\u9762</th><th>\u4E00\u81F4\u7387</th><th></th></tr></thead><tbody>${ctxRows}</tbody></table>` : ""}
+        </div>${analysisUnlockHTML()}
+      </div>`;
+    } else {
+      const noAnalysis = analysisPicked.filter((s) => !(s.coachAgg?.judged > 0)).length;
+      const liveMismatch = statsMismatchRowsLive(pickedIds);
+      mismatchPending = liveMismatch.pending;
+      html += `<div class="st-section analysis-preview"><h3>AI\u30B3\u30FC\u30C1\u5206\u6790</h3>
+        <div>
+        ${heroHTML}
+        ${coachAgg.judged ? `<div class="st-note">\u81EA\u52D5\u518D\u751F\uFF08\u30EA\u30FC\u30C1\u5F8C\u30C4\u30E2\u5207\u308A\u7B49\uFF09\u306E\u5224\u65AD: ${coachAgg.autoPlayed}\u4EF6\u3092\u542B\u3080 \uFF0F \u5E73\u5747\u63A8\u5968\u5EA6\u5DEE: ${coachAgg.probDiffN ? (coachAgg.probDiffSum / coachAgg.probDiffN * 100).toFixed(1) + "%" : "\u2015"}</div>` : '<div class="st-note">\u5206\u6790\u8A18\u9332\u306A\u3057\u3002\u5BFE\u5C40\u4E2D\u306E\u5206\u6790\u8A18\u9332\u304C\u3042\u308B\u5224\u65AD\u306E\u307F\u3092\u96C6\u8A08\u3057\u307E\u3059\u3002</div>'}
+        ${ctxRows ? `<table class="st-table"><thead><tr><th>\u5834\u9762</th><th>\u4E00\u81F4\u7387</th><th></th></tr></thead><tbody>${ctxRows}</tbody></table>` : ""}
+        <div class="st-note">\u5206\u6790\u8A18\u9332\u306A\u3057: ${noAnalysis}\u5BFE\u5C40\uFF08\u901A\u5E38\u306E\u6210\u7E3E\u306B\u306F\u542B\u307F\u3001\u4E00\u81F4\u7387\u306E\u6BCD\u6570\u306B\u306F\u542B\u307F\u307E\u305B\u3093\uFF09\u3002</div>
+        <div id="st-live-mismatch">${statsMismatchListHTML(liveMismatch.rows)}${mismatchPending ? '<div class="st-note">\u8AAD\u307F\u8FBC\u307F\u4E2D\u2026</div>' : ""}</div>
+        </div>
+      </div>`;
+    }
   }
-  html += "</div>";
+  html += "</div></div>";
   el2.innerHTML = html;
+  if (mismatchPending) {
+    hydrateStatsBundles(pickedIds).then((changed) => {
+      if (changed && el2.style.display !== "none") renderStatsView();
+    }).catch(() => {
+    });
+  }
   const rangeSel = el2.querySelector("#st-range");
   if (rangeSel) rangeSel.addEventListener("change", () => {
     statsUi.range = rangeSel.value;
@@ -39158,41 +43248,48 @@ function renderStatsView() {
       const key2 = kind === "tier" ? "cpuTiers" : "cpuStyles";
       const dataKey = kind === "tier" ? "stCpuTier" : "stCpuStyle";
       statsUi[key2] = [...details.querySelectorAll('input[type="checkbox"]:checked')].map((x) => x.dataset[dataKey]);
-      const top = el2.scrollTop;
+      const top = sheetBody(el2)?.scrollTop || 0;
       renderStatsView();
-      el2.scrollTop = top;
+      sheetBody(el2).scrollTop = top;
     }));
   }
   for (const sel2 of el2.querySelectorAll("[data-mm-sort], [data-mm-filter]")) {
     sel2.addEventListener("change", () => {
       if (sel2.matches("[data-mm-sort]")) statsUi.mmSort = sel2.value;
       else statsUi.mmFilter = sel2.value;
-      const top = el2.scrollTop;
+      const top = sheetBody(el2)?.scrollTop || 0;
       renderStatsView();
-      el2.scrollTop = top;
+      sheetBody(el2).scrollTop = top;
+    });
+  }
+  for (const d of el2.querySelectorAll("details.st-untallied")) {
+    const key2 = d.dataset.stUntallied;
+    d.addEventListener("toggle", () => {
+      if (d.open) statsUi.untalliedOpen.add(key2);
+      else statsUi.untalliedOpen.delete(key2);
     });
   }
 }
-function statsMismatchListHTML(rows, source) {
+function statsMismatchListHTML(rows) {
   if (!rows.length) return (statsUi.mmFilter !== "all" ? mismatchControlsHTML() : "") + '<div class="st-note">\u63A8\u5968\u3068\u9055\u3048\u305F\u5834\u9762\u306F\u3042\u308A\u307E\u305B\u3093\u3002</div>';
   const items = rows.map(({ row, gameId, savedAt }) => {
     const r = row;
     const date = savedAt ? new Date(savedAt).toLocaleDateString("ja-JP") : "";
-    return `<button type="button" class="review-item" data-stats-scene="${source}" data-game-id="${escHtml(gameId)}" data-rec-index="${r.recIndex}">
-      <span>${escHtml(kyokuText(r.kyoku))} ${r.junme ?? "-"}\u5DE1\u76EE\uFF08${contextLabel(r.context)}\uFF09${date ? " \u30FB " + date : ""}</span>
-      <span>\u63A8\u5968: ${escHtml(actionLabel(r.recommended, r))} \uFF0F \u3042\u306A\u305F: ${escHtml(actionLabel(r.actual, r))}</span>
+    return `<div class="review-item">
+      <span>${escHtml2(kyokuText(r.kyoku))} ${escHtml2(r.junme ?? "-")}\u5DE1\u76EE\uFF08${escHtml2(contextLabel(r.context))}\uFF09${date ? " \u30FB " + date : ""}</span>
+      <span>\u63A8\u5968: ${escHtml2(actionLabel(r.recommended, r))} \uFF0F \u3042\u306A\u305F: ${escHtml2(actionLabel(r.actual, r))}</span>
       <span class="review-diff">\u63A8\u5968\u5EA6\u5DEE ${r.probDiff != null ? (r.probDiff * 100).toFixed(1) + "%" : "-"}</span>
-    </button>`;
+    </div>`;
   }).join("");
-  return `<div class="st-note">\u63A8\u5968\u3068\u9055\u3048\u305F\u5834\u9762\uFF08${statsUi.mmSort === "recent" ? "\u65B0\u3057\u3044\u9806" : "\u63A8\u5968\u5EA6\u5DEE\u306E\u5927\u304D\u3044\u9806"}\u30FB\u30BF\u30C3\u30D7\u3067\u5C40\u9762\u3092\u8868\u793A\uFF09</div>${mismatchControlsHTML()}<div class="review-list">${items}</div>`;
+  return `<div class="st-note">\u63A8\u5968\u3068\u9055\u3048\u305F\u5834\u9762\uFF08${statsUi.mmSort === "recent" ? "\u65B0\u3057\u3044\u9806" : "\u63A8\u5968\u5EA6\u5DEE\u306E\u5927\u304D\u3044\u9806"}\uFF09</div>${mismatchControlsHTML()}<div class="review-list">${items}</div>`;
 }
 function toggleStatsMetric(k2) {
   const open = statsUi.open;
   if (!open.delete(k2)) open.add(k2);
   const el2 = $("stats-view");
-  const top = el2 ? el2.scrollTop : 0;
+  const top = el2 ? sheetBody(el2)?.scrollTop || 0 : 0;
   renderStatsView();
-  if (el2) el2.scrollTop = top;
+  if (el2) sheetBody(el2).scrollTop = top;
 }
 document.addEventListener("keydown", (e) => {
   if (e.key !== "Enter" && e.key !== " ") return;
@@ -39219,14 +43316,6 @@ document.addEventListener("click", (e) => {
     statsUi.length = len.dataset.statsLength;
     renderStatsView();
     return;
-  }
-  const scene = e.target.closest?.("[data-stats-scene]");
-  if (scene) {
-    const gid = scene.dataset.gameId;
-    const idx = Number(scene.dataset.recIndex);
-    const bundle = historyCache.find((b) => b.meta?.gameId === gid);
-    if (!bundle) return;
-    openSceneViewer(idx, bundle);
   }
 });
 function updateStartStrength() {
@@ -39258,6 +43347,10 @@ function initCpuSelectors() {
   }
   updateStartStrength();
 }
+var REF_TITLES = { rules: "\u30EB\u30FC\u30EB", yaku: "\u5F79\u4E00\u89A7", glossary: "\u7528\u8A9E\u8F9E\u5178", tiles: "\u724C\u306E\u8AAD\u307F\u65B9" };
+function sheetBody(el2) {
+  return el2?.querySelector(".sheet-body") || el2;
+}
 function setRefTab(tab) {
   const el2 = $("rules-view");
   if (!el2) return;
@@ -39276,18 +43369,22 @@ function setRefTab(tab) {
     if (p) p.hidden = name2 !== tab;
   }
   const title = $("rules-title");
-  if (title) title.textContent = "\u30EB\u30FC\u30EB";
+  if (title) title.textContent = REF_TITLES[tab] || "\u30EB\u30FC\u30EB";
   const card = el2.querySelector(".rules-card");
   el2.scrollTop = 0;
   if (card) card.scrollTop = 0;
+  const body = el2.querySelector(".sheet-body");
+  if (body) body.scrollTo(0, 0);
 }
 function openRefView(tab, inGame = false) {
   clipStatus.clear();
   const el2 = $("rules-view");
   if (!el2) return;
+  const wasOpen = el2.style.display === "flex";
   el2.classList.toggle("in-game", inGame);
   setRefTab(tab);
   el2.style.display = "flex";
+  if (!wasOpen) backNav.push("ref", closeRulesView);
 }
 function openRulesView() {
   openRefView("rules");
@@ -39296,16 +43393,20 @@ function openGuideView() {
   clipStatus.clear();
   const el2 = $("guide-view");
   if (!el2) return;
+  const wasOpen = el2.style.display === "flex";
   const body = $("guide-body");
   if (body && !body.innerHTML) body.innerHTML = renderGuideHtml(tileHTML);
   el2.style.display = "flex";
   el2.scrollTop = 0;
   el2.querySelector(".rules-card")?.scrollTo?.(0, 0);
+  sheetBody(el2)?.scrollTo?.(0, 0);
+  if (!wasOpen) backNav.push("guide", closeGuideView);
 }
 function closeGuideView() {
   const el2 = $("guide-view");
   if (el2) el2.style.display = "none";
   saveGuideSeen(localStorage);
+  backNav.dismiss("guide");
 }
 function maybeShowFirstRunGuide() {
   if (AUTO || $("rules-view")?.style.display === "flex") return;
@@ -39315,6 +43416,7 @@ function maybeShowFirstRunGuide() {
 function closeRulesView() {
   const el2 = $("rules-view");
   if (el2) el2.style.display = "none";
+  backNav.dismiss("ref");
 }
 function aboutVersionText() {
   const webBuild = document.querySelector('meta[name="build-version"]')?.content || "";
@@ -39378,16 +43480,22 @@ function initAudioControls() {
   sync();
   const overlay = $("settings-view");
   let returnFocus;
-  const close = () => {
+  const hide = () => {
     overlay.style.display = "none";
     returnFocus?.focus();
+  };
+  const close = () => {
+    hide();
+    backNav.dismiss("settings");
   };
   const open = (opener) => {
     returnFocus = opener;
     renderDiagnostics();
     overlay.style.display = "flex";
     overlay.scrollTop = 0;
+    sheetBody(overlay)?.scrollTo?.(0, 0);
     $("settings-close").focus();
+    backNav.push("settings", hide);
   };
   $("audioSettingsBtn").addEventListener("click", (e) => open(e.currentTarget));
   $("ss-settings-btn").addEventListener("click", (e) => open(e.currentTarget));
@@ -39412,13 +43520,25 @@ function initAudioControls() {
   });
   const aboutOverlay = $("about-view");
   let aboutReturnFocus;
-  const closeAbout = () => {
+  let versionTaps = 0, versionTapTimer = null;
+  const resetVersionTaps = () => {
+    versionTaps = 0;
+    clearTimeout(versionTapTimer);
+    versionTapTimer = null;
+  };
+  const hideAbout = () => {
     if (!aboutOverlay) return;
+    resetVersionTaps();
     aboutOverlay.style.display = "none";
     aboutReturnFocus?.focus();
   };
+  const closeAbout = () => {
+    hideAbout();
+    backNav.dismiss("about");
+  };
   const openAbout = (opener) => {
     if (!aboutOverlay) return;
+    resetVersionTaps();
     aboutReturnFocus = opener;
     const body = $("about-body");
     if (body) body.innerHTML = renderAboutHtml(aboutVersionText());
@@ -39426,10 +43546,38 @@ function initAudioControls() {
     aboutOverlay.scrollTop = 0;
     $("about-close")?.focus();
     fillAboutLicenses();
+    refreshFreemiumSimPanel();
+    backNav.push("about", hideAbout);
   };
   $("ss-about-btn")?.addEventListener("click", (e) => openAbout(e.currentTarget));
   $("about-close")?.addEventListener("click", closeAbout);
   $("about-body")?.addEventListener("click", (e) => {
+    const simModeButton = e.target.closest?.("[data-sim-mode]");
+    if (simModeButton) {
+      applySimMode(simModeButton.dataset.simMode);
+      return;
+    }
+    if (e.target.closest?.("#fs-exit")) {
+      applySimMode("off");
+      const panel = $("freemium-sim-panel");
+      if (panel) panel.hidden = true;
+      return;
+    }
+    if (e.target.closest?.("#about-version")) {
+      versionTaps++;
+      clearTimeout(versionTapTimer);
+      versionTapTimer = setTimeout(resetVersionTaps, 2500);
+      if (versionTaps >= 5) {
+        resetVersionTaps();
+        const panel = $("freemium-sim-panel");
+        if (panel) {
+          panel.hidden = false;
+          refreshFreemiumSimPanel();
+          panel.scrollIntoView({ block: "nearest" });
+        }
+      }
+      return;
+    }
     const a = e.target.closest?.("[data-external]");
     if (a && openExternalUrl(a.dataset.external)) e.preventDefault();
   });
@@ -39513,6 +43661,13 @@ function initStartScreen() {
   syncSeg();
   S.syncStartSegment = syncSeg;
   $("ss-start-btn").addEventListener("click", () => $("startBtn").click());
+  const confirmEl = $("start-confirm");
+  if (confirmEl && !confirmEl.firstElementChild) confirmEl.innerHTML = startConfirmHTML();
+  $("start-confirm-ok")?.addEventListener("click", () => resolveStartConfirm(true));
+  $("start-confirm-cancel")?.addEventListener("click", () => resolveStartConfirm(false));
+  $("start-confirm")?.addEventListener("click", (e) => {
+    if (e.target === $("start-confirm")) resolveStartConfirm(false);
+  });
   $("ss-history-btn").addEventListener("click", openHistory);
   $("ss-stats-btn").addEventListener("click", () => {
     openStatsView();
@@ -39527,7 +43682,7 @@ function initStartScreen() {
   $("ss-yaku-btn")?.addEventListener("click", () => openRefView("yaku"));
   $("ss-glossary-btn")?.addEventListener("click", () => openRefView("glossary"));
   $("ss-tiles-btn")?.addEventListener("click", () => openRefView("tiles"));
-  for (const id2 of ["rules-close", "rules-close2"]) $(id2)?.addEventListener("click", closeRulesView);
+  $("rules-close")?.addEventListener("click", closeRulesView);
   $("rules-view")?.addEventListener("click", (e) => {
     const t = e.target.closest?.("[data-ref-tab], [data-ref-link]");
     if (t) setRefTab(t.dataset.refTab || t.dataset.refLink);
@@ -39535,6 +43690,21 @@ function initStartScreen() {
   $("refBtn")?.addEventListener("click", () => openRefView("yaku", true));
   document.addEventListener("keydown", (e) => {
     if (e.key !== "Escape") return;
+    if (!$("confirm-dialog")?.hidden) {
+      e.stopPropagation();
+      resolveConfirm(false);
+      return;
+    }
+    if (!$("start-confirm")?.hidden) {
+      e.stopPropagation();
+      resolveStartConfirm(false);
+      return;
+    }
+    if (coachSheetOpen) {
+      e.stopPropagation();
+      closeCoachSheet();
+      return;
+    }
     if ($("rules-view")?.style.display !== "none") closeRulesView();
     else if ($("guide-view")?.style.display !== "none") closeGuideView();
   });
@@ -39577,6 +43747,26 @@ function initStartScreen() {
   updateStartStrength();
   updateModelNotice();
   renderStartScreenStats();
+  drillUi = createDrillUi({
+    root,
+    storage: localStorage,
+    dataUrl: "drill_problems.json",
+    getRuntime: () => ai,
+    getLightRuntime: () => S.modelId === "jaklab-v1-light" ? ai : ensureLightAi(),
+    getModelId: () => S.modelId,
+    BrainClass: MortalBrain,
+    isReady: () => !!(ai && S.ready && !S.modelSwapping),
+    getBilling: () => ({
+      pwa: billing.pwa,
+      status: billing.state.status,
+      owned: billing.state.owned,
+      grandfathered: billing.state.grandfathered
+    }),
+    backNav
+  });
+  S.drill = drillUi;
+  drillUi.setEnabled(!!(ai && S.ready && !S.modelSwapping));
+  drillUi.refreshLock();
 }
 function diagInfo() {
   const meta = (n) => document.querySelector(`meta[name="${n}"]`)?.content || "";
@@ -39587,7 +43777,16 @@ function diagInfo() {
     modelHash: ver(meta("model-version")),
     model: model ? `${model.id}${model.version ? " (" + model.version + ")" : ""}` : S.modelId || "-",
     config: S.ortConfig ? `${S.ortConfig}${S.provider ? " / " + S.provider : ""}` : S.ready ? "-" : "\u672A\u78BA\u5B9A",
-    resume: !!loadResumeSnapshotQuiet()
+    resume: !!loadResumeSnapshotQuiet(),
+    fit: {
+      scale: S.fitScale ?? 1,
+      natural: S.fitNaturalHeight ?? 0,
+      vh: S.fitViewportHeight ?? window.innerHeight,
+      fits: S.fitCalcCount | 0,
+      innerH: window.innerHeight,
+      visualH: window.visualViewport?.height ?? null,
+      dpr: window.devicePixelRatio
+    }
   };
 }
 function loadResumeSnapshotQuiet() {
@@ -39608,7 +43807,13 @@ function renderDiagnostics() {
   set("ss-diag-app", `app=${i.app} model=${i.modelHash}`);
   set("ss-diag-model", i.model);
   set("ss-diag-config", i.config);
+  set("ss-diag-fit", fitDiagLine(i.fit));
   set("ss-diag-last", le ? `${le.code}\uFF08${ERROR_CODES[le.code] || "\u4E0D\u660E"}\uFF09${new Date(le.at).toLocaleString("ja-JP")}` : "\u306A\u3057");
+}
+function fitDiagLine(f) {
+  if (!f) return "-";
+  const v = (x) => x === null || x === void 0 ? "-" : x;
+  return `scale=${v(f.scale)} natural=${v(f.natural)} vh=${v(f.vh)} fits=${v(f.fits)} innerH=${v(f.innerH)} visualH=${v(f.visualH)} dpr=${v(f.dpr)}`;
 }
 async function copyDiagnostics() {
   const text = buildDiagnostics(diagInfo());
@@ -39637,6 +43842,177 @@ async function copyDiagnostics() {
   if (st2) st2.textContent = ok2 ? "\u30B3\u30D4\u30FC\u3057\u307E\u3057\u305F\uFF08\u81EA\u52D5\u3067\u306F\u9001\u4FE1\u3055\u308C\u307E\u305B\u3093\uFF09" : "\u30B3\u30D4\u30FC\u3067\u304D\u307E\u305B\u3093\u3067\u3057\u305F";
   renderDiagnostics();
 }
+function completedCoachHistory() {
+  return completedGames([...historyCache, ...sessionCompletions.values()], summariesCache);
+}
+function countedStarts() {
+  return startCount(readStartState(startStorage), completedCoachHistory().length);
+}
+function realCoachAccess() {
+  return billing.access(countedStarts());
+}
+function currentCoachAccess() {
+  return simulatedAccess(currentSimState()) || realCoachAccess();
+}
+function currentBillingPrice() {
+  if (currentSimState().active) return "";
+  const price = billing.state.price;
+  return typeof price === "string" ? price : "";
+}
+function realFreemiumState() {
+  const state = billing.state;
+  const completed = completedCoachHistory().length;
+  return {
+    status: state.status,
+    owned: state.owned,
+    grandfathered: state.grandfathered,
+    pwa: billing.pwa,
+    completed,
+    starts: startCount(readStartState(startStorage), completed)
+  };
+}
+function renderSimBadge() {
+  const badge = $("ss-sim-badge");
+  if (badge) badge.hidden = !currentSimState().active;
+}
+function refreshFreemiumSimPanel() {
+  const panel = $("freemium-sim-panel");
+  if (!panel) return;
+  const sim = currentSimState();
+  const real = $("fs-real-state");
+  if (real) {
+    const state = realFreemiumState();
+    real.textContent = `\u73FE\u5728\u306E\u5B9F\u72B6\u614B: ${realStateText({ ...state, completed: state.starts })}`;
+  }
+  const selected = sim.active ? sim.mode : "off";
+  for (const button of panel.querySelectorAll("[data-sim-mode]")) {
+    const active = button.dataset.simMode === selected;
+    button.classList.toggle("active", active);
+    button.setAttribute("aria-checked", active ? "true" : "false");
+  }
+  const virtual = $("fs-virtual-state");
+  if (virtual) {
+    virtual.hidden = !sim.active;
+    virtual.textContent = virtualStateText(sim);
+  }
+  const exit = $("fs-exit");
+  if (exit) exit.hidden = !sim.active;
+}
+function applySimMode(mode) {
+  if (mode === "off") clearSim(simStorage);
+  else writeSim(simStorage, mode);
+  refreshCoachAccess();
+  refreshFreemiumSimPanel();
+}
+function liveCoachLocked() {
+  const access = currentCoachAccess();
+  return access.gate && (S.started && !S.finished ? !gameTrialEligible : access.locked);
+}
+function refreshCoachAccess() {
+  const state = billing.state;
+  const simulated = currentSimState().active;
+  const status = $("unlock-status");
+  if (status) status.textContent = simulated ? "\u30B7\u30DF\u30E5\u30EC\u30FC\u30B7\u30E7\u30F3\u4E2D\u306F\u8CFC\u5165\u3067\u304D\u307E\u305B\u3093" : state.status === "loading" ? "\u78BA\u8A8D\u4E2D\u2026" : state.owned || state.grandfathered ? "\u30A2\u30F3\u30ED\u30C3\u30AF\u6E08\u307F\u3067\u3059" : state.outcome === "purchasing" ? "\u8CFC\u5165\u624B\u7D9A\u304D\u4E2D\u2026" : state.outcome === "cancelled" ? "\u8CFC\u5165\u3092\u30AD\u30E3\u30F3\u30BB\u30EB\u3057\u307E\u3057\u305F" : state.outcome === "pending" ? "\u304A\u652F\u6255\u3044\u306E\u5B8C\u4E86\u3092\u5F85\u3063\u3066\u3044\u307E\u3059" : state.status === "unavailable" ? "\u78BA\u8A8D\u3067\u304D\u307E\u305B\u3093\u3067\u3057\u305F\u3002\u30B3\u30FC\u30C1\u306F\u305D\u306E\u307E\u307E\u4F7F\u3048\u307E\u3059" : state.outcome === "restored" ? "\u8CFC\u5165\u306F\u898B\u3064\u304B\u308A\u307E\u305B\u3093\u3067\u3057\u305F" : "";
+  const purchase = document.querySelector("[data-coach-purchase]");
+  if (purchase) purchase.disabled = simulated || state.status === "loading" || state.owned || state.grandfathered || ["pending", "purchasing"].includes(state.outcome);
+  const priceEl = $("unlock-price");
+  if (priceEl) {
+    const price = currentBillingPrice();
+    priceEl.textContent = price;
+    priceEl.hidden = !price;
+  }
+  const restore = $("coach-restore");
+  if (restore) restore.hidden = !billing.available;
+  if (!currentCoachAccess().locked) document.querySelector(".trial-end")?.remove();
+  if (S.started) render();
+  if ($("stats-view")?.style.display === "flex") renderStatsView();
+  renderStartScreenStats();
+  refreshFreemiumSimPanel();
+  typeof drillUi !== "undefined" && drillUi?.refreshLock();
+}
+var unlockFocus = null;
+function closeUnlockSheet() {
+  const sheet = $("coach-unlock-sheet");
+  if (sheet) sheet.hidden = true;
+  unlockFocus?.focus();
+  backNav.dismiss("unlock");
+}
+function openUnlockSheet() {
+  if (billing.pwa) return;
+  const sheet = $("coach-unlock-sheet");
+  if (!sheet || !sheet.hidden) return;
+  unlockFocus = document.activeElement;
+  sheet.hidden = false;
+  refreshCoachAccess();
+  document.querySelector("[data-coach-sheet-close]")?.focus();
+  backNav.push("unlock", closeUnlockSheet);
+}
+function initCoachBilling() {
+  const purchaseUi = !billing.pwa;
+  if (purchaseUi) {
+    const sheet = document.createElement("div");
+    sheet.id = "coach-unlock-sheet";
+    sheet.className = "unlock-sheet";
+    sheet.hidden = true;
+    sheet.setAttribute("role", "dialog");
+    sheet.setAttribute("aria-modal", "true");
+    sheet.setAttribute("aria-labelledby", "unlock-title");
+    sheet.innerHTML = unlockSheetHTML();
+    document.body.append(sheet);
+    const restore = document.createElement("button");
+    restore.type = "button";
+    restore.id = "coach-restore";
+    restore.textContent = "\u8CFC\u5165\u3092\u5FA9\u5143\u3059\u308B";
+    restore.hidden = !billing.available;
+    const aboutRow = document.querySelector("#ss-settings-panel .ss-about-row");
+    if (aboutRow) aboutRow.before(restore);
+    else $("ss-settings-panel")?.append(restore);
+    restore.addEventListener("click", () => {
+      openUnlockSheet();
+      billing.restore();
+    });
+    document.addEventListener("click", (e) => {
+      if (e.target.closest?.("[data-coach-unlock]")) openUnlockSheet();
+      if (e.target.closest?.("[data-coach-sheet-close]") || e.target === sheet) closeUnlockSheet();
+      if (e.target.closest?.("[data-coach-purchase]")) {
+        if (!currentSimState().active) billing.purchase();
+      }
+    });
+    sheet.addEventListener("keydown", (e) => {
+      if (e.key === "Escape") {
+        e.stopPropagation();
+        closeUnlockSheet();
+      }
+      if (e.key === "Tab") {
+        const buttons = [...sheet.querySelectorAll("button:not(:disabled)")];
+        const target = e.shiftKey ? buttons.at(-1) : buttons[0];
+        if (document.activeElement === (e.shiftKey ? buttons[0] : buttons.at(-1))) {
+          e.preventDefault();
+          target?.focus();
+        }
+      }
+    });
+    window.addEventListener("janlab-billing", (e) => billing.receive(e.detail));
+  }
+  Object.defineProperty(S, "freemium", { get: () => {
+    const sim = currentSimState();
+    const real = realFreemiumState();
+    const access = currentCoachAccess();
+    return {
+      ...sim.active ? { status: "ready", owned: false, grandfathered: false } : billing.state,
+      ...access,
+      pwa: billing.pwa,
+      completed: real.completed,
+      starts: real.starts,
+      real,
+      simulation: sim,
+      liveLocked: liveCoachLocked()
+    };
+  } });
+  S.setFreemiumSimulation = applySimMode;
+  S.freemiumSimulation = currentSimState;
+  billing.start();
+}
 async function init() {
   audio.prepare();
   initAudioControls();
@@ -39646,9 +44022,15 @@ async function init() {
   if (!document.querySelector(".tile-defs")) document.body.insertAdjacentHTML("afterbegin", TILE_DEFS_HTML);
   preloadTileFaces();
   initViewportFit();
+  try {
+    controlsCollapsed = localStorage.getItem(CONTROLS_COLLAPSED_KEY) === "1";
+  } catch (_) {
+  }
+  applyControlsCollapsed(controlsCollapsed);
+  $("controlsToggle").addEventListener("click", toggleControls);
   $("coachToggle").addEventListener("change", (e) => {
     coachEnabled = e.target.checked;
-    if (S.started && !S.finished) gameCoachDisplay = mergeCoachDisplay(gameCoachDisplay, coachEnabled);
+    if (S.started && !S.finished) gameCoachDisplay = mergeCoachDisplay(gameCoachDisplay, coachEnabled && !liveCoachLocked());
     render();
   });
   const assistEl = $("assistToggle");
@@ -39702,12 +44084,25 @@ async function init() {
     });
   }
   $("suspendBtn").addEventListener("click", returnToStart);
+  S.backNav = backNav;
   S.saveTextFile = saveTextFile;
   S.importLogText = importLogText;
   S.openHistory = openHistory;
   document.addEventListener("click", (e) => {
     if (e.target.closest?.("[data-clip-save]")) {
       saveSceneClip();
+      return;
+    }
+    if (e.target.closest?.("[data-coach-expand]")) {
+      openCoachSheet();
+      return;
+    }
+    if (e.target.closest?.("[data-coach-sheet-close]")) {
+      closeCoachSheet();
+      return;
+    }
+    if (e.target.id === "coach-sheet") {
+      closeCoachSheet();
       return;
     }
     if (e.target.closest?.("[data-replay-play]")) {
@@ -39722,11 +44117,6 @@ async function init() {
       jumpReplayKyoku(1);
       return;
     }
-    const svRow = e.target.closest?.("[data-rec-index]");
-    if (svRow) {
-      openSceneViewer(Number(svRow.dataset.recIndex));
-      return;
-    }
     if (e.target.closest?.("[data-scene-close]")) {
       closeSceneViewer();
       return;
@@ -39739,11 +44129,40 @@ async function init() {
       stepSceneViewer(1);
       return;
     }
-    if (e.target.closest?.("[data-sv-toggle]")) {
-      if (sceneViewer) {
-        sceneViewer.expanded = !sceneViewer.expanded;
-        renderSceneViewer();
-      }
+    const sMore = e.target.closest?.("[data-sheet-more]");
+    if (sMore) {
+      const k2 = sMore.dataset.sheetMore;
+      const open = !cellMoreOpen.has(k2);
+      if (open) cellMoreOpen.add(k2);
+      else cellMoreOpen.delete(k2);
+      sMore.setAttribute("aria-expanded", String(open));
+      sMore.textContent = open ? "\u5185\u8A33\u3092\u96A0\u3059" : "\u5185\u8A33\u3092\u8868\u793A";
+      const row = sMore.closest("tr")?.nextElementSibling;
+      if (row?.classList.contains("sheet-row-detail")) row.hidden = !open;
+      return;
+    }
+    const sDetail = e.target.closest?.("[data-sheet-detail]");
+    if (sDetail) {
+      sheetDetailOpen = !sheetDetailOpen;
+      sDetail.setAttribute("aria-expanded", String(sheetDetailOpen));
+      sDetail.textContent = sheetDetailOpen ? "\u8A73\u7D30\u3092\u96A0\u3059" : "\u8A73\u7D30\u3092\u8868\u793A";
+      const detail = sDetail.parentElement?.querySelector(".sheet-detail");
+      if (detail) detail.hidden = !sheetDetailOpen;
+      return;
+    }
+    const more = e.target.closest?.("[data-cell-more]");
+    if (more) {
+      const k2 = more.dataset.cellMore;
+      const open = !cellMoreOpen.has(k2);
+      if (open) cellMoreOpen.add(k2);
+      else cellMoreOpen.delete(k2);
+      document.querySelectorAll("[data-cell-more]").forEach((btn2) => {
+        if (btn2.dataset.cellMore !== k2) return;
+        btn2.setAttribute("aria-expanded", String(open));
+        btn2.textContent = open ? "\u5185\u8A33\u3092\u96A0\u3059" : "\u5185\u8A33\u3092\u8868\u793A";
+        const detail = btn2.closest("td")?.querySelector(".cell-detail");
+        if (detail) detail.hidden = !open;
+      });
       return;
     }
     const tgl = e.target.closest?.("[data-cmp-toggle]");
@@ -39758,12 +44177,19 @@ async function init() {
     const btn = e.target.closest?.("[data-probe-btn]");
     if (!btn) return;
     const t = probeTargets.get(btn.dataset.probeBtn);
-    if (t) executeProbe(t.rec, btn.dataset.probeBtn);
+    if (t) {
+      if (coachSheetOpen) sheetDetailOpen = true;
+      executeProbe(t.rec, btn.dataset.probeBtn);
+    }
   });
-  refreshHistory().then(async () => {
+  initCoachBilling();
+  billingHistoryReady = refreshHistory().then(async () => {
     maybeShowFirstRunGuide();
     await loadSummaries();
+    syncStartFloor(startStorage, completedCoachHistory().length);
+    reconcileLegacyResumeStart();
     renderStartScreenStats();
+    refreshCoachAccess();
   }).catch((e) => S.errors.push("history load: " + (e.message || e)));
   initModelSelector();
   initStartScreen();
@@ -39777,7 +44203,6 @@ async function init() {
   S.savePartialGame = savePartialGame;
   S.meldHTML = meldHTML;
   S.tileHTML = tileHTML;
-  S.openSceneViewer = openSceneViewer;
   S.foldMjaiScene = foldMjaiScene;
   $("startBtn").addEventListener("click", startGame);
   const lengthSel = $("lengthSel");
@@ -39809,10 +44234,15 @@ async function init() {
   } else {
     const hadController = !!navigator.serviceWorker.controller;
     let swReloading = false;
+    swReloadGate = createSwReloadGate({
+      reload: () => location.reload(),
+      isGameRunning: () => !!S.started && !S.finished
+    });
+    S.swReloadGate = swReloadGate;
     navigator.serviceWorker.addEventListener("controllerchange", () => {
       if (!hadController || swReloading) return;
       swReloading = true;
-      location.reload();
+      swReloadGate.request();
     });
     try {
       const reg = await navigator.serviceWorker.register("sw.js");
@@ -39828,6 +44258,11 @@ async function init() {
   }
   const pendingLoad = modelLoadPending(localStorage);
   startupFallback = crashFallback(pendingLoad);
+  const resumedFallback = resumeFallback(fallbackModelPending(sessionStorage));
+  if (resumedFallback) {
+    startupFallback = resumedFallback;
+    log("\u524D\u56DE\u306E\u8AAD\u307F\u8FBC\u307F\u306B\u7D9A\u3051\u3066\u8EFD\u91CF\u7248\uFF08V1 Light\uFF09\u3067\u518D\u958B\u3057\u307E\u3059");
+  }
   if (startupFallback) {
     recordError(startupFallback.code, `\u524D\u56DE\u306E\u8AAD\u307F\u8FBC\u307F\u304C\u672A\u5B8C\u4E86 (${pendingLoad})`, { stage: "fallback-crash" });
     log("\u524D\u56DE\u306E\u30E2\u30C7\u30EB\u8AAD\u307F\u8FBC\u307F\u304C\u5B8C\u4E86\u3057\u306A\u304B\u3063\u305F\u305F\u3081\u3001\u8EFD\u91CF\u7248\uFF08V1 Light\uFF09\u3067\u8D77\u52D5\u3057\u307E\u3059");
@@ -39873,6 +44308,7 @@ function setStartEnabled(on) {
   if (ssb) ssb.disabled = !on;
   const rsb = $("ss-resume-btn");
   if (rsb) rsb.disabled = !on;
+  typeof drillUi !== "undefined" && drillUi?.setEnabled(on);
 }
 function setModelLoadStatus(text, loading) {
   const status = $("ss-status-text");
@@ -39920,21 +44356,22 @@ function onInferFail(err, context) {
 }
 S.onInferFail = onInferFail;
 var lightAi = null;
+async function ensureLightAi() {
+  if (!lightAi) {
+    log("CPU\u7528\u306E\u8EFD\u91CF\u30E2\u30C7\u30EB\uFF08V1 Light\uFF09\u3092\u8AAD\u307F\u8FBC\u307F\u4E2D\u2026");
+    lightAi = await AiRuntime.create(
+      LIGHT_MODEL_FILE,
+      "assets/mortal_wasm_bg.wasm",
+      new URL("ort/", document.baseURI).href,
+      (m) => log(m),
+      { expectedBytes: MODEL_SIZES[LIGHT_MODEL_FILE] || 0 }
+    );
+    log("CPU\u7528\u306E\u8EFD\u91CF\u30E2\u30C7\u30EB\uFF08V1 Light\uFF09\u8AAD\u307F\u8FBC\u307F\u5B8C\u4E86");
+  }
+  return lightAi;
+}
 async function prepareCpuOpponents(settings = cpuSeats) {
-  const loadLight = async () => {
-    if (!lightAi) {
-      log("CPU\u7528\u306E\u8EFD\u91CF\u30E2\u30C7\u30EB\uFF08V1 Light\uFF09\u3092\u8AAD\u307F\u8FBC\u307F\u4E2D\u2026");
-      lightAi = await AiRuntime.create(
-        LIGHT_MODEL_FILE,
-        "assets/mortal_wasm_bg.wasm",
-        new URL("ort/", document.baseURI).href,
-        (m) => log(m),
-        { expectedBytes: MODEL_SIZES[LIGHT_MODEL_FILE] || 0 }
-      );
-      log("CPU\u7528\u306E\u8EFD\u91CF\u30E2\u30C7\u30EB\uFF08V1 Light\uFF09\u8AAD\u307F\u8FBC\u307F\u5B8C\u4E86");
-    }
-    return lightAi;
-  };
+  const loadLight = ensureLightAi;
   const seedParam = Number(new URLSearchParams(location.search).get("cpuSeed"));
   const base = Number.isFinite(seedParam) && seedParam > 0 ? seedParam : Math.floor(Math.random() * 2 ** 31);
   const prepared = await createCpuOpponents({ settings, ai, coachModelId: S.modelId, loadLight, seed: base });
@@ -40006,7 +44443,7 @@ async function loadModelRuntime(model, swap, fallback = null) {
       "assets/mortal_wasm_bg.wasm",
       new URL("ort/", document.baseURI).href,
       (m) => log(m),
-      { onprogress: pop.progress, expectedBytes: MODEL_SIZES[model.file] || 0, displayTemperature: model.displayTemperature }
+      { onprogress: pop.progress, expectedBytes: MODEL_SIZES[model.file] || 0, displayTemperature: model.displayTemperature, softvalue: model.softvalue || false }
     );
     setModelLoadStatus("\u63A8\u8AD6\u306E\u6E96\u5099\u4E2D\u2026 \u304A\u5F85\u3061\u304F\u3060\u3055\u3044", true);
     log("\u63A8\u8AD6\u30A8\u30F3\u30B8\u30F3\u306E\u52D5\u4F5C\u78BA\u8A8D\u4E2D\u2026");
@@ -40021,6 +44458,7 @@ async function loadModelRuntime(model, swap, fallback = null) {
     }
     ai = rt;
     clearModelLoading(localStorage);
+    clearFallbackModel(sessionStorage);
     pop.finish();
     S.modelLoads = (S.modelLoads || 0) + 1;
     S.provider = ai.providerUsed;
@@ -40032,8 +44470,7 @@ async function loadModelRuntime(model, swap, fallback = null) {
     updateStartStrength();
     updateModelNotice();
     S.ortConfig = ai.ortConfig || null;
-    const cfgLabel = ai.ortConfig ? `\uFF08\u69CB\u6210${ai.ortConfig}\uFF09` : "";
-    setModelLoadStatus(fallback ? `${fallback.notice}${cfgLabel} \u2015 \u3059\u3050\u306B\u59CB\u3081\u3089\u308C\u307E\u3059` : `${swap ? "\u5207\u308A\u66FF\u3048\u5B8C\u4E86" : "\u6E96\u5099\u5B8C\u4E86"}${cfgLabel} \u2015 \u3059\u3050\u306B\u59CB\u3081\u3089\u308C\u307E\u3059`, false);
+    setModelLoadStatus(fallback ? `${fallback.notice} \u2015 \u3059\u3050\u306B\u59CB\u3081\u3089\u308C\u307E\u3059` : `${swap ? "\u5207\u308A\u66FF\u3048\u5B8C\u4E86" : "\u6E96\u5099\u5B8C\u4E86"} \u2015 \u3059\u3050\u306B\u59CB\u3081\u3089\u308C\u307E\u3059`, false);
     const sld = $("ss-load");
     if (sld) sld.hidden = true;
     renderDiagnostics();
@@ -40051,11 +44488,13 @@ async function loadModelRuntime(model, swap, fallback = null) {
         log(`${fb2.notice}\uFF08${d.code}\uFF09`);
         pop.fail();
         setModelLoadStatus("\u8EFD\u91CF\u7248\uFF08V1 Light\uFF09\u3092\u8AAD\u307F\u8FBC\u307F\u4E2D\u2026 \u304A\u5F85\u3061\u304F\u3060\u3055\u3044", true);
+        markFallbackModel(sessionStorage, light.id);
         await loadModelRuntime(light, swap, info);
         return;
       }
     }
     clearModelLoading(localStorage);
+    clearFallbackModel(sessionStorage);
     S.modelFailed = model.id;
     const diagText = userDiagText(d);
     S.initDiag = diagText;
@@ -40084,7 +44523,7 @@ async function loadModelRuntime(model, swap, fallback = null) {
   }
 }
 var MODEL_SIZES = (() => {
-  const raw = "{\"models/jaklab_v1.onnx\":43660777,\"models/jaklab_v1_light.onnx\":5776417}";
+  const raw = "{\"models/jaklab_v1.onnx\":43660778,\"models/jaklab_v1_light.onnx\":5776417}";
   try {
     return raw.startsWith("__") ? {} : JSON.parse(raw);
   } catch (_) {
@@ -40212,9 +44651,6 @@ function createLoadPopup() {
   };
 }
 document.addEventListener("DOMContentLoaded", init);
-export {
-  tileLabel
-};
 /*! Bundled license information:
 
 @kobalab/majiang-core/lib/index.js:

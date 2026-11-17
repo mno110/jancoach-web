@@ -5,7 +5,7 @@
 // forever because the cache name was a constant and this file was copied
 // verbatim, so its bytes never changed and the browser never saw an SW
 // update):
-//   - build.mjs stamps content hashes into ae9036313311 / bd980c22b59a
+//   - build.mjs stamps content hashes into 870672bfef8d / 9c84b741fe3f
 //     below, so ANY change to the app files (or the models) changes this
 //     file's bytes and the cache names. The browser then installs the new
 //     SW, precaches into the new caches, and activate() drops old caches.
@@ -14,15 +14,17 @@
 //   - skipWaiting + clients.claim (already used before) make the new SW
 //     take over immediately; main.js reloads the page once on
 //     controllerchange so the new layout appears without manual reopen.
+//     A reload is held while a game is running and applied on the end
+//     screen (P1, 2026-11-10), so an update never aborts a game.
 //   - Navigations are network-first (fall back to cache when offline), so
 //     the HTML shell itself can never get stuck on a stale copy.
-const APP_VER = 'ae9036313311';
-const MODEL_VER = 'bd980c22b59a';
+const APP_VER = '870672bfef8d';
+const MODEL_VER = '9c84b741fe3f';
 const APP_CACHE = 'mahjong-local-app-' + APP_VER;
 const MODEL_CACHE = 'mahjong-local-models-' + MODEL_VER;
 const APP_ASSETS = [
-  './', './index.html', './style.css', './manifest.webmanifest',
-  './js/main.bundle.js', './ai_baseline.json',
+  './', './index.html', './style.css', './freemium.css', './drill.css', './manifest.webmanifest',
+  './js/main.bundle.js', './ai_baseline.json', './drill_problems.json',
   './licenses/majiang-core-MIT.txt', './licenses/onnxruntime-web-MIT.txt',
   './licenses/onnxruntime-common-MIT.txt', './licenses/Apache-2.0.txt',
   './licenses/Apache-2.0-NOTICE.txt',

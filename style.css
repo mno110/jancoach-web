@@ -1,14 +1,22 @@
 * { box-sizing: border-box; }
 /* Replay uses the live table/tiles/pond/coach presentation in its own overlay. */
-.clip-panel { position: relative; padding-right: 46px; }
-.clip-save { position: absolute; right: 2px; top: 2px; min-width: 40px; min-height: 40px; border-radius: 8px; border: 1px solid #2a7; background: #0e5a41; color: #eef; font-size: 22px; cursor: pointer; display: inline-flex; align-items: center; justify-content: center; padding: 0; }
-.clip-save svg { display: block; width: 15px; height: 22px; fill: currentColor; }
+/* The clip button is an absolute box in the top-right corner. It used to be
+   a 40x40 icon+label button with an 82px float spacer in front of the panel
+   content. That spacer also shortened the coach summary (a flex container
+   establishes its own formatting context, so it cannot overlap the float),
+   leaving the recommendation frame 82px narrower than the candidate panel
+   (owner report, 2026-11-12). Reserve the corner on the heading line only;
+   every later block (recommendation, candidates, notes) uses the full width. */
+.clip-panel { position: relative; }
+.clip-panel > h3.coach-head { padding-right: 54px; }
+.clip-save { position: absolute; right: 2px; top: 2px; min-width: 0; min-height: 0; border-radius: 8px; border: 1px solid #2a7; background: #0e5a41; color: #eef; font-size: 11px; cursor: pointer; display: inline-flex; align-items: center; justify-content: center; padding: 3px 9px; }
+.clip-save .clip-label { font-size: 11px; font-weight: 700; line-height: 1; }
 .clip-status { font-size: 12px; color: #ffd97a; }
 #clips-view { z-index: 29; }
 .scene-viewer .replay-card { width: min(1100px, 98vw); padding: 10px; }
 .replay-nav { display: flex; flex-wrap: wrap; gap: 3px; margin: 6px 0; }
 .replay-table { height: min(620px, 65dvh); margin: 8px 0; }
-.replay-coach { background: #07271c; padding: 8px 48px 8px 8px; }
+.replay-coach { background: #07271c; padding: 8px; }
 .replay-coach h3 { margin: 6px 0; font-size: 15px; }
 .replay-coach .ctx { color: #9db; font-size: 11px; font-weight: normal; }
 .replay-clip-tools { min-height: 44px; }
@@ -106,6 +114,9 @@ body:has(#start-screen:not([hidden])) { background: #06231a; }
   font-family: 'Hiragino Mincho ProN','Yu Mincho',serif; box-shadow: 0 3px 10px rgba(0,0,0,.45); }
 .ss-brand h1 { margin: 4px 0 0; font-size: 25px; letter-spacing: .12em; }
 .ss-sub { color: #ffd97a; font-size: 12.5px; letter-spacing: .18em; margin-top: 2px; }
+.ss-sim-badge { display: inline-block; margin-top: 5px; padding: 2px 9px; border-radius: 999px;
+  background: #ffd97a; color: #332400; font-size: 11px; font-weight: 800; letter-spacing: .08em; }
+.ss-sim-badge[hidden] { display: none; }
 .ss-card { width: min(430px, 100%); background: rgba(0,0,0,.28); border: 1px solid rgba(255,255,255,.16);
   border-radius: 10px; padding: 10px 14px; }
 .ss-card-title { font-size: 12px; color: #bde; margin-bottom: 6px; }
@@ -113,6 +124,15 @@ body:has(#start-screen:not([hidden])) { background: #06231a; }
 .ss-cell { flex: 1; text-align: center; }
 .ss-v { font-size: 21px; font-weight: 800; color: #fff; }
 .ss-k { font-size: 11px; color: #bde; }
+.ss-card { position: relative; }
+.ss-cert-cell { display: block; background: none; border: 0; padding: 0; font: inherit; cursor: pointer; color: inherit; min-width: 0; }
+.ss-cert-cell .ss-v, .ss-cert-cell .ss-k { display: block; }
+.ss-cert-cell .ss-v { font-size: 15px; line-height: 31.5px; white-space: nowrap; }
+.ss-cert-pop { position: absolute; right: 8px; bottom: calc(100% - 4px); width: min(260px, 90%); z-index: 5;
+  background: #10202c; border: 1px solid rgba(255,255,255,.35); border-radius: 8px; padding: 8px 10px;
+  font-size: 12px; line-height: 1.5; color: #e6f2ff; text-align: left; box-shadow: 0 4px 14px rgba(0,0,0,.5); }
+.ss-cert-pop[hidden] { display: none; }
+.ss-cert-basis { margin-top: 4px; color: #ffd97a; }
 .ss-resume { border-color: rgba(255,217,122,.6); text-align: center; }
 .ss-resume-title { font-weight: 800; color: #ffd97a; }
 .ss-resume-detail { margin-top: 4px; font-size: 14px; }
@@ -135,7 +155,12 @@ body:has(#start-screen:not([hidden])) { background: #06231a; }
 .ss-cpu-seat-name { color: #eef; font-size: 12px; margin-bottom: 4px; }
 .ss-coach-model { display: flex; align-items: center; gap: 8px; font-size: 13px; }
 .ss-coach-model select { flex: 1; min-width: 0; font-size: 13px; }
+/* Locked free trial: keep the select usable, but explain that the chosen
+   model is applied after the one-time unlock (Astra 2026-11-10). */
+.ss-model-lock { margin-top: -2px; font-size: 11.5px; color: #ffd97a; }
+.ss-model-lock[hidden] { display: none; }
 .ss-cpu-note { margin-top: 4px; }
+.ss-settings-note.ss-cpu-note { font-size: 12.5px; color: #d9efe5; }
 .ss-segment { display: flex; width: min(430px, 100%); background: rgba(0,0,0,.35); border-radius: 9px; padding: 3px; gap: 3px; }
 .ss-segment button { flex: 1; padding: 8px; font-size: 15px; background: transparent; color: #cfe;
   border: none; border-radius: 7px; cursor: pointer; }
@@ -143,9 +168,41 @@ body:has(#start-screen:not([hidden])) { background: #06231a; }
 .ss-btn-primary { width: min(430px, 100%); padding: 11px; font-size: 17px; font-weight: 800;
   background: #0e7a52; color: #fff; border: 1px solid #2a7; border-radius: 9px; cursor: pointer; }
 .ss-btn-primary:disabled { opacity: .45; cursor: default; }
+/* Two-line start button (2026-11-10): the second line is the freemium
+   remaining count. It is hidden for purchased/grandfathered users, so
+   the button keeps its original single-line height there. */
+#ss-start-btn { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2px; }
+#ss-start-btn .ss-start-label { display: block; }
+#ss-start-btn .ss-start-free { display: block; font-size: 12px; font-weight: 600; line-height: 1.3; opacity: .9; }
+#ss-start-btn .ss-start-free[hidden] { display: none; }
+.ss-unlock-link { width: min(430px, 100%); margin-top: -2px; padding: 5px 6px; background: transparent;
+  border: 0; color: #7ee2a8; font: inherit; font-size: 13.5px; font-weight: 600; line-height: 1.3;
+  text-align: center; text-decoration: underline; text-underline-offset: 2px; cursor: pointer; }
+.ss-unlock-link[hidden] { display: none; }
+.ss-unlock-link:focus-visible { outline: 2px solid #ffd97a; outline-offset: 1px; }
 .ss-load { position: absolute; inset: 0; z-index: 20; display: flex; align-items: center; justify-content: center;
   padding: 16px; box-sizing: border-box; background: rgba(0,12,8,.62); }
 .ss-load[hidden] { display: none; }
+/* Confirmation before a free user starts a NEW game while a resumable game
+   remains. It sits over the start screen and only covers that screen. */
+.start-confirm { position: absolute; inset: 0; z-index: 21; display: flex; align-items: center; justify-content: center;
+  padding: 16px; box-sizing: border-box; background: rgba(0,12,8,.72); }
+.start-confirm[hidden] { display: none; }
+.start-confirm-card { width: min(360px, 100%); box-sizing: border-box; padding: 16px 18px 14px; border-radius: 12px;
+  background: #0d3a2a; border: 1px solid rgba(255,255,255,.18); box-shadow: 0 8px 28px rgba(0,0,0,.5);
+  color: #dfe; font-size: 13px; text-align: center; display: flex; flex-direction: column; gap: 10px; }
+.start-confirm-card h2 { margin: 0; font-size: 16px; font-weight: 800; color: #fff; }
+.start-confirm-card p { margin: 0; line-height: 1.6; }
+.start-confirm-actions { display: flex; flex-direction: column; gap: 8px; margin-top: 2px; }
+.start-confirm-actions button { padding: 11px; font-size: 15px; font-weight: 800; border-radius: 8px; cursor: pointer; }
+#start-confirm-ok { background: linear-gradient(180deg, #ffd97a, #d9a83c); color: #231a04; border: none; }
+#start-confirm-cancel { background: rgba(0,0,0,.25); color: #eef; border: 1px solid rgba(255,255,255,.3); }
+.confirm-dialog { position: fixed; z-index: 40; }
+#confirm-dialog-ok { background: linear-gradient(180deg, #ff8f7a, #c9402a); color: #fff; border: none; }
+#confirm-dialog-cancel { background: rgba(0,0,0,.25); color: #eef; border: 1px solid rgba(255,255,255,.3); }
+.tile.hand.riichi-declare { outline: 3px solid #ffd36b; outline-offset: -2px; }
+.tile.hand.riichi-blocked { opacity: .5; }
+.action-status .riichi-error { margin-left: 4px; color: #ffb4a8; font-weight: 700; }
 .ss-load-box { width: min(360px, 100%); box-sizing: border-box; padding: 16px 18px 14px; border-radius: 12px;
   background: #0d3a2a; border: 1px solid rgba(255,255,255,.18); box-shadow: 0 8px 28px rgba(0,0,0,.5);
   color: #dfe; font-size: 13px; text-align: center; display: flex; flex-direction: column; gap: 8px; }
@@ -177,6 +234,8 @@ body:has(#start-screen:not([hidden])) { background: #06231a; }
 .ss-link-row { display: flex; gap: 8px; width: min(430px, 100%); }
 .ss-btn-ghost { flex: 1; padding: 8px 4px; font-size: 13px; background: rgba(0,0,0,.25); color: #eef;
   border: 1px solid rgba(255,255,255,.25); border-radius: 8px; cursor: pointer; }
+/* 統計・分析 / 対局履歴 share the plain ghost look (2026-11-16 device review:
+   the brighter background read as a disabled / selected state). */
 .ss-panel { width: min(430px, 100%); background: rgba(0,0,0,.28); border: 1px solid rgba(255,255,255,.16);
   border-radius: 10px; padding: 10px 14px; font-size: 13px; display: flex; flex-direction: column; gap: 7px; }
 .ss-panel[hidden] { display: none; }
@@ -215,6 +274,13 @@ body:has(#start-screen:not([hidden])) { background: #06231a; }
 #sel-chip .sel-chip-tile { display: inline-flex; width: 20px; height: 28px; }
 #sel-chip .sel-chip-ok { color: #7ee2a8; font-weight: 800; }
 #sel-chip .sel-chip-rec { color: #ffd97a; font-weight: 800; }
+/* 2026-11-12 band wording: 推奨度 label, right-hand verdict separated by a
+   rule; the selected tile's name leads the facts (mock r1). */
+#sel-chip .band-name { font-weight: 800; color: #fff; }
+#sel-chip .band-label { font-size: 10px; color: #9db; letter-spacing: .02em; }
+#sel-chip .band-metric b { font-size: 13px; }
+#sel-chip .band-fact, #sel-chip .band-rank { color: #cfe3d9; font-size: 11.5px; }
+#sel-chip .band-verdict { margin-left: 3px; padding-left: 6px; border-left: 1px solid rgba(255,217,122,.45); }
 :is(#board, .replay-board) { grid-area: board; position: relative; justify-self: center; align-self: center;
   /* Width is set by fitBoard() in main.js from the measured vertical
      budget (viewport - controls - seats - self area); this CSS value
@@ -279,8 +345,14 @@ body:has(#start-screen:not([hidden])) { background: #06231a; }
   width: 27px; height: 38px; padding: 0; background: transparent; border: 0; user-select: none; flex: 0 0 auto; }
 .tile-art { width: 100%; height: 100%; display: block; pointer-events: none; }
 /* Tsumogiri dimming (pond only; meld tiles are never dimmed). Applied to the artwork so it
-   composes with the riichi rotation and with the .last glow on the tile box. The face stays legible. */
-body.dim-on .tile.discard.tsumogiri .tile-art { filter: brightness(.66) saturate(.75); }
+   composes with the riichi rotation and with the .last glow on the tile box.
+   2026-11-11 Astra review: the old brightness/saturation cut darkened the ink along
+   with the face and made the suit marks hard to read. The face/ground now takes the
+   grey step (brightness) while the ink keeps its colour and gains contrast, so
+   white (tedashi) vs grey (tsumogiri) remains obvious and the pattern stays legible. */
+/* 2026-11-15 owner: the .8 step was too faint to spot in a pond. Stronger grey face plus a
+   little desaturation and transparency; contrast stays up so the pattern is still readable. */
+body.dim-on .tile.discard.tsumogiri .tile-art { filter: brightness(.58) contrast(1.3) saturate(.55); opacity: .88; }
 .ss-dim-preview { --tw: 26px; --th: 36px; --px: 26px; --py: 36px; display: flex; gap: 16px; align-items: flex-end; margin: 2px 0 8px; }
 .ss-dim-preview figure { margin: 0; display: flex; flex-direction: column; align-items: center; gap: 3px; font-size: 11px; text-align: center; }
 .ss-dim-preview .tile.discard { margin: 0; }
@@ -330,8 +402,28 @@ body.dim-on .tile.discard.tsumogiri .tile-art { filter: brightness(.66) saturate
 .cp-wind { display: inline-flex; align-items: center; justify-content: center; width: 17px; height: 17px; border-radius: 50%; background: #e8e2cf; color: #173f35; font-weight: 800; }
 :is(#center, .replay-center) .round { font-size: 20px; font-weight: 800; }
 :is(#center, .replay-center) .round span { font-size: 15px; }
+/* Fixed labels wrap only between whole items (round / honba, remaining /
+   kyotaku, wind / name / score), never inside "N本場", "供託 N" or a score
+   so that a lone digit cannot take a line of its own. */
+:is(#center, .replay-center) .round > span { white-space: nowrap; }
+:is(#center, .replay-center) .round .round-kyoku { font-size: 1em; }
 .center-meta { font-size: 13px; color: #d9efe5; }
+.center-meta .cm-item { white-space: nowrap; }
+.seat-info > span { white-space: nowrap; }
+.center-player > span, .center-player > b { white-space: nowrap; }
 :is(#center, .replay-center) .dora { display: flex; align-items: center; justify-content: center; gap: 5px; font-size: 12px; }
+/* More than two dora markers cannot share one narrow phone row with the
+   label. Keep the label whole and let the marker tiles take a second row,
+   at a smaller size, instead of shrinking "ドラ表示" into one glyph per
+   line. Landscape keeps its width-limited single row (no taller centre). */
+@media (orientation: portrait) {
+  .dora-label { white-space: nowrap; }
+  .dora:has(.tile:nth-child(4)) { flex-wrap: wrap; gap: 1px 2px; }
+  .dora:has(.tile:nth-child(4)) .tile.dora-tile { width: 12px; height: 17px; }
+}
+#app.layout-square .dora-label { white-space: nowrap; }
+#app.layout-square .dora:has(.tile:nth-child(4)) { flex-wrap: wrap; gap: 1px 2px; }
+#app.layout-square .dora:has(.tile:nth-child(4)) .tile.dora-tile { width: 12px; height: 17px; }
 /* The result line is long (names + score deltas) and transient --
    the kyoku-result panel follows with the full breakdown -- so it
    floats over the centre panel's bottom-right corner instead of
@@ -364,6 +456,9 @@ body.dim-on .tile.discard.tsumogiri .tile-art { filter: brightness(.66) saturate
 .action-status { color: #bde; font-size: 14px; text-align: center; }
 .action-status.prompt { color: #fff; background: rgba(0,0,0,.28); border: 1px solid rgba(255,255,255,.28); padding: 9px 14px; border-radius: 999px; font-size: 16px; font-weight: 700; }
 .hint { color: #bde; font-size: 13px; }
+/* 2026-11-12 Astra recheck: the normal coach panel lists the runner-up
+   candidates on one compact line instead of one row per candidate. */
+.runner-up-line { margin: 2px 0; line-height: 1.5; overflow-wrap: anywhere; }
 
 #side { background: #07271c; padding: 8px; overflow-y: auto; overflow-x: hidden; }
 #side h3 { margin: 6px 0; font-size: 15px; }
@@ -371,18 +466,59 @@ body.dim-on .tile.discard.tsumogiri .tile-art { filter: brightness(.66) saturate
 .qrow { display: grid; grid-template-columns: 1fr auto auto; gap: 10px; align-items: baseline; font-size: 13px; padding: 2px 0; }
 .prob { color: #7ee2a8; font-weight: 800; font-variant-numeric: tabular-nums; }
 .prob.big { font-size: 22px; color: #7ee2a8; }
+.prob.eval { font-size: 12px; font-weight: 600; color: #9fe3bd; }
 .q { color: #ffd97a; font-variant-numeric: tabular-nums; }
-.rec { font-size: 15px; display: flex; align-items: baseline; gap: 8px; flex-wrap: wrap; }
+.rec { font-size: 15px; display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+.rec-tile { display: inline-flex; width: 16px; height: 22px; flex: 0 0 auto; }
+.rec-tile .tile-art { width: 100%; height: 100%; }
+.after-state { font-size: 13px; color: #d9efe5; }
+.prob-def { margin: 2px 0; font-size: 12px; color: #9db; }
+.prob-def summary { cursor: pointer; width: max-content; list-style: none; }
+.prob-def summary::-webkit-details-marker { display: none; }
+.prob-def[open] summary { color: #cfe; }
+.prob-def-body { margin-top: 3px; color: #bde; line-height: 1.4; }
+/* 2026-11-12 coach normal panel revision 1 "整理": the same items and order,
+   split into conclusion / meta / facts groups. Only the recommendation row is
+   emphasised; the two percentage families are named 候補内 (recommendation)
+   and 推奨度 (band / selected tile) and right aligned. */
+#side #coach .coach-summary { display: flex; flex-direction: column; }
+#side #coach .coach-conclusion { background: rgba(255,217,122,.07); border: 1px solid rgba(255,217,122,.20);
+  border-left: 3px solid #ffd97a; border-radius: 6px; padding: 6px 8px 5px; }
+#side #coach .coach-conclusion .rec { margin: 0; font-size: 15px; align-items: baseline; gap: 6px; }
+#side #coach .coach-conclusion .rec .r1-name { font-size: 18px; line-height: 1; color: #ffd97a; }
+#side #coach .coach-conclusion .rec .prob.eval { margin-left: auto; padding-left: 6px;
+  font-size: 15px; font-weight: 800; color: #7ee2a8; }
+#side #coach .coach-conclusion .runner-up-line { margin: 3px 0 0; font-size: 12.5px; color: #d9efe5; }
+#side #coach .coach-conclusion .after-state { display: flex; align-items: baseline; flex-wrap: wrap;
+  gap: 5px; margin-top: 2px; font-size: 12.5px; color: #d9efe5; }
+#side #coach .after-state .prob-def.inline { margin: 0 0 0 auto; }
+#side #coach .prob-def.inline summary { font-size: 10px; color: #8fae9f; }
+#side #coach .prob-def.inline .prob-def-body { font-size: 11px; }
+#side #coach .coach-meta { display: flex; justify-content: flex-end; padding: 2px 2px 5px;
+  border-bottom: 1px solid rgba(255,255,255,.10); margin: 0 0 6px; }
+#side #coach .coach-meta .agreement-line { margin: 0; font-size: 11.5px; color: #8fae9f; }
+#side #explain { background: rgba(0,0,0,.16); border: 1px solid rgba(255,255,255,.07);
+  border-radius: 6px; padding: 6px 8px 8px; }
+#side #explain h3 { margin-top: 0; }
+#side .sel-info { display: flex; align-items: baseline; flex-wrap: wrap; gap: 5px;
+  margin: 4px 0 5px; font-size: 12.5px; color: #cfe9ff; }
+#side .sel-info .r1-subject { font-size: 10px; font-weight: 700; color: #9db; letter-spacing: .04em; }
+#side .sel-info .r1-name { font-size: 14px; color: #fff; }
+#side .sel-info .sel-facts { font-size: 11.5px; color: #a9c6d8; }
+#side .sel-info .sel-facts b { color: #e8f2ec; }
+#side .sel-info .sel-metric { margin-left: auto; display: inline-flex; align-items: baseline;
+  gap: 4px; padding-left: 6px; border-left: 1px solid rgba(255,255,255,.14); }
+#side .sel-info .sel-metric .r1-mlabel { font-size: 9.5px; color: #7f9a8f; }
+#side .sel-info .sel-metric .prob { font-size: 12px; font-weight: 700; color: #b8c9c1; }
 table.cmp, table.standings { border-collapse: collapse; font-size: 11px; }
 table.cmp { width: 100%; table-layout: fixed; }
 /* Fixed layout (2026-11-07): the auto layout let the tile / header minimum
    widths push the 6-column coach table past the 262px landscape panel, so
    its right edge (推奨度) was clipped. Columns are now shares of the width. */
 table.cmp th, table.cmp td { overflow-wrap: anywhere; }
-table.cmp.sv-cmp { table-layout: auto; }
-table.cmp:not(.sv-cmp) th:nth-child(1) { width: 11%; }
-table.cmp:not(.sv-cmp) th:nth-child(2), table.cmp:not(.sv-cmp) th:nth-child(3), table.cmp:not(.sv-cmp) th:nth-child(4) { width: 10%; }
-table.cmp:not(.sv-cmp) th:nth-child(6) { width: 15%; }
+table.cmp th:nth-child(1) { width: 11%; }
+table.cmp th:nth-child(2), table.cmp th:nth-child(3), table.cmp th:nth-child(4) { width: 10%; }
+table.cmp th:nth-child(6) { width: 16%; }
 table.cmp td, table.cmp th { border: 1px solid #26594a; padding: 2px 3px; text-align: center; }
 table.cmp .outlook { white-space: normal; }
 table.cmp tr.rec-row { background: #5a4a12; }
@@ -393,24 +529,87 @@ table.cmp.expanded tr.cmp-extra { display: table-row; }
 table.cmp tr.cmp-toggle-row td { background: #123528; padding: 3px; }
 .cmp-toggle { background: none; border: none; color: #7ee2a8; font-size: 11px; font-weight: 700; cursor: pointer; text-decoration: underline; padding: 0; }
 .sel-info { margin: 4px 0 6px; font-size: 13px; color: #cfe9ff; }
-.cmp-tile { display: inline-flex; width: 23px; height: 32px; }
+/* 牌は列の中身の幅に追従（23:32 の比率を保つ）。上限 30px は拡大シートの cols-4/5 用。 */
+.cmp-tile { display: flex; width: 100%; max-width: 30px; aspect-ratio: 23 / 32; height: auto; margin: 0 auto; }
+.cmp-tile > svg { width: 100%; height: 100%; display: block; }
+/* 向聴・受入・推奨度は 1 行に収める（牌・構成・打点は対象外）。狭い列でも 100.0% が入るよう左右余白は 1px。 */
+table.cmp:not(.sheet-cmp) :is(th, td):is(:nth-child(2), :nth-child(3), :nth-child(4), :nth-child(6)) { padding-left: 1px; padding-right: 1px; }
+table.cmp th:nth-child(2), table.cmp td:nth-child(2), table.cmp th:nth-child(3), table.cmp td:nth-child(3) { white-space: nowrap; }
+@media (orientation: landscape) and (max-height: 700px) and (max-width: 780px) { table.cmp:not(.sheet-cmp) td:nth-child(6) { font-size: 10px; } }
+@media (orientation: landscape) and (max-height: 700px) and (max-width: 700px) { table.cmp:not(.sheet-cmp) th:nth-child(6) { width: 40px; } }
+table.cmp:not(.sheet-cmp) th:nth-child(6), table.cmp:not(.sheet-cmp) td:nth-child(6), table.cmp.sheet-cmp td:last-child:not([colspan]), table.cmp.sheet-cmp th:last-child { white-space: nowrap; }
+/* 2026-11-16 device review: the recommendation column keeps a fixed 40px so
+   "100.0%" never spills (740x360 measured ~32px before); the width comes out
+   of the 構成・打点 column, and 向聴/受入/安全 get enough for their
+   two-character headings at the narrow landscape sizes. */
+@media (orientation: landscape) and (max-height: 700px) {
+  table.cmp:not(.sheet-cmp) th:nth-child(1) { width: 10%; }
+  table.cmp:not(.sheet-cmp) th:nth-child(2),
+  table.cmp:not(.sheet-cmp) th:nth-child(3),
+  table.cmp:not(.sheet-cmp) th:nth-child(4) { width: 12%; }
+  table.cmp:not(.sheet-cmp) th:nth-child(6) { width: 40px; }
+}
+@media (orientation: landscape) and (max-height: 700px) and (max-width: 780px) {
+  table.cmp:not(.sheet-cmp) th { font-size: 10px; }
+}
 .template { margin-top: 6px; font-size: 13px; color: #ffe9a8; }
 .compare { margin-top: 4px; font-size: 13px; color: #ffd9ec; }
 .floats { font-size: 11px; color: #bfe3d0; padding: 1px 2px; }
+/* 構成・打点 cell (2026-11-10): the float/shape summary leads, the long
+   tile enumeration is folded behind a small link-like toggle. */
+.cell-summary { font-size: 11px; line-height: 1.35; color: #dff4e8; padding: 1px 2px; }
+.cell-more { display: inline-block; margin: 1px 2px 0; padding: 0; border: 0; background: none; color: #7ee2a8; font: inherit; font-size: 10px; text-decoration: underline; cursor: pointer; }
+.cell-more:focus-visible { outline: 2px solid #ffd97a; outline-offset: 1px; }
+.cell-detail { margin-top: 1px; padding-top: 1px; border-top: 1px solid #26594a; }
+.cell-detail[hidden] { display: none; }
+/* Expanded coach sheet candidate table (2026-11-10 Astra review): four
+   basic columns (plus 安全 only when it carries information), and the
+   構成・打点 breakdown folded into a per-row detail row. */
+table.cmp.sheet-cmp.cols-4 th:nth-child(1) { width: 24%; }
+table.cmp.sheet-cmp.cols-4 th:nth-child(2),
+table.cmp.sheet-cmp.cols-4 th:nth-child(3) { width: 18%; }
+table.cmp.sheet-cmp.cols-4 th:nth-child(4) { width: 40%; }
+table.cmp.sheet-cmp.cols-5 th:nth-child(1) { width: 22%; }
+table.cmp.sheet-cmp.cols-5 th:nth-child(2),
+table.cmp.sheet-cmp.cols-5 th:nth-child(3) { width: 16%; }
+table.cmp.sheet-cmp.cols-5 th:nth-child(4) { width: 18%; }
+table.cmp.sheet-cmp.cols-5 th:nth-child(5) { width: 28%; }
+table.cmp.sheet-cmp td { vertical-align: top; }
+.sheet-more { display: block; margin: 2px auto 0; }
+table.cmp tr.sheet-row-detail > td { text-align: left; background: rgba(0,0,0,.20); padding: 4px 6px; }
+table.cmp tr.sheet-row-detail[hidden] { display: none !important; }
+.sheet-detail-toggle { display: block; margin: 8px 0 0; padding: 4px 10px; border: 1px solid #2a7; border-radius: 6px; background: #0e5a41; color: #eef; font-size: 12px; cursor: pointer; }
+.sheet-detail-toggle:focus-visible, .sheet-more:focus-visible { outline: 2px solid #ffd97a; outline-offset: 1px; }
+.sheet-detail { margin-top: 8px; }
+.sheet-detail[hidden] { display: none; }
+.probe-sec.sheet-probe-btn { margin-top: 8px; }
+.cell-detail .floats { font-size: 10px; line-height: 1.3; color: #9fc7b7; }
 .tenpai-hands { margin-top: 8px; text-align: left; }
 .tenpai-hand-row { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; margin: 4px 0; }
 .tenpai-hand-row .th-name { font-size: 13px; font-weight: 700; min-width: 64px; }
-.tenpai-hand-row .th-tiles { display: inline-flex; gap: 1px; }
-.tenpai-hand-row .th-tile { display: inline-flex; width: 21px; height: 29px; }
+.tenpai-hand-row .th-tiles { display: inline-flex; flex: 0 1 auto; min-width: 0; max-width: 100%; gap: 1px; }
+.tenpai-hand-row .th-tile { display: inline-flex; flex: 0 1 auto; min-width: 0; width: 21px; height: auto; max-width: 21px; aspect-ratio: 21 / 29; }
 .tenpai-hand-row .th-tile.win { outline: 2px solid #ffd94d; outline-offset: 0; filter: drop-shadow(0 0 4px #ffd94d); border-radius: 2px; }
-.tenpai-hand-row .th-meld { display: inline-flex; gap: 1px; margin-left: 8px; }
-.tenpai-hand-row .th-tile.called { width: 29px; height: 21px; align-self: center; position: relative; }
+.tenpai-hand-row .th-tile.dora { position: relative; }
+.tenpai-hand-row .th-tile.dora::before { content: ""; position: absolute; left: 1px; right: 1px; bottom: 1px; height: 3px; border-radius: 1px; background: #ffb338; pointer-events: none; z-index: 1; }
+.tenpai-hand-row .th-tile.dora::after { content: "ド"; position: absolute; top: -2px; right: -2px; background: #b5741a; color: #fff; font-size: 8px; line-height: 1; padding: 0 1px; border-radius: 2px; pointer-events: none; z-index: 1; }
+.tenpai-hand-row .th-meld { display: inline-flex; flex: 0 1 auto; min-width: 0; gap: 1px; margin-left: 8px; }
+.tenpai-hand-row .th-tile.called { flex: 0 0 auto; width: 29px; height: 21px; max-width: 29px; aspect-ratio: auto; align-self: center; position: relative; }
 .tenpai-hand-row .th-tile.called .tile-art { position: absolute; left: 50%; top: 50%; width: 21px; height: 29px; transform: translate(-50%, -50%) rotate(90deg); }
 /* Result panels show the owner's own viewpoint (seat frame 0): a tile
    called from kamicha leans the other way — the same CALLED_LEAN rule
    meldHTML applies on the table. */
 .tenpai-hand-row .th-tile.called.lean-kamicha .tile-art { transform: translate(-50%, -50%) rotate(-90deg); }
 .tenpai-hand-row .th-waits { font-size: 12px; color: #ffe9a8; }
+/* 九種九牌 draw: the declarer's 14-tile hand (self or CPU). The name
+   gets its own line so the tiles can use the dialog's full content
+   width; the tiles share that width, because 14 x 21px + gaps would
+   overflow a 360px card. Wider dialogs keep the normal 21px tile. */
+.kyushu-hand { margin: 2px 0 8px; }
+.kyushu-hand .tenpai-hand-row { align-items: flex-start; gap: 4px; }
+.kyushu-hand .th-name { flex: 1 0 100%; min-width: 0; }
+.kyushu-hand .th-tiles { display: flex; width: 100%; gap: 1px; }
+.kyushu-hand .th-tile { flex: 1 1 0; min-width: 0; width: auto; height: auto; max-width: 21px; aspect-ratio: 21 / 29; }
 .stats-note { margin-top: 7px; padding: 7px 8px; border-left: 4px solid #55a7e8; background: rgba(46, 105, 158, .22); color: #dcefff; font-size: 13px; line-height: 1.45; }
 .stats-label { font-weight: 800; color: #9fd0ff; }
 .stats-source { display: block; margin-top: 2px; color: #a9c6dc; font-size: 11px; }
@@ -419,7 +618,10 @@ table.cmp tr.cmp-toggle-row td { background: #123528; padding: 3px; }
 .end-card table { margin: 10px auto; }
 .end-card td { padding: 4px 12px; font-size: 16px; }
 .end-card button, .history-card button { font-size: 14px; padding: 8px 14px; margin: 4px; border-radius: 8px; border: 1px solid #2a7; background: #0e5a41; color: #eef; cursor: pointer; }
-.save-status { color: #cfeee0; font-size: 13px; }
+.end-card #again { background: #1b8a5a; border-color: #37c184; color: #fff; font-weight: 800; padding: 10px 26px; font-size: 15px; }
+.end-card #again:hover { filter: brightness(1.08); }
+.end-card .breakdown-toggle { display: block; margin: 14px auto 6px; background: transparent; border-color: #2a7; color: #cfeee0; }
+.save-status { color: #9fc6b4; font-size: 11px; margin: 6px 0 2px; }
 .review { text-align: left; margin: 16px auto 8px; max-width: 700px; }
 .review h3 { margin: 8px 0; }
 .review-list { max-height: 290px; overflow-y: auto; border: 1px solid #26594a; }
@@ -427,46 +629,50 @@ table.review-table { width: 100%; margin: 0; border-collapse: collapse; font-siz
 table.review-table th, table.review-table td { border-bottom: 1px solid #26594a; padding: 5px 6px; text-align: center; font-size: 12px; }
 table.review-table th { background: #083024; position: sticky; top: 0; }
 .review-none { color: #cfeee0; font-size: 13px; }
-tr.review-row { cursor: pointer; }
-tr.review-row:hover { background: rgba(255,255,255,.07); }
-/* Post-game scene viewer: a read-only reconstruction of the table at
-   one recorded decision, folded from the saved bundle's mjai log. */
+/* Post-game replay viewer: a read-only reconstruction of the table
+   folded from the saved bundle's mjai log. */
 .scene-viewer { position: fixed; inset: 0; padding: var(--sa-t) var(--sa-r) var(--sa-b) var(--sa-l); background: rgba(0,0,0,.78); align-items: center; justify-content: center; z-index: 30; }
 .sv-card { background: #0d4530; border: 2px solid rgba(255,217,122,.45); border-radius: 12px; padding: 16px 18px; width: min(1060px, 97vw); max-height: 94vh; max-height: 94dvh; overflow-y: auto; }
 .sv-head { display: flex; align-items: center; justify-content: space-between; gap: 10px; flex-wrap: wrap; }
 .sv-title { font-size: 16px; font-weight: 800; }
 .sv-nav button { font-size: 13px; padding: 6px 12px; margin-left: 4px; border-radius: 8px; border: 1px solid #2a7; background: #0e5a41; color: #eef; cursor: pointer; }
 .sv-nav button:disabled { opacity: .4; cursor: default; }
-.sv-meta { margin: 8px 0; font-size: 14px; }
-.sv-board { display: grid; gap: 8px; grid-template-columns: 1fr 1.5fr 1fr; grid-template-areas: "top top top" "left center right" "bottom bottom bottom"; }
-.sv-seat { background: rgba(0,0,0,.22); border: 1px solid #26594a; border-radius: 8px; padding: 7px 9px; }
-.sv-seat.pos-top { grid-area: top; }
-.sv-seat.pos-left { grid-area: left; }
-.sv-seat.pos-right { grid-area: right; }
-.sv-seat.pos-bottom { grid-area: bottom; }
-.sv-center { grid-area: center; background: radial-gradient(circle at center, #10523d 0, #083024 72%); border: 2px solid rgba(255,217,122,.35); border-radius: 10px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 5px; padding: 8px; text-align: center; }
-.sv-center .round { font-size: 19px; font-weight: 800; }
-.sv-dora { display: flex; align-items: center; gap: 4px; font-size: 12px; }
-.sv-pond { display: flex; flex-wrap: wrap; gap: 1px; max-width: 264px; margin: 4px auto; min-height: 31px; }
-.sv-seat.pos-bottom .sv-pond, .sv-seat.pos-top .sv-pond { max-width: 264px; }
-.sv-under { display: flex; align-items: flex-end; gap: 8px; flex-wrap: wrap; margin-top: 4px; }
-.sv-melds { display: inline-flex; gap: 5px; flex-wrap: wrap; }
-.sv-hand { display: inline-flex; gap: 1px; align-items: flex-end; flex-wrap: wrap; }
-.sv-hand .tile.hand { width: 34px; height: 48px; cursor: default; }
-.sv-hand .tile.hand.drawn { margin-left: 10px; }
-.sv-empty { color: #9fc6b4; font-size: 12px; }
-.sv-cand { margin-top: 10px; }
-table.sv-cmp { margin: 0 auto; }
-tr.sv-actual { background: rgba(255,217,122,.13); }
 #history { position: fixed; inset: 0; padding: var(--sa-t) var(--sa-r) var(--sa-b) var(--sa-l); background: rgba(0,0,0,.72); align-items: center; justify-content: center; z-index: 20; }
 .history-card { background: #0e4a36; padding: 22px 26px; border-radius: 12px; width: min(820px, 95vw); max-height: 90vh; max-height: 90dvh; overflow-y: auto; }
-.history-head { display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap; }
+.history-head { display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: nowrap; }
+.history-head h2 { white-space: nowrap; }
+.history-head .st-close { flex: 0 0 auto; }
 .history-list { display: flex; flex-direction: column; gap: 8px; margin-top: 12px; }
-.history-item { display: grid; grid-template-columns: 1fr auto; gap: 6px 14px; align-items: center; background: rgba(0,0,0,.22); border: 1px solid #26594a; border-radius: 8px; padding: 10px 12px; text-align: left; }
-.history-meta { font-size: 13px; line-height: 1.5; }
-.history-actions { display: flex; gap: 4px; flex-wrap: wrap; justify-content: flex-end; }
+.history-item { display: flex; flex-direction: column; align-items: stretch; gap: 8px; background: rgba(0,0,0,.22); border: 1px solid #26594a; border-radius: 8px; padding: 10px 12px; text-align: left; }
+.history-meta { font-size: 13px; line-height: 1.5; min-width: 0; }
+.history-line { display: block; }
+.history-line + .history-line { margin-top: 2px; }
+/* 対局者情報は結果の行から分けた専用の行にする（2026-11-12 Astra 再確認）。
+   対局者（順位＋名前）を1行に並べ、点数はその下の結果行へ分ける。
+   文字サイズは変えず、4列に整列して折り返しをなくす。 */
+.history-line-standings { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 2px 6px;
+  max-width: 560px; padding: 3px 0 4px; border-bottom: 1px solid rgba(255,255,255,.12); }
+.history-part { white-space: nowrap; }
+.history-standing { display: flex; flex-direction: column; min-width: 0; white-space: nowrap; }
+.history-standing-who { color: #eef; }
+.history-standing-score { color: #bde; font-variant-numeric: tabular-nums; }
+@media (max-width: 340px) {
+  .history-line-standings { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+.history-actions { display: flex; gap: 4px; flex-wrap: wrap; justify-content: flex-start; }
 .history-import-result { margin-top: 10px; padding: 8px 12px; border-radius: 8px; background: rgba(0,0,0,.28); font-size: 13px; line-height: 1.5; white-space: pre-line; text-align: left; }
 .history-empty { color: #cfeee0; }
+.history-limit { color: #9fc6b4; font-size: 11px; text-align: right; margin-top: 2px; }
+.history-tools { display: flex; margin-top: 12px; }
+.history-tools button { margin-left: 0; }
+.history-manage { margin-top: 8px; border-top: 1px solid #26594a; padding-top: 6px; }
+.history-manage > summary { cursor: pointer; font-size: 13px; color: #cfeee0; padding: 6px 2px; }
+.history-manage > summary:focus-visible { outline: 2px solid #ffd97a; outline-offset: 1px; }
+.history-manage-body { padding: 2px 2px 0; }
+.history-manage-actions { display: flex; flex-wrap: wrap; }
+.history-clear-row { margin-top: 10px; padding-top: 8px; border-top: 1px solid rgba(255,120,120,.3); }
+.history-card #history-clear { color: #ff9a9a; border-color: #a34a4a; background: transparent; }
+.history-card #history-clear:hover { background: rgba(160,50,50,.18); }
 /* Kyoku result panel: hora / ryukyoku score breakdown, shown before
    the game advances (auto mode holds briefly; manual mode waits for
    the "next" button or a timeout). */
@@ -476,6 +682,12 @@ tr.sv-actual { background: rgba(255,217,122,.13); }
 #kyoku-result .result-winner { color: #ffd94d; font-weight: 800; }
 #kyoku-result .result-head.result-self-win { color: #ffd94d; }
 .result-win-tile, .win-tile { display: inline-flex; width: 30px; height: 42px; flex: 0 0 auto; }
+.result-dora { display: flex; flex-wrap: wrap; align-items: center; justify-content: center; gap: 4px 12px; margin: 8px auto 2px; font-size: 12px; color: #ffe9a8; }
+.result-dora .rd-group { display: inline-flex; align-items: center; gap: 4px; }
+.result-dora .rd-label { white-space: nowrap; }
+.result-dora .rd-tiles { display: inline-flex; align-items: center; gap: 2px; }
+.result-dora .rd-tile { display: inline-flex; width: 24px; height: 34px; flex: 0 0 auto; }
+.result-dora .rd-count { color: #ffd97a; font-weight: 700; white-space: nowrap; }
 .yaku-list { margin: 10px auto 4px; width: max-content; max-width: 100%; text-align: left; }
 .yaku-row { display: flex; justify-content: space-between; gap: 28px; font-size: 14px; padding: 1px 0; }
 .yaku-fan { color: #ffd97a; font-variant-numeric: tabular-nums; }
@@ -495,7 +707,7 @@ table.pay-table tr.winner-row { background: #5a4a12; }
 #result-next { font-size: 15px; padding: 8px 18px; min-height: 40px; margin-top: 8px; border-radius: 8px; border: 1px solid #2a7; background: #0e5a41; color: #eef; cursor: pointer; }
 .result-note { color: #bde; font-size: 12px; margin-top: 6px; }
 .history-note { color: #bde; font-size: 12px; margin: 4px 0 8px; }
-.final-breakdown { text-align: left; margin: 14px auto 4px; max-width: 700px; }
+.final-breakdown { text-align: left; margin: 8px auto 4px; max-width: 700px; }
 .final-breakdown h3 { text-align: center; }
 table.fb-table { margin: 6px auto; border-collapse: collapse; font-size: 13px; }
 table.fb-table td, table.fb-table th { border: 1px solid #26594a; padding: 3px 10px; text-align: center; }
@@ -503,7 +715,7 @@ table.fb-table td, table.fb-table th { border: 1px solid #26594a; padding: 3px 1
 
 /* Explanation-layer extras: dora/yakuhai tags, waits, score outlook,
    safe-tile line, explainability verdict, East-4 condition memo. */
-.tag { display: inline-block; border-radius: 4px; padding: 0 5px; margin: 1px 2px; font-size: 11px; background: rgba(255,255,255,.14); white-space: nowrap; }
+.tag { display: inline-block; border-radius: 4px; padding: 0 5px; margin: 1px 2px; font-size: 11px; background: rgba(255,255,255,.14); max-width: 100%; overflow-wrap: anywhere; }
 .tag.dora { background: #7a4d12; color: #ffe1a8; }
 .tag.yaku { background: #274b8f; color: #cfe4ff; }
 .tag.dirkill { background: #6e2430; color: #ffc9c0; }
@@ -526,6 +738,9 @@ table.fb-table td, table.fb-table th { border: 1px solid #26594a; padding: 3px 1
 .east4-memo { margin-top: 8px; padding: 7px 8px; border-left: 4px solid #e8b93c; background: rgba(160,120,20,.20); color: #ffe9a8; font-size: 13px; line-height: 1.55; text-align: left; }
 
 @media (max-width: 1050px) {
+  /* 2026-11-12 T-0038: the T-0036 #explain hide is reverted. The normal
+     coach panel shows the explanation at every size again (the coach
+     column keeps its own scrollport, so long content scrolls in place). */
   #app { grid-template-columns: 1fr; }
   :is(#table, .replay-table) { grid-template-columns: 148px minmax(0, 1fr) 148px; }
   .tile.hand { width: 34px; height: 48px; }
@@ -554,7 +769,7 @@ table.fb-table td, table.fb-table th { border: 1px solid #26594a; padding: 3px 1
    fixed-width right column with its own scroll. Desktop and
    portrait are not affected. */
 @media (orientation: landscape) and (max-height: 700px) {
-  #app { grid-template-columns: minmax(0, 1fr) 272px; }
+  #app { grid-template-columns: minmax(0, 1fr) clamp(272px, 30vw, 340px); }
   #table-wrap { padding: 4px; gap: 4px; overflow: hidden; }
   /* Start screen, compact for low landscape heights: the full-size
      content stack is ~470px and would leave its last row clipped at
@@ -567,6 +782,8 @@ table.fb-table td, table.fb-table th { border: 1px solid #26594a; padding: 3px 1
   .ss-card { padding: 6px 12px; }
   .ss-segment button { padding: 5px; font-size: 13.5px; }
   .ss-btn-primary { padding: 8px; font-size: 15px; }
+  #ss-start-btn .ss-start-free { font-size: 11px; }
+  .ss-unlock-link { padding: 3px 6px; font-size: 12.5px; }
   .ss-btn-ghost { padding: 5px 4px; font-size: 12px; }
   .ss-status { padding: 3px 12px; font-size: 11.5px; }
   /* Plan C (user-approved mockup, 2026-11-04): the controls leave
@@ -601,7 +818,9 @@ table.fb-table td, table.fb-table th { border: 1px solid #26594a; padding: 3px 1
      cell stays narrow, and the meta line spans the remaining two
      columns: with a one-line round and a single-column meta, the
      meta text (91px) overflowed its ~60px cell and slid under the
-     dora tile, hiding the kyotaku count (measured, 2026-11-04). */
+     dora tile, hiding the kyotaku count (measured, 2026-11-04).
+     2026-11-16 device review: while the panel has room (915x412 etc.)
+     the round block keeps "東1局 0本場" on one line instead. */
   :is(#center, .replay-center) .round { grid-area: 1 / 1 / 3 / 2; font-size: 15px; line-height: 1.2; text-align: center; white-space: nowrap; }
   :is(#center, .replay-center) .round span { display: block; font-size: 11px; }
   .center-meta { grid-area: 1 / 2 / 2 / 4; font-size: 11px; text-align: left; white-space: nowrap; }
@@ -658,6 +877,12 @@ table.fb-table td, table.fb-table th { border: 1px solid #26594a; padding: 3px 1
   #side h3 { font-size: 13px; margin: 4px 0; }
   .rec { font-size: 13px; }
   .prob.big { font-size: 17px; }
+}
+/* 2026-11-16 device review (11/13, 915x412): with room in the centre panel,
+   "東1局 0本場" reads on one line. Narrow landscape keeps the stacked form
+   so the centre content never overflows its box. */
+@media (orientation: landscape) and (max-height: 700px) and (min-width: 801px) {
+  :is(#center, .replay-center) .round span { display: inline; }
 }
 @media (orientation: landscape) and (max-height: 500px) and (max-width: 880px) {
   #app { grid-template-columns: minmax(0, 1fr) 252px; }
@@ -768,6 +993,14 @@ table.fb-table td, table.fb-table th { border: 1px solid #26594a; padding: 3px 1
 /* ---- statistics / analysis view ---- */
 .stats-view { position: fixed; inset: 0; padding: var(--sa-t) var(--sa-r) var(--sa-b) var(--sa-l); background: rgba(0,0,0,.72); align-items: flex-start; justify-content: center; z-index: 25; overflow-y: auto; }
 .stats-card { background: #0e4a36; color: #eef; padding: 18px 18px 26px; border-radius: 12px; width: min(860px, 96vw); margin: 18px 0; }
+/* ---- shared sheet header (2026-11-11 Astra review) ----
+   All reading sheets keep the title/close row fixed and scroll only the body. */
+.sheet-card { display: flex; flex-direction: column; max-height: calc(100dvh - var(--sa-t) - var(--sa-b) - 36px); overflow: hidden; }
+.stats-card.sheet-card, .history-card.sheet-card { padding: 0; }
+.sheet-head { flex: 0 0 auto; padding: 12px 18px; background: #0e4a36; border-bottom: 1px solid rgba(255,255,255,.14); }
+.sheet-head h2 { margin: 0; font-size: 20px; }
+.sheet-body { flex: 1 1 auto; min-height: 0; overflow-y: auto; overflow-x: hidden; overscroll-behavior: contain; padding: 12px 18px 22px; }
+.history-body { padding: 12px 22px 22px; }
 .st-head { display: flex; justify-content: space-between; align-items: center; }
 .st-head h2 { margin: 0; font-size: 20px; }
 .st-close, .st-mini-btn { font-size: 13px; padding: 6px 12px; border-radius: 8px; border: 1px solid #2a7; background: #0e5a41; color: #eef; cursor: pointer; }
@@ -776,15 +1009,33 @@ table.fb-table td, table.fb-table th { border: 1px solid #26594a; padding: 3px 1
 .st-chip { font-size: 13px; padding: 6px 12px; border-radius: 999px; border: 1px solid #2a7; background: transparent; color: #cfe; cursor: pointer; }
 .st-chip.on { background: #1a7a56; color: #fff; }
 .st-filters select { font-size: 14px; }
+.st-cpu-row { display: flex; flex-wrap: wrap; gap: 8px 10px; width: 100%; min-width: 0; }
+/* Filter fields: heading + green-framed pull-down, same for the selects and the
+   opponent multi-selects (2026-11-16 device review). */
+.st-field { display: inline-flex; align-items: center; gap: 6px; }
+.st-field-multi { flex: 1 1 150px; min-width: 0; max-width: 100%; z-index: 2; }
+.st-field-multi .st-multi { position: relative; flex: 1 1 auto; min-width: 0; }
+.st-field-name { flex: 0 0 auto; white-space: nowrap; }
 .st-multi { max-width: 100%; }
-.st-multi > summary { list-style: none; cursor: pointer; font-size: 14px; padding: 4px 24px 4px 8px; border: 1px solid #2a7; border-radius: 6px; background: #0e5a41; color: #eef; position: relative; }
+.st-multi > summary { list-style: none; cursor: pointer; font-size: 14px; line-height: 1.3; padding: 4px 22px 4px 8px; border: 1px solid #2a7; border-radius: 6px; background: #0e5a41; color: #eef; position: relative; word-break: keep-all; }
 .st-multi > summary::-webkit-details-marker { display: none; }
-.st-multi > summary::after { content: '▾'; position: absolute; right: 8px; top: 50%; transform: translateY(-50%); color: #ffd97a; font-size: 11px; }
+.st-multi > summary::after { content: ''; position: absolute; right: 7px; top: 50%; width: 10px; height: 6px; transform: translateY(-50%); background: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='10' height='6' viewBox='0 0 10 6'><path d='M1 1l4 4 4-4' fill='none' stroke='%23ffd97a' stroke-width='1.6' stroke-linecap='round' stroke-linejoin='round'/></svg>") no-repeat center / 10px 6px; }
 .st-multi[open] > summary::after { transform: translateY(-50%) rotate(180deg); }
 .st-multi > summary:focus-visible { outline: 2px solid #ffd97a; outline-offset: 1px; }
-.st-multi-list { display: grid; gap: 2px; margin-top: 4px; padding: 6px; border: 1px solid #2a7; border-radius: 6px; background: #0a3f2e; width: max-content; max-width: 100%; box-sizing: border-box; }
+/* Overlay panel: stays out of layout flow so the scope note and tables below
+   keep their position while it is open. It drops under its own button; the
+   right-hand panel aligns to the right edge so it cannot run off the card. */
+.st-multi-list { position: absolute; top: calc(100% + 4px); left: 0; z-index: 30; display: grid; gap: 2px; padding: 6px; border: 1px solid #2a7; border-radius: 6px; background: #0a3f2e; width: max-content; max-width: min(300px, calc(100vw - 24px)); max-height: min(320px, 40dvh); overflow-y: auto; overscroll-behavior: contain; box-sizing: border-box; box-shadow: 0 8px 18px rgba(0,0,0,.45); }
+.st-cpu-row .st-field-multi:nth-child(2) .st-multi-list { left: auto; right: 0; }
 .st-multi-list label { display: flex; align-items: center; gap: 7px; font-size: 13px; padding: 3px 4px; cursor: pointer; white-space: nowrap; }
 .st-scope { font-size: 12.5px; color: #bde; line-height: 1.55; margin-bottom: 8px; }
+.st-nowrap { white-space: nowrap; }
+.st-scope-main { font-size: 13.5px; color: #e6f4ec; }
+.st-scope-ref { margin-top: 3px; }
+.st-scope-sec { margin-top: 8px; padding-top: 6px; border-top: 1px solid rgba(255,255,255,.12); }
+.st-scope-sec h4 { margin: 0 0 2px; font-size: 11.5px; font-weight: 700; color: #9db; letter-spacing: .04em; }
+.st-scope-sec ul { margin: 0; padding-left: 1.2em; }
+.st-scope-sec li { margin: 1px 0; }
 .st-section { margin-top: 18px; }
 .st-section h3 { font-size: 15px; margin: 0 0 6px; border-left: 4px solid #2a7; padding-left: 8px; }
 .st-table { width: 100%; border-collapse: collapse; font-size: 13.5px; }
@@ -801,12 +1052,25 @@ table.fb-table td, table.fb-table th { border: 1px solid #26594a; padding: 3px 1
 .st-desc td { background: rgba(26,122,86,.22); color: #dff; font-size: 12.5px; line-height: 1.55; padding: 6px 10px; border-left: 3px solid #2a7; }
 .st-den { color: #8fb8a8; font-size: 11px; white-space: nowrap; }
 .st-cell { display: flex; flex-direction: row-reverse; justify-content: space-between; align-items: center; gap: 4px; }
+.st-own .st-v { font-weight: 700; }
+.st-own .st-v.is-na { font-weight: 400; color: #8fb8a8; }
+.st-base { color: rgba(238,255,238,.66); }
+.st-untallied { margin-top: 8px; }
+.st-untallied > summary { list-style: none; cursor: pointer; font-size: 12.5px; color: #bde; padding: 6px 22px 6px 8px; border: 1px solid rgba(127,217,180,.35); border-radius: 6px; background: rgba(14,90,65,.35); position: relative; }
+.st-untallied > summary::-webkit-details-marker { display: none; }
+.st-untallied > summary::after { content: '▾'; position: absolute; right: 8px; top: 50%; transform: translateY(-50%); color: #ffd97a; font-size: 11px; }
+.st-untallied[open] > summary::after { transform: translateY(-50%) rotate(180deg); }
+.st-untallied > summary:focus-visible { outline: 2px solid #ffd97a; outline-offset: 1px; }
+.st-table-folded { margin-top: 4px; }
 .st-ref { display: inline-block; font-size: 10.5px; background: #8a6d1a; color: #ffe9a8; border-radius: 4px; padding: 0 5px; margin-left: 4px; vertical-align: middle; }
 .st-note { font-size: 12.5px; color: #cfe; line-height: 1.55; margin: 6px 0; }
 .st-empty { padding: 22px 0; font-size: 14px; color: #cfe; }
 .st-hero { display: flex; align-items: baseline; gap: 12px; margin: 6px 0; }
 .st-hero-v { font-size: 34px; font-weight: 800; }
 .st-hero-k { font-size: 13px; color: #bde; }
+/* Certified rank (vc17): one range line, never a single large rank. */
+.st-cert-range { font-size: 22px; font-weight: 800; color: #ffd97a; margin: 2px 0 0; letter-spacing: .02em; }
+.st-cert .st-note { margin-top: 3px; }
 .st-game { display: flex; justify-content: space-between; align-items: center; gap: 10px; padding: 5px 0; border-bottom: 1px solid rgba(255,255,255,.1); font-size: 13px; }
 .st-progress { margin-top: 12px; padding: 10px; border: 1px solid #26594a; border-radius: 8px; font-size: 13px; }
 .st-bar { height: 8px; background: rgba(255,255,255,.15); border-radius: 4px; margin: 8px 0; overflow: hidden; }
@@ -824,8 +1088,9 @@ table.fb-table td, table.fb-table th { border: 1px solid #26594a; padding: 3px 1
 .rules-body li { margin: 3px 0; }
 .rules-body li > ul, .rules-body li > ol { margin-top: 3px; }
 .rules-body b { color: #ffd97a; }
-.rules-table { margin: 4px 0; }
-.rules-table td:first-child { white-space: nowrap; }
+.rules-table { margin: 4px 0; table-layout: fixed; }
+.rules-table th:first-child, .rules-table td:first-child { width: 4.5em; white-space: nowrap; }
+.rules-table .rules-range { white-space: nowrap; }
 .rules-foot { display: flex; justify-content: flex-end; margin-top: 18px; }
 
 /* ---- In-game toolbar (2026-11-05 cleanup) ------------------------------
@@ -888,9 +1153,14 @@ table.fb-final td.nm { text-align: left; }
   .review-list { max-height: none; overflow: visible; }
 }
 
-/* Diagnostics section in settings (product/error_codes.md, 2026-11-06) */
-.ss-diag { border-top: 1px solid rgba(255,255,255,.15); margin-top: 6px; padding-top: 6px; }
-.ss-diag-title { font-weight: 600; font-size: 12.5px; margin-bottom: 2px; }
+/* Diagnostics section in settings (product/error_codes.md, 2026-11-06;
+   folded into 診断情報 on 2026-11-11) */
+.ss-diag { border-top: 1px solid rgba(255,255,255,.15); margin-top: 12px; padding-top: 6px; }
+.ss-diag > summary { list-style: none; cursor: pointer; font-weight: 600; font-size: 12.5px; padding: 6px 22px 6px 0; position: relative; }
+.ss-diag > summary::-webkit-details-marker { display: none; }
+.ss-diag > summary::after { content: '▾'; position: absolute; right: 4px; top: 50%; transform: translateY(-50%); color: #ffd97a; font-size: 11px; }
+.ss-diag[open] > summary::after { transform: translateY(-50%) rotate(180deg); }
+.ss-diag > summary:focus-visible { outline: 2px solid #ffd97a; outline-offset: 1px; }
 .ss-diag dl { display: grid; grid-template-columns: auto 1fr; gap: 1px 8px; margin: 2px 0 4px; font-size: 11.5px; }
 .ss-diag dt { color: #bde; }
 .ss-diag dd { margin: 0; font-family: ui-monospace, monospace; word-break: break-all; }
@@ -910,6 +1180,9 @@ table.fb-final td.nm { text-align: left; }
   opacity: .5; cursor: default; background-color: #0a3f2e; }
 .ss-coach-model select:focus-visible, .ss-cpu-row select:focus-visible, .ss-panel select:focus-visible, .st-filters select:focus-visible, .st-mm-ctl select:focus-visible { outline: 2px solid #ffd97a; outline-offset: 1px; }
 .ss-coach-model select option, .ss-cpu-row select option, .ss-panel select option, .st-filters select option, .st-mm-ctl select option { background: #0e5a41; color: #eef; }
+/* Start-screen strength/type selects: a few px more breathing room above and
+   below the text (Astra 2026-11-10). Only this screen's CPU row. */
+#start-screen .ss-cpu-row select, #start-screen .ss-coach-model select { padding-top: 6px; padding-bottom: 6px; }
 
 /* Shared checkbox look (2026-11-06 addendum): dark green box, gold fill + dark check when on
    (replaces the OS-blue accent-color). Whole <label> stays the tap target. */
@@ -926,12 +1199,10 @@ table.fb-final td.nm { text-align: left; }
 /* Shared button look: remaining OS-default / off-theme buttons */
 .ss-diag-copy { border-radius: 6px; border: 1px solid #2a7; background: #0e5a41; color: #eef; cursor: pointer; }
 .ss-diag-copy:focus-visible, .probe-btn:focus-visible, .cmp-toggle:focus-visible { outline: 2px solid #ffd97a; outline-offset: 1px; }
-/* Stats mismatch list rows are <button>s: dark green card rows instead of the OS grey button */
-.review-list button.review-item { display: flex; flex-direction: column; align-items: flex-start; gap: 2px; width: 100%; box-sizing: border-box;
-  margin: 0; padding: 8px 10px; text-align: left; font: inherit; font-size: 12.5px; color: #eef; background: #0e5a41; border: 0; border-bottom: 1px solid #26594a; border-radius: 0; cursor: pointer; }
-.review-list button.review-item:hover { background: #136b4e; }
-.review-list button.review-item:focus-visible { outline: 2px solid #ffd97a; outline-offset: -2px; }
-.review-list button.review-item .review-diff { color: #ffd97a; }
+/* Stats mismatch list rows: dark green card rows instead of the OS grey button */
+.review-list .review-item { display: flex; flex-direction: column; align-items: flex-start; gap: 2px; width: 100%; box-sizing: border-box;
+  margin: 0; padding: 8px 10px; text-align: left; font-size: 12.5px; color: #eef; background: #0e5a41; border: 0; border-bottom: 1px solid #26594a; border-radius: 0; }
+.review-list .review-item .review-diff { color: #ffd97a; }
 
 /* ---- Fluid hand + taller landscape (2026-11-07) ----
    The fixed-px hand steps (46/34/33/30/24) could not follow the real
@@ -989,7 +1260,8 @@ table.fb-final td.nm { text-align: left; }
 }
 
 /* ---- 役一覧・用語辞典（2026-11-08）: #rules-view のタブ式 ---- */
-.ref-tabs { display: flex; gap: 6px; margin: 12px 0 4px; position: sticky; top: 0; z-index: 2; background: #0e4a36; padding: 4px 0; }
+/* タブはスクロール領域(.sheet-body)の外、タイトル行の直下に固定する行。 */
+.ref-tabs { display: flex; gap: 6px; margin: 0; flex: none; background: #0e4a36; padding: 10px 18px 6px; }
 .ref-tab { flex: 1; font-size: 14px; padding: 8px 6px; border-radius: 8px; border: 1px solid #2a7; background: #0b3a2b; color: #cfe; cursor: pointer; }
 .ref-tab.on { background: #1d7a57; border-color: #5d5; color: #fff; font-weight: 700; }
 .ref-pane[hidden], .ref-tab[hidden] { display: none; }
@@ -1000,7 +1272,6 @@ table.fb-final td.nm { text-align: left; }
 .yaku-table th, .yaku-table td { padding-left: 4px; padding-right: 4px; }
 .yaku-table td.yk-han { text-align: center; white-space: nowrap; }
 .yaku-table td.yk-no { color: #f0a090; }
-.yk-no-note { display: block; font-size: 10px; line-height: 1.2; }
 .ref-note { margin: 14px 0 0; font-size: 13px; color: #cfe; }
 .gl-list { margin: 4px 0 0; }
 .gl-list dt { font-weight: 700; color: #ffd97a; margin-top: 10px; }
@@ -1037,6 +1308,22 @@ table.fb-final td.nm { text-align: left; }
 .about-meta { display: grid; grid-template-columns: auto 1fr; gap: 4px 14px; margin: 0 0 14px; font-size: 13px; }
 .about-meta dt { color: #bde; }
 .about-meta dd { margin: 0; overflow-wrap: anywhere; }
+.about-version { cursor: default; user-select: none; }
+.freemium-sim-panel { margin: 0 0 14px; padding: 10px 12px; border: 1px solid rgba(255,217,122,.55);
+  border-radius: 8px; background: rgba(0,0,0,.24); font-size: 12.5px; }
+.freemium-sim-panel[hidden] { display: none; }
+.fs-title { font-weight: 700; color: #ffd97a; margin-bottom: 6px; }
+.fs-real { color: #dfe; margin-bottom: 8px; }
+.fs-options { display: flex; flex-wrap: wrap; gap: 6px; }
+.fs-options button { padding: 6px 9px; font-size: 12px; border: 1px solid #598675; border-radius: 6px;
+  background: #123e30; color: #fff; cursor: pointer; }
+.fs-options button.active { border-color: #ffd97a; background: #2b5a46; font-weight: 700; }
+.fs-virtual { margin-top: 9px; color: #ffd97a; }
+.fs-virtual[hidden] { display: none; }
+.fs-exit { margin-top: 9px; padding: 7px 10px; font-size: 12px; border: 1px solid #598675;
+  border-radius: 6px; background: #123e30; color: #fff; cursor: pointer; }
+.fs-exit[hidden] { display: none; }
+.fs-note { margin-top: 8px; color: #bde; font-size: 11.5px; line-height: 1.5; }
 .about-links { display: flex; flex-wrap: wrap; gap: 8px 16px; margin: 0 0 6px; font-size: 13.5px; }
 .about-link { color: #9fe6c0; }
 .about-link:focus-visible { outline: 2px solid #ffd97a; outline-offset: 2px; }
@@ -1062,10 +1349,19 @@ table.fb-final td.nm { text-align: left; }
 #controls #refBtn { background: #0e4a6a; border-color: #4ad; }
 @media (max-width: 480px) {
   .yaku-table { font-size: 12px; }
-  .ref-tab { font-size: 13px; }
+  /* 役名の列を 62px 確保し、短い役名と読み仮名を折り返さない。
+     説明列は残りを使い、門前/副露は「不可」が収まる幅に固定する。 */
+  .yaku-table { table-layout: fixed; }
+  .yaku-table th:first-child, .yaku-table td.yk-name { width: 62px; }
+  .yaku-table:not(.yaku-yakuman) th:nth-child(2),
+  .yaku-table:not(.yaku-yakuman) th:nth-child(3),
+  .yaku-table:not(.yaku-yakuman) td.yk-han { width: 34px; }
+  /* 4タブのラベル（特に「牌の読み方」）が折り返さない余白にする。 */
+  .ref-tabs { gap: 4px; }
+  .ref-tab { font-size: 13px; padding-left: 2px; padding-right: 2px; }
 }
 @media (max-height: 500px) {
-  .ref-tabs { margin: 6px 0 2px; }
+  .ref-tabs { padding-top: 6px; padding-bottom: 4px; }
   .ref-tab { padding: 5px 4px; }
 }
 
@@ -1077,8 +1373,8 @@ table.fb-final td.nm { text-align: left; }
 .guide-sec p { margin: 6px 0; }
 .guide-example { margin: 10px 0; }
 .guide-example-label { display: block; margin-bottom: 4px; font-size: 12px; color: #9fd0c0; }
-.guide-example-groups { display: flex; flex-wrap: wrap; gap: 8px; }
-.guide-example-group { display: inline-flex; gap: 1px; }
+.guide-example-groups { display: flex; flex-wrap: wrap; column-gap: 8px; row-gap: 6px; }
+.guide-example-group { display: inline-flex; flex: 0 0 auto; gap: 1px; }
 .tile.guide-tile { width: 24px; height: 34px; }
 .guide-links { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 8px; }
 .guide-link { font-size: 13px; padding: 6px 12px; border-radius: 8px; border: 1px solid #2a7; background: #0b3a2b; color: #cfe; cursor: pointer; }
@@ -1139,7 +1435,7 @@ table.fb-final td.nm { text-align: left; }
 /* ---------- 横画面 (landscape, 高さ <=700px) ---------- */
 @media (orientation: landscape) and (max-height: 700px) {
   /* 右コーチ列 272 -> 232px、左レール 98 -> 84px */
-  #app { grid-template-columns: minmax(0, 1fr) 232px; }
+  #app { grid-template-columns: minmax(0, 1fr) clamp(232px, 30vw, 340px); }
   #controls { flex: 0 0 84px; width: 84px; }
   /* 左右 seat 60px = padding 3+3 + 情報列 28 + gap 3 + 手牌列 23 */
   :is(#table, .replay-table) { grid-template-columns: 60px minmax(0, 1fr) 60px; }
@@ -1358,9 +1654,9 @@ table.fb-final td.nm { text-align: left; }
 
 @media (orientation: portrait) and (max-width: 1050px) {
   #scene-viewer :is(#board, .replay-board) :is(#center, .replay-center) { width: 40%; height: 40%; }
-  #scene-viewer .replay-center .round { white-space: nowrap; font-size: 13px; }
+  #scene-viewer .replay-center .round { font-size: 13px; }
   #scene-viewer .replay-center .round span { font-size: 11px; }
-  #scene-viewer .replay-center .center-meta { font-size: 10px; white-space: nowrap; }
+  #scene-viewer .replay-center .center-meta { font-size: 10px; }
 }
 
 /* Near-square narrow windows (e.g. 500x500) used to make the table reachable
@@ -1390,3 +1686,194 @@ table.fb-final td.nm { text-align: left; }
   #center .dora { font-size: 8px; gap: 2px; }
   #center .tile.dora-tile { width: 16px; height: 22px; }
 }
+
+/* ================================================================
+   Square band (2026-11-10, user-approved mock RESULT3 Plan C)
+   Aspect ratio width/height 0.8..1.25. Reuses the landscape board
+   surroundings (left control rail + side seat rails + square board)
+   and puts the coach column full width below the board. main.js adds
+   .layout-square from the same 4/5..5/4 media query, so these rules
+   override the portrait/landscape blocks above without changing them.
+   ================================================================ */
+#app.layout-square { display: flex; flex-direction: column; grid-template-columns: none; grid-template-rows: none; }
+#app.layout-square #table-wrap { flex: 1 1 auto; flex-direction: row; min-width: 0; min-height: 0; padding: 4px; gap: 4px; overflow: hidden; }
+#app.layout-square #controls { flex: 0 0 84px; width: 84px; flex-direction: column; flex-wrap: nowrap; align-items: stretch; gap: 4px; padding: 4px; overflow-y: auto; overflow-x: hidden; }
+#app.layout-square #controls button, #app.layout-square #controls select { width: 100%; font-size: 10px; padding: 2px 3px; }
+#app.layout-square #controls label { display: flex; flex-direction: row; align-items: center; gap: 3px; font-size: 10px; }
+#app.layout-square #controls label.chip { display: flex; font-size: 10px; line-height: 1.2; padding: 3px 4px; white-space: normal; }
+#app.layout-square #controls label.chip span { min-width: 0; overflow-wrap: anywhere; }
+#app.layout-square #controls label.chip input { width: 11px; height: 11px; }
+#app.layout-square #status { font-size: 9px; line-height: 1.25; white-space: normal; overflow-wrap: anywhere; }
+#app.layout-square #table { flex: 1 1 auto; min-width: 0; min-height: 0; grid-template-columns: 60px minmax(0, 1fr) 60px; gap: 3px; }
+#app.layout-square #board { width: min(100%, 660px); height: auto; aspect-ratio: 1; justify-self: center; align-self: center; border-radius: 10px; }
+#app.layout-square #board #center { width: 36%; height: 36%; padding: 2px; gap: 1px; }
+#app.layout-square #center .center-players { display: none; }
+#app.layout-square #center .round { font-size: 13px; line-height: 1.1; }
+#app.layout-square #center .round span { font-size: 11px; }
+#app.layout-square .center-meta { font-size: 9px; line-height: 1.1; }
+#app.layout-square #center .dora { font-size: 8px; gap: 2px; }
+#app.layout-square .tile.dora-tile { width: 16px; height: 22px; }
+#app.layout-square .bp-0 { top: 68.6%; }
+#app.layout-square .bp-2 { bottom: 68.6%; }
+#app.layout-square .bp-1 { left: 83.5%; }
+#app.layout-square .bp-3 { left: 16.5%; }
+#app.layout-square .board-pond { padding: 2px; gap: 1px; }
+#app.layout-square .board-pond:has(.he .tile:nth-child(13)) { padding: 0; gap: 0; }
+#app.layout-square .board-pond:has(.he .tile:nth-child(13)) .riichi-stick { min-height: 5px; }
+#app.layout-square .board-pond:has(.he .tile:nth-child(13)) .riichi-stick-art { width: 34px; height: 5px; }
+#app.layout-square .board-pond:has(.he .tile:nth-child(19)) { padding: 0; gap: 0; }
+#app.layout-square .board-pond:has(.he .tile:nth-child(19)) .riichi-stick { min-height: 5px; }
+#app.layout-square .board-pond:has(.he .tile:nth-child(19)) .riichi-stick-art { width: 34px; height: 5px; }
+#app.layout-square .seat { padding: 3px; }
+#app.layout-square .seat-info { min-height: 16px; font-size: 9px; margin-bottom: 2px; gap: 2px; }
+#app.layout-square .pos-left .seat-name, #app.layout-square .pos-right .seat-name { display: none; }
+#app.layout-square .pos-left .seat-info, #app.layout-square .pos-right .seat-info { flex-direction: column; gap: 1px; min-height: 0; }
+#app.layout-square .seat-wind { width: 15px; height: 15px; }
+#app.layout-square .riichi-badge, #app.layout-square .turn-badge { font-size: 8px; padding: 0 3px; }
+#app.layout-square .riichi-stick { min-height: 8px; }
+#app.layout-square .riichi-stick-art { width: 44px; height: 8px; }
+#app.layout-square #seat-top .tile.opp { width: 13px; height: 18px; }
+#app.layout-square #seat-top .tile.meld-tile { width: 16px; height: 22px; }
+#app.layout-square #seat-top .tile.meld-tile.tile-side { width: 22px; height: 16px; }
+#app.layout-square #seat-top .tile.meld-tile.mrot-90 .tile-art, #app.layout-square #seat-top .tile.meld-tile.mrot-270 .tile-art { width: 16px; height: 22px; }
+#app.layout-square .hand-row { margin-top: 2px; gap: 5px; flex-wrap: nowrap; }
+#app.layout-square .pos-left .hand, #app.layout-square .pos-right .hand { width: auto; }
+#app.layout-square #actions { min-height: 30px; padding: 3px; }
+#app.layout-square #actions .act { min-width: 76px; min-height: 38px; font-size: 15px; padding: 4px 10px; border-width: 2px; }
+#app.layout-square #actions .act.win { min-width: 92px; }
+#app.layout-square #actions .act.pass { min-width: 68px; }
+#app.layout-square #actions .act.minor { font-size: 13px; min-width: 76px; }
+#app.layout-square .action-status { font-size: 12px; }
+#app.layout-square .action-status.prompt { font-size: 13px; padding: 5px 10px; }
+#app.layout-square .tile.hand { width: clamp(14px, calc((100vw - 117px) / 14), 27px); height: auto; aspect-ratio: 46 / 65; }
+#app.layout-square .tile.hand.drawn { margin-left: 8px; }
+#app.layout-square .tile.act-tile { width: 16px; height: 23px; }
+#app.layout-square #sel-chip { font-size: 11px; padding: 2px 8px; gap: 6px; }
+#app.layout-square #side { flex: 0 0 clamp(110px, 24vh, 180px); width: 100%; min-height: 0; padding: 5px 8px; overflow-y: auto; overflow-x: hidden; }
+#app.layout-square #side h3 { font-size: 13px; margin: 2px 0 4px; }
+#app.layout-square .rec { font-size: 13px; }
+#app.layout-square .prob.big { font-size: 17px; }
+/* Landscape-style two-column side seats (info strip + hand strip). */
+#app.layout-square #seat-left { flex-direction: row; justify-content: flex-start; align-items: stretch; }
+#app.layout-square #seat-right { flex-direction: row-reverse; justify-content: flex-start; align-items: stretch; }
+#app.layout-square #seat-left, #app.layout-square #seat-right { margin-top: 0; }
+#app.layout-square .pos-left.seat, #app.layout-square .pos-right.seat { padding: 3px; gap: 3px;
+  --sg: 3px; --Mw0: 13; --Mh0: 19; --Bw0: 18; --Bh0: 13; --cpon: 45; --ckan: 13; --cback: 13; --info-space: 0px;
+  --mw: 13px; --mh: 19px; --bw: 18px; --bh: 13px; }
+#app.layout-square .pos-left .seat-info, #app.layout-square .pos-right .seat-info { flex: 0 0 28px; width: 28px; flex-direction: column; gap: 2px; min-height: 0; align-items: center; justify-content: center; margin-bottom: 0; }
+#app.layout-square .pos-left .seat-score, #app.layout-square .pos-right .seat-score { font-size: 7px; }
+#app.layout-square .pos-left .hand-row, #app.layout-square .pos-right .hand-row { flex: 1 1 auto; min-width: 0; flex-direction: column; flex-wrap: nowrap; align-items: center; justify-content: center; gap: var(--sg); margin-top: 0; }
+/* Top seat: info and hand side by side, like the landscape layout. In the
+   square band it spans the full table width (the first grid row is otherwise
+   empty outside the middle column), so a full hand + melds never has to
+   squeeze into the middle column. */
+#app.layout-square #seat-top { grid-column: 1 / -1; display: flex; align-items: center; justify-content: center; gap: 6px; padding: 2px; }
+#app.layout-square #seat-top .seat-info, #app.layout-square #seat-top .hand-row { margin: 0; }
+#app.layout-square #seat-top .seat-info { flex-wrap: wrap; white-space: normal; }
+#app.layout-square #seat-top .hand-row { min-width: 0; }
+#app.layout-square #seat-top .hand { flex-shrink: 0; }
+#app.layout-square #seat-top .melds { flex-wrap: nowrap; gap: 3px; }
+@media (max-width: 480px) {
+  #app.layout-square #seat-top .tile.opp { width: 9px; height: 13px; }
+  #app.layout-square .pos-left.seat, #app.layout-square .pos-right.seat { --Bw0: 13; --Bh0: 9; --cback: 9; --bw: 13px; --bh: 9px; }
+}
+/* Pond pitch follows the square board's own container size. */
+@supports (width: 1cqh) {
+  #app.layout-square .board-pond { --cap: 34px; }
+  #app.layout-square .board-pond:has(.he .tile:nth-child(13)) { --cap: 27px; }
+  #app.layout-square .board-pond:has(.he .tile:nth-child(19)) { --cap: 25px; }
+  #app.layout-square .board-pond,
+  #app.layout-square .board-pond:has(.he .tile:nth-child(13)),
+  #app.layout-square .board-pond:has(.he .tile:nth-child(19)) {
+    --py: min(var(--cap), calc((31.4cqh - 14px) / var(--r)), calc((33.5cqw - 8px) / (var(--r) / 2 + 2.25)), calc((31cqw - 4px) / var(--r)));
+  }
+}
+
+/* ---- AI coach expand button + sheet (2026-11-10) ---- */
+#coach h3.coach-head { display: flex; align-items: center; gap: 6px; flex-wrap: nowrap; white-space: nowrap; }
+/* 2026-11-16 device review (740x360): the context may wrap inside its own
+   slot, but the 拡大 control stays on the first line with the title (only
+   the whole heading used to wrap, dropping 拡大 onto a second line). */
+#coach h3.coach-head .ctx { flex: 0 1 auto; min-width: 0; overflow-wrap: anywhere; white-space: normal; }
+.coach-expand { margin-left: auto; flex: 0 0 auto; font-size: 11px; line-height: 1.2; padding: 2px 8px;
+  border-radius: 999px; border: 1px solid #2a7; background: #0e5a41; color: #eef; cursor: pointer; }
+.coach-expand:active { filter: brightness(1.15); }
+#coach-sheet { position: fixed; inset: 0; z-index: 30; display: flex; align-items: center; justify-content: center;
+  padding: var(--sa-t) var(--sa-r) var(--sa-b) var(--sa-l); background: rgba(0,0,0,.72); }
+.coach-sheet-card { display: flex; flex-direction: column; width: min(860px, 96vw); max-height: calc(100dvh - 24px);
+  background: #07271c; border: 1px solid rgba(255,217,122,.35); border-radius: 12px;
+  box-shadow: 0 10px 40px rgba(0,0,0,.55); overflow: hidden; }
+.coach-sheet-head { display: flex; align-items: center; justify-content: space-between; gap: 10px; padding: 10px 14px; background: #0e4a36; }
+.coach-sheet-head h2 { margin: 0; font-size: 17px; }
+.coach-sheet-head .st-close { margin-left: auto; }
+/* 2026-11-16 device review: 保存 belongs with 閉じる in the sheet header,
+   not floating alone in the body. */
+.coach-sheet-head .clip-save { position: static; margin-left: 6px; }
+.coach-sheet-status { font-size: 11px; color: #ffd97a; }
+.coach-sheet-body { position: relative; flex: 1 1 auto; min-height: 0; overflow-y: auto; overflow-x: hidden; padding: 10px 14px 14px; }
+.coach-sheet .coach-expand { display: none; }
+/* The expanded sheet is the "拡大" view: its conclusion must not read smaller
+   than the normal coach column (740x360 review). Same emphasis as #side. */
+#coach-sheet .coach-summary { display: flex; flex-direction: column; }
+#coach-sheet .coach-conclusion { background: rgba(255,217,122,.07); border: 1px solid rgba(255,217,122,.20);
+  border-left: 3px solid #ffd97a; border-radius: 6px; padding: 6px 8px 5px; }
+#coach-sheet .coach-conclusion .rec { margin: 0; font-size: 15px; align-items: baseline; gap: 6px; }
+#coach-sheet .coach-conclusion .rec .r1-name { font-size: 18px; line-height: 1; color: #ffd97a; }
+#coach-sheet .coach-conclusion .rec .prob.eval { margin-left: auto; padding-left: 6px;
+  font-size: 15px; font-weight: 800; color: #7ee2a8; }
+#coach-sheet .coach-conclusion .runner-up-line { margin: 3px 0 0; font-size: 13px; color: #d9efe5; }
+#coach-sheet .coach-conclusion .after-state { display: flex; align-items: baseline; flex-wrap: wrap;
+  gap: 5px; margin-top: 2px; font-size: 13px; color: #d9efe5; }
+#coach-sheet .after-state .prob-def.inline { margin: 0 0 0 auto; }
+#coach-sheet .prob-def.inline summary { font-size: 10.5px; color: #8fae9f; }
+#coach-sheet .prob-def.inline .prob-def-body { font-size: 11.5px; }
+#coach-sheet .coach-meta { display: flex; justify-content: flex-end; padding: 2px 2px 5px;
+  border-bottom: 1px solid rgba(255,255,255,.10); margin: 0 0 6px; }
+#coach-sheet .coach-meta .agreement-line { margin: 0; font-size: 12px; color: #8fae9f; }
+/* 2026-11-16 device review (08 stats / 09 settings): on phones the sheet
+   fills the viewport height, so the home status line behind it no longer
+   shows through the bottom gap. */
+@media (orientation: portrait) and (max-width: 500px) {
+  .stats-view { align-items: stretch; }
+  .stats-view > .sheet-card { margin: 0 auto; max-height: calc(100dvh - var(--sa-t) - var(--sa-b));
+    border-radius: 12px 12px 0 0; }
+}
+
+/* ---- Controls fold (2026-11-10) ---- */
+#controlsToggle { flex: 0 0 auto; align-self: flex-start; min-width: 28px; padding: 2px 6px; font-size: 13px; line-height: 1.1; }
+#app.controls-collapsed #controls > :not(#controlsToggle) { display: none !important; }
+#app.controls-collapsed #controls { padding: 2px; }
+@media (orientation: landscape) and (max-height: 700px) {
+  #app.controls-collapsed #controls { flex: 0 0 22px; width: 22px; }
+}
+#app.layout-square.controls-collapsed #controls { flex: 0 0 22px; width: 22px; }
+#app.controls-collapsed #controlsToggle { width: 100%; min-width: 0; padding: 2px; }
+/* Keep the short-landscape control rail fitting after the fold toggle was
+   added: one less 2px between rows restores the previous 17-size fit. */
+@media (orientation: landscape) and (max-height: 700px) {
+  #app:not(.layout-square) #controls { gap: 3px; }
+}
+
+/* ---- Start screen, short square band (2026-11-12 Astra recheck) ----
+   500x500 cannot scroll far enough to show the guide, start button and the
+   two link rows. Keep the brand/cards/rows as they are and tighten only the
+   vertical rhythm (gap/padding/margins) so the whole stack fits. Font sizes
+   and the centre strength box are unchanged. */
+@media (min-aspect-ratio: 4/5) and (max-aspect-ratio: 5/4) and (max-height: 620px) {
+  #start-screen .ss-scroll { --ss-gap: 3px; padding: 6px 12px 0; }
+  .ss-mark { width: 34px; height: 38px; border-radius: 6px; }
+  .ss-brand h1 { margin-top: 0; }
+  .ss-sub { margin-top: 0; }
+  .ss-card { padding: 6px 12px; }
+  .ss-strength-card { gap: 2px; }
+  .ss-cpu-seat { padding-top: 3px; }
+  .ss-cpu-seat + .ss-cpu-seat { margin-top: 3px; }
+  .ss-cpu-seat-name { margin-bottom: 2px; }
+  #start-screen .ss-cpu-row select, #start-screen .ss-coach-model select { padding-top: 3px; padding-bottom: 3px; }
+  .ss-cpu-note { margin-top: 2px; }
+  .ss-segment button { padding: 6px; }
+  .ss-btn-primary { padding: 8px; }
+  .ss-link-row { gap: 6px; }
+  .ss-btn-ghost { padding: 4px; }
+}
+
