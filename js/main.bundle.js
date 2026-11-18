@@ -34550,14 +34550,15 @@ function aggregateCoach(summaries) {
 }
 
 // src/cert_display.mjs
-var CERT_DAN_INTERCEPT = 8.0639;
-var CERT_DAN_SLOPE = 9.7938;
-var CERT_L_MIN = 0.104;
-var CERT_L_MAX = 1.4515;
+var CERT_DAN_INTERCEPT = 7.1285;
+var CERT_DAN_SLOPE = 9.8939;
+var CERT_L_MIN = 0.0669;
+var CERT_L_MAX = 1.3771;
 var CERT_START_GAMES = 3;
+var CERT_MIN_DECISIONS = 30;
 var CERT_PROVISIONAL_BELOW = 5;
 var CERT_WIDTH_NUMERATOR = 1.92;
-var CERT_OPEN_TOP = 7.05;
+var CERT_OPEN_TOP = 6.47;
 var CERT_UNIT_LABEL = "\u8A8D\u5B9A\u6BB5\u4F4D\u306E\u76EE\u5B89";
 function danToRank(v) {
   if (v >= 0.5) return `${Math.round(v)}\u6BB5`;
@@ -34578,7 +34579,7 @@ function certHalfWidth(games) {
   return CERT_WIDTH_NUMERATOR / Math.sqrt(games);
 }
 function buildDisplay(agg) {
-  if (agg.gameN < CERT_START_GAMES || agg.discardN < 1) return null;
+  if (agg.gameN < CERT_START_GAMES || agg.discardN < CERT_MIN_DECISIONS) return null;
   const loss = agg.lossSum / agg.discardN;
   const { center, topOpen, bottomClamped } = lossToDan(loss);
   const width = certHalfWidth(agg.gameN);
@@ -34586,6 +34587,7 @@ function buildDisplay(agg) {
   const high = center + width;
   const lowLabel = danToRank(low);
   const highLabel = topOpen || high > CERT_OPEN_TOP ? "7\u6BB5\u4EE5\u4E0A" : danToRank(high);
+  const rangeLabel = lowLabel === highLabel ? `${lowLabel}\u524D\u5F8C` : `${lowLabel}\u301C${highLabel}`;
   const provisional = agg.gameN < CERT_PROVISIONAL_BELOW;
   return {
     gameN: agg.gameN,
@@ -34598,7 +34600,7 @@ function buildDisplay(agg) {
     high,
     lowLabel,
     highLabel,
-    rangeLabel: `${lowLabel}\u301C${highLabel}`,
+    rangeLabel,
     topOpen,
     bottomClamped,
     provisional,
@@ -34611,7 +34613,8 @@ var CERT_WINDOW_NOTE = `\u65B0\u3057\u3044\u5BFE\u5C40\u304B\u3089\u6700\u5927${
 function certProgressText(gameN, discardN = 0) {
   const remaining = Math.max(0, CERT_START_GAMES - gameN);
   if (remaining > 0) return `\u3042\u3068${remaining}\u534A\u8358\u3067\u76EE\u5B89\u304C\u51FA\u307E\u3059\uFF08\u5BFE\u8C61 ${gameN}\u534A\u8358\uFF09\u3002${CERT_WINDOW_NOTE}`;
-  if (discardN < 1) return `\u5BFE\u8C61 ${gameN}\u534A\u8358\u30FB\u6253\u724C\u5224\u65AD\u304C\u8A18\u9332\u3055\u308C\u308B\u3068\u76EE\u5B89\u304C\u51FA\u307E\u3059\u3002${CERT_WINDOW_NOTE}`;
+  const needed = Math.max(0, CERT_MIN_DECISIONS - discardN);
+  if (needed > 0) return `\u3042\u3068${needed}\u56DE\u3067\u76EE\u5B89\u304C\u51FA\u307E\u3059\uFF08\u5BFE\u8C61${gameN}\u534A\u8358\u30FB\u6253\u724C\u5224\u65AD${discardN}\u56DE\uFF09\u3002${CERT_WINDOW_NOTE}`;
   return "";
 }
 function shortageNotice(agg) {
@@ -34651,13 +34654,14 @@ function certifiedRankSectionHTML(summaries) {
 
 // src/cert_home.mjs
 var CERT_HOME_EMPTY = "\u2014";
+var CERT_AUTO_DISCARD_NOTE = "\u81EA\u52D5\u30C4\u30E2\u5207\u308A\u306E\u6253\u724C\u306F\u6570\u3048\u307E\u305B\u3093\u3002";
 function certHomeModel(summaries) {
   const { display: d, notice } = certifiedRankSection(summaries);
   const basis = d ? `${d.basisLabel}<br>${CERT_WINDOW_NOTE}` : notice.progress;
   return {
     value: d ? d.rangeLabel : CERT_HOME_EMPTY,
     display: d,
-    popupHTML: `<b>${CERT_UNIT_LABEL}</b><div>AI\u30B3\u30FC\u30C1\u306E\u63A8\u5968\u3068\u306E\u5DEE\uFF08\u640D\u5931\uFF09\u306E\u5C0F\u3055\u3055\u304B\u3089\u63DB\u7B97\u3057\u305F\u6BB5\u4F4D\u306E\u76EE\u5B89\u3067\u3059\u3002</div><div class="ss-cert-basis">${basis}</div>`
+    popupHTML: `<b>${CERT_UNIT_LABEL}</b><div>AI\u30B3\u30FC\u30C1\u306E\u63A8\u5968\u3068\u306E\u5DEE\uFF08\u640D\u5931\uFF09\u306E\u5C0F\u3055\u3055\u304B\u3089\u63DB\u7B97\u3057\u305F\u6BB5\u4F4D\u306E\u76EE\u5B89\u3067\u3059\u3002</div><div class="ss-cert-basis">${basis}</div><div class="ss-cert-basis">${CERT_AUTO_DISCARD_NOTE}</div>`
   };
 }
 function renderCertHome(doc, summaries) {
@@ -37331,6 +37335,40 @@ function createBackNav({ win = globalThis } = {}) {
   return { push, replaceTop, dismiss, reset, handlePop, nativeBack, top, depth, has };
 }
 
+// src/scroll_hint.mjs
+var SCROLL_HINT_SELECTOR = ".end-card, .result-card, .sv-card, .history-card, .sheet-body";
+var SLACK_PX = 2;
+function hasMoreBelow(el2) {
+  return el2.scrollHeight - el2.clientHeight > SLACK_PX && el2.scrollTop + el2.clientHeight < el2.scrollHeight - SLACK_PX;
+}
+function installScrollHints({ doc = document, win = window, selector = SCROLL_HINT_SELECTOR } = {}) {
+  let queued = false;
+  const refresh = () => {
+    queued = false;
+    for (const el2 of doc.querySelectorAll(selector)) {
+      el2.classList.add("sh-card");
+      el2.classList.toggle("has-more", hasMoreBelow(el2));
+    }
+  };
+  const schedule = () => {
+    if (queued) return;
+    queued = true;
+    win.requestAnimationFrame(refresh);
+  };
+  doc.addEventListener("scroll", (e) => {
+    if (e.target?.matches?.(selector)) schedule();
+  }, true);
+  win.addEventListener("resize", schedule);
+  new win.MutationObserver(schedule).observe(doc.body, {
+    childList: true,
+    subtree: true,
+    attributes: true,
+    attributeFilter: ["class", "hidden", "style"]
+  });
+  schedule();
+  return { refresh };
+}
+
 // src/row_tags.mjs
 function tileNameOf(majiangTile) {
   const s = majiangTile[0], n = majiangTile[1];
@@ -37811,21 +37849,38 @@ function readDrillResults(storage) {
     const raw = storage?.getItem?.(DRILL_RESULTS_KEY);
     const parsed = raw ? JSON.parse(raw) : [];
     if (!Array.isArray(parsed)) return [];
-    return parsed.filter((r) => r && typeof r.date === "string" && Number.isFinite(r.correct)).map((r) => ({ date: r.date, correct: r.correct }));
+    return parsed.filter((r) => r && typeof r.date === "string" && Number.isFinite(r.correct)).map((r) => Number.isFinite(r.total) ? { date: r.date, correct: r.correct, total: r.total } : { date: r.date, correct: r.correct });
   } catch (_) {
     return [];
   }
 }
 function saveDrillResult(storage, record) {
   if (!record || typeof record.date !== "string" || !Number.isFinite(record.correct)) return false;
+  if (Number.isFinite(record.total) && record.total <= 0) return false;
   try {
     const rows = readDrillResults(storage);
-    rows.push({ date: record.date, correct: record.correct });
+    rows.push(Number.isFinite(record.total) ? { date: record.date, correct: record.correct, total: record.total } : { date: record.date, correct: record.correct });
     storage?.setItem?.(DRILL_RESULTS_KEY, JSON.stringify(rows.slice(-DRILL_RESULTS_LIMIT)));
     return true;
   } catch (_) {
     return false;
   }
+}
+function tallyDrillItems(items) {
+  const failed = items.filter((it) => it.judgement?.failed).length;
+  const judged = items.length - failed;
+  return {
+    failed,
+    judged,
+    correct: items.filter((it) => !it.judgement?.failed && it.judgement?.verdict === "correct").length
+  };
+}
+function drillRecordOf(items, date) {
+  const t = tallyDrillItems(items);
+  if (t.judged <= 0) return null;
+  const record = { date: drillResultDate(date), correct: t.correct };
+  if (t.failed > 0) record.total = t.judged;
+  return record;
 }
 function createStreamingDrillSession({
   total = DRILL_SET_SIZE,
@@ -37937,10 +37992,7 @@ function createStreamingDrillSession({
     },
     result(date = /* @__PURE__ */ new Date()) {
       if (signal.aborted || !session.complete) return null;
-      return {
-        date: drillResultDate(date),
-        correct: items.filter((it) => it.judgement?.verdict === "correct").length
-      };
+      return drillRecordOf(items, date);
     }
   };
   return session;
@@ -38264,9 +38316,15 @@ var GEN_LIMITS = {
   // 1.3 [B]
   watchdogStrikes: 3,
   // consecutive timed-out kyokus => unavailable
-  stockMax: 30
+  stockMax: 30,
   // 5.3
+  // J4: difficulty mix aimed at for 難易度「おまかせ」 (per set of 10), and the cap
+  // on kyokus spent steering toward a missing tier before a set settles for
+  // whatever the clarity band yields.
+  setMix: { easy: 5, normal: 3, hard: 2 },
+  focusMissesPerSet: 8
 };
+var TIERS = ["easy", "normal", "hard"];
 var NEVER = new Promise(() => {
 });
 function shuffle(list, rng) {
@@ -38311,6 +38369,8 @@ function createDrillGenerator({
   let problemSeq = 0;
   let attempt = { evals: 0, kyokus: 0, ms: 0 };
   let strikes = 0;
+  const setTally = { easy: 0, normal: 0, hard: 0 };
+  let focusMisses = 0;
   const stats = {
     available: true,
     kyokus: 0,
@@ -38527,7 +38587,7 @@ function createDrillGenerator({
       run
     };
   }
-  function candidatesOf(kyoku, tgt) {
+  function candidatesOf(kyoku, tgt, difficulty = tgt.difficulty) {
     const { events, decisionLog, qijia } = kyoku;
     const out = [];
     for (const rec of decisionLog) {
@@ -38551,11 +38611,27 @@ function createDrillGenerator({
       if (!matchesScene(tgt.scene, facts)) continue;
       stats.sceneOk++;
       const pred = predictedMatch(q4);
-      if (!PREDICT_PASS[tgt.difficulty](pred)) continue;
+      if (!PREDICT_PASS[difficulty](pred)) continue;
       stats.predOk++;
       out.push({ rec, scene: sceneObj, facts, pred });
     }
     return out;
+  }
+  function focusTier() {
+    if (!target || target.difficulty !== "any" || focusMisses >= lim.focusMissesPerSet) return null;
+    const id2 = currentModelId();
+    const have = { ...setTally };
+    for (const it of stock) if (it.modelId === id2 && matches(it, target.key)) have[it.tier]++;
+    let best = null;
+    let bestShare = 0;
+    for (const t of ["hard", "normal", "easy"]) {
+      const share = (lim.setMix[t] - have[t]) / lim.setMix[t];
+      if (share > bestShare + 1e-9) {
+        best = t;
+        bestShare = share;
+      }
+    }
+    return best;
   }
   function limitHit() {
     return attempt.evals >= lim.evalsPerSlot || attempt.kyokus >= lim.kyokusPerSlot || attempt.ms >= lim.msPerSlot;
@@ -38662,7 +38738,8 @@ function createDrillGenerator({
       return;
     }
     strikes = 0;
-    const cands = shuffle(candidatesOf(kyoku, tgt), rng);
+    const focus = focusTier();
+    const cands = shuffle(candidatesOf(kyoku, tgt, focus || tgt.difficulty), rng);
     const picked = [];
     const actors = /* @__PURE__ */ new Set();
     for (const c of cands) {
@@ -38696,6 +38773,7 @@ function createDrillGenerator({
       emit("problem", item);
       if (target && matches(item, target.key)) attempt = { evals: 0, kyokus: 0, ms: 0 };
     }
+    if (focus && !accepted.some((it) => it.tier === focus)) focusMisses++;
     if (limitHit()) giveUp();
   }
   async function loop(token) {
@@ -38766,14 +38844,31 @@ function createDrillGenerator({
       looping = false;
       wake();
     },
+    // J4: a new set starts; the 'any' difficulty mix is counted from zero.
+    beginSet() {
+      for (const t of TIERS) setTally[t] = 0;
+      focusMisses = 0;
+    },
     // Gate: inference waits while paused (answering, just-rendered screen).
     pause,
     resume,
     take(key2) {
       dropForeignModels();
-      const idx = stock.findIndex((it) => matches(it, key2));
+      let idx = stock.findIndex((it) => matches(it, key2));
       if (idx < 0) return null;
+      if (parseKey(key2).difficulty === "any") {
+        let bestNeed = 0;
+        stock.forEach((it, i) => {
+          if (!matches(it, key2)) return;
+          const need = lim.setMix[it.tier] - setTally[it.tier];
+          if (need > bestNeed) {
+            bestNeed = need;
+            idx = i;
+          }
+        });
+      }
       const [item] = stock.splice(idx, 1);
+      if (parseKey(key2).difficulty === "any") setTally[item.tier]++;
       wake();
       return { problem: item.problem, data: dataFor(item), origin: "generated", tier: item.tier };
     },
@@ -39389,15 +39484,16 @@ function createDrillUi({
     </div>`);
   }
   function renderResult() {
-    const total = session.total;
-    const correct = record ? record.correct : 0;
     const items = session.items;
+    const tally = tallyDrillItems(items);
+    const total = tally.judged;
+    const correct = record ? record.correct : 0;
     const byDiff = { easy: 0, normal: 0, hard: 0 };
     const byVerdict = { correct: 0, close: 0, wrong: 0 };
     for (const it of items) {
       const level = drillDifficulty(it.problem);
       if (level && byDiff[level.id] != null) byDiff[level.id]++;
-      if (it.judgement && byVerdict[it.judgement.verdict] != null) byVerdict[it.judgement.verdict]++;
+      if (it.judgement && !it.judgement.failed && byVerdict[it.judgement.verdict] != null) byVerdict[it.judgement.verdict]++;
     }
     const barPct = total ? Math.round(correct / total * 100) : 0;
     setOverlay(`${headerHTML({
@@ -39411,6 +39507,7 @@ function createDrillUi({
         <div class="drill-result-legend">\u3084\u3055\u3057\u3044 ${byDiff.easy}\u30FB\u3075\u3064\u3046 ${byDiff.normal}\u30FB\u3080\u305A\u304B\u3057\u3044 ${byDiff.hard}</div>
         <div class="drill-result-bar"><i style="width:${barPct}%"></i></div>
         <div class="drill-result-legend">\u6B63\u89E3 ${byVerdict.correct}\u3000\u60DC\u3057\u3044 ${byVerdict.close}\u3000\u4E0D\u6B63\u89E3 ${byVerdict.wrong}</div>
+        ${tally.failed > 0 ? `<div class="drill-result-legend drill-error-note">${items.length}\u554F\u4E2D${tally.judged}\u554F\u3092\u5224\u5B9A\uFF08${tally.failed}\u554F\u306F\u518D\u8A08\u7B97\u306B\u5931\u6557\u3057\u305F\u305F\u3081\u9664\u5916\uFF09</div>` : ""}
         ${session.fallbackCount > 0 ? '<div class="drill-result-legend drill-fallback-note">\u4E00\u90E8\u306F\u53CE\u9332\u6E08\u307F\u306E\u554F\u984C\u304B\u3089\u51FA\u984C\u3057\u307E\u3057\u305F</div>' : ""}
       </section>
       <section class="drill-result-list">
@@ -39418,11 +39515,12 @@ function createDrillUi({
         ${items.map((it, i) => {
       const level = drillDifficulty(it.problem);
       const v = it.judgement?.verdict || "wrong";
+      const excluded = !!it.judgement?.failed;
       return `<div class="drill-result-row">
         <div class="drill-result-q"><b>\u7B2C${i + 1}\u554F</b><span>${esc4(kyokuText(it.problem.kyoku))}\u30FB${esc4(it.problem.junme)}\u5DE1\u76EE</span><small>${esc4(idLabel(it.problem.id))}</small></div>
         <div class="drill-result-tags">
           ${level ? `<span class="drill-diff-badge diff-${esc4(level.id)}">${esc4(level.label)}</span>` : ""}
-          <span class="drill-verdict-badge ${v}">${esc4(verdictLabel(v))}</span>
+          ${excluded ? '<span class="drill-verdict-badge excluded">\u9664\u5916</span>' : `<span class="drill-verdict-badge ${v}">${esc4(verdictLabel(v))}</span>`}
         </div>
       </div>`;
     }).join("")}
@@ -39606,6 +39704,7 @@ function createDrillUi({
     const poolFirst = isAnyAny(choice) && setsStarted === 0;
     const useGen = !!gen && !poolFirst;
     const supplier = createDrillSupplier({ generator: useGen ? gen : null, poolIndex, key: key2, rng });
+    gen?.beginSet?.();
     if (gen) gen.setTarget(key2, { want: useGen ? DRILL_SET_SIZE * 2 : DRILL_SET_SIZE });
     return (slot, ctx) => supplier.supply(slot, ctx).then((r) => poolFirst ? { ...r, fallback: false } : r);
   }
@@ -39683,7 +39782,7 @@ function createDrillUi({
       }
     } catch (e) {
       entry.error = String(e?.message || e);
-      entry.judgement = judgeDrillAnswer({ selected: action, recommended, probabilities: [] });
+      entry.judgement = { ...judgeDrillAnswer({ selected: action, recommended, probabilities: [] }), failed: true };
     }
     if (!open || session !== run) return;
     busy = false;
@@ -39792,6 +39891,28 @@ function createDrillUi({
       return locked;
     }
   };
+}
+
+// src/drill_stats.mjs
+var DRILL_STATS_ROWS = 5;
+var DRILL_STATS_UNLOCK_HTML = '<button type="button" class="analysis-unlock" data-coach-unlock>\u{1F512} \u30C9\u30EA\u30EB\u6210\u7E3E\u306F\u30A2\u30F3\u30ED\u30C3\u30AF\u3067\u898B\u3089\u308C\u307E\u3059</button>';
+var escHtml2 = (s) => String(s).replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" })[c]);
+function drillStatsSectionHTML(rows, { locked = false } = {}) {
+  const list = Array.isArray(rows) ? rows : [];
+  if (!list.length) return "";
+  if (locked) {
+    return `<div class="st-section drill-stats"><h3>\u30C9\u30EA\u30EB\u6210\u7E3E</h3>${DRILL_STATS_UNLOCK_HTML}</div>`;
+  }
+  const recent = list.slice(-DRILL_STATS_ROWS).reverse();
+  const body = recent.map((r) => {
+    const total = Number.isFinite(r.total) ? r.total : DRILL_SET_SIZE;
+    const excluded = DRILL_SET_SIZE - total;
+    return `<tr><td>${escHtml2(r.date)}</td><td class="st-num">${r.correct}/${total} \u6B63\u89E3</td><td class="st-den">${excluded > 0 ? `${excluded}\u554F\u9664\u5916` : ""}</td></tr>`;
+  }).join("");
+  return `<div class="st-section drill-stats"><h3>\u30C9\u30EA\u30EB\u6210\u7E3E</h3>
+    <table class="st-table"><thead><tr><th>\u65E5\u4ED8</th><th>\u7D50\u679C</th><th></th></tr></thead><tbody>${body}</tbody></table>
+    <div class="st-note">\u4F55\u5207\u308B\u30C9\u30EA\u30EB\u306E\u76F4\u8FD1${recent.length}\u30BB\u30C3\u30C8\uFF08\u65B0\u3057\u3044\u9806\uFF09\u3002\u518D\u8A08\u7B97\u306B\u5931\u6557\u3057\u305F\u554F\u984C\u306F\u9664\u5916\u3057\u3066\u3044\u307E\u3059\u3002</div>
+  </div>`;
 }
 
 // src/main.js
@@ -40574,7 +40695,7 @@ function decisionButtonsHTML() {
       b.push(act("riichi", riichiArmed ? "\u30EA\u30FC\u30C1\u89E3\u9664" : "\u30EA\u30FC\u30C1", "", `riichi${riichiArmed ? " armed" : ""}`));
     }
     if (o.canPingju) b.push(act("daopai", "\u4E5D\u7A2E\u4E5D\u724C", "", "minor"));
-    const prompt = riichiArmed ? `\u30EA\u30FC\u30C1\u3059\u308B\u724C\u3092\u9078\u3093\u3067\u304F\u3060\u3055\u3044\uFF08\u91D1\u8272\u306E\u724C\u3002\u3084\u3081\u308B\u5834\u5408\u306F\u300C\u30EA\u30FC\u30C1\u89E3\u9664\u300D\uFF09${riichiNotice ? `<span class="riichi-error">${escHtml2(riichiNotice)}</span>` : ""}` : selectedAction ? "\u3082\u3046\u4E00\u5EA6\u30BF\u30C3\u30D7\u3067\u6253\u724C\u3057\u307E\u3059" : "\u724C\u3092\u30BF\u30C3\u30D7\u3067\u9078\u629E\uFF08\u3082\u3046\u4E00\u5EA6\u30BF\u30C3\u30D7\u3067\u6253\u724C\uFF09";
+    const prompt = riichiArmed ? `\u30EA\u30FC\u30C1\u3059\u308B\u724C\u3092\u9078\u3093\u3067\u304F\u3060\u3055\u3044\uFF08\u91D1\u8272\u306E\u724C\u3002\u3084\u3081\u308B\u5834\u5408\u306F\u300C\u30EA\u30FC\u30C1\u89E3\u9664\u300D\uFF09${riichiNotice ? `<span class="riichi-error">${escHtml3(riichiNotice)}</span>` : ""}` : selectedAction ? "\u3082\u3046\u4E00\u5EA6\u30BF\u30C3\u30D7\u3067\u6253\u724C\u3057\u307E\u3059" : "\u724C\u3092\u30BF\u30C3\u30D7\u3067\u9078\u629E\uFF08\u3082\u3046\u4E00\u5EA6\u30BF\u30C3\u30D7\u3067\u6253\u724C\uFF09";
     b.push(`<div class="action-status prompt${riichiArmed && riichiNotice ? " riichi-error" : ""}">${prompt}</div>`);
   } else if (pending.kind === "dapai") {
     if (o.canHule) b.push(act("hule", "\u30ED\u30F3", "", "win"));
@@ -40620,20 +40741,20 @@ function coachHTML(replayRec, opts = {}) {
   if (!replay && !coachEnabled) return head() + '<div class="hint">AI\u30B3\u30FC\u30C1 OFF\uFF08\u5B9F\u6226\u5F62\u5F0F\uFF09</div>';
   let rec = replay ? replayRec : currentCoach?.record;
   if (!replay && AUTO && coach?.records?.length) rec = coach.records[coach.records.length - 1];
-  if (!replay && !rec && coachMissing && (pending || preparingDecision)) return head(escHtml2(liveHeadCtx())) + '<div class="hint">\u3053\u306E\u624B\u756A\u306F\u30B3\u30FC\u30C1\u306E\u8A55\u4FA1\u3092\u53D6\u5F97\u3067\u304D\u307E\u305B\u3093\u3067\u3057\u305F\uFF08\u63A8\u5968\u306A\u3057\uFF09\u3002</div>';
+  if (!replay && !rec && coachMissing && (pending || preparingDecision)) return head(escHtml3(liveHeadCtx())) + '<div class="hint">\u3053\u306E\u624B\u756A\u306F\u30B3\u30FC\u30C1\u306E\u8A55\u4FA1\u3092\u53D6\u5F97\u3067\u304D\u307E\u305B\u3093\u3067\u3057\u305F\uFF08\u63A8\u5968\u306A\u3057\uFF09\u3002</div>';
   if (!replay && !AUTO && (preparingDecision || pending?.kind === "zimo" || pending?.kind === "fulou") && !selectedAction) {
     const memo0 = east4Memo();
     S.east4Memo = memo0;
-    return `${head(escHtml2(liveHeadCtx()))}<div class="hint">\u724C\u3092\u9078\u3076\u3068\u8A55\u4FA1\u3092\u8868\u793A\u3057\u307E\u3059\uFF08\u9078\u629E\u3057\u305F\u724C\u3092\u3082\u3046\u4E00\u5EA6\u30BF\u30C3\u30D7\u3067\u6253\u724C\uFF09\u3002</div>${memo0 ? `<div class="east4-memo">${memo0}</div>` : ""}`;
+    return `${head(escHtml3(liveHeadCtx()))}<div class="hint">\u724C\u3092\u9078\u3076\u3068\u8A55\u4FA1\u3092\u8868\u793A\u3057\u307E\u3059\uFF08\u9078\u629E\u3057\u305F\u724C\u3092\u3082\u3046\u4E00\u5EA6\u30BF\u30C3\u30D7\u3067\u6253\u724C\uFF09\u3002</div>${memo0 ? `<div class="east4-memo">${memo0}</div>` : ""}`;
   }
-  if (!rec) return head(escHtml2(liveHeadCtx())) + '<div class="hint">\u3042\u306A\u305F\u306E\u624B\u756A\u3067\u63A8\u5968\u3092\u8868\u793A\u3057\u307E\u3059</div>';
+  if (!rec) return head(escHtml3(liveHeadCtx())) + '<div class="hint">\u3042\u306A\u305F\u306E\u624B\u756A\u3067\u63A8\u5968\u3092\u8868\u793A\u3057\u307E\u3059</div>';
   const best = rec.top3?.[0];
   const isReaction = rec.context === "dapai" || rec.context === "gang";
   const subs = (isReaction ? (rec.qValues || []).map((c, i) => ({ ...c, rank: i + 1 })) : (rec.top3 || []).map((c, i) => ({ ...c, rank: i + 1 }))).filter((c) => c.action !== best?.action).slice(0, isReaction ? 8 : 2);
   const top3 = subs.map((c) => `<div class="qrow"><span class="qname">${c.rank}\u4F4D ${actionLabel(c.action, rec)}</span><span class="prob">${formatPercent(c.prob)}</span></div>`).join("");
   const runnerUps = subs.map((c) => ({ name: actionLabel(c.action, rec), percent: formatPercent(c.prob) }));
-  const callNotes = (rec.callNotes || []).map((n) => `<div class="hint">${actionLabel(n.action, rec)}\u5F8C: \u6700\u826F\u306E\u6253\u724C\u3067${n.shanten === 0 ? "\u30C6\u30F3\u30D1\u30A4" : `${escHtml2(n.shanten)}\u5411\u8074`}\u30FB\u53D7\u5165${escHtml2(n.ukeire)}\u679A</div>`).join("");
-  const agr = !replay && !AUTO ? agreementLineHTML(seat0?.agreement, { escapeHtml: escHtml2 }) : "";
+  const callNotes = (rec.callNotes || []).map((n) => `<div class="hint">${actionLabel(n.action, rec)}\u5F8C: \u6700\u826F\u306E\u6253\u724C\u3067${n.shanten === 0 ? "\u30C6\u30F3\u30D1\u30A4" : `${escHtml3(n.shanten)}\u5411\u8074`}\u30FB\u53D7\u5165${escHtml3(n.ukeire)}\u679A</div>`).join("");
+  const agr = !replay && !AUTO ? agreementLineHTML(seat0?.agreement, { escapeHtml: escHtml3 }) : "";
   const memo = replay ? null : east4Memo();
   if (!replay) S.east4Memo = memo;
   const showSubs = subs.length > 0 && (!sheet || isReaction);
@@ -40641,25 +40762,25 @@ function coachHTML(replayRec, opts = {}) {
   const recTileArt = recTile ? `<span class="rec-tile" aria-hidden="true">${tileSVG(recTile, "")}</span>` : "";
   const after = shantenAfterLabel(rec.shantenAfter != null ? rec.shantenAfter : rec.shanten);
   const headingContext = replay ? rec.context : currentCoach?.context || rec.context;
-  const headHTML = head(`${escHtml2(kyokuText(rec.kyoku))} / ${escHtml2(coachHeadingLabel(rec, headingContext, replay))}`);
+  const headHTML = head(`${escHtml3(kyokuText(rec.kyoku))} / ${escHtml3(coachHeadingLabel(rec, headingContext, replay))}`);
   if (sheet) {
     return `${headHTML}
     <div class="rec">\u63A8\u5968: <b>${actionLabel(rec.recommended, rec)}</b>${recTileArt}
       <span class="prob eval">\u63A8\u5968\u5EA6\uFF1A${formatEvalPercent(best?.prob ?? rec.pBest)}</span></div>
     ${showSubs ? `<div class="top3"><div class="hint">\u5168\u5019\u88DC</div>${top3}</div>` : ""}${callNotes}
-    ${after != null ? `<div class="after-state">\u6253\u724C\u5F8C\uFF1A${escHtml2(after)}</div>` : ""}
+    ${after != null ? `<div class="after-state">\u6253\u724C\u5F8C\uFF1A${escHtml3(after)}</div>` : ""}
     <details class="prob-def"><summary>\u63A8\u5968\u5EA6\u3068\u306F \u24D8</summary><div class="prob-def-body">\u63A8\u5968\u5EA6\u306F\u3001AI\u30B3\u30FC\u30C1\u306E\u8A55\u4FA1\u3092\u5019\u88DC\u5168\u4F53\u306B\u5BFE\u3059\u308B\u5272\u5408\uFF08\uFF05\uFF09\u3067\u8868\u3057\u305F\u3082\u306E\u3067\u3059\u3002</div></details>${agr}${memo ? `<div class="east4-memo">${memo}</div>` : ""}`;
   }
   return headHTML + coachSummaryHTML({
     recommended: actionLabel(rec.recommended, rec),
     recommendedTileArt: recTileArt,
     evalPercent: formatEvalPercent(best?.prob ?? rec.pBest),
-    runnerUpHTML: showSubs ? runnerUpLineHTML(runnerUps, { label: isReaction ? "\u5168\u5019\u88DC" : "\u6B21\u70B9", escapeHtml: escHtml2 }) : "",
+    runnerUpHTML: showSubs ? runnerUpLineHTML(runnerUps, { label: isReaction ? "\u5168\u5019\u88DC" : "\u6B21\u70B9", escapeHtml: escHtml3 }) : "",
     callNotesHTML: callNotes,
     after,
     agreementHTML: agr,
     memo,
-    escapeHtml: escHtml2
+    escapeHtml: escHtml3
   });
 }
 function isFinalKyokuContext() {
@@ -40827,7 +40948,7 @@ function explainHTML(opts = {}) {
     comparison,
     cmpExpanded,
     rowTags,
-    escapeHtml: escHtml2
+    escapeHtml: escHtml3
   }) + `${verdictHTML}${stats}${probeSectionHTML(rec, "current")}`;
 }
 var coachSheetOpen = false;
@@ -40886,7 +41007,7 @@ function probeResultHTML(rec) {
   const probed = !!rec.probe;
   let h = "";
   if (conds.length) {
-    h += explainConditionsHTML(conds, escHtml2);
+    h += explainConditionsHTML(conds, escHtml3);
   } else if (probed && !rec.explainability?.outOfScope) {
     h += '<div class="probe-none">\u8AAC\u660E\u3067\u304D\u308B\u6761\u4EF6\u306F\u898B\u3064\u304B\u308A\u307E\u305B\u3093\u3067\u3057\u305F</div>';
   }
@@ -40896,7 +41017,7 @@ function probeResultHTML(rec) {
     h += `<div class="probe-dirs"><div class="hint">\u65B9\u91DD\u5225\u306E\u6700\u5584\u624B\uFF08\u63A8\u5968\u3068\u7570\u306A\u308B\u65B9\u91DD\u306E\u307F\uFF09</div>${dirs.map((d) => {
       const bp = probOf2(d.bestAction);
       const diff = bp != null && baseProb != null ? bp - baseProb : null;
-      return `<div class="probe-dir">${escHtml2(d.label)}\u3092\u6B8B\u3059\u6700\u5584\u306F ${tileLabel(d.bestPai)}${bp != null ? `\uFF08\u63A8\u5968\u5EA6 ${formatPercent(bp)}${diff != null ? `\u3001\u63A8\u5968\u3068\u306E\u5DEE ${formatPercent(diff)}` : ""}\uFF09` : ""}</div>`;
+      return `<div class="probe-dir">${escHtml3(d.label)}\u3092\u6B8B\u3059\u6700\u5584\u306F ${tileLabel(d.bestPai)}${bp != null ? `\uFF08\u63A8\u5968\u5EA6 ${formatPercent(bp)}${diff != null ? `\u3001\u63A8\u5968\u3068\u306E\u5DEE ${formatPercent(diff)}` : ""}\uFF09` : ""}</div>`;
     }).join("")}</div>`;
   }
   if (probed && !flips.length && !dirs.length) {
@@ -41039,7 +41160,7 @@ function reviewHTML(records) {
       <div class="review-none">\u30B3\u30FC\u30C1\u3068\u7570\u306A\u308B\u9078\u629E\u306F\u3042\u308A\u307E\u305B\u3093\u3067\u3057\u305F\u3002</div></div>`;
   }
   const body = rows.map((r) => `<tr class="review-row">
-      <td>${escHtml2(kyokuText(r.kyoku) || "-")} / ${escHtml2(r.junme ?? "-")}\u5DE1\u76EE</td><td>${escHtml2(contextLabel(r.context))}</td>
+      <td>${escHtml3(kyokuText(r.kyoku) || "-")} / ${escHtml3(r.junme ?? "-")}\u5DE1\u76EE</td><td>${escHtml3(contextLabel(r.context))}</td>
       <td>${actionLabel(r.recommended, r)}<br><span class="prob">${formatPercent(r.pBest)}</span></td>
       <td>${actionLabel(r.actual, r)}<br><span class="prob">${formatPercent(r.pActual)}</span></td>
       <td><span class="prob">${formatPercent(r.probDiff)}</span></td>
@@ -41129,13 +41250,13 @@ function renderReplayViewer() {
   const qijia = v.bundle?.meta?.qijia ?? v.clip?.qijia ?? 0;
   const snap = sceneSnapshot(scene, qijia), c = snap.center;
   const byPos = Object.fromEntries(snap.seats.map((s) => [s.pos, s]));
-  const round = `${escHtml2("\u6771\u5357\u897F\u5317"[c.zhuangfeng])}${escHtml2(c.jushu + 1)}\u5C40 ${escHtml2(c.changbang)}\u672C\u5834`;
+  const round = `${escHtml3("\u6771\u5357\u897F\u5317"[c.zhuangfeng])}${escHtml3(c.jushu + 1)}\u5C40 ${escHtml3(c.changbang)}\u672C\u5834`;
   const seat = (pos) => `<div class="seat replay-seat-${["bottom", "right", "top", "left"][pos]} pos-${["bottom", "right", "top", "left"][pos]}${byPos[pos].lizhi ? " seat-riichi" : ""}">${seatHTML(byPos[pos], pos === 0, true, c.lunban)}</div>`;
   const mini = (s) => `<div class="center-player pos-${s.pos}${s.l === c.lunban ? " active" : ""}"><span class="cp-wind">${s.wind}</span><span class="cp-name">${s.name}</span><b>${s.defen.toLocaleString()}</b></div>`;
   const nav = !!v.bundle, index = v.index ?? 0;
   const currentKyoku = v.steps?.[index].kyokuIndex;
   $("scene-viewer").innerHTML = `<div class="sv-card replay-card" role="dialog" aria-modal="true" aria-label="\u5BFE\u5C40\u306E\u518D\u751F">
-    <div class="sv-head"><div class="sv-title">\u5BFE\u5C40\u306E\u518D\u751F \u2015 ${round} \uFF0F ${escHtml2(scene.turn)}\u624B\u76EE${record ? ` \u30FB ${escHtml2(contextLabel(record.context))}` : ""}</div>
+    <div class="sv-head"><div class="sv-title">\u5BFE\u5C40\u306E\u518D\u751F \u2015 ${round} \uFF0F ${escHtml3(scene.turn)}\u624B\u76EE${record ? ` \u30FB ${escHtml3(contextLabel(record.context))}` : ""}</div>
     <div class="sv-nav"><button type="button" data-scene-close>\u9589\u3058\u308B</button></div></div>
     <div class="sv-nav replay-nav">
       <button type="button" data-replay-prev-kyoku ${!nav || !v.steps.some((s) => s.kyokuIndex < currentKyoku) ? "disabled" : ""}>\u524D\u306E\u5C40</button>
@@ -41148,7 +41269,7 @@ function renderReplayViewer() {
     <div class="replay-table">${seat(2)}${seat(3)}
       <div class="replay-board"><div class="replay-center">
         <div class="center-players">${[2, 3, 1, 0].map((p) => mini(byPos[p])).join("")}</div>
-        <div class="round"><span class="round-kyoku">${escHtml2("\u6771\u5357\u897F\u5317"[c.zhuangfeng])}${escHtml2(c.jushu + 1)}\u5C40</span> <span>${escHtml2(c.changbang)}\u672C\u5834</span></div><div class="center-meta"><span class="cm-item">\u6B8B\u308A ${escHtml2(c.paishu)}\u679A</span> <span class="cm-item">\u4F9B\u8A17 ${escHtml2(c.lizhibang)}</span></div>
+        <div class="round"><span class="round-kyoku">${escHtml3("\u6771\u5357\u897F\u5317"[c.zhuangfeng])}${escHtml3(c.jushu + 1)}\u5C40</span> <span>${escHtml3(c.changbang)}\u672C\u5834</span></div><div class="center-meta"><span class="cm-item">\u6B8B\u308A ${escHtml3(c.paishu)}\u679A</span> <span class="cm-item">\u4F9B\u8A17 ${escHtml3(c.lizhibang)}</span></div>
         <div class="dora"><span class="dora-label">\u30C9\u30E9\u8868\u793A</span>${c.baopai.map((p) => tileHTML(p, "dora-tile")).join("")}</div></div>
       ${snap.seats.map((s) => `<div class="board-pond bp-${s.pos}${s.lizhi ? " riichi-on" : ""}">${pondHTML(s, scene.lastDapai ? (scene.lastDapai.actor - scene.oya + 4) % 4 : -1)}</div>`).join("")}</div>
       ${seat(1)}<div class="replay-self-area">${seat(0)}</div></div>
@@ -41513,7 +41634,7 @@ function historyItemLabel(bundle) {
     const score = `${Number(x.defen).toLocaleString()}${ranked ? "" : "\u70B9"}`;
     return `<span class="history-standing"><span class="history-standing-who">${who}</span><span class="history-standing-score">${score}</span></span>`;
   }).join("");
-  const agr = m.agreement?.total ? `\u4E00\u81F4 ${escHtml2(m.agreement.agree)}/${escHtml2(m.agreement.total)} (${escHtml2(Math.round(m.agreement.rate * 100))}%)` : "\u4E00\u81F4 -";
+  const agr = m.agreement?.total ? `\u4E00\u81F4 ${escHtml3(m.agreement.agree)}/${escHtml3(m.agreement.total)} (${escHtml3(Math.round(m.agreement.rate * 100))}%)` : "\u4E00\u81F4 -";
   const length = m.gameLength === "hanchan" || m.gameLength == null && m.rule?.["\u5834\u6570"] === 2 ? "\u534A\u8358" : "\u6771\u98A8";
   const partialTag = m.status === "partial" ? "\u3010\u4E2D\u65AD\u3011 " : "";
   const mainLine = [
@@ -41521,8 +41642,8 @@ function historyItemLabel(bundle) {
     m.mode === "auto" ? "\u30AA\u30FC\u30C8" : "\u624B\u52D5",
     length,
     m.model?.name || m.model?.coach || "-"
-  ].map((t) => `<span class="history-part">${escHtml2(t)}</span>`).join(" / ");
-  return `<span class="history-line history-line-main">${mainLine}</span><span class="history-line history-line-standings">${standings}</span><span class="history-line history-line-agreement">${agr} / \u5916\u3057 ${escHtml2(m.reviewCount ?? 0)}\u4EF6</span>`;
+  ].map((t) => `<span class="history-part">${escHtml3(t)}</span>`).join(" / ");
+  return `<span class="history-line history-line-main">${mainLine}</span><span class="history-line history-line-standings">${standings}</span><span class="history-line history-line-agreement">${agr} / \u5916\u3057 ${escHtml3(m.reviewCount ?? 0)}\u4EF6</span>`;
 }
 var historyImportMsg = "";
 var historyManageOpen = false;
@@ -41549,12 +41670,12 @@ async function importLogText(text) {
 function renderHistoryPanel() {
   const el2 = $("history");
   if (!el2) return;
-  const items = historyCache.map((bundle) => `<div class="history-item" data-game-id="${escHtml2(bundle.meta.gameId)}">
+  const items = historyCache.map((bundle) => `<div class="history-item" data-game-id="${escHtml3(bundle.meta.gameId)}">
       <div class="history-meta">${historyItemLabel(bundle)}</div>
       <div class="history-actions">
-        <button type="button" class="history-replay" data-game-id="${escHtml2(bundle.meta.gameId)}">\u518D\u751F</button>
-        <button type="button" class="history-download" data-game-id="${escHtml2(bundle.meta.gameId)}">\u30C0\u30A6\u30F3\u30ED\u30FC\u30C9</button>
-        <button type="button" class="history-delete" data-game-id="${escHtml2(bundle.meta.gameId)}">\u524A\u9664</button>
+        <button type="button" class="history-replay" data-game-id="${escHtml3(bundle.meta.gameId)}">\u518D\u751F</button>
+        <button type="button" class="history-download" data-game-id="${escHtml3(bundle.meta.gameId)}">\u30C0\u30A6\u30F3\u30ED\u30FC\u30C9</button>
+        <button type="button" class="history-delete" data-game-id="${escHtml3(bundle.meta.gameId)}">\u524A\u9664</button>
       </div>
     </div>`).join("");
   const hasHistory = historyCache.length > 0;
@@ -42463,11 +42584,11 @@ function askConfirm({ title, message, okLabel = "\u524A\u9664\u3059\u308B", canc
   return new Promise((resolve) => {
     confirmResolve = resolve;
     el2.innerHTML = `<div class="start-confirm-card">
-      <h2 id="confirm-dialog-title">${escHtml2(title)}</h2>
-      <p>${escHtml2(message)}</p>
+      <h2 id="confirm-dialog-title">${escHtml3(title)}</h2>
+      <p>${escHtml3(message)}</p>
       <div class="start-confirm-actions">
-        <button type="button" id="confirm-dialog-ok">${escHtml2(okLabel)}</button>
-        <button type="button" id="confirm-dialog-cancel">${escHtml2(cancelLabel)}</button>
+        <button type="button" id="confirm-dialog-ok">${escHtml3(okLabel)}</button>
+        <button type="button" id="confirm-dialog-cancel">${escHtml3(cancelLabel)}</button>
       </div></div>`;
     el2.hidden = false;
     $("confirm-dialog-ok")?.addEventListener("click", () => resolveConfirm(true));
@@ -42917,7 +43038,7 @@ var statsUi = {
   mmSort: "diff",
   mmFilter: "all"
 };
-var escHtml2 = (s) => String(s ?? "").replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" })[c]);
+var escHtml3 = (s) => String(s ?? "").replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" })[c]);
 async function loadAiBaseline() {
   if (aiBaseline) return aiBaseline;
   try {
@@ -43050,7 +43171,7 @@ function statsRowHTML(r, m, ideal, showBaseline, lowSample) {
       <td class="st-num st-base">${showBaseline ? fmtMetric(r.fmt, idealV ?? null) : "\u2015"}</td>
       <td class="st-num">${showBaseline ? fmtDiff(r.fmt, m.v, idealV ?? null) : "\u2015"}</td>
       <td class="st-den">n=${m.n ?? 0}</td>
-    </tr>${open ? `<tr class="st-desc"><td colspan="5">${escHtml2(r.d)}</td></tr>` : ""}`;
+    </tr>${open ? `<tr class="st-desc"><td colspan="5">${escHtml3(r.d)}</td></tr>` : ""}`;
 }
 function statsSectionHTML(sec, agg, baseline, showBaseline, lowSample) {
   const measured = [];
@@ -43072,7 +43193,7 @@ function statsSectionHTML(sec, agg, baseline, showBaseline, lowSample) {
 function yakuTableHTML(title, yakuCounts, total) {
   const entries = Object.entries(yakuCounts || {}).sort((a, b) => b[1] - a[1]).slice(0, 12);
   if (!entries.length || !total) return "";
-  const rows = entries.map(([name2, n]) => `<tr><td>${escHtml2(name2)}</td><td class="st-num">${n}\u56DE</td><td class="st-num">${(n / total * 100).toFixed(1)}%</td></tr>`).join("");
+  const rows = entries.map(([name2, n]) => `<tr><td>${escHtml3(name2)}</td><td class="st-num">${n}\u56DE</td><td class="st-num">${(n / total * 100).toFixed(1)}%</td></tr>`).join("");
   return `<div class="st-section"><h3>${title}</h3>
     <table class="st-table"><thead><tr><th>\u5F79</th><th>\u56DE\u6570</th><th>\u5272\u5408</th></tr></thead><tbody>${rows}</tbody></table></div>`;
 }
@@ -43162,8 +43283,8 @@ function renderStatsView() {
       ${statsSelectFieldHTML("\u30B3\u30FC\u30C1\u8868\u793A", "st-coach-display", options(statsUi.coachDisplay, [["all", "\u3059\u3079\u3066"], ["on", "\u6709\u308A"], ["off", "\u7121\u3057"], ["unknown", "\u8A18\u9332\u306A\u3057"]]))}
       ${statsSelectFieldHTML("\u4F7F\u7528\u30E2\u30C7\u30EB", "st-model", options(statsUi.modelId, [["all", "\u3059\u3079\u3066"], ...MODELS.map((m) => [m.id, modelProductLabel(m.id)]), ["unknown", "\u8A18\u9332\u306A\u3057"]]))}
       <div class="st-cpu-row">
-        ${statsMultiFieldHTML("tier", "\u76F8\u624B\u306E\u5F37\u3055", CPU_TIERS, statsUi.cpuTiers, statsUi.cpuOpen.tier, escHtml2)}
-        ${statsMultiFieldHTML("style", "\u76F8\u624B\u306E\u30BF\u30A4\u30D7", CPU_STYLES, statsUi.cpuStyles, statsUi.cpuOpen.style, escHtml2)}
+        ${statsMultiFieldHTML("tier", "\u76F8\u624B\u306E\u5F37\u3055", CPU_TIERS, statsUi.cpuTiers, statsUi.cpuOpen.tier, escHtml3)}
+        ${statsMultiFieldHTML("style", "\u76F8\u624B\u306E\u30BF\u30A4\u30D7", CPU_STYLES, statsUi.cpuStyles, statsUi.cpuOpen.style, escHtml3)}
       </div>
     </div>
     ${statsScopeHTML({
@@ -43178,7 +43299,7 @@ function renderStatsView() {
     lowSample,
     currentModelProduct: modelProductLabel(S.modelId),
     differentModel: !!(baseline?.modelId && baseline.modelId !== S.modelId),
-    escapeHtml: escHtml2
+    escapeHtml: escHtml3
   })}`;
   if (!sel.picked.length) {
     html += '<div class="st-empty">\u3053\u306E\u6761\u4EF6\u3067\u96C6\u8A08\u3067\u304D\u308B\u5BFE\u5C40\uFF08\u5B8C\u4E86\uFF09\u306F\u3042\u308A\u307E\u305B\u3093\u3002\u6761\u4EF6\u3092\u5909\u66F4\u3059\u308B\u304B\u3001\u5BFE\u5C40\u3092\u7D42\u3048\u308B\u3068\u7D71\u8A08\u304C\u8868\u793A\u3055\u308C\u307E\u3059\u3002</div>';
@@ -43218,6 +43339,9 @@ function renderStatsView() {
       </div>`;
     }
   }
+  html += drillStatsSectionHTML(readDrillResults(localStorage), {
+    locked: !!drillUi?.locked
+  });
   html += "</div></div>";
   el2.innerHTML = html;
   if (mismatchPending) {
@@ -43276,8 +43400,8 @@ function statsMismatchListHTML(rows) {
     const r = row;
     const date = savedAt ? new Date(savedAt).toLocaleDateString("ja-JP") : "";
     return `<div class="review-item">
-      <span>${escHtml2(kyokuText(r.kyoku))} ${escHtml2(r.junme ?? "-")}\u5DE1\u76EE\uFF08${escHtml2(contextLabel(r.context))}\uFF09${date ? " \u30FB " + date : ""}</span>
-      <span>\u63A8\u5968: ${escHtml2(actionLabel(r.recommended, r))} \uFF0F \u3042\u306A\u305F: ${escHtml2(actionLabel(r.actual, r))}</span>
+      <span>${escHtml3(kyokuText(r.kyoku))} ${escHtml3(r.junme ?? "-")}\u5DE1\u76EE\uFF08${escHtml3(contextLabel(r.context))}\uFF09${date ? " \u30FB " + date : ""}</span>
+      <span>\u63A8\u5968: ${escHtml3(actionLabel(r.recommended, r))} \uFF0F \u3042\u306A\u305F: ${escHtml3(actionLabel(r.actual, r))}</span>
       <span class="review-diff">\u63A8\u5968\u5EA6\u5DEE ${r.probDiff != null ? (r.probDiff * 100).toFixed(1) + "%" : "-"}</span>
     </div>`;
   }).join("");
@@ -44650,7 +44774,10 @@ function createLoadPopup() {
     }
   };
 }
-document.addEventListener("DOMContentLoaded", init);
+document.addEventListener("DOMContentLoaded", () => {
+  installScrollHints();
+  init();
+});
 /*! Bundled license information:
 
 @kobalab/majiang-core/lib/index.js:

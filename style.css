@@ -1877,3 +1877,18 @@ table.fb-final td.nm { text-align: left; }
   .ss-btn-ghost { padding: 4px; }
 }
 
+
+/* ---- "more below" cue for scrolling cards (src/scroll_hint.mjs, 2026-11-18) ----
+   .has-more is set only while content continues below the visible part. The
+   sticky ::after takes no layout space (height cancelled by the negative margin)
+   and has no pointer events, so buttons under it stay tappable. */
+.end-card, .history-card, .sheet-body { --sh-bg: #0e4a36; }
+.result-card { --sh-bg: #0e4a36; }
+.sv-card { --sh-bg: #0d4530; }
+.sh-card.has-more::after {
+  content: "\25BC"; display: block; position: sticky; bottom: 0; z-index: 3;
+  height: 36px; margin-top: -36px; box-sizing: border-box; padding-top: 14px;
+  text-align: center; font-size: 13px; line-height: 20px; color: #ffd97a;
+  background: linear-gradient(to bottom, rgba(0,0,0,0), var(--sh-bg) 50%);
+  pointer-events: none;
+}

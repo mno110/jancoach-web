@@ -276,6 +276,7 @@
 .drill-verdict-badge.correct { background: #1d7a4f; color: #eafff2; }
 .drill-verdict-badge.close { background: #8a6a15; color: #fff6d7; }
 .drill-verdict-badge.wrong { background: #8b2a20; color: #ffe6e1; }
+.drill-verdict-badge.excluded { background: #3b4350; color: #d5dbe4; }
 .drill-verdict-text { flex: 1 1 auto; font-size: 11px; color: #d9efe5; }
 /* 2026-11-15 drillsame: the judged panel reuses the in-game coach markup, so the
    side-panel rules (style.css, scoped to #side) are mirrored for the drill panel. */
