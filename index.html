@@ -6,7 +6,7 @@
 <title>雀コーチ ― リアルタイムAI分析麻雀</title>
 <link rel="manifest" href="manifest.webmanifest">
 <meta name="theme-color" content="#0b3d2e">
-<meta name="build-version" content="3b15880591db">
+<meta name="build-version" content="0ad41c47fbb8">
 <meta name="model-version" content="9c84b741fe3f">
 <link rel="icon" type="image/png" sizes="32x32" href="icons/favicon-32.png">
 <link rel="icon" type="image/png" sizes="192x192" href="icons/icon-192.png">
@@ -225,6 +225,9 @@
             <!-- 設定ポップアップの最下部（2026-11-09, product B5）。押すと about-view を前面に開く。
                  2026-11-11: 並びは「購入を復元する → このアプリについて → 診断情報」。 -->
             <div class="ss-about-row">
+              <button type="button" class="ss-btn-ghost ss-about-btn ss-review-btn" id="ss-review-btn">レビューを書く</button>
+              <!-- 「このアプリを教える」: 共有機能が使える環境でだけ main.js が表示する（share_image.mjs） -->
+              <button type="button" class="ss-btn-ghost ss-about-btn ss-review-btn" id="ss-invite-btn" hidden>このアプリを教える</button>
               <button type="button" class="ss-btn-ghost ss-about-btn" id="ss-about-btn">このアプリについて</button>
             </div>
             <!-- Diagnostics (product/error_codes.md). Local only: nothing is sent;

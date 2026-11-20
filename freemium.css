@@ -18,3 +18,26 @@
 .analysis-preview { position:relative; }
 .coach-sample { pointer-events:none; user-select:none; }
 .analysis-unlock { display:block; width:100%; padding:16px 10px; margin-top:10px; background:#123e30; color:#fff; border:1px solid #598675; border-radius:8px; }
+/* Web license key entry (license_ui.mjs): settings row + the sheet behind the coach lock button. */
+.ss-license { margin:10px 0; padding-top:8px; border-top:1px solid rgba(255,255,255,.12); }
+.ss-license-head { font-weight:700; margin-bottom:4px; }
+.license-form { display:flex; flex-direction:column; gap:6px; text-align:left; }
+.license-form p { margin:0; }
+.license-state { font-size:.92rem; }
+.license-notice { font-size:.85rem; color:#ffe9a8; }
+.license-key code { word-break:break-all; }
+.license-input-label { display:flex; flex-direction:column; align-items:stretch; gap:4px; font-size:.9rem; text-align:left; }
+.license-form input[data-license-input] { width:100%; box-sizing:border-box; padding:10px; border-radius:8px; border:1px solid rgba(255,255,255,.3); background:rgba(0,0,0,.25); color:#fff; font:inherit; font-size:15px; letter-spacing:.04em; }
+.license-form [data-license-activate] { align-self:flex-start; padding:10px 14px; border-radius:8px; border:1px solid #2a7; background:#0e7a52; color:#fff; font-size:15px; font-weight:800; cursor:pointer; }
+.license-form button:disabled { opacity:.5; cursor:default; }
+.unlock-card [data-license-sheet-close] { border:1px solid rgba(255,255,255,.22); background:rgba(0,0,0,.18); color:#cfeee0; font-weight:600; }
+/* Free-trial wrap-up (trial_summary.mjs): drawn in #scene-viewer with the replay board and coach panel. */
+.trial-summary { text-align: left; }
+.trial-summary .ts-counts { margin: 10px 0 6px; font-size: 15px; line-height: 1.6; }
+.trial-summary .ts-worst h3 { margin: 10px 0 6px; font-size: 15px; }
+.trial-summary .ts-worst .ctx { color: #9db; font-size: 12px; font-weight: normal; }
+.trial-summary .ts-diff { margin: 8px 0; font-size: 13.5px; line-height: 1.6; }
+.trial-summary .replay-coach .template, .trial-summary .replay-coach .compare { margin-top: 6px; font-size: 12.5px; line-height: 1.55; color: #d9efe5; }
+.trial-summary .ts-foot { margin-top: 12px; padding-top: 10px; border-top: 1px solid rgba(255,255,255,.14); }
+.trial-summary .ts-foot p { margin: 0 0 8px; font-size: 14px; }
+.trial-summary .ts-buy { padding: 10px 16px; border-radius: 8px; border: 1px solid #2a7; background: #0e7a52; color: #fff; font-size: 15px; font-weight: 800; cursor: pointer; }

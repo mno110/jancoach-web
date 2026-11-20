@@ -1298,6 +1298,8 @@ table.fb-final td.nm { text-align: left; }
 #settings-view .ss-panel { width: auto; background: none; border: 0; padding: 8px 0 0; }
 .ss-about-row { margin-top: 12px; padding-top: 12px; border-top: 1px solid rgba(255,255,255,.16); }
 .ss-about-row .ss-about-btn { width: 100%; flex: none; padding: 10px 8px; font-size: 14px; }
+.ss-about-row .ss-review-btn { display: block; margin-bottom: 8px; }
+.ss-about-row .ss-review-btn[hidden] { display: none; }
 
 /* ---- このアプリについて（2026-11-09, product B5） ---- */
 #about-view { z-index: 45; }

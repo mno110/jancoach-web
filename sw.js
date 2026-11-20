@@ -5,7 +5,7 @@
 // forever because the cache name was a constant and this file was copied
 // verbatim, so its bytes never changed and the browser never saw an SW
 // update):
-//   - build.mjs stamps content hashes into 3b15880591db / 9c84b741fe3f
+//   - build.mjs stamps content hashes into 0ad41c47fbb8 / 9c84b741fe3f
 //     below, so ANY change to the app files (or the models) changes this
 //     file's bytes and the cache names. The browser then installs the new
 //     SW, precaches into the new caches, and activate() drops old caches.
@@ -18,7 +18,7 @@
 //     screen (P1, 2026-11-10), so an update never aborts a game.
 //   - Navigations are network-first (fall back to cache when offline), so
 //     the HTML shell itself can never get stuck on a stale copy.
-const APP_VER = '3b15880591db';
+const APP_VER = '0ad41c47fbb8';
 const MODEL_VER = '9c84b741fe3f';
 const APP_CACHE = 'mahjong-local-app-' + APP_VER;
 const MODEL_CACHE = 'mahjong-local-models-' + MODEL_VER;
@@ -27,7 +27,8 @@ const APP_ASSETS = [
   './js/main.bundle.js', './ai_baseline.json', './drill_problems.json',
   './licenses/majiang-core-MIT.txt', './licenses/onnxruntime-web-MIT.txt',
   './licenses/onnxruntime-common-MIT.txt', './licenses/Apache-2.0.txt',
-  './licenses/Apache-2.0-NOTICE.txt',
+  './licenses/Apache-2.0-NOTICE.txt', './licenses/guid-typescript-ISC.txt',
+  './licenses/noble-MIT.txt',
   './icons/icon-192.png', './icons/icon-512.png', './icons/icon-maskable-512.png',
   './icons/apple-touch-icon.png', './icons/favicon-32.png',
   './ort/ort-wasm-simd-threaded.wasm', './ort/ort-wasm-simd-threaded.mjs',

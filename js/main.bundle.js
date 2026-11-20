@@ -3261,7 +3261,7 @@ var Coach = class {
     let shantenAfter = null;
     if (this.shantenProvider) {
       try {
-        shantenAfter = this.shantenProvider(context);
+        shantenAfter = this.shantenProvider(context, { recommended: res.name, qValues: res.qAll });
       } catch (_) {
         shantenAfter = null;
       }
@@ -8389,7 +8389,7 @@ var Kh = oe((zo, xl) => {
       if (isNaN(B)) return w ? O : $2;
       if (w) {
         if (B < 0) return O;
-        if (B >= S2) return W;
+        if (B >= S2) return W4;
       } else {
         if (B <= -v) return H;
         if (B + 1 >= v) return T2;
@@ -8435,8 +8435,8 @@ var Kh = oe((zo, xl) => {
     n.NEG_ONE = R;
     var T2 = l(-1, 2147483647, false);
     n.MAX_VALUE = T2;
-    var W = l(-1, -1, true);
-    n.MAX_UNSIGNED_VALUE = W;
+    var W4 = l(-1, -1, true);
+    n.MAX_UNSIGNED_VALUE = W4;
     var H = l(0, -2147483648, false);
     n.MIN_VALUE = H;
     var M = n.prototype;
@@ -13695,7 +13695,7 @@ var Zl = N(() => {
     let c = a[a.length - 1], p = Math.ceil(c / 2), h = a.length, g = s.length, m = de(r.session.backend.glContext.version), _ = wt(u.length), S2 = u.length, v = Xt(), { activationFunction: x, applyActivation: $2 } = Bn(t), O = o ? `${Xl(_, v, n[2].dims, u, true)}` : "", P = l ? `${KO(_, v, n, u)}` : "", C = l ? "getAAtOutCoordsMatmul(i)" : `getA(${XO(v, h)})`, R = l ? "getBAtOutCoordsMatmul(i)" : `getB(${ZO(v, g)})`, T2 = l ? "" : `${_} rc =
           getOutputCoords(); int lastDim = rc.${v[S2 - 1]}; rc.${v[S2 - 1]} =
           rc.${v[S2 - 2]}; rc.${v[S2 - 2]} = lastDim;
-      `, W = `
+      `, W4 = `
             ${P}
             ${O}
             ${x}
@@ -13714,7 +13714,7 @@ var Zl = N(() => {
               ${$2}
               ${m.output} = value;
             }`;
-    return { ...e, output: { dims: u, type: n[0].type, textureType: 2 }, shaderSource: W, hasMain: true };
+    return { ...e, output: { dims: u, type: n[0].type, textureType: 2 }, shaderSource: W4, hasMain: true };
   }, aa = (r, e, n) => {
     let t = qO(e.length > 2, n.activationCacheKey);
     return { ...t, get: () => jO(r, t, e, n) };
@@ -15801,7 +15801,7 @@ var qy = N(() => {
       l === 0 ? m = "" : c < 2 && p.length >= 1 ? m = "coords = 0;" : m = p.map((T2) => `coords.${_[T2 + g]} = 0;`).join(`
 `);
       let S2 = "";
-      c < 2 && l > 0 ? S2 = "coords" : S2 = i.map((T2, W) => `coords.${_[W + g]}`).join(", ");
+      c < 2 && l > 0 ? S2 = "coords" : S2 = i.map((T2, W4) => `coords.${_[W4 + g]}`).join(", ");
       let v = "return outputValue;", $2 = ie.size(i) === 1, P = ie.size(a) === 1;
       if (l === 1 && !$2 && !P) v = `
         return vec4(outputValue.xy, outputValue.xy);
@@ -15812,8 +15812,8 @@ var qy = N(() => {
           return vec4(outputValue.x);
         `;
       else if (p.length) {
-        let T2 = l - 2, W = l - 1;
-        p.indexOf(T2) > -1 && p.indexOf(W) > -1 ? v = "return vec4(outputValue.x);" : p.indexOf(T2) > -1 ? v = "return vec4(outputValue.x, outputValue.y, outputValue.x, outputValue.y);" : p.indexOf(W) > -1 && (v = "return vec4(outputValue.xx, outputValue.zz);");
+        let T2 = l - 2, W4 = l - 1;
+        p.indexOf(T2) > -1 && p.indexOf(W4) > -1 ? v = "return vec4(outputValue.x);" : p.indexOf(T2) > -1 ? v = "return vec4(outputValue.x, outputValue.y, outputValue.x, outputValue.y);" : p.indexOf(W4) > -1 && (v = "return vec4(outputValue.xx, outputValue.zz);");
       }
       let C = `
         int lastDim = coords.${_[c - 1]};
@@ -18144,18 +18144,18 @@ async function x_(r = {}) {
           (function(I) {
             var E = (T2(), V)[I + 52 >>> 2 >>> 0];
             I = (T2(), V)[I + 56 >>> 2 >>> 0], dp(E, E - I), Te(E);
-          })(y.ad), zs(y.ad, 0, 0, 1, 0, 0), dd(), Ps(y.ad), W || (ip(), W = true);
+          })(y.ad), zs(y.ad, 0, 0, 1, 0, 0), dd(), Ps(y.ad), W4 || (ip(), W4 = true);
           try {
             AT(y.Xd, y.nd);
           } catch (I) {
             if (I != "unwind") throw I;
           }
-        } else y.target !== "setimmediate" && (b === "checkMailbox" ? W && ci() : b && (P(`worker: received unknown command ${b}`), P(y)));
+        } else y.target !== "setimmediate" && (b === "checkMailbox" ? W4 && ci() : b && (P(`worker: received unknown command ${b}`), P(y)));
       } catch (I) {
         throw ap(), I;
       }
     };
-    var bk = d, W = false;
+    var bk = d, W4 = false;
     self.onunhandledrejection = (f) => {
       throw f.reason || f;
     }, self.onmessage = d;
@@ -21027,14 +21027,14 @@ var ye = N(() => {
     let C = a < 2 ? "" : `
   fn i2o_${r}(indices: ${h.indices}) -> u32 {
     return ${P.join("+")};
-  }`, R = (U) => (m.indicesToOffset = true, a < 2 ? U : `i2o_${r}(${U})`), T2 = (...U) => a === 0 ? "0u" : `${h.indices}(${U.map(g).join(",")})`, W = (U, j) => a < 2 ? `${U}` : `${ne(U, j, a)}`, H = (U, j, he) => a < 2 ? `${U}=${he};` : `${ne(U, j, a)}=${he};`, M = {}, re = (U, j) => {
+  }`, R = (U) => (m.indicesToOffset = true, a < 2 ? U : `i2o_${r}(${U})`), T2 = (...U) => a === 0 ? "0u" : `${h.indices}(${U.map(g).join(",")})`, W4 = (U, j) => a < 2 ? `${U}` : `${ne(U, j, a)}`, H = (U, j, he) => a < 2 ? `${U}=${he};` : `${ne(U, j, a)}=${he};`, M = {}, re = (U, j) => {
       m.broadcastedIndicesToOffset = true;
       let he = `${j.name}broadcastedIndicesTo${r}Offset`;
       if (he in M) return `${he}(${U})`;
       let lt = [];
       for (let Ye = a - 1; Ye >= 0; Ye--) {
         let nt = j.indicesGet("outputIndices", Ye + j.rank - a);
-        lt.push(`${W(v, Ye)} * (${nt} % ${W(S2, Ye)})`);
+        lt.push(`${W4(v, Ye)} * (${nt} % ${W4(S2, Ye)})`);
       }
       return M[he] = `fn ${he}(outputIndices: ${j.type.indices}) -> u32 {
              return ${lt.length > 0 ? lt.join("+") : "0u"};
@@ -21078,7 +21078,7 @@ var ye = N(() => {
       let U = [], j = false;
       return m.offsetToIndices && (U.push($2), j = true), m.indicesToOffset && (U.push(C), j = true), m.broadcastedIndicesToOffset && (Object.values(M).forEach((he) => U.push(he)), j = true), m.set && (U.push(ae), j = true), m.setByIndices && (U.push(ue), j = true), m.get && (U.push(Z), j = true), m.getByIndices && (U.push(V), j = true), !i && j && U.unshift(`const ${S2} = ${h.indices}(${n.join(",")});`, `const ${v} = ${h.indices}(${k.computeStrides(n).join(",")});`), U.join(`
 `);
-    }, type: h, offsetToIndices: O, indicesToOffset: R, broadcastedIndicesToOffset: re, indices: T2, indicesGet: W, indicesSet: H, set: (...U) => {
+    }, type: h, offsetToIndices: O, indicesToOffset: R, broadcastedIndicesToOffset: re, indices: T2, indicesGet: W4, indicesSet: H, set: (...U) => {
       if (U.length !== a + 1) throw new Error(`indices length must be ${a}`);
       let j = U[a];
       if (typeof j != "string") throw new Error("value must be string");
@@ -21722,7 +21722,7 @@ var ts = N(() => {
     P && C.push("type"), o && C.push("type"), s && C.push("type"), u && C.push("type");
     let R = [{ dims: c, dataType: e.dataType, gpuDataType: 0 }];
     p && R.push({ dims: g, dataType: e.dataType, gpuDataType: 0 });
-    let T2 = (W) => {
+    let T2 = (W4) => {
       let H = z("q", e.dataType, e.dims, S2), M = z("key", n.dataType, n.dims, S2), re = [H, M];
       if (P) {
         let ue = z("past_key", t.dataType, t.dims, S2);
@@ -21741,8 +21741,8 @@ var ts = N(() => {
 
   var<workgroup> tileQ: array<${H.type.storage}, ${x * x}>;
   var<workgroup> tileK: array<${H.type.storage}, ${x * x}>;
-  ${W.registerUniforms(Q).declareVariables(...re, ...Z)}
-  ${W.mainStart([x, x, 1])}
+  ${W4.registerUniforms(Q).declareVariables(...re, ...Z)}
+  ${W4.mainStart([x, x, 1])}
     // x holds the N and y holds the M
     let headIdx = workgroup_id.z % uniforms.num_heads;
     let kvHeadIdx = ${m === 1 ? "headIdx" : "headIdx / uniforms.n_reps"};
@@ -21813,12 +21813,12 @@ var ts = N(() => {
     let O = [{ dims: m, dataType: e.dataType, gpuDataType: 0 }];
     p && O.push({ dims: g, dataType: e.dataType, gpuDataType: 0 });
     let P = (C) => {
-      let R = z("probs", e.dataType, e.dims), T2 = z("v", n.dataType, n.dims), W = [R, T2];
-      x && W.push(z("past_value", t.dataType, t.dims));
+      let R = z("probs", e.dataType, e.dims), T2 = z("v", n.dataType, n.dims), W4 = [R, T2];
+      x && W4.push(z("past_value", t.dataType, t.dims));
       let H = a ? z("seq_lens", a.dataType, a.dims) : void 0;
-      a && W.push(H);
+      a && W4.push(H);
       let M = s ? z("total_sequence_length_input", s.dataType, s.dims) : void 0;
-      s && W.push(M);
+      s && W4.push(M);
       let B = [q("output", e.dataType, m)];
       p && B.push(q("present_value", e.dataType, g));
       let w = [{ name: "M", type: "u32" }, { name: "K", type: "u32" }, { name: "N", type: "u32" }, { name: "num_heads", type: "u32" }, { name: "head_size", type: "u32" }, { name: "v_hidden_size", type: "u32" }, { name: "past_sequence_length", type: "u32" }, { name: "kv_sequence_length", type: "u32" }, { name: "n_reps", type: "u32" }];
@@ -21826,7 +21826,7 @@ var ts = N(() => {
   const TILE_SIZE = ${_}u;
   var<workgroup> tileQ: array<${R.type.value}, ${_ * _}>;
   var<workgroup> tileV: array<${R.type.value}, ${_ * _}>;
-  ${C.registerUniforms(w).declareVariables(...W, ...B)}
+  ${C.registerUniforms(w).declareVariables(...W4, ...B)}
   ${C.mainStart([_, _, 1])}
    let headIdx = workgroup_id.z % uniforms.num_heads;
    let batchIdx = workgroup_id.z / uniforms.num_heads;
@@ -22614,10 +22614,10 @@ var ss = N(() => {
     let a = r[0].dims, s = r[1].dims, u = a[a.length - 2], l = s[s.length - 1], c = a[a.length - 1], p = Ne(l), h = Ne(c), g = Ne(u), m = k.size(n) / p / g, _ = r.length > 2, S2 = t ? t.slice(0, -2) : n.slice(0, -2), x = [k.size(S2), u, l], $2 = [{ type: 12, data: m }, { type: 12, data: u }, { type: 12, data: l }, { type: 12, data: c }];
     Yt(e, $2), $2.push(...K(S2, a, s)), _ && $2.push(...K(r[2].dims)), $2.push(...K(x));
     let O = (P) => {
-      let C = Ya("batch_dims", r[0].dataType, S2.length), R = z("a", r[0].dataType, a.length, h), T2 = z("b", r[1].dataType, s.length, p), W = q("output", r[0].dataType, x.length, p), H = Ge(W.type.tensor), M = Jt(e, W.type.value, H), re = [R, T2], B = "";
+      let C = Ya("batch_dims", r[0].dataType, S2.length), R = z("a", r[0].dataType, a.length, h), T2 = z("b", r[1].dataType, s.length, p), W4 = q("output", r[0].dataType, x.length, p), H = Ge(W4.type.tensor), M = Jt(e, W4.type.value, H), re = [R, T2], B = "";
       if (_) {
         let Z = o ? p : 1;
-        re.push(z("bias", r[2].dataType, r[2].dims.length, Z)), B = `${o ? `value += bias[col / ${Z}];` : `value += ${W.type.value}(bias[row + i]);`}`;
+        re.push(z("bias", r[2].dataType, r[2].dims.length, Z)), B = `${o ? `value += bias[col / ${Z}];` : `value += ${W4.type.value}(bias[row + i]);`}`;
       }
       let w = [{ name: "output_size", type: "u32" }, { name: "M", type: "u32" }, { name: "N", type: "u32" }, { name: "K", type: "u32" }];
       Qt(e, w);
@@ -22634,7 +22634,7 @@ var ss = N(() => {
         return Z;
       };
       return `
-  ${P.registerUniforms(w).registerInternalVariables(C).declareVariables(...re, W)}
+  ${P.registerUniforms(w).registerInternalVariables(C).declareVariables(...re, W4)}
   ${P.mainStart()}
     ${P.guardAgainstOutOfBoundsWorkgroupSizes("uniforms.output_size")}
     let col = (global_idx % (uniforms.N / ${p})) * ${p};
@@ -22656,7 +22656,7 @@ var ss = N(() => {
     ${T2.indicesSet("b_indices", T2.rank - 2, 0)}
     ${T2.indicesSet("b_indices", T2.rank - 1, 0)}
     let b_offset = ${T2.indicesToOffset("b_indices")};
-    var values: array<${W.type.value}, ${g}>;
+    var values: array<${W4.type.value}, ${g}>;
     for (var k: u32 = 0u; k < uniforms.K; k = k + ${h}) {
       ${V()}
     }
@@ -22664,9 +22664,9 @@ var ss = N(() => {
       var value = values[i];
       ${B}
       ${M}
-      let cur_indices = ${W.type.indices}(batch, row + i, col);
-      let offset = ${W.indicesToOffset("cur_indices")};
-      ${W.setByOffset(`offset / ${p}`, "value")};
+      let cur_indices = ${W4.type.indices}(batch, row + i, col);
+      let offset = ${W4.indicesToOffset("cur_indices")};
+      ${W4.setByOffset(`offset / ${p}`, "value")};
     }
   }
   `;
@@ -22966,10 +22966,10 @@ fn main(@builtin(local_invocation_id) localId : vec3<u32>,
     }
     `;
   }, ti = (r, e, n, t, o = false, i) => {
-    let a = r[0].dims, s = r[1].dims, u = a.slice(0, -2), l = s.slice(0, -2), c = t ? t.slice(0, -2) : n.slice(0, -2), p = k.size(c), h = a[a.length - 2], g = a[a.length - 1], m = s[s.length - 1], _ = g % 4 === 0 && m % 4 === 0, S2 = h <= 8 ? [4, 1, 1] : [4, 4, 1], v = [8, 8, 1], x = [Math.ceil(m / v[0] / S2[0]), Math.ceil(h / v[1] / S2[1]), Math.ceil(p / v[2] / S2[2])], $2 = _ ? 4 : 1, O = [...u, h, g / $2], P = O.length, C = [...l, g, m / $2], R = C.length, T2 = [p, h, m / $2], W = [{ type: 6, data: h }, { type: 6, data: m }, { type: 6, data: g }];
-    Yt(e, W), W.push(...K(c, O, C));
+    let a = r[0].dims, s = r[1].dims, u = a.slice(0, -2), l = s.slice(0, -2), c = t ? t.slice(0, -2) : n.slice(0, -2), p = k.size(c), h = a[a.length - 2], g = a[a.length - 1], m = s[s.length - 1], _ = g % 4 === 0 && m % 4 === 0, S2 = h <= 8 ? [4, 1, 1] : [4, 4, 1], v = [8, 8, 1], x = [Math.ceil(m / v[0] / S2[0]), Math.ceil(h / v[1] / S2[1]), Math.ceil(p / v[2] / S2[2])], $2 = _ ? 4 : 1, O = [...u, h, g / $2], P = O.length, C = [...l, g, m / $2], R = C.length, T2 = [p, h, m / $2], W4 = [{ type: 6, data: h }, { type: 6, data: m }, { type: 6, data: g }];
+    Yt(e, W4), W4.push(...K(c, O, C));
     let H = ["rank", "rank"], M = r.length > 2;
-    M && (W.push(...K(r[2].dims)), H.push("rank")), W.push(...K(T2));
+    M && (W4.push(...K(r[2].dims)), H.push("rank")), W4.push(...K(T2));
     let re = (B) => {
       let w = c.length, V = Ya("batchDims", r[0].dataType, w, 1), Z = Ge(r[0].dataType), G = z("a", r[0].dataType, P, $2), Q = z("b", r[1].dataType, R, $2), ue = q("result", r[0].dataType, T2.length, $2), ae = [G, Q];
       if (M) {
@@ -22985,7 +22985,7 @@ fn main(@builtin(local_invocation_id) localId : vec3<u32>,
   ${_ ? Uc(S2, v, Z, V) : Wc(S2, v, Z, V)}
                    `;
     };
-    return { name: "MatMul", shaderCache: { hint: `${S2};${e.activation};${_};${o}`, inputDependencies: H }, getRunData: () => ({ outputs: [{ dims: i ? i(n) : n, dataType: r[0].dataType }], dispatchGroup: { x: x[0], y: x[1], z: x[2] }, programUniforms: W }), getShaderSource: re };
+    return { name: "MatMul", shaderCache: { hint: `${S2};${e.activation};${_};${o}`, inputDependencies: H }, getRunData: () => ({ outputs: [{ dims: i ? i(n) : n, dataType: r[0].dataType }], dispatchGroup: { x: x[0], y: x[1], z: x[2] }, programUniforms: W4 }), getShaderSource: re };
   };
 });
 var nC;
@@ -23104,7 +23104,7 @@ var Bv = N(() => {
   }, Mv = (r, e, n, t, o, i, a, s, u) => {
     let l = e.format === "NHWC", c = l ? r[0].dims[3] : r[0].dims[1], p = n[0], h = l ? n[2] : n[3], g = l ? n[1] : n[2], m = l ? n[3] : n[1], _ = l && (c % 4 === 0 || c % 3 === 0) && m % 4 === 0, S2 = l ? m : h * g, v = l ? h * g : m, x = [8, 8, 1], $2 = t <= 8 ? [4, 1, 1] : [4, 4, 1], O = [Math.ceil(S2 / x[0] / $2[0]), Math.ceil(v / x[1] / $2[1]), Math.ceil(p / x[2] / $2[2])];
     xe("verbose", () => `[conv2d_mm_webgpu] dispatch = ${O}`);
-    let P = _ ? l && c % 4 !== 0 ? 3 : 4 : 1, C = x[1] * $2[1], R = x[0] * $2[0], T2 = Math.max(x[0] * P, x[1]), W = t % C === 0, H = o % R === 0, M = i % T2 === 0, re = _ ? [P, 4, 4] : [1, 1, 1], B = [{ type: 6, data: t }, { type: 6, data: o }, { type: 6, data: i }, { type: 6, data: [e.pads[0], e.pads[1]] }, { type: 6, data: e.strides }, { type: 6, data: e.dilations }];
+    let P = _ ? l && c % 4 !== 0 ? 3 : 4 : 1, C = x[1] * $2[1], R = x[0] * $2[0], T2 = Math.max(x[0] * P, x[1]), W4 = t % C === 0, H = o % R === 0, M = i % T2 === 0, re = _ ? [P, 4, 4] : [1, 1, 1], B = [{ type: 6, data: t }, { type: 6, data: o }, { type: 6, data: i }, { type: 6, data: [e.pads[0], e.pads[1]] }, { type: 6, data: e.strides }, { type: 6, data: e.dilations }];
     Yt(e, B), B.push(...K(r[0].dims, r[1].dims));
     let w = ["rank", "rank"];
     a && (B.push(...K(r[2].dims)), w.push("rank")), B.push(...K(n));
@@ -23133,10 +23133,10 @@ var Bv = N(() => {
         //  dilation : vec2<i32>, dimAOuter : i32, dimBOuter : i32, dimInner : i32 };
         ${Z.registerUniforms(G).declareVariables(...se, U)}
         ${ae}
-        ${nC(l, W, H, M, a, e, re[0], re[1], re[2], ue)}
+        ${nC(l, W4, H, M, a, e, re[0], re[1], re[2], ue)}
         ${_ ? Uc($2, x, ue, void 0, !l, T2) : Wc($2, x, ue, void 0, !l, T2, false, void 0, s)}`;
     };
-    return { name: "Conv2DMatMul", shaderCache: { hint: `${e.cacheKey};${P};${_};${W};${H};${M};${C};${R};${T2}`, inputDependencies: w }, getRunData: () => ({ outputs: [{ dims: u ? u(n) : n, dataType: r[0].dataType }], dispatchGroup: { x: O[0], y: O[1], z: O[2] }, programUniforms: B }), getShaderSource: V };
+    return { name: "Conv2DMatMul", shaderCache: { hint: `${e.cacheKey};${P};${_};${W4};${H};${M};${C};${R};${T2}`, inputDependencies: w }, getRunData: () => ({ outputs: [{ dims: u ? u(n) : n, dataType: r[0].dataType }], dispatchGroup: { x: O[0], y: O[1], z: O[2] }, programUniforms: B }), getShaderSource: V };
   };
 });
 var rC;
@@ -23189,8 +23189,8 @@ var Wv = N(() => {
     if (a === "channelsLast") [s, u, l, c, p] = r;
     else if (a === "channelsFirst") [s, p, u, l, c] = r;
     else throw new Error(`Unknown dataFormat ${a}`);
-    let [h, , g, m, _] = e, [S2, v, x] = Vv(n), [$2, O, P] = Vv(t), C = ls(g, $2), R = ls(m, O), T2 = ls(_, P), { padInfo: W, outDepth: H, outHeight: M, outWidth: re } = iC(o, u, l, c, S2, v, x, C, R, T2), B = i ? h * p : h, w = [0, 0, 0, 0, 0];
-    return a === "channelsFirst" ? w = [s, B, H, M, re] : a === "channelsLast" && (w = [s, H, M, re, B]), { batchSize: s, dataFormat: a, inDepth: u, inHeight: l, inWidth: c, inChannels: p, outDepth: H, outHeight: M, outWidth: re, outChannels: B, padInfo: W, strideDepth: S2, strideHeight: v, strideWidth: x, filterDepth: g, filterHeight: m, filterWidth: _, effectiveFilterDepth: C, effectiveFilterHeight: R, effectiveFilterWidth: T2, dilationDepth: $2, dilationHeight: O, dilationWidth: P, inShape: r, outShape: w, filterShape: e };
+    let [h, , g, m, _] = e, [S2, v, x] = Vv(n), [$2, O, P] = Vv(t), C = ls(g, $2), R = ls(m, O), T2 = ls(_, P), { padInfo: W4, outDepth: H, outHeight: M, outWidth: re } = iC(o, u, l, c, S2, v, x, C, R, T2), B = i ? h * p : h, w = [0, 0, 0, 0, 0];
+    return a === "channelsFirst" ? w = [s, B, H, M, re] : a === "channelsLast" && (w = [s, H, M, re, B]), { batchSize: s, dataFormat: a, inDepth: u, inHeight: l, inWidth: c, inChannels: p, outDepth: H, outHeight: M, outWidth: re, outChannels: B, padInfo: W4, strideDepth: S2, strideHeight: v, strideWidth: x, filterDepth: g, filterHeight: m, filterWidth: _, effectiveFilterDepth: C, effectiveFilterHeight: R, effectiveFilterWidth: T2, dilationDepth: $2, dilationHeight: O, dilationWidth: P, inShape: r, outShape: w, filterShape: e };
   }, Uv = (r, e, n, t, o, i) => {
     let a = i === "channelsLast", s = a ? r[0].dims[3] : r[0].dims[1], u = false, l = [64, 1, 1], c = { x: n.map((x, $2) => $2) }, p = [Math.ceil(rC(c.x.map((x) => n[x])) / l[0]), 1, 1];
     xe("verbose", () => `[conv3d_naive_webgpu] dispatch = ${p}`);
@@ -23201,7 +23201,7 @@ var Wv = N(() => {
     let v = (x) => {
       let $2 = [{ name: "output_size", type: "u32" }, { name: "filter_dims", type: "u32", length: t.length }, { name: "pads", type: "u32", length: o.length }, { name: "strides", type: "u32", length: e.strides.length }, { name: "dilations", type: "u32", length: e.dilations.length }];
       Qt(e, $2);
-      let O = u ? 4 : 1, P = Ge(r[0].dataType), C = z("x", r[0].dataType, r[0].dims.length, h === 3 ? 1 : h), R = z("W", r[1].dataType, r[1].dims.length, O), T2 = [C, R], W = q("result", r[0].dataType, n.length, O), H = "";
+      let O = u ? 4 : 1, P = Ge(r[0].dataType), C = z("x", r[0].dataType, r[0].dims.length, h === 3 ? 1 : h), R = z("W", r[1].dataType, r[1].dims.length, O), T2 = [C, R], W4 = q("result", r[0].dataType, n.length, O), H = "";
       if (S2) {
         let B = z("bias", r[2].dataType, r[2].dims.length, O);
         T2.push(B), H += `
@@ -23220,10 +23220,10 @@ var Wv = N(() => {
               let aIndices = array<u32, 5>(d0, d1, d2, d3, d4);
               return ${R.getByIndices("aIndices")};
             }
-          ${x.registerUniforms($2).declareVariables(...T2, W)}
+          ${x.registerUniforms($2).declareVariables(...T2, W4)}
           ${x.mainStart()}
           ${x.guardAgainstOutOfBoundsWorkgroupSizes("uniforms.output_size")}
-              let coords = ${W.offsetToIndices("global_idx")};
+              let coords = ${W4.offsetToIndices("global_idx")};
               let batch = ${ne("coords", 0, C.rank)};
               let d2 = ${a ? ne("coords", C.rank - 1, C.rank) : ne("coords", 1, C.rank)};
               let xFRCCorner = vec3<u32>(${a ? ne("coords", 1, C.rank) : ne("coords", 2, C.rank)},
@@ -23519,18 +23519,18 @@ var Xv = N(() => {
     }
     let a = e.length === 3, s = e[0].dims[o ? 1 : 2], u = e[0].dims[o ? 2 : 3], l = e[0].dims[o ? 3 : 1], c = e[1].dims[2], p = e[1].dims[3], h = i[o ? 1 : 2], g = i[o ? 2 : 3], m = i[o ? 3 : 1], _ = o && c === s && p === u && n.pads[0] === 0 && n.pads[1] === 0;
     if (_ || c === 1 && p === 1 && n.dilations[0] === 1 && n.dilations[1] === 1 && n.strides[0] === 1 && n.strides[1] === 1 && n.pads[0] === 0 && n.pads[1] === 0) {
-      let C = i[0], R, T2, W, H = [];
+      let C = i[0], R, T2, W4, H = [];
       if (o) {
         let B = r.kernelCustomData.wT ?? r.compute(dt(e[1], Hc), { inputs: [1], outputs: [n.wIsConst ? -2 : -1] })[0];
         if (n.wIsConst && !r.kernelCustomData.wT && (r.kernelCustomData.wT = B), _) {
           let w = s * u * l;
-          R = e[0].reshape([1, C, w]), T2 = B.reshape([1, w, m]), W = [1, C, m];
-        } else R = e[0].reshape([C, s * u, l]), T2 = B.reshape([1, l, m]), W = [C, h * g, m];
+          R = e[0].reshape([1, C, w]), T2 = B.reshape([1, w, m]), W4 = [1, C, m];
+        } else R = e[0].reshape([C, s * u, l]), T2 = B.reshape([1, l, m]), W4 = [C, h * g, m];
         H.push(R), H.push(T2);
-      } else R = e[0].reshape([C, l, s * u]), T2 = e[1].reshape([1, m, l]), W = [C, m, h * g], H.push(T2), H.push(R);
+      } else R = e[0].reshape([C, l, s * u]), T2 = e[1].reshape([1, m, l]), W4 = [C, m, h * g], H.push(T2), H.push(R);
       a && H.push(e[2]);
-      let M = W[2], re = H[0].dims[H[0].dims.length - 1];
-      M < 8 && re < 8 ? r.compute(as(H, n, i, W, o, t), { inputs: H }) : r.compute(ti(H, n, i, W, o, t), { inputs: H });
+      let M = W4[2], re = H[0].dims[H[0].dims.length - 1];
+      M < 8 && re < 8 ? r.compute(as(H, n, i, W4, o, t), { inputs: H }) : r.compute(ti(H, n, i, W4, o, t), { inputs: H });
       return;
     }
     let S2 = true, v = r.kernelCustomData.wT ?? r.compute(dt(e[1], Hc), { inputs: [1], outputs: [n.wIsConst ? -2 : -1] })[0];
@@ -23568,7 +23568,7 @@ var Jv = N(() => {
     xe("verbose", () => `[conv2d_backprop_webgpu] dispatch = ${v}`);
     let x = ["rank", "rank"], $2 = [e.strides[0], e.strides[1]], O = [e.kernelShape[i ? 1 : 2], e.kernelShape[i ? 2 : 3]], P = [e.dilations[0], e.dilations[1]], C = [O[0] + (e.dilations[0] <= 1 ? 0 : (e.kernelShape[i ? 1 : 2] - 1) * (e.dilations[0] - 1)), O[1] + (e.dilations[1] <= 1 ? 0 : (e.kernelShape[i ? 2 : 3] - 1) * (e.dilations[1] - 1))], R = [C[0] - 1 - Math.floor((e.pads[0] + e.pads[2]) / 2), C[1] - 1 - Math.floor((e.pads[1] + e.pads[3]) / 2)], T2 = [{ type: 12, data: S2 }, { type: 12, data: $2 }, { type: 12, data: O }, { type: 12, data: P }, { type: 12, data: C }, { type: 6, data: R }, { type: 12, data: h }, { type: 12, data: u }, { type: 12, data: l }, ...K(r[0].dims, r[1].dims)];
     t && (T2.push(...K(r[2].dims)), x.push("rank")), T2.push(...K(o));
-    let W = (H) => {
+    let W4 = (H) => {
       let M = [{ name: "output_size", type: "u32" }, { name: "strides", type: "u32", length: $2.length }, { name: "filter_dims", type: "u32", length: O.length }, { name: "dilations", type: "u32", length: O.length }, { name: "effective_filter_dims", type: "u32", length: C.length }, { name: "pads", type: "i32", length: R.length }, { name: "input_channels_per_group_int", type: "u32" }, { name: "input_channels_per_group", type: "u32" }, { name: "output_channels_per_group", type: "u32" }], re = Ge(r[0].dataType), B = i ? 1 : 2, w = i ? 2 : 3, V = i ? 3 : 1, Z = z("W", r[1].dataType, r[1].dims.length, _), G = z("Dy", r[0].dataType, r[0].dims.length, c), Q = [G, Z];
       t && Q.push(z("bias", r[2].dataType, [o[V]].length, m));
       let ue = q("result", r[0].dataType, o.length, m), ae = () => {
@@ -23681,7 +23681,7 @@ var Jv = N(() => {
       ${H.guardAgainstOutOfBoundsWorkgroupSizes("uniforms.output_size")};
     ${fe}}`;
     };
-    return { name: "ConvTranspose2D", shaderCache: { hint: `${e.cacheKey};${c}${_}${m}${p}${g}`, inputDependencies: x }, getRunData: () => ({ dispatchGroup: { x: v[0], y: v[1], z: v[2] }, outputs: [{ dims: n ? n(o) : o, dataType: r[0].dataType }], programUniforms: T2 }), getShaderSource: W };
+    return { name: "ConvTranspose2D", shaderCache: { hint: `${e.cacheKey};${c}${_}${m}${p}${g}`, inputDependencies: x }, getRunData: () => ({ dispatchGroup: { x: v[0], y: v[1], z: v[2] }, outputs: [{ dims: n ? n(o) : o, dataType: r[0].dataType }], programUniforms: T2 }), getShaderSource: W4 };
   };
 });
 var cC;
@@ -24149,20 +24149,20 @@ var ww = N(() => {
       n.symbolToInfo.forEach((P, C) => {
         if (n.rhs.symbolToIndices.has(C)) {
           let R = n.rhs.symbolToIndices.get(C)?.[0];
-          R !== void 0 && n.lhs.forEach((T2, W) => {
-            if (P.inputIndices.includes(W)) {
+          R !== void 0 && n.lhs.forEach((T2, W4) => {
+            if (P.inputIndices.includes(W4)) {
               let H = T2.symbolToIndices.get(C);
               if (H === void 0) throw new Error("Invalid symbol error");
               H.forEach((M) => {
-                p.push(`${i[W].indicesSet(`input${W}Indices`, M, s.indicesGet("outputIndices", R))}`);
+                p.push(`${i[W4].indicesSet(`input${W4}Indices`, M, s.indicesGet("outputIndices", R))}`);
               });
             }
           });
         } else n.lhs.forEach((R, T2) => {
           if (P.inputIndices.includes(T2)) {
-            let W = R.symbolToIndices.get(C);
-            if (W === void 0) throw new Error("Invalid symbol error");
-            W.forEach((H) => {
+            let W4 = R.symbolToIndices.get(C);
+            if (W4 === void 0) throw new Error("Invalid symbol error");
+            W4.forEach((H) => {
               _.push(`${i[T2].indicesSet(`input${T2}Indices`, H, `${C}`)}`);
             }), x.push(`prod *= ${i[T2].getByIndices(`input${T2}Indices`)};`);
           }
@@ -24545,8 +24545,8 @@ var Fw = N(() => {
       e.transA && e.transB ? x = "value += a[k * uniforms.M + m] * b[n * uniforms.K + k];" : e.transA && !e.transB ? x = "value += a[k * uniforms.M + m] * b[k * uniforms.N + n];" : !e.transA && e.transB ? x = "value += a[m * uniforms.K + k] * b[n * uniforms.K + k];" : !e.transA && !e.transB && (x = "value += a[m * uniforms.K + k] * b[k * uniforms.N + n];");
       let $2 = e.alpha === 1 ? "" : "value *= uniforms.alpha;", O = z("a", r[0].dataType, r[0].dims), P = z("b", r[1].dataType, r[1].dims), C = O.type.value, R = null, T2 = [O, P];
       r.length === 3 && (R = z("c", r[2].dataType, r[2].dims.length), T2.push(R));
-      let W = q("output", r[0].dataType, s.length);
-      T2.push(W);
+      let W4 = q("output", r[0].dataType, s.length);
+      T2.push(W4);
       let H = [{ name: "output_size", type: "u32" }, { name: "M", type: "u32" }, { name: "N", type: "u32" }, { name: "K", type: "u32" }, { name: "alpha", type: "f32" }, { name: "beta", type: "f32" }];
       return `
   ${v.registerUniforms(H).declareVariables(...T2)}
@@ -24563,7 +24563,7 @@ var Fw = N(() => {
     }
 
     ${$2}
-    ${R != null ? `let cOffset = ${R.broadcastedIndicesToOffset("vec2(m, n)", W)}; value += ${C}(uniforms.beta) * ${R.getByOffset("cOffset")};` : ""}
+    ${R != null ? `let cOffset = ${R.broadcastedIndicesToOffset("vec2(m, n)", W4)}; value += ${C}(uniforms.beta) * ${R.getByOffset("cOffset")};` : ""}
     output[global_idx] = value;
   }`;
     }, S2 = (v) => {
@@ -24571,8 +24571,8 @@ var Fw = N(() => {
       r.length === 3 && (O = z("c", r[2].dataType, r[2].dims.length), P.push(O));
       let C = q("output", r[0].dataType, s.length);
       P.push(C);
-      let R = [{ name: "num_tile_n", type: "u32" }, { name: "M", type: "u32" }, { name: "N", type: "u32" }, { name: "K", type: "u32" }, { name: "alpha", type: "f32" }, { name: "beta", type: "f32" }], T2 = "", W = "";
-      e.transA && e.transB ? (W = `
+      let R = [{ name: "num_tile_n", type: "u32" }, { name: "M", type: "u32" }, { name: "N", type: "u32" }, { name: "K", type: "u32" }, { name: "alpha", type: "f32" }, { name: "beta", type: "f32" }], T2 = "", W4 = "";
+      e.transA && e.transB ? (W4 = `
       var col = tile_row_start + local_id.x;
       var row = k_start + local_id.y;
       if (col < uniforms.M && row < uniforms.K) {
@@ -24588,7 +24588,7 @@ var Fw = N(() => {
       } else {
         tile_b[local_id.y][local_id.x] = ${$2.type.value}(0);
       }
-      `, T2 = "value += tile_a[k][local_id.y] * tile_b[local_id.x][k];") : e.transA && !e.transB ? (W = `
+      `, T2 = "value += tile_a[k][local_id.y] * tile_b[local_id.x][k];") : e.transA && !e.transB ? (W4 = `
       var col = tile_row_start + local_id.x;
       var row = k_start + local_id.y;
       if (col < uniforms.M && row < uniforms.K) {
@@ -24604,7 +24604,7 @@ var Fw = N(() => {
       } else {
         tile_b[local_id.y][local_id.x] = ${$2.type.value}(0);
       }
-      `, T2 = "value += tile_a[k][local_id.y] * tile_b[k][local_id.x];") : !e.transA && e.transB ? (W = `
+      `, T2 = "value += tile_a[k][local_id.y] * tile_b[k][local_id.x];") : !e.transA && e.transB ? (W4 = `
       var col = k_start + local_id.x;
       var row = tile_row_start + local_id.y;
       if (col < uniforms.K && row < uniforms.M) {
@@ -24620,7 +24620,7 @@ var Fw = N(() => {
       } else {
         tile_b[local_id.y][local_id.x] = ${$2.type.value}(0);
       }
-      `, T2 = "value += tile_a[local_id.y][k] * tile_b[local_id.x][k];") : !e.transA && !e.transB && (W = `
+      `, T2 = "value += tile_a[local_id.y][k] * tile_b[local_id.x][k];") : !e.transA && !e.transB && (W4 = `
       var col = k_start + local_id.x;
       var row = tile_row_start + local_id.y;
       if (col < uniforms.K && row < uniforms.M) {
@@ -24649,7 +24649,7 @@ var Fw = N(() => {
     var k_start = 0u;
     var value = ${C.type.value}(0);
     for (var t: u32 = 0u; t < num_tiles; t++) {
-      ${W}
+      ${W4}
       k_start = k_start + ${u};
       workgroupBarrier();
 
@@ -25242,10 +25242,10 @@ var Qw = N(() => {
     if (r.inputs[1]?.dims.length === 5) throw new Error("Packed KV is not implemented");
     let t = r.inputs[0], o = r.inputs[1] && r.inputs[1].dims.length > 0 ? r.inputs[1] : void 0, i = r.inputs[2] && r.inputs[2].dims.length > 0 ? r.inputs[2] : void 0, a = r.inputs[3] && r.inputs[3].dims.length !== 0 ? r.inputs[3] : void 0, s = r.inputs[4] && r.inputs[4].dims.length !== 0 ? r.inputs[4] : void 0, u = r.inputs.length > 4 ? r.inputs[5] : void 0, l = r.inputs.length > 5 ? r.inputs[6] : void 0, c = n.kvNumHeads ? n.kvNumHeads : n.numHeads, p = ce({ axis: 2, numOutputs: 3, splitSizes: [n.numHeads * n.headSize, c * n.headSize, c * n.headSize] }), [h, g, m] = !o && !i ? r.compute(ed([t], p), { inputs: [t], outputs: [-1, -1, -1] }) : [t, o, i], _, S2;
     if (e.doRotary) {
-      let O = r.compute(aD(n.batchSize, n.sequenceLength, u, l), { inputs: [u, l], outputs: [-1] })[0], P = r.inputs[7], C = r.inputs[8], R = ce({ interleaved: e.rotaryInterleaved !== 0, numHeads: n.numHeads, rotaryEmbeddingDim: 0, scale: e.scale }), T2 = [h, O, P, C], W = [-1];
-      _ = r.compute(ps(T2, R), { inputs: T2, outputs: W })[0], T2.splice(0, 1, g);
+      let O = r.compute(aD(n.batchSize, n.sequenceLength, u, l), { inputs: [u, l], outputs: [-1] })[0], P = r.inputs[7], C = r.inputs[8], R = ce({ interleaved: e.rotaryInterleaved !== 0, numHeads: n.numHeads, rotaryEmbeddingDim: 0, scale: e.scale }), T2 = [h, O, P, C], W4 = [-1];
+      _ = r.compute(ps(T2, R), { inputs: T2, outputs: W4 })[0], T2.splice(0, 1, g);
       let H = ce({ interleaved: e.rotaryInterleaved !== 0, numHeads: n.kvNumHeads, rotaryEmbeddingDim: 0, scale: e.scale });
-      S2 = r.compute(ps(T2, H), { inputs: T2, outputs: W })[0];
+      S2 = r.compute(ps(T2, H), { inputs: T2, outputs: W4 })[0];
     }
     let v = ni(r, n.batchSize, n.numHeads, n.sequenceLength, n.headSize, e.doRotary ? _ : h, void 0, 0), x = Jw(r, e.doRotary ? S2 : g, n), $2 = Jw(r, m, n);
     go(r, v, x, $2, void 0, void 0, a, s, void 0, n, u, l);
@@ -25327,14 +25327,14 @@ var nx = N(() => {
     h = h && t[t.length - 1] !== 1;
     let m = h ? r.compute(dt(r.inputs[0], g), { inputs: [r.inputs[0]], outputs: [-1] })[0] : r.inputs[0].reshape(Array.from({ length: t.length }, (v, x) => t[g[x]])), _ = ex(r, m, e[1], e[2], i, s, a, n.epsilon), S2 = (v) => {
       let x = Ge(e[0].dataType), $2 = u === 1 ? "vec2f" : `mat${u}x2f`, O = (R) => {
-        let T2 = R === 0 ? "x" : "y", W = u === 1 ? "f32" : `vec${u}f`;
+        let T2 = R === 0 ? "x" : "y", W4 = u === 1 ? "f32" : `vec${u}f`;
         switch (u) {
           case 1:
-            return `${x}(${W}(scale.${T2}))`;
+            return `${x}(${W4}(scale.${T2}))`;
           case 2:
-            return `vec2<${x}>(${W}(scale[0].${T2}, scale[1].${T2}))`;
+            return `vec2<${x}>(${W4}(scale[0].${T2}, scale[1].${T2}))`;
           case 4:
-            return `vec4<${x}>(${W}(scale[0].${T2}, scale[1].${T2}, scale[2].${T2}, scale[3].${T2}))`;
+            return `vec4<${x}>(${W4}(scale[0].${T2}, scale[1].${T2}, scale[2].${T2}, scale[3].${T2}))`;
           default:
             throw new Error(`Not supported compoents ${u}`);
         }
@@ -25470,7 +25470,7 @@ var lx = N(() => {
     let C = [u, o, a / m];
     $2.push(...K(C));
     let R = (T2) => {
-      let W = O.length, H = z("a", r[0].dataType, W, h), M = z("b", 12, P.length, g), re = z("scales", r[2].dataType, r[2].dims.length), B = [H, M, re], w = r.length === 4 ? z("zero_points", 12, r[3].dims.length) : void 0;
+      let W4 = O.length, H = z("a", r[0].dataType, W4, h), M = z("b", 12, P.length, g), re = z("scales", r[2].dataType, r[2].dims.length), B = [H, M, re], w = r.length === 4 ? z("zero_points", 12, r[3].dims.length) : void 0;
       w && B.push(w);
       let V = C.length, Z = q("output", r[0].dataType, V, m), G = Ge(r[0].dataType), Q = (() => {
         switch (h) {
@@ -25589,12 +25589,12 @@ var lx = N(() => {
     };
     return { name: "MatMulNBits", shaderCache: { hint: `${e.blockSize};${e.bits};${h};${g};${m};${S2};${x}`, inputDependencies: Array(r.length).fill("rank") }, getRunData: () => ({ outputs: [{ dims: _, dataType: p }], dispatchGroup: { x: v }, programUniforms: $2 }), getShaderSource: R };
   }, hD = (r, e) => {
-    let n = r[0].dims, t = n.length, o = n[t - 2], i = e.k, a = e.n, s = n.slice(0, t - 2), u = k.size(s), c = r[1].dims[2] / 4, p = r[0].dataType, h = Ne(e.k), g = Ne(c), m = s.concat([o, a]), _ = 128, S2 = a % 8 === 0 ? 8 : a % 4 === 0 ? 4 : 1, v = _ / S2, x = Math.floor(32 / e.bits), $2 = v * g * x, O = $2 / h, P = $2 / e.blockSize, C = k.size(m) / S2, R = [], T2 = [u, o, i / h], W = k.convertShape(r[1].dims).slice();
-    W.splice(-1, 1, c / g), R.push(...K(T2)), R.push(...K(W)), R.push(...K(r[2].dims)), r.length === 4 && R.push(...K(k.convertShape(r[3].dims)));
+    let n = r[0].dims, t = n.length, o = n[t - 2], i = e.k, a = e.n, s = n.slice(0, t - 2), u = k.size(s), c = r[1].dims[2] / 4, p = r[0].dataType, h = Ne(e.k), g = Ne(c), m = s.concat([o, a]), _ = 128, S2 = a % 8 === 0 ? 8 : a % 4 === 0 ? 4 : 1, v = _ / S2, x = Math.floor(32 / e.bits), $2 = v * g * x, O = $2 / h, P = $2 / e.blockSize, C = k.size(m) / S2, R = [], T2 = [u, o, i / h], W4 = k.convertShape(r[1].dims).slice();
+    W4.splice(-1, 1, c / g), R.push(...K(T2)), R.push(...K(W4)), R.push(...K(r[2].dims)), r.length === 4 && R.push(...K(k.convertShape(r[3].dims)));
     let H = [u, o, a];
     R.push(...K(H));
     let M = (re) => {
-      let B = T2.length, w = z("a", r[0].dataType, B, h), V = z("b", 12, W.length, g), Z = z("scales", r[2].dataType, r[2].dims.length), G = [w, V, Z], Q = r.length === 4 ? z("zero_points", 12, r[3].dims.length) : void 0;
+      let B = T2.length, w = z("a", r[0].dataType, B, h), V = z("b", 12, W4.length, g), Z = z("scales", r[2].dataType, r[2].dims.length), G = [w, V, Z], Q = r.length === 4 ? z("zero_points", 12, r[3].dims.length) : void 0;
       Q && G.push(Q);
       let ue = H.length, ae = q("output", r[0].dataType, ue), _e = Ge(r[0].dataType), fe = () => {
         switch (h) {
@@ -26081,7 +26081,7 @@ var Cx = N(() => {
     P && R.push(P);
     let T2 = [l, c];
     p && T2.push(h);
-    let W = [{ type: 12, data: s / v }, { type: 12, data: n }, { type: 12, data: e.blockSize }, ...K(...T2, i)], H = (M) => {
+    let W4 = [{ type: 12, data: s / v }, { type: 12, data: n }, { type: 12, data: e.blockSize }, ...K(...T2, i)], H = (M) => {
       let re = [{ name: "output_size", type: "u32" }, { name: "axis", type: "u32" }, { name: "block_size", type: "u32" }];
       return `
       ${M.registerUniforms(re).declareVariables(...R, C)}
@@ -26123,7 +26123,7 @@ var Cx = N(() => {
       ${C.setByOffset("global_idx", `${C.type.value}(x_value - zero_point_value) * scale_value`)};
       }`;
     };
-    return { name: "DequantizeLinear", shaderCache: { hint: e.cacheKey, inputDependencies: P ? ["rank", "rank", "rank"] : ["rank", "rank"] }, getShaderSource: H, getRunData: () => ({ outputs: [{ dims: i, dataType: a }], dispatchGroup: { x: Math.ceil(s / v / 64), y: 1, z: 1 }, programUniforms: W }) };
+    return { name: "DequantizeLinear", shaderCache: { hint: e.cacheKey, inputDependencies: P ? ["rank", "rank", "rank"] : ["rank", "rank"] }, getShaderSource: H, getRunData: () => ({ outputs: [{ dims: i, dataType: a }], dispatchGroup: { x: Math.ceil(s / v / 64), y: 1, z: 1 }, programUniforms: W4 }) };
   }, Px = (r, e) => {
     $D(r.inputs, e), r.compute(AD(r.inputs, e));
   }, Ex = (r) => ce({ axis: r.axis, blockSize: r.blockSize });
@@ -26716,12 +26716,12 @@ var Ux = N(() => {
     let o = e.simplified, i = r[0].dims, a = k.size(i), s = i, u = a, l = i.slice(-1)[0], c = t ? i.slice(0, -1).concat(1) : [], p = !o && r.length > 3, h = r.length > 4, g = t && n > 1, m = t && n > 2, _ = n > 3, S2 = 64, v = Ne(l), x = [{ type: 12, data: u }, { type: 12, data: v }, { type: 12, data: l }, { type: 1, data: e.epsilon }], $2 = (P) => {
       let C = [{ name: "output_size", type: "u32" }, { name: "components", type: "u32" }, { name: "hidden_size", type: "u32" }, { name: "epsilon", type: "f32" }], R = [z("x", r[0].dataType, r[0].dims, v), z("skip", r[1].dataType, r[1].dims, v), z("gamma", r[2].dataType, r[2].dims, v)];
       p && R.push(z("beta", r[3].dataType, r[3].dims, v)), h && R.push(z("bias", r[4].dataType, r[4].dims, v)), R.push(q("output", r[0].dataType, s, v)), g && R.push(q("mean_output", 1, c)), m && R.push(q("inv_std_output", 1, c)), _ && R.push(q("input_skip_bias_sum", r[0].dataType, s, v));
-      let T2 = Ge(r[0].dataType), W = Ge(1, v);
+      let T2 = Ge(r[0].dataType), W4 = Ge(1, v);
       return `
 
       ${P.registerUniforms(C).declareVariables(...R)}
-      var<workgroup> sum_shared : array<${W}, ${S2}>;
-      var<workgroup> sum_squared_shared : array<${W}, ${S2}>;
+      var<workgroup> sum_shared : array<${W4}, ${S2}>;
+      var<workgroup> sum_squared_shared : array<${W4}, ${S2}>;
 
       ${P.mainStart([S2, 1, 1])}
         let ix = local_id.x;
@@ -27341,18 +27341,18 @@ var aT = N(() => {
       if (c) {
         let $2 = 0, O = [];
         c.forEach((T2) => {
-          let W = typeof T2.data == "number" ? [T2.data] : T2.data;
-          if (W.length === 0) return;
+          let W4 = typeof T2.data == "number" ? [T2.data] : T2.data;
+          if (W4.length === 0) return;
           let H = T2.type === 10 ? 2 : 4, M, re;
-          T2.type === 10 ? (re = W.length > 4 ? 16 : W.length > 2 ? 8 : W.length * H, M = W.length > 4 ? 16 : H * W.length) : (re = W.length <= 2 ? W.length * H : 16, M = 16), $2 = Math.ceil($2 / re) * re, O.push($2);
+          T2.type === 10 ? (re = W4.length > 4 ? 16 : W4.length > 2 ? 8 : W4.length * H, M = W4.length > 4 ? 16 : H * W4.length) : (re = W4.length <= 2 ? W4.length * H : 16, M = 16), $2 = Math.ceil($2 / re) * re, O.push($2);
           let B = T2.type === 10 ? 8 : 4;
-          $2 += W.length > 4 ? Math.ceil(W.length / B) * M : W.length * H;
+          $2 += W4.length > 4 ? Math.ceil(W4.length / B) * M : W4.length * H;
         });
         let P = 16;
         $2 = Math.ceil($2 / P) * P;
         let C = new ArrayBuffer($2);
-        c.forEach((T2, W) => {
-          let H = O[W], M = typeof T2.data == "number" ? [T2.data] : T2.data;
+        c.forEach((T2, W4) => {
+          let H = O[W4], M = typeof T2.data == "number" ? [T2.data] : T2.data;
           if (T2.type === 6) new Int32Array(C, H, M.length).set(M);
           else if (T2.type === 12) new Uint32Array(C, H, M.length).set(M);
           else if (T2.type === 10) new Uint16Array(C, H, M.length).set(M);
@@ -27693,8 +27693,8 @@ var wc = N(() => {
       }
       for (let O of e?.executionProviders ?? []) if ((typeof O == "string" ? O : O.name) === "webnn") {
         if (o.shouldTransferToMLTensor = false, typeof O != "string") {
-          let C = O, R = C?.context, T2 = C?.gpuDevice, W = C?.deviceType, H = C?.powerPreference;
-          R ? o.currentContext = R : T2 ? o.currentContext = await o.webnnCreateMLContext(T2) : o.currentContext = await o.webnnCreateMLContext({ deviceType: W, powerPreference: H });
+          let C = O, R = C?.context, T2 = C?.gpuDevice, W4 = C?.deviceType, H = C?.powerPreference;
+          R ? o.currentContext = R : T2 ? o.currentContext = await o.webnnCreateMLContext(T2) : o.currentContext = await o.webnnCreateMLContext({ deviceType: W4, powerPreference: H });
         } else o.currentContext = await o.webnnCreateMLContext();
         break;
       }
@@ -27716,14 +27716,14 @@ var wc = N(() => {
             x.push("gpu-buffer");
             continue;
           }
-          let W = typeof e?.preferredOutputLocation == "string" ? e.preferredOutputLocation : e?.preferredOutputLocation?.[T2] ?? "cpu", H = o.webnnIsGraphOutput;
-          if (W === "cpu" && H && H(i, T2)) {
+          let W4 = typeof e?.preferredOutputLocation == "string" ? e.preferredOutputLocation : e?.preferredOutputLocation?.[T2] ?? "cpu", H = o.webnnIsGraphOutput;
+          if (W4 === "cpu" && H && H(i, T2)) {
             x.push("ml-tensor-cpu-output");
             continue;
           }
-          if (W !== "cpu" && W !== "cpu-pinned" && W !== "gpu-buffer" && W !== "ml-tensor") throw new Error(`Not supported preferred output location: ${W}.`);
-          if (g && W !== "gpu-buffer") throw new Error(`Not supported preferred output location: ${W}. Only 'gpu-buffer' location is supported when enableGraphCapture is true.`);
-          x.push(W);
+          if (W4 !== "cpu" && W4 !== "cpu-pinned" && W4 !== "gpu-buffer" && W4 !== "ml-tensor") throw new Error(`Not supported preferred output location: ${W4}.`);
+          if (g && W4 !== "gpu-buffer") throw new Error(`Not supported preferred output location: ${W4}. Only 'gpu-buffer' location is supported when enableGraphCapture is true.`);
+          x.push(W4);
         }
       }
       let $2 = null;
@@ -27820,7 +27820,7 @@ var wc = N(() => {
         S2.push(V);
       }
     }
-    let v = e.length, x = t.length, $2 = 0, O = [], P = [], C = [], R = [], T2 = [], W = s.stackSave(), H = s.stackAlloc(v * u), M = s.stackAlloc(v * u), re = s.stackAlloc(x * u), B = s.stackAlloc(x * u);
+    let v = e.length, x = t.length, $2 = 0, O = [], P = [], C = [], R = [], T2 = [], W4 = s.stackSave(), H = s.stackAlloc(v * u), M = s.stackAlloc(v * u), re = s.stackAlloc(x * u), B = s.stackAlloc(x * u);
     try {
       for (let G of a) _o.set(G, (_o.get(G) ?? 0) + 1);
       [$2, O] = k_(i, S2), cr("wasm prepareInputOutputTensor");
@@ -27908,7 +27908,7 @@ var wc = N(() => {
       for (let [G, Q] of await Promise.all(Z)) V[G][2] = Q;
       return dr("wasm ProcessOutputTensor"), V;
     } finally {
-      s.webnnOnRunEnd?.(c), s.stackRestore(W), P.forEach((w) => s._OrtReleaseTensor(w)), C.forEach((w) => s._OrtReleaseTensor(w)), R.forEach((w) => s._free(w)), $2 !== 0 && s._OrtReleaseRunOptions($2), O.forEach((w) => s._free(w));
+      s.webnnOnRunEnd?.(c), s.stackRestore(W4), P.forEach((w) => s._OrtReleaseTensor(w)), C.forEach((w) => s._OrtReleaseTensor(w)), R.forEach((w) => s._free(w)), $2 !== 0 && s._OrtReleaseRunOptions($2), O.forEach((w) => s._free(w));
       for (let w of a) {
         let V = _o.get(w) - 1;
         V === 0 ? _o.delete(w) : _o.set(w, V);
@@ -29021,9 +29021,9 @@ var AgariCalculator = class {
           if (sanyuan === 3) yakuman += 1;
           else if (sanyuan === 2 && isDragon(pair)) han += 2;
         }
-        const winds = [0, 1, 2, 3].filter((i) => j[i]).length;
-        if (winds === 4) yakuman += 1;
-        else if (winds === 3 && pair >= 27 && pair <= 30) yakuman += 1;
+        const winds2 = [0, 1, 2, 3].filter((i) => j[i]).length;
+        if (winds2 === 4) yakuman += 1;
+        else if (winds2 === 3 && pair >= 27 && pair <= 30) yakuman += 1;
       }
     }
     if (!tanyao) {
@@ -31011,9 +31011,9 @@ function withRecommendationProbabilities(candidates, temperature = MORTAL_SOFTMA
 }
 function formatPercent(prob) {
   if (prob == null || !Number.isFinite(prob)) return "-";
-  const pct2 = prob * 100;
-  if (pct2 > 0 && pct2 < 0.1) return "<0.1%";
-  return `${pct2.toFixed(1)}%`;
+  const pct3 = prob * 100;
+  if (pct3 > 0 && pct3 < 0.1) return "<0.1%";
+  return `${pct3.toFixed(1)}%`;
 }
 
 // ../src/softvalue.mjs
@@ -32646,10 +32646,14 @@ function safeTileInfo(shoupai, model) {
   }
   return { count: tiles.reduce((a, t) => a + t.count, 0), tiles };
 }
-function displayShanten(shoupai, rule, model, context, rowsFn = null) {
+function displayShanten(shoupai, rule, model, context, rowsFn = null, rec = null) {
   if (!shoupai) return null;
   if (context === "zimo" || context === "fulou") {
+    if (rec?.recommended === "reach") return 0;
     const rows = rowsFn ? rowsFn() : analyzeDiscards(shoupai, rule, model, { shape: false });
+    const recPai = recommendedDiscardOf(rec);
+    const recRow = recPai ? rows.find((r) => r.pai === recPai) : null;
+    if (recRow) return recRow.shanten;
     if (rows.length) return Math.min(...rows.map((r) => r.shanten));
   }
   return import_majiang_core4.default.Util.xiangting(shoupai);
@@ -33628,18 +33632,18 @@ function suitFace(p) {
   }
   if (suit === "p") {
     if (n === 1) return pinMedallion();
-    const layout = layoutFor("p", n);
-    const pattern = red ? layout.map(() => PIN_RED) : PIN_PATTERNS[n];
-    return layout.map(([dx2, dy2, sc2], i) => pin(29 + dx2, 42 + dy2, pattern[i], sc2 ?? (n >= 6 ? 0.82 : 0.95))).join("");
+    const layout2 = layoutFor("p", n);
+    const pattern = red ? layout2.map(() => PIN_RED) : PIN_PATTERNS[n];
+    return layout2.map(([dx2, dy2, sc2], i) => pin(29 + dx2, 42 + dy2, pattern[i], sc2 ?? (n >= 6 ? 0.82 : 0.95))).join("");
   }
   if (suit === "s") {
     if (n === 1) return peacock();
-    const layout = layoutFor("s", n);
+    const layout2 = layoutFor("s", n);
     let pattern;
-    if (red) pattern = layout.map(() => SOU_RED);
-    else if (SOU_GREEN_ONLY.has(n)) pattern = layout.map(() => SOU_GREEN);
+    if (red) pattern = layout2.map(() => SOU_RED);
+    else if (SOU_GREEN_ONLY.has(n)) pattern = layout2.map(() => SOU_GREEN);
     else pattern = SOU_PATTERNS[n];
-    return layout.map(([dx2, dy2, sc2, rot], i) => bamboo(29 + dx2, 42 + dy2, pattern[i], sc2 ?? (n >= 6 ? 0.72 : 0.92), rot ?? 0)).join("");
+    return layout2.map(([dx2, dy2, sc2, rot], i) => bamboo(29 + dx2, 42 + dy2, pattern[i], sc2 ?? (n >= 6 ? 0.72 : 0.92), rot ?? 0)).join("");
   }
   if (p === "z5") {
     return "";
@@ -33720,6 +33724,9 @@ function tileSVG(p, label = "") {
   const id2 = tileSymbolId(p), u = faceUrl(id2);
   if (u) return `<svg class="tile-art" viewBox="0 0 60 84" role="img" aria-label="${label}" data-face="${id2}"><image href="${u}" width="60" height="84"></image></svg>`;
   return `<svg class="tile-art" viewBox="0 0 60 84" role="img" aria-label="${label}"><use href="#tile-${id2}"></use></svg>`;
+}
+function tileFaceSource(p) {
+  return FACE_DOC.get(tileSymbolId(p)) ?? null;
 }
 
 // src/stats.mjs
@@ -34609,6 +34616,9 @@ function buildDisplay(agg) {
     basisLabel: `${agg.recent ? "\u76F4\u8FD1" : "\u5BFE\u8C61 "}${agg.gameN}\u534A\u8358\uFF08\u6700\u5927${CERT_RECENT_GAMES}\u534A\u8358\uFF09\u30FB\u6253\u724C\u5224\u65AD ${agg.discardN}\u56DE`
   };
 }
+function certifiedRankDisplay(summaries) {
+  return buildDisplay(aggregateCertification(summaries));
+}
 var CERT_WINDOW_NOTE = `\u65B0\u3057\u3044\u5BFE\u5C40\u304B\u3089\u6700\u5927${CERT_RECENT_GAMES}\u534A\u8358\u5206\u3067\u8A08\u7B97\u3057\u307E\u3059\u3002`;
 function certProgressText(gameN, discardN = 0) {
   const remaining = Math.max(0, CERT_START_GAMES - gameN);
@@ -34649,6 +34659,1358 @@ function certifiedRankSectionHTML(summaries) {
     <h3>${notice.title}</h3>
     <div class="st-note">${notice.condition}</div>
     <div class="st-note">${notice.progress}</div>
+  </div>`;
+}
+
+// src/shell.mjs
+var SHELL_ORIGIN = "https://appassets.androidplatform.net";
+function isLoopbackHost(hostname) {
+  return hostname === "localhost" || hostname === "127.0.0.1" || hostname === "[::1]" || hostname === "::1";
+}
+function isShellOrigin(origin) {
+  if (origin === void 0) {
+    const loc = typeof globalThis !== "undefined" ? globalThis.location : void 0;
+    if (!loc) return true;
+    origin = loc.origin;
+  }
+  if (origin === SHELL_ORIGIN) return true;
+  try {
+    return isLoopbackHost(new URL(origin).hostname);
+  } catch (_) {
+    return false;
+  }
+}
+function isShell(bridge2, origin) {
+  const nb2 = bridge2 !== void 0 ? bridge2 : typeof globalThis !== "undefined" ? globalThis.JanLabNative : null;
+  return !!nb2 && (typeof nb2 === "object" || typeof nb2 === "function") && isShellOrigin(origin);
+}
+function shouldRegisterServiceWorker({ bridge: bridge2, hasServiceWorker, origin } = {}) {
+  if (isShell(bridge2, origin)) return false;
+  if (hasServiceWorker !== void 0) return !!hasServiceWorker;
+  return typeof navigator !== "undefined" && !!navigator && "serviceWorker" in navigator;
+}
+
+// src/drill_difficulty.mjs
+var DRILL_DIFFICULTY_SAMPLES = 32;
+var DRILL_DIFFICULTY_TIER = "shodan";
+var DRILL_DIFFICULTY_SEED = "drill-difficulty-20261113";
+var DIFFICULTY_LEVELS = [
+  { id: "easy", label: "\u3084\u3055\u3057\u3044", min: 0.8 },
+  { id: "normal", label: "\u3075\u3064\u3046", min: 0.5 },
+  { id: "hard", label: "\u3080\u305A\u304B\u3057\u3044", min: -Infinity }
+];
+function difficultyTier(matchRate) {
+  if (!Number.isFinite(matchRate)) throw new Error(`invalid matchRate: ${matchRate}`);
+  if (matchRate >= 0.8) return "easy";
+  if (matchRate >= 0.5) return "normal";
+  return "hard";
+}
+function difficultyLevel(matchRate) {
+  return DIFFICULTY_LEVELS.find((level) => level.id === difficultyTier(matchRate));
+}
+function difficultySeed(baseSeed, problemId) {
+  const text = `${baseSeed}|${problemId}`;
+  let h = 2166136261;
+  for (let i = 0; i < text.length; i++) {
+    h ^= text.charCodeAt(i);
+    h = Math.imul(h, 16777619);
+  }
+  return h >>> 0;
+}
+var RED_FIVE_BASE = { 34: 4, 35: 13, 36: 22 };
+function tileIndexOf(actionIdx) {
+  if (actionIdx < 0 || actionIdx > 36) return -1;
+  return RED_FIVE_BASE[actionIdx] ?? actionIdx;
+}
+function sampleAgreement({
+  q: q4,
+  mask,
+  recommendedIdx,
+  samples = DRILL_DIFFICULTY_SAMPLES,
+  seed = 0,
+  tierId = DRILL_DIFFICULTY_TIER
+}) {
+  if (!q4 || !mask) throw new Error("q and mask are required");
+  if (!Number.isInteger(recommendedIdx) || recommendedIdx < 0) {
+    throw new Error(`invalid recommendedIdx: ${recommendedIdx}`);
+  }
+  if (!Number.isInteger(samples) || samples < 1) throw new Error(`invalid samples: ${samples}`);
+  const want = tileIndexOf(recommendedIdx);
+  let greedy = -1;
+  for (let j = 0; j < mask.length; j++) {
+    if (mask[j] && (greedy < 0 || q4[j] > q4[greedy])) greedy = j;
+  }
+  const policy = new CpuPolicy({ tierId, styleId: "none", seed });
+  let hits = 0;
+  for (let i = 0; i < samples; i++) {
+    const { actionIdx, dahaiIdx } = policy.choose(null, q4, mask, greedy);
+    const picked = actionIdx === 37 ? dahaiIdx : actionIdx;
+    if (tileIndexOf(picked) === want) hits++;
+  }
+  return hits / samples;
+}
+
+// src/drill_logic.mjs
+var DRILL_SET_SIZE = 10;
+var DRILL_CORRECT_GAP_PT = 10;
+var DRILL_CLOSE_GAP_PT = 30;
+var DRILL_RESULTS_KEY = "ml-drill-results";
+var DRILL_RESULTS_LIMIT = 200;
+var DRILL_T_FIRST_MS = 2e4;
+var DRILL_T_NEXT_MS = 1e4;
+var DRILL_VERDICT_LABELS = { correct: "\u6B63\u89E3", close: "\u60DC\u3057\u3044", wrong: "\u4E0D\u6B63\u89E3" };
+function probOf(probabilities, action) {
+  if (action == null || probabilities == null) return null;
+  if (Array.isArray(probabilities)) {
+    const found = probabilities.find((c) => c && c.action === action);
+    return found && Number.isFinite(found.prob) ? found.prob : null;
+  }
+  const value = probabilities[action];
+  return Number.isFinite(value) ? value : null;
+}
+function judgeDrillAnswer({ selected, recommended, probabilities } = {}) {
+  const selectedProb = probOf(probabilities, selected);
+  const recommendedProb = probOf(probabilities, recommended);
+  if (selected != null && selected === recommended) {
+    return { verdict: "correct", selectedProb, recommendedProb, gapPt: 0 };
+  }
+  if (selectedProb == null || recommendedProb == null) {
+    return { verdict: "wrong", selectedProb, recommendedProb, gapPt: null };
+  }
+  const gapPt = Math.abs(selectedProb - recommendedProb) * 100;
+  let verdict = "wrong";
+  if (gapPt <= DRILL_CORRECT_GAP_PT + 1e-9) verdict = "correct";
+  else if (gapPt <= DRILL_CLOSE_GAP_PT + 1e-9) verdict = "close";
+  return { verdict, selectedProb, recommendedProb, gapPt };
+}
+function verdictLabel(verdict) {
+  return DRILL_VERDICT_LABELS[verdict] || verdict || "";
+}
+function drillDifficulty(problem) {
+  const rate2 = problem?.matchRate;
+  if (!Number.isFinite(rate2)) return null;
+  return difficultyLevel(rate2);
+}
+function drillLocked({ pwa = false, status = "unavailable", owned = false, grandfathered = false } = {}) {
+  if (pwa) return false;
+  if (status !== "ready") return false;
+  return !owned && !grandfathered;
+}
+function drillResultDate(date = /* @__PURE__ */ new Date()) {
+  const d = date instanceof Date ? date : new Date(date);
+  if (!Number.isFinite(d.getTime())) return null;
+  const pad = (n) => String(n).padStart(2, "0");
+  return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}`;
+}
+function readDrillResults(storage) {
+  try {
+    const raw = storage?.getItem?.(DRILL_RESULTS_KEY);
+    const parsed = raw ? JSON.parse(raw) : [];
+    if (!Array.isArray(parsed)) return [];
+    return parsed.filter((r) => r && typeof r.date === "string" && Number.isFinite(r.correct)).map((r) => Number.isFinite(r.total) ? { date: r.date, correct: r.correct, total: r.total } : { date: r.date, correct: r.correct });
+  } catch (_) {
+    return [];
+  }
+}
+function saveDrillResult(storage, record) {
+  if (!record || typeof record.date !== "string" || !Number.isFinite(record.correct)) return false;
+  if (Number.isFinite(record.total) && record.total <= 0) return false;
+  try {
+    const rows = readDrillResults(storage);
+    rows.push(Number.isFinite(record.total) ? { date: record.date, correct: record.correct, total: record.total } : { date: record.date, correct: record.correct });
+    storage?.setItem?.(DRILL_RESULTS_KEY, JSON.stringify(rows.slice(-DRILL_RESULTS_LIMIT)));
+    return true;
+  } catch (_) {
+    return false;
+  }
+}
+function tallyDrillItems(items) {
+  const failed = items.filter((it) => it.judgement?.failed).length;
+  const judged = items.length - failed;
+  return {
+    failed,
+    judged,
+    correct: items.filter((it) => !it.judgement?.failed && it.judgement?.verdict === "correct").length
+  };
+}
+function drillRecordOf(items, date) {
+  const t = tallyDrillItems(items);
+  if (t.judged <= 0) return null;
+  const record = { date: drillResultDate(date), correct: t.correct };
+  if (t.failed > 0) record.total = t.judged;
+  return record;
+}
+function createStreamingDrillSession({
+  total = DRILL_SET_SIZE,
+  key: key2 = "any|any",
+  supply,
+  firstMs = DRILL_T_FIRST_MS,
+  nextMs = DRILL_T_NEXT_MS
+} = {}) {
+  const items = [];
+  const pending2 = /* @__PURE__ */ new Map();
+  const signal = { aborted: false };
+  let skipResolve = null;
+  let skipPromise = new Promise((resolve) => {
+    skipResolve = resolve;
+  });
+  let index = 0;
+  const session = {
+    get key() {
+      return key2;
+    },
+    get items() {
+      return items;
+    },
+    get total() {
+      return total;
+    },
+    get index() {
+      return index;
+    },
+    get problem() {
+      return items[index]?.problem || null;
+    },
+    get data() {
+      return items[index]?.data || null;
+    },
+    get origin() {
+      return items[index]?.origin || null;
+    },
+    get judgement() {
+      return items[index]?.judgement || null;
+    },
+    get answeredCount() {
+      return items.filter((it) => it.judgement).length;
+    },
+    get complete() {
+      return items.length === total && items.every((it) => it.judgement);
+    },
+    get aborted() {
+      return signal.aborted;
+    },
+    get filledCount() {
+      return items.length;
+    },
+    get fallbackCount() {
+      return items.filter((it) => it.origin === "pool" && it.fallback).length;
+    },
+    filled(i) {
+      return !!items[i];
+    },
+    // Slots are filled strictly in order; asking again returns the same promise.
+    fill(i) {
+      if (items[i]) return Promise.resolve(items[i]);
+      if (pending2.has(i)) return pending2.get(i);
+      if (i !== items.length) return Promise.reject(new Error(`slot ${i} requested before slot ${items.length}`));
+      const usedIds = new Set(items.map((it) => it.problem.id));
+      const p = Promise.resolve(supply(i, {
+        deadlineMs: i === 0 ? firstMs : nextMs,
+        usedIds,
+        signal,
+        skip: skipPromise
+      })).then((got) => {
+        pending2.delete(i);
+        if (signal.aborted || !got?.problem) return null;
+        const item = {
+          problem: got.problem,
+          data: got.data,
+          origin: got.origin || "pool",
+          fallback: !!got.fallback,
+          judgement: null
+        };
+        items[i] = item;
+        skipPromise = new Promise((resolve) => {
+          skipResolve = resolve;
+        });
+        return item;
+      }, (e) => {
+        pending2.delete(i);
+        throw e;
+      });
+      pending2.set(i, p);
+      return p;
+    },
+    // "収録済みの問題ではじめる": give up waiting for the current slot.
+    skipWait() {
+      if (pending2.size) skipResolve?.();
+    },
+    answer(judgement) {
+      if (signal.aborted || !items[index] || items[index].judgement) return null;
+      items[index].judgement = judgement;
+      return judgement;
+    },
+    next() {
+      if (index < items.length - 1) index++;
+      return session.problem;
+    },
+    abort() {
+      signal.aborted = true;
+      skipResolve?.();
+    },
+    result(date = /* @__PURE__ */ new Date()) {
+      if (signal.aborted || !session.complete) return null;
+      return drillRecordOf(items, date);
+    }
+  };
+  return session;
+}
+function finalizeDrillSession(session, storage, date = /* @__PURE__ */ new Date()) {
+  const record = session?.result?.(date);
+  if (!record) return null;
+  saveDrillResult(storage, record);
+  return record;
+}
+
+// src/review_prompt.mjs
+var REVIEW_STATE_KEY = "ml-review-prompt-v1";
+var DRILL_REVIEW_QUESTIONS = 10;
+var PLAY_STORE_URL = "https://play.google.com/store/apps/details?id=jp.mno.mahjonglocal";
+function rankLevel(center) {
+  if (!Number.isFinite(center)) return null;
+  return center >= 0.5 ? Math.round(center) : 1 - Math.round(1 - center);
+}
+function drillQuestionTotal(rows) {
+  return (Array.isArray(rows) ? rows : []).reduce((sum, r) => sum + (Number.isFinite(r?.total) ? r.total : DRILL_SET_SIZE), 0);
+}
+function createReviewPrompt({ native, storage } = {}) {
+  const available = () => {
+    try {
+      return isShell(native) && typeof native.requestReview === "function";
+    } catch (_) {
+      return false;
+    }
+  };
+  let status = "unavailable", owned = false;
+  function read() {
+    try {
+      const raw = storage.getItem(REVIEW_STATE_KEY);
+      if (!raw) return { tried: false, ownedSeen: false, rank: null };
+      const s = JSON.parse(raw);
+      return { tried: s.tried === true, ownedSeen: s.ownedSeen === true, rank: Number.isFinite(s.rank) ? s.rank : null };
+    } catch (_) {
+      return { tried: true, ownedSeen: false, rank: null };
+    }
+  }
+  function write(s) {
+    try {
+      storage.setItem(REVIEW_STATE_KEY, JSON.stringify({ v: 1, ...s }));
+      return true;
+    } catch (_) {
+      return false;
+    }
+  }
+  function fire(s) {
+    if (!write({ ...s, tried: true })) return false;
+    try {
+      native.requestReview();
+    } catch (_) {
+    }
+    return true;
+  }
+  return {
+    // Billing state from the entitlement ({status, owned}). Observing ownership only arms
+    // route A for the NEXT finished game; it never asks by itself (no ask at purchase).
+    noteBilling(state) {
+      status = state?.status ?? "unavailable";
+      owned = state?.owned === true;
+      if (!available() || !(status === "ready" && owned)) return;
+      const s = read();
+      if (!s.ownedSeen && !s.tried) write({ ...s, ownedSeen: true });
+    },
+    // A real game finished and its summary is saved. `center` = certified-rank centre
+    // (certifiedRankDisplay(...)?.center), or undefined while no rank is shown yet.
+    gameFinished({ center } = {}) {
+      if (!available()) return false;
+      const s = read();
+      const level = rankLevel(center);
+      const rose = level !== null && s.rank !== null && level > s.rank;
+      if (level !== null && (s.rank === null || level > s.rank)) {
+        s.rank = level;
+        if (!s.tried) write(s);
+      }
+      if (s.tried) return false;
+      if (s.ownedSeen) return fire(s);
+      if (rose && status === "ready" && !owned) return fire(s);
+      return false;
+    },
+    // A drill set was just completed and saved; `total` = drillQuestionTotal(all rows).
+    drillSetFinished({ total } = {}) {
+      if (!available()) return false;
+      const s = read();
+      if (s.tried || s.ownedSeen || owned || status !== "ready") return false;
+      if (!(total >= DRILL_REVIEW_QUESTIONS)) return false;
+      return fire(s);
+    }
+  };
+}
+
+// src/tile_render.mjs
+var HONOR = ["", "\u6771", "\u5357", "\u897F", "\u5317", "\u767D", "\u767C", "\u4E2D"];
+function tileLabel(p) {
+  if (!p || p === "_") return "";
+  const s = p[0], n = p[1];
+  if (s === "z") return HONOR[+n] || "";
+  return (n === "0" ? "5" : n) + { m: "\u842C", p: "\u7B52", s: "\u7D22" }[s];
+}
+function tileHTML(p, cls = "") {
+  if (p === "_") return `<span class="tile back ${cls}" data-pai="_" aria-label="\u4F0F\u305B\u724C">${tileSVG("_")}</span>`;
+  const red = p[1] === "0" ? " red" : "";
+  return `<span class="tile ${red} ${cls}" data-pai="${p}" aria-label="${tileLabel(p)}">${tileSVG(p, tileLabel(p))}</span>`;
+}
+function parseClosed(str) {
+  const closed = (str || "").split(",")[0];
+  const tiles = [];
+  let suit = null;
+  for (const ch of closed) {
+    if ("mpsz".includes(ch)) suit = ch;
+    else if (ch === "_") tiles.push("_");
+    else if (/\d/.test(ch) && suit) tiles.push(suit + ch);
+  }
+  return tiles;
+}
+function mianziTiles(m) {
+  return [...m.slice(1).replace(/[+\-=]/g, "")].map((d) => m[0] + d);
+}
+function mianziParts(m) {
+  const parts = [];
+  for (const ch of m.slice(1)) {
+    if (/[+\-=]/.test(ch)) {
+      if (parts.length) parts[parts.length - 1].called = true;
+    } else parts.push({ pai: m[0] + ch, called: false });
+  }
+  return parts;
+}
+var MELD_SRC = { "-": "kamicha", "=": "toimen", "+": "shimocha" };
+function meldArrangement(m) {
+  const parts = mianziParts(m);
+  const sym = (m.match(/[+\-=]/) || [null])[0];
+  if (parts.length === 4 && !sym) {
+    return { src: "ankan", tiles: parts.map((p, i) => ({ pai: p.pai, called: false, back: i === 0 || i === 3 })) };
+  }
+  if (!sym) return { src: "", tiles: parts.map((p) => ({ ...p, back: false })) };
+  const slot = sym === "-" ? 0 : sym === "=" ? 1 : 2;
+  const ci = parts.findIndex((p) => p.called);
+  const called = parts[ci];
+  const others = parts.filter((_, i) => i !== ci);
+  others.splice(Math.min(slot, others.length), 0, called);
+  return { src: MELD_SRC[sym], tiles: others.map((p) => ({ ...p, back: false })) };
+}
+var SEAT_FRAME = [0, -90, 180, 90];
+var CALLED_LEAN = { kamicha: -90, toimen: 90, shimocha: 90 };
+function meldHTML(m, rel = 0) {
+  const { src, tiles } = meldArrangement(m);
+  const ordered = rel === 1 || rel === 2 ? tiles.slice().reverse() : tiles;
+  const frame = SEAT_FRAME[rel] ?? 0;
+  const html = ordered.map((t) => {
+    const rot = ((frame + (t.called ? CALLED_LEAN[src] ?? 90 : 0)) % 360 + 360) % 360;
+    const rotCls = ` mrot-${rot}${rot === 90 || rot === 270 ? " tile-side" : ""}`;
+    return t.back ? tileHTML("_", `meld-tile${rotCls}`) : tileHTML(t.pai, `meld-tile${t.called ? " called-tile" : ""}${rotCls}`);
+  }).join("");
+  return `<span class="meld${tiles.length === 4 ? " meld-kan" : ""}" data-mianzi="${m}"${src ? ` data-src="${src}"` : ""}>${html}</span>`;
+}
+function meldFaces(m) {
+  return meldArrangement(m).tiles.map((t) => t.back ? "_" : t.pai);
+}
+function kyokuText(k2) {
+  const x = /^([ESWN])(\d)\.(\d+)$/.exec(k2 || "");
+  if (!x) return k2 || "";
+  return `${{ E: "\u6771", S: "\u5357", W: "\u897F", N: "\u5317" }[x[1]]}${x[2]}\u5C40${x[3] !== "0" ? ` ${x[3]}\u672C\u5834` : ""}`;
+}
+function contextLabel(context) {
+  return { zimo: "\u3042\u306A\u305F\u306E\u6253\u724C", dapai: "\u4ED6\u5BB6\u306E\u6253\u724C", fulou: "\u9CF4\u304D\u5F8C", gang: "\u30AB\u30F3" }[context] || context || "-";
+}
+function actionTilesHTML(tiles) {
+  return `<span class="act-tiles">${tiles.map((p) => tileHTML(p, "act-tile")).join("")}</span>`;
+}
+function shoupaiStringHTML(str, markWin = false, doraSet = null) {
+  const parts = String(str).split(",");
+  const tilesOf = (seg) => {
+    const tiles = [];
+    let suit = "";
+    for (const ch of seg) {
+      if ("mpsz".includes(ch)) suit = ch;
+      else if (/\d/.test(ch) && suit) tiles.push(suit + ch);
+    }
+    return tiles;
+  };
+  const isDora = (t) => !!doraSet && (t[1] === "0" || doraSet.has(t[0] + t[1]));
+  const closedTiles = tilesOf(parts[0]);
+  const closed = closedTiles.map((t, i) => `<span class="th-tile${markWin && i === closedTiles.length - 1 ? " win" : ""}${isDora(t) ? " dora" : ""}">${tileSVG(t, tileLabel(t))}</span>`).join("");
+  const melds = parts.slice(1).map((seg) => {
+    const { src, tiles } = meldArrangement(seg);
+    return `<span class="th-meld">${tiles.map((t) => t.back ? `<span class="th-tile">${tileSVG("_", "\u4F0F\u305B\u724C")}</span>` : `<span class="th-tile${t.called ? ` called${src === "kamicha" ? " lean-kamicha" : ""}` : ""}${isDora(t.pai) ? " dora" : ""}">${tileSVG(t.pai, tileLabel(t.pai))}</span>`).join("")}</span>`;
+  }).join("");
+  return `<span class="th-tiles">${closed}</span>${melds}`;
+}
+
+// src/share_image.mjs
+var APP_NAME = "\u96C0\u30B3\u30FC\u30C1";
+var SITE_URL = "mnolab.dev";
+var INVITE_TEXT = `\u9EBB\u96C0\u306E\u52C9\u5F37\u30FB\u7DF4\u7FD2\u306B\u3002AI\u30B3\u30FC\u30C1\u304C\u5168\u6253\u724C\u3092\u8A55\u4FA1\u3059\u308B\u300C${APP_NAME}\u300D
+${PLAY_STORE_URL}`;
+var QUESTION_TITLE = "\u3053\u306E\u554F\u984C\u3001\u4F55\u5207\u308B\uFF1F";
+var CERT_BADGE = `${APP_NAME}\u8A8D\u5B9A`;
+var CERT_DISCLAIMER = `${APP_NAME}\u72EC\u81EA\u306E\u76EE\u5B89\u3067\u3059\u3002\u4ED6\u306E\u30B5\u30FC\u30D3\u30B9\u30FB\u56E3\u4F53\u306E\u6BB5\u4F4D\u3068\u306F\u95A2\u4FC2\u3042\u308A\u307E\u305B\u3093\u3002`;
+var CARD_TAGS = {
+  question: `#\u4F55\u5207\u308B #${APP_NAME}`,
+  result: `#\u4F55\u5207\u308B #${APP_NAME}`,
+  cert: `#${APP_NAME}`
+};
+function winds(seat) {
+  return seat?.wind ? `${seat.wind}\u5BB6` : "";
+}
+function buildQuestionCard({ kyoku, junme, scene, actor }) {
+  const seat = scene?.seats?.[actor];
+  const c = scene?.center || {};
+  const closed = seat?.closed || [];
+  const drawnAt = seat?.drawnTile ? closed.length - 1 : -1;
+  const hand = drawnAt >= 0 ? closed.slice(0, drawnAt) : closed.slice();
+  const drawn = drawnAt >= 0 ? [closed[drawnAt]] : [];
+  const melds = (seat?.fulou || []).map((m) => meldFaces(m));
+  const riichiOthers = (scene?.seats || []).filter((s, i) => i !== actor && s.lizhi).length;
+  const chips = [
+    kyokuText(kyoku),
+    `${junme}\u5DE1\u76EE`,
+    winds(seat) && `\u81EA\u98A8 ${winds(seat)}`,
+    seat && `${Number(seat.defen || 0).toLocaleString()}\u70B9`
+  ].filter(Boolean);
+  if (riichiOthers > 0) chips.push(`\u4ED6\u5BB6\u30EA\u30FC\u30C1 ${riichiOthers}\u4EBA`);
+  const blocks = [
+    { t: "heading", text: QUESTION_TITLE },
+    { t: "chips", items: chips }
+  ];
+  if ((c.baopai || []).length) blocks.push({ t: "tiles", label: "\u30C9\u30E9\u8868\u793A\u724C", groups: [c.baopai.slice()], small: true });
+  blocks.push({ t: "tiles", label: "\u3042\u306A\u305F\u306E\u624B\u724C", groups: [hand, drawn, ...melds].filter((g) => g.length) });
+  blocks.push({ t: "text", text: "\u5207\u308B\u724C\u306F\uFF1F", size: 40, strong: true });
+  return { kind: "question", tag: CARD_TAGS.question, blocks };
+}
+function buildResultCard({ correct, total, byVerdict, byDiff }) {
+  const blocks = [
+    { t: "heading", text: "\u4F55\u5207\u308B\u30C9\u30EA\u30EB \u7D50\u679C" },
+    { t: "big", text: `${correct} / ${total}`, sub: "\u6B63\u89E3" }
+  ];
+  if (byVerdict) blocks.push({ t: "text", text: `\u6B63\u89E3 ${byVerdict.correct}\u3000\u60DC\u3057\u3044 ${byVerdict.close}\u3000\u4E0D\u6B63\u89E3 ${byVerdict.wrong}`, size: 36 });
+  if (byDiff) blocks.push({ t: "text", text: `\u3084\u3055\u3057\u3044 ${byDiff.easy}\u30FB\u3075\u3064\u3046 ${byDiff.normal}\u30FB\u3080\u305A\u304B\u3057\u3044 ${byDiff.hard}`, size: 30, dim: true });
+  return { kind: "result", tag: CARD_TAGS.result, blocks };
+}
+function buildCertCard(display) {
+  const blocks = [
+    { t: "badge", text: CERT_BADGE },
+    { t: "text", text: `\u6BB5\u4F4D\u306E\u76EE\u5B89${display.provisional ? "\uFF08\u66AB\u5B9A\uFF09" : ""}`, size: 36 },
+    { t: "big", text: display.rangeLabel },
+    { t: "text", text: display.basisLabel, size: 30, dim: true },
+    { t: "text", text: CERT_DISCLAIMER, size: 28, dim: true }
+  ];
+  return { kind: "cert", tag: CARD_TAGS.cert, blocks };
+}
+function cardShareText(spec) {
+  return `${spec.kind === "question" ? `${QUESTION_TITLE} ` : ""}${spec.tag} ${SITE_URL}`.trim();
+}
+var W = 1080;
+var PAD = 48;
+var INK = "#1f2a24";
+var DIM = "#5d6a62";
+var GREEN = "#0b6b4a";
+var FONT = "'Hiragino Sans','Yu Gothic','Noto Sans JP',sans-serif";
+var TILE_AR = 84 / 60;
+function tileSize(count, groups, maxW, cap) {
+  const gaps = Math.max(0, groups - 1) * 22;
+  const w = Math.min(cap, Math.floor((maxW - gaps) / Math.max(1, count)));
+  return { w, h: Math.round(w * TILE_AR) };
+}
+function layout(spec) {
+  const items = [];
+  let y = PAD;
+  for (const b of spec.blocks) {
+    let h;
+    if (b.t === "heading") h = 96;
+    else if (b.t === "badge") h = 92;
+    else if (b.t === "chips") h = 76;
+    else if (b.t === "big") h = b.sub ? 250 : 190;
+    else if (b.t === "text") h = (b.size || 32) + 38;
+    else if (b.t === "tiles") {
+      const count = b.groups.reduce((n, g) => n + g.length, 0);
+      const sz = tileSize(count, b.groups.length, W - 2 * PAD, b.small ? 56 : 74);
+      b.sz = sz;
+      h = 40 + sz.h + 30;
+    } else h = 0;
+    items.push({ b, y, h });
+    y += h;
+  }
+  return { items, height: y + 150 };
+}
+var sizeOf = (b, dflt) => `${b.strong ? "bold " : ""}${b.size || dflt}px ${FONT}`;
+function defaultLoadImage(doc) {
+  return (src) => new Promise((resolve, reject) => {
+    const img = new (doc.defaultView?.Image || Image)();
+    img.onload = () => resolve(img);
+    img.onerror = () => reject(new Error("tile image failed"));
+    img.src = src;
+  });
+}
+async function renderCard(spec, { doc = document, loadImage = null, scale = 1 } = {}) {
+  const load = loadImage || defaultLoadImage(doc);
+  const { items, height } = layout(spec);
+  const faces = /* @__PURE__ */ new Map();
+  for (const { b } of items) {
+    if (b.t !== "tiles") continue;
+    for (const p of b.groups.flat()) {
+      if (faces.has(p)) continue;
+      const svg = tileFaceSource(p);
+      faces.set(p, svg ? await load(`data:image/svg+xml;charset=utf-8,${encodeURIComponent(svg)}`) : null);
+    }
+  }
+  const canvas = doc.createElement("canvas");
+  canvas.width = Math.round(W * scale);
+  canvas.height = Math.round(height * scale);
+  const g = canvas.getContext("2d");
+  g.scale(scale, scale);
+  const bg2 = g.createLinearGradient(0, 0, 0, height);
+  bg2.addColorStop(0, "#f3f8f3");
+  bg2.addColorStop(1, "#dcebe2");
+  g.fillStyle = bg2;
+  g.fillRect(0, 0, W, height);
+  g.fillStyle = GREEN;
+  g.fillRect(0, 0, W, 14);
+  g.textBaseline = "alphabetic";
+  for (const { b, y, h } of items) {
+    g.textAlign = "left";
+    if (b.t === "heading") {
+      g.fillStyle = INK;
+      g.font = `bold 62px ${FONT}`;
+      g.fillText(b.text, PAD, y + 70);
+    } else if (b.t === "badge") {
+      g.font = `bold 54px ${FONT}`;
+      const tw2 = g.measureText(b.text).width + 56;
+      g.fillStyle = GREEN;
+      g.beginPath();
+      g.roundRect(PAD, y + 8, tw2, 76, 38);
+      g.fill();
+      g.fillStyle = "#ffffff";
+      g.fillText(b.text, PAD + 28, y + 64);
+    } else if (b.t === "chips") {
+      g.font = `30px ${FONT}`;
+      let x = PAD;
+      for (const chip of b.items) {
+        const tw2 = g.measureText(chip).width + 36;
+        if (x + tw2 > W - PAD) break;
+        g.fillStyle = "#ffffff";
+        g.strokeStyle = "#b8cbbf";
+        g.lineWidth = 2;
+        g.beginPath();
+        g.roundRect(x, y + 8, tw2, 52, 26);
+        g.fill();
+        g.stroke();
+        g.fillStyle = INK;
+        g.fillText(chip, x + 18, y + 45);
+        x += tw2 + 14;
+      }
+    } else if (b.t === "big") {
+      g.fillStyle = GREEN;
+      g.font = `bold ${b.text.length > 7 ? 104 : 150}px ${FONT}`;
+      g.fillText(b.text, PAD, y + 150);
+      if (b.sub) {
+        g.fillStyle = DIM;
+        g.font = `34px ${FONT}`;
+        g.fillText(b.sub, PAD + 6, y + 215);
+      }
+    } else if (b.t === "text") {
+      g.fillStyle = b.dim ? DIM : INK;
+      g.font = sizeOf(b, 32);
+      g.fillText(b.text, PAD, y + (b.size || 32) + 6, W - 2 * PAD);
+    } else if (b.t === "tiles") {
+      g.fillStyle = DIM;
+      g.font = `28px ${FONT}`;
+      g.fillText(b.label, PAD, y + 30);
+      let x = PAD;
+      const ty2 = y + 40;
+      b.groups.forEach((grp, gi) => {
+        if (gi) x += 22;
+        for (const p of grp) {
+          const img = faces.get(p);
+          if (img) g.drawImage(img, x, ty2, b.sz.w, b.sz.h);
+          else {
+            g.fillStyle = "#fffdf4";
+            g.fillRect(x, ty2, b.sz.w, b.sz.h);
+          }
+          x += b.sz.w;
+        }
+      });
+    }
+    void h;
+  }
+  g.fillStyle = "#c9dccf";
+  g.fillRect(0, height - 120, W, 2);
+  g.fillStyle = INK;
+  g.font = `bold 44px ${FONT}`;
+  g.fillText(APP_NAME, PAD, height - 52);
+  g.textAlign = "right";
+  g.fillStyle = DIM;
+  g.font = `38px ${FONT}`;
+  g.fillText(SITE_URL, W - PAD, height - 52);
+  return canvas;
+}
+function canvasToBlob(canvas) {
+  return new Promise((resolve, reject) => {
+    if (typeof canvas.toBlob !== "function") {
+      reject(new Error("toBlob unsupported"));
+      return;
+    }
+    canvas.toBlob((blob) => blob ? resolve(blob) : reject(new Error("empty image")), "image/png");
+  });
+}
+async function blobToBase64(blob) {
+  const bytes = new Uint8Array(await blob.arrayBuffer());
+  let bin = "";
+  for (let i = 0; i < bytes.length; i += 32768) bin += String.fromCharCode(...bytes.subarray(i, i + 32768));
+  return btoa(bin);
+}
+function createSharer({ native, nav = globalThis.navigator, doc = globalThis.document, FileImpl = globalThis.File } = {}) {
+  const shell = () => {
+    try {
+      return isShell(native);
+    } catch (_) {
+      return false;
+    }
+  };
+  const bridgeHas = (name2) => shell() && typeof native?.[name2] === "function";
+  const testFile = () => {
+    try {
+      return new FileImpl([""], "share.png", { type: "image/png" });
+    } catch (_) {
+      return null;
+    }
+  };
+  const canShareText = () => bridgeHas("shareText") || !shell() && typeof nav?.share === "function";
+  const canShareImage = () => {
+    if (bridgeHas("shareImage")) return true;
+    if (shell()) return false;
+    const f = typeof FileImpl === "function" ? testFile() : null;
+    return !!f && typeof nav?.share === "function" && typeof nav?.canShare === "function" && !!nav.canShare({ files: [f] });
+  };
+  async function shareText(text) {
+    try {
+      if (bridgeHas("shareText")) return !!native.shareText(text);
+      if (!shell() && typeof nav?.share === "function") {
+        await nav.share({ text });
+        return true;
+      }
+    } catch (_) {
+    }
+    return false;
+  }
+  async function shareBlob(blob, filename, text) {
+    try {
+      if (bridgeHas("shareImage")) return !!native.shareImage(await blobToBase64(blob), filename, text || "");
+      if (shell()) return false;
+      const file = new FileImpl([blob], filename, { type: "image/png" });
+      if (typeof nav?.canShare === "function" && nav.canShare({ files: [file] })) {
+        await nav.share({ files: [file], text: text || "" });
+        return true;
+      }
+    } catch (_) {
+    }
+    return false;
+  }
+  async function shareCard(spec, opts = {}) {
+    try {
+      const canvas = await renderCard(spec, { doc, scale: 1, ...opts });
+      return await shareBlob(await canvasToBlob(canvas), `jancoach-${spec.kind}.png`, cardShareText(spec));
+    } catch (_) {
+      return false;
+    }
+  }
+  return { canShareText, canShareImage, shareText, shareInvite: () => shareText(INVITE_TEXT), shareBlob, shareCard };
+}
+
+// src/clips.mjs
+var CLIP_LIMIT = 100;
+var CLIP_DB = "mahjong-local-clips";
+var STORE = "clips";
+var copy = (x) => JSON.parse(JSON.stringify(x));
+function clipCoachRecord(record) {
+  if (!record) return null;
+  const keys = [
+    "kyokuIndex",
+    "kyoku",
+    "junme",
+    "turn",
+    "mjaiEventCount",
+    "context",
+    "recommended",
+    "actual",
+    "qBest",
+    "pBest",
+    "qActual",
+    "pActual",
+    "qDiff",
+    "probDiff",
+    "agreement",
+    "probabilityMethod",
+    "softmaxTemperature",
+    "shanten",
+    "shantenAfter",
+    "top3",
+    "qValues",
+    "callNotes"
+  ];
+  return copy(Object.fromEntries(keys.filter((k2) => record[k2] !== void 0).map((k2) => [k2, record[k2]])));
+}
+function makeClip({ meta, eventCount, scene, record = null }, id2 = globalThis.crypto.randomUUID()) {
+  if (!meta?.gameId || !scene?.players || !Number.isInteger(eventCount) || eventCount < 1) throw new Error("\u5C40\u9762\u304C\u3042\u308A\u307E\u305B\u3093");
+  return copy({
+    v: 1,
+    id: id2,
+    savedAt: (/* @__PURE__ */ new Date()).toISOString(),
+    gameId: meta.gameId,
+    gameDate: meta.startedAt || meta.savedAt,
+    qijia: meta.qijia ?? 0,
+    eventCount,
+    scene,
+    record: clipCoachRecord(record)
+  });
+}
+function clipLabel(clip) {
+  const s = clip.scene;
+  const date = clip.gameDate ? new Date(clip.gameDate).toLocaleString("ja-JP") : "\u65E5\u6642\u4E0D\u660E";
+  const actor = s.turnActor >= 0 ? ` \uFF0F ${["\u3042\u306A\u305F", "AI-1", "AI-2", "AI-3"][(s.turnActor + clip.qijia) % 4]}\u306E\u624B\u756A` : "";
+  return `${date} \uFF0F ${{ E: "\u6771", S: "\u5357", W: "\u897F", N: "\u5317" }[s.bakaze]}${s.kyoku}\u5C40 ${s.honba}\u672C\u5834 \uFF0F ${s.turn ?? 0}\u624B\u76EE${actor}`;
+}
+function checkClipCapacity(count) {
+  if (count >= CLIP_LIMIT) throw new Error("\u30AF\u30EA\u30C3\u30D7\u306F100\u4EF6\u307E\u3067\u3067\u3059\u3002\u4E00\u89A7\u304B\u3089\u524A\u9664\u3057\u3066\u304B\u3089\u767B\u9332\u3057\u3066\u304F\u3060\u3055\u3044\u3002");
+}
+function createClipStore(indexedDB2 = globalThis.indexedDB) {
+  async function transaction(mode, action) {
+    const db2 = await new Promise((resolve, reject) => {
+      const r = indexedDB2.open(CLIP_DB, 1);
+      r.onupgradeneeded = () => r.result.createObjectStore(STORE, { keyPath: "id" });
+      r.onsuccess = () => resolve(r.result);
+      r.onerror = () => reject(r.error);
+    });
+    return new Promise((resolve, reject) => {
+      const tx2 = db2.transaction(STORE, mode), store = tx2.objectStore(STORE);
+      let result, failure;
+      const fail = (e) => {
+        failure = e;
+        tx2.abort();
+      };
+      tx2.oncomplete = () => {
+        db2.close();
+        resolve(result);
+      };
+      tx2.onabort = tx2.onerror = () => {
+        db2.close();
+        reject(failure || tx2.error || new Error("\u30AF\u30EA\u30C3\u30D7\u3092\u4FDD\u5B58\u3067\u304D\u307E\u305B\u3093\u3067\u3057\u305F"));
+      };
+      try {
+        action(store, (value) => {
+          result = value;
+        }, fail);
+      } catch (e) {
+        fail(e);
+      }
+    });
+  }
+  return {
+    list: () => transaction("readonly", (s, done) => {
+      s.getAll().onsuccess = (e) => done(e.target.result.sort((a, b) => b.savedAt.localeCompare(a.savedAt)));
+    }),
+    add: (clip) => transaction("readwrite", (s, done, fail) => {
+      s.count().onsuccess = (e) => {
+        try {
+          checkClipCapacity(e.target.result);
+          s.add(copy(clip));
+          done(clip.id);
+        } catch (err) {
+          fail(err);
+        }
+      };
+    }),
+    delete: (id2) => transaction("readwrite", (s) => s.delete(id2))
+  };
+}
+
+// src/replay.mjs
+function replaySteps(bundle) {
+  const coached = new Set((bundle.coach || []).map((r) => r.mjaiEventCount));
+  let kyokuIndex = -1;
+  return (bundle.mjai || []).flatMap((e, i) => {
+    if (e.type === "start_kyoku") kyokuIndex++;
+    if (kyokuIndex < 0 || !coached.has(i + 1) && ["start_game", "end_game", "end_kyoku", "reach", "reach_accepted"].includes(e.type)) return [];
+    return [{ eventCount: i + 1, kyokuIndex, type: e.type }];
+  });
+}
+function replayPosition(bundle, eventCount) {
+  return {
+    scene: foldMjaiScene(bundle.mjai, eventCount),
+    record: (bundle.coach || []).find((r) => r.mjaiEventCount === eventCount) || null
+  };
+}
+function resolveClip(clip, bundles) {
+  const bundle = bundles.find((b) => b.meta?.gameId === clip.gameId);
+  if (bundle && bundle.mjai?.length >= clip.eventCount) {
+    const position = replayPosition(bundle, clip.eventCount);
+    if (JSON.stringify(position.scene) === JSON.stringify(clip.scene)) return { bundle, ...position, record: clip.record };
+  }
+  return { bundle: null, scene: clip.scene, record: clip.record };
+}
+function sceneSnapshot(st2, qijia) {
+  const sortKey2 = (p) => "mpsz".indexOf(p[0]) * 100 + (p[1] === "0" ? 5 : +p[1]) * 10 + (p[1] === "0" ? 0 : 1);
+  const seats = st2.players.map((p, actor) => {
+    const id2 = (actor + qijia) % 4, l = (actor - st2.oya + 4) % 4;
+    const closed = p.hand.map(tileFromMjai).sort((a, b) => sortKey2(a) - sortKey2(b));
+    const drawnTile = p.drawn ? tileFromMjai(p.drawn) : null;
+    if (drawnTile) {
+      const i = closed.indexOf(drawnTile);
+      if (i >= 0) closed.push(...closed.splice(i, 1));
+    }
+    return {
+      l,
+      id: id2,
+      pos: id2,
+      name: ["\u3042\u306A\u305F", "AI-1", "AI-2", "AI-3"][id2],
+      defen: st2.scores[actor],
+      wind: "\u6771\u5357\u897F\u5317"[l],
+      dealer: l === 0,
+      closed,
+      drawnTile,
+      closedEntries: closed.map((pai, i) => ({ pai, drawn: !!drawnTile && i === closed.length - 1, action: pai })),
+      fulou: p.melds,
+      lizhi: p.riichi,
+      he: p.pond.map((d) => tileFromMjai(d.pai) + (d.tsumogiri ? "_" : "") + (d.riichi ? "*" : "") + (d.called ? "+" : ""))
+    };
+  });
+  return { seats, center: {
+    zhuangfeng: "ESWN".indexOf(st2.bakaze),
+    jushu: st2.kyoku - 1,
+    changbang: st2.honba,
+    lizhibang: st2.kyotaku,
+    paishu: st2.paishu,
+    baopai: st2.doraMarkers.map(tileFromMjai),
+    lunban: (st2.turnActor - st2.oya + 4) % 4
+  } };
+}
+function foldMjaiScene(events, upto) {
+  const fresh = () => ({ hand: [], melds: [], pond: [], riichi: false, drawn: null });
+  const st2 = {
+    bakaze: "E",
+    kyoku: 1,
+    honba: 0,
+    kyotaku: 0,
+    oya: 0,
+    scores: [25e3, 25e3, 25e3, 25e3],
+    doraMarkers: [],
+    paishu: 70,
+    turn: 0,
+    turnActor: -1,
+    kyokuIndex: -1,
+    players: [fresh(), fresh(), fresh(), fresh()],
+    lastDapai: null
+  };
+  let reachPending = -1;
+  const removeFromHand = (actor, tile2) => {
+    const h = st2.players[actor].hand;
+    let i = h.indexOf(tile2);
+    if (i < 0) {
+      const base = tile2.replace("r", "");
+      i = h.findIndex((t) => t.replace("r", "") === base);
+    }
+    if (i >= 0) h.splice(i, 1);
+  };
+  const mianziFor = (ev2) => {
+    const sym = ["", "-", "=", "+"][(ev2.actor - ev2.target + 4) % 4];
+    const conv = ev2.consumed.map((t) => tileFromMjai(t));
+    const suit = conv[0][0];
+    if (ev2.type === "ankan") return suit + conv.map((c) => c[1]).join("");
+    if (ev2.type === "chi") {
+      const called2 = tileFromMjai(ev2.pai);
+      const digs2 = conv.map((c) => c[1]);
+      digs2.push(called2[1] + "-");
+      const val = (d) => d[0] === "0" ? 5 : +d[0];
+      digs2.sort((a, b) => val(a) - val(b));
+      return suit + digs2.join("");
+    }
+    const digs = conv.map((c) => c[1]).sort();
+    const called = tileFromMjai(ev2.pai)[1];
+    if (ev2.type === "pon") return suit + digs.join("") + called + sym;
+    if (ev2.type === "daiminkan") return suit + digs.join("") + called + sym;
+    return "";
+  };
+  const n = Math.min(upto, events.length);
+  for (let i = 0; i < n; i++) {
+    const ev2 = events[i];
+    switch (ev2.type) {
+      case "start_kyoku":
+        st2.kyokuIndex++;
+        st2.paishu = 70;
+        st2.turn = 0;
+        st2.turnActor = ev2.oya;
+        st2.bakaze = ev2.bakaze;
+        st2.kyoku = ev2.kyoku;
+        st2.honba = ev2.honba;
+        st2.kyotaku = ev2.kyotaku;
+        st2.oya = ev2.oya;
+        st2.scores = ev2.scores.slice();
+        st2.doraMarkers = [ev2.dora_marker];
+        st2.players = ev2.tehais.map((t) => ({ hand: t.slice(), melds: [], pond: [], riichi: false, drawn: null }));
+        reachPending = -1;
+        st2.lastDapai = null;
+        break;
+      case "tsumo":
+        st2.paishu--;
+        st2.turnActor = ev2.actor;
+        st2.players[ev2.actor].hand.push(ev2.pai);
+        st2.players[ev2.actor].drawn = ev2.pai;
+        break;
+      case "reach":
+        reachPending = ev2.actor;
+        break;
+      case "reach_accepted":
+        st2.scores[ev2.actor] -= 1e3;
+        st2.kyotaku += 1;
+        st2.players[ev2.actor].riichi = true;
+        break;
+      case "dahai": {
+        const pl = st2.players[ev2.actor];
+        st2.turn++;
+        st2.turnActor = ev2.actor;
+        if (reachPending === ev2.actor) pl.riichi = true;
+        removeFromHand(ev2.actor, ev2.pai);
+        pl.pond.push({ pai: ev2.pai, tsumogiri: !!ev2.tsumogiri && pl.drawn !== null, riichi: reachPending === ev2.actor, called: false });
+        if (reachPending === ev2.actor) reachPending = -1;
+        pl.drawn = null;
+        st2.lastDapai = { actor: ev2.actor, pai: ev2.pai };
+        break;
+      }
+      case "chi":
+      case "pon":
+      case "daiminkan": {
+        st2.turnActor = ev2.actor;
+        const pl = st2.players[ev2.actor];
+        ev2.consumed.forEach((t) => removeFromHand(ev2.actor, t));
+        const tp = st2.players[ev2.target].pond;
+        if (tp.length) tp[tp.length - 1].called = true;
+        pl.melds.push(mianziFor(ev2));
+        break;
+      }
+      case "ankan":
+        ev2.consumed.forEach((t) => removeFromHand(ev2.actor, t));
+        st2.players[ev2.actor].melds.push(mianziFor(ev2));
+        st2.players[ev2.actor].drawn = null;
+        break;
+      case "kakan": {
+        const pl = st2.players[ev2.actor];
+        removeFromHand(ev2.actor, ev2.pai);
+        const c = tileFromMjai(ev2.pai);
+        const rank = (n2) => n2 === "0" ? "5" : n2;
+        const idx = pl.melds.findIndex((m) => m[0] === c[0] && rank(m[1]) === rank(c[1]) && m.length === 5 && /[+\-=]$/.test(m));
+        if (idx >= 0) pl.melds[idx] += c[1];
+        pl.drawn = null;
+        break;
+      }
+      case "dora":
+        st2.doraMarkers.push(ev2.dora_marker);
+        break;
+      case "hora":
+      case "ryukyoku":
+        if (ev2.type === "hora") st2.kyotaku = 0;
+        if (Array.isArray(ev2.deltas)) ev2.deltas.forEach((d, a) => {
+          st2.scores[a] += d;
+        });
+        break;
+      default:
+        break;
+    }
+  }
+  return st2;
+}
+
+// src/drill_engine.mjs
+var import_majiang_core5 = __toESM(require_lib(), 1);
+function drillMaskEvent(ev2, viewer) {
+  if (ev2.type === "start_game") return { ...ev2, id: viewer };
+  if (ev2.type === "start_kyoku") {
+    return {
+      ...ev2,
+      tehais: ev2.tehais.map((h, a) => a === viewer ? h : Array(13).fill("?"))
+    };
+  }
+  if (ev2.type === "tsumo" && ev2.actor !== viewer) return { ...ev2, pai: "?" };
+  return ev2;
+}
+function replayDrillBrain(events, actor, BrainClass = MortalBrain) {
+  const brain = new BrainClass(actor, 4);
+  for (let i = 0; i < events.length; i++) {
+    brain.feed(drillMaskEvent(events[i], actor));
+    if (i < events.length - 1 && brain.pending) brain.consume();
+  }
+  return brain;
+}
+async function inferDrillPosition(ai2, events, actor, BrainClass = MortalBrain) {
+  if (!ai2) throw new Error("AI model is not ready");
+  const brain = replayDrillBrain(events, actor, BrainClass);
+  if (brain.feedErrors) {
+    throw new Error(`drill replay feed errors: ${brain.feedErrors} (${brain.firstError || "unknown"})`);
+  }
+  if (!brain.pending) throw new Error("drill replay did not reach a decision point");
+  brain.consume();
+  return ai2.infer(brain);
+}
+function groupString(tiles) {
+  const groups = { m: [], p: [], s: [], z: [] };
+  for (const t of tiles || []) {
+    if (groups[t[0]]) groups[t[0]].push(t[1]);
+  }
+  return ["m", "p", "s", "z"].filter((s) => groups[s].length).map((s) => s + groups[s].join("")).join("");
+}
+function shoupaiOf(seat) {
+  const arr = (seat?.closed || []).slice();
+  const drawn = seat?.drawnTile || null;
+  if (drawn) {
+    const i = arr.indexOf(drawn);
+    if (i >= 0) arr.splice(i, 1);
+  }
+  let str = groupString(arr);
+  if (seat?.fulou?.length) str += "," + seat.fulou.join(",");
+  const shoupai = import_majiang_core5.default.Shoupai.fromString(str);
+  if (drawn) shoupai.zimo(drawn);
+  return shoupai;
+}
+function sceneShoupaiModel(scene, actor) {
+  if (!scene?.seats?.[actor]) throw new Error(`missing drill seat ${actor}`);
+  const targetSeat = scene.seats[actor];
+  const target = shoupaiOf(targetSeat);
+  const model = {
+    zhuangfeng: scene.center?.zhuangfeng || 0,
+    shoupai: new Array(4),
+    he: new Array(4),
+    shan: { baopai: (scene.center?.baopai || []).slice() }
+  };
+  for (const seat of scene.seats) {
+    model.shoupai[seat.l] = seat === targetSeat ? target : shoupaiOf(seat);
+    model.he[seat.l] = { _pai: (seat.he || []).slice() };
+  }
+  return { shoupai: target, model };
+}
+function normalizedAction(action) {
+  if (action === "5mr") return "5m";
+  if (action === "5pr") return "5p";
+  if (action === "5sr") return "5s";
+  return action;
+}
+function candidateFor(row, qAll) {
+  const action = tileToMjai(row.pai);
+  return qAll.find((c) => c.action === action) || qAll.find((c) => normalizedAction(c.action) === normalizedAction(action)) || null;
+}
+function explainDrillScene(scene, actor, qAll, opts = {}) {
+  const rule = specRule();
+  const { shoupai, model } = sceneShoupaiModel(scene, actor);
+  const rows = analyzeDiscards(shoupai, rule, model);
+  const candidates = Array.isArray(qAll) ? qAll : [];
+  for (const row of rows) row.candidate = candidateFor(row, candidates);
+  const sorted = rows.slice().sort((a, b) => (b.candidate?.q ?? -Infinity) - (a.candidate?.q ?? -Infinity));
+  sorted.floats = rows.floats || [];
+  const recommended = opts.recommended || null;
+  const recRow = recommended ? sorted.find((r) => candidateFor(r, candidates)?.action === recommended || normalizedAction(candidateFor(r, candidates)?.action || "") === normalizedAction(recommended)) || sorted.find((r) => rowMatchesAction(r, recommended, candidates)) : sorted[0] || null;
+  const selected = opts.selected || null;
+  const selRow = selected ? sorted.find((r) => rowMatchesAction(r, selected, candidates)) || null : null;
+  let comparison = null;
+  try {
+    comparison = comparisonOf(sorted, { recPai: recRow?.pai, focusPai: selRow?.pai });
+  } catch (_) {
+    comparison = null;
+  }
+  const minShanten = rows.length ? Math.min(...rows.map((r) => r.shanten)) : null;
+  let safeInfo = null;
+  let explainability = null;
+  let doraNow = 0;
+  try {
+    safeInfo = safeTileInfo(shoupai, model);
+  } catch (_) {
+    safeInfo = null;
+  }
+  try {
+    doraNow = countDora(shoupai, doraSetFromIndicators(model));
+  } catch (_) {
+    doraNow = 0;
+  }
+  try {
+    const qValues = sorted.map((r) => r.candidate).filter(Boolean);
+    explainability = recommended ? explainabilityOf(sorted, { recommended, qValues, context: "zimo" }) : null;
+  } catch (_) {
+    explainability = null;
+  }
+  return {
+    rows: sorted,
+    recRow,
+    selRow,
+    minShanten,
+    ukeire: recRow?.ukeire ?? null,
+    template: recRow ? templateComment(rows, recRow.pai) : null,
+    comparison: comparison?.text || null,
+    directions: rows[0]?.dirBefore || [],
+    doraNow,
+    safeInfo,
+    explainability
+  };
+}
+function rowMatchesAction(row, action, candidates) {
+  const c = candidateFor(row, candidates);
+  return !!c && (c.action === action || normalizedAction(c.action) === normalizedAction(action));
+}
+
+// src/trial_summary.mjs
+var TRIAL_SUMMARY_KEY = "ml-trial-summary-v1";
+var MAX_GAMES = 10;
+var emptyState = () => ({ v: 1, games: [], shown: false });
+function isDifferent(rec) {
+  return rec.agreement != null ? rec.agreement === false : rec.actual !== rec.recommended;
+}
+function lossKey(rec) {
+  const p = rec.probDiff;
+  if (!(Number.isFinite(p) && p > 0)) return null;
+  return [Math.round(p * 1e6), Number.isFinite(rec.qDiff) ? Math.round(rec.qDiff * 1e4) : -Infinity];
+}
+function biggerLoss(a, b) {
+  const ka2 = lossKey(a), kb2 = lossKey(b);
+  if (!ka2) return false;
+  if (!kb2) return true;
+  return ka2[0] > kb2[0] || ka2[0] === kb2[0] && ka2[1] > kb2[1];
+}
+function digestGame({ gameId, records, sceneOf }) {
+  let judged = 0, differ = 0, best = null;
+  for (const rec of records || []) {
+    if (!isDiscardDecision(rec)) continue;
+    judged++;
+    if (!isDifferent(rec)) continue;
+    differ++;
+    if (Number.isInteger(rec.mjaiEventCount) && rec.mjaiEventCount >= 1 && (!best || biggerLoss(rec, best))) best = rec;
+  }
+  let worst = null;
+  if (best && lossKey(best)) {
+    try {
+      const { scene, qijia } = sceneOf(best);
+      worst = { record: clipCoachRecord(best), scene, qijia, eventCount: best.mjaiEventCount };
+    } catch (_) {
+      worst = null;
+    }
+  }
+  return { gameId, judged, differ, worst };
+}
+function aggregateTrial(state) {
+  const games = state?.games || [];
+  let judged = 0, differ = 0, worst = null;
+  for (const g of games) {
+    judged += g.judged || 0;
+    differ += g.differ || 0;
+    if (g.worst?.record && (!worst || biggerLoss(g.worst.record, worst.record))) worst = g.worst;
+  }
+  return { games: games.length, judged, differ, worst };
+}
+function trialSummaryDue({
+  kind,
+  trialGames = 0,
+  eligible = false,
+  locked = false,
+  simulated = false,
+  auto = false,
+  state
+} = {}) {
+  if (kind !== "play" || !(trialGames > 0) || !eligible || !locked || simulated || auto) return false;
+  if (!state || state.shown) return false;
+  return aggregateTrial(state).judged > 0;
+}
+function sanitize(value) {
+  if (!value || value.v !== 1 || !Array.isArray(value.games)) return null;
+  const games = value.games.filter((g) => g && typeof g.gameId === "string" && g.gameId && Number.isInteger(g.judged) && Number.isInteger(g.differ)).slice(-MAX_GAMES);
+  return { v: 1, games, shown: value.shown === true };
+}
+function readTrialState(storage) {
+  try {
+    const raw = storage?.getItem?.(TRIAL_SUMMARY_KEY);
+    return raw ? sanitize(JSON.parse(raw)) || emptyState() : emptyState();
+  } catch (_) {
+    return emptyState();
+  }
+}
+function writeTrialState(storage, state) {
+  try {
+    storage?.setItem?.(TRIAL_SUMMARY_KEY, JSON.stringify(state));
+    return true;
+  } catch (_) {
+    return false;
+  }
+}
+function noteTrialGame(storage, digest) {
+  const state = readTrialState(storage);
+  const games = state.games.filter((g) => g.gameId !== digest.gameId);
+  games.push(digest);
+  const next = { ...state, games: games.slice(-MAX_GAMES) };
+  writeTrialState(storage, next);
+  return next;
+}
+function markTrialSummaryShown(storage) {
+  const next = { ...readTrialState(storage), shown: true };
+  writeTrialState(storage, next);
+  return next;
+}
+var esc = (v) => String(v ?? "").replace(/[&<>"']/g, (c) => ({
+  "&": "&amp;",
+  "<": "&lt;",
+  ">": "&gt;",
+  '"': "&quot;",
+  "'": "&#39;"
+})[c]);
+var pct1 = (p) => (p * 100).toFixed(1);
+var pct = (p) => `${pct1(p)}%`;
+function explainWorst(worst) {
+  try {
+    const snap = sceneSnapshot(worst.scene, worst.qijia);
+    const actor = snap.seats.findIndex((s) => s.id === 0);
+    if (actor < 0) return null;
+    const rec = worst.record;
+    const recommended = reachDeclareAction(rec) || rec.recommended;
+    const explain = explainDrillScene(snap, actor, rec.qValues, { recommended, selected: rec.actual });
+    return explain.recRow ? explain : null;
+  } catch (_) {
+    return null;
+  }
+}
+function trialCountsText({ games, judged, differ }) {
+  const head = `\u4F53\u9A13${games}\u5C40\u3067\u3001\u30B3\u30FC\u30C1\u304C\u8A55\u4FA1\u3057\u305F\u3042\u306A\u305F\u306E\u6253\u724C\u306F${judged}\u624B`;
+  return differ > 0 ? `${head}\u3002\u305D\u306E\u3046\u3061\u30B3\u30FC\u30C1\u306E\u63A8\u5968\u3068\u9055\u3063\u305F\u6253\u724C\u306F${differ}\u624B\u3067\u3057\u305F\u3002` : `${head}\u3002\u3059\u3079\u3066\u30B3\u30FC\u30C1\u306E\u63A8\u5968\u3069\u304A\u308A\u306E\u6253\u724C\u3067\u3057\u305F\u3002`;
+}
+function trialDiffText(rec, labelOf) {
+  const rp = rec.pBest ?? rec.top3?.[0]?.prob;
+  const ap = rec.pActual ?? rec.probActual;
+  return `\u30B3\u30FC\u30C1\u306E\u63A8\u5968\u306F${labelOf(rec.recommended, rec)}\uFF08\u63A8\u5968\u5EA6 ${pct(rp)}\uFF09\u3001\u3042\u306A\u305F\u306E\u6253\u724C\u306F${labelOf(rec.actual, rec)}\uFF08\u63A8\u5968\u5EA6 ${pct(ap)}\uFF09\u3067\u3001\u63A8\u5968\u5EA6\u306E\u5DEE\u306F ${(pct1(rp) - pct1(ap)).toFixed(1)}% \u3067\u3057\u305F\u3002`;
+}
+function trialSummaryHTML({
+  summary,
+  price = "",
+  boardHTML = "",
+  coachHTML: coachHTML2 = "",
+  explain = null,
+  labelOf = (a) => a,
+  kyokuLabel = ""
+}) {
+  const worst = summary.worst;
+  const buy = `\u30A2\u30F3\u30ED\u30C3\u30AF\u3059\u308B${String(price).trim() ? `\uFF08${esc(String(price).trim())}\uFF09` : ""}`;
+  const reason = explain ? `${explain.template ? `<div class="template">\u88DC\u8DB3 (\u8A08\u7B97\u30D9\u30FC\u30B9): ${explain.template}</div>` : ""}${explain.comparison ? `<div class="compare">\u6BD4\u8F03: ${explain.comparison}</div>` : ""}` : "";
+  const worstBlock = worst ? `<section class="ts-worst">
+      <h3>\u3044\u3061\u3070\u3093\u5DEE\u304C\u5927\u304D\u304B\u3063\u305F1\u6253${kyokuLabel ? `<span class="ctx"> \uFF0F ${esc(kyokuLabel)}</span>` : ""}</h3>
+      ${boardHTML}
+      <p class="ts-diff">${esc(trialDiffText(worst.record, labelOf))}</p>
+      <section class="replay-coach">${coachHTML2}${reason}</section>
+    </section>` : "";
+  return `<div class="sv-card replay-card trial-summary" role="dialog" aria-modal="true" aria-labelledby="ts-title">
+    <div class="sv-head"><div class="sv-title" id="ts-title">\u30B3\u30FC\u30C1\u306E\u7121\u6599\u4F53\u9A13\u306E\u307E\u3068\u3081</div>
+    <div class="sv-nav"><button type="button" data-scene-close data-ts-close>\u9589\u3058\u308B</button></div></div>
+    <p class="ts-counts">${esc(trialCountsText(summary))}</p>
+    ${worstBlock}
+    <div class="ts-foot"><p>\u7D9A\u304D\u306E\u5BFE\u5C40\u3067\u3082\u540C\u3058\u8A55\u4FA1\u3092\u53D7\u3051\u3089\u308C\u307E\u3059\u3002</p>
+    <button type="button" class="ts-buy" data-coach-unlock data-ts-buy>${buy}</button></div>
   </div>`;
 }
 
@@ -34849,9 +36211,9 @@ function isValidResumeSnapshot(s) {
 }
 
 // src/midhand_resume.mjs
-var import_majiang_core5 = __toESM(require_lib(), 1);
-var TenhouGame = withTenhouKandora(import_majiang_core5.default.Game);
-var copy = (value) => JSON.parse(JSON.stringify(value));
+var import_majiang_core6 = __toESM(require_lib(), 1);
+var TenhouGame = withTenhouKandora(import_majiang_core6.default.Game);
+var copy2 = (value) => JSON.parse(JSON.stringify(value));
 var equal = (a, b) => JSON.stringify(a) === JSON.stringify(b);
 var tile = (p) => typeof p === "string" && /^(?:[mps][0-9]|z[1-7])$/.test(p);
 var engineKeys = [
@@ -34896,7 +36258,7 @@ function captureMidhand(game2, phase) {
     engine: "majiang-core-1.4.1",
     phase,
     position: handPosition(game2),
-    log: copy(game2._paipu.log.at(-1))
+    log: copy2(game2._paipu.log.at(-1))
   };
 }
 function resumePrefixPlan(prev, resume, prepared) {
@@ -34909,7 +36271,7 @@ function resumePrefixPlan(prev, resume, prepared) {
   const conv = new PaipuConverter(resume.qijia);
   if (prepared) for (const e of prepared.log) conv.feed(e);
   const checkpointCount = prefix.length + 1 + conv.events.length;
-  return copy({
+  return copy2({
     prefix,
     completed: prefix.filter((e) => e.type === "start_kyoku").length,
     records: (prev.coach || []).filter((r) => (r.kyokuIndex ?? -1) < resume.kyokuIndex || prepared && r.kyokuIndex === resume.kyokuIndex && r.mjaiEventCount < checkpointCount),
@@ -34942,7 +36304,7 @@ function reshuffleRemainingWall(model, rule, historicalWall, random = Math.rando
     const j = Math.floor(random() * (i + 1));
     [rest[i], rest[j]] = [rest[j], rest[i]];
   }
-  const wall = new import_majiang_core5.default.Shan(rule);
+  const wall = new import_majiang_core6.default.Shan(rule);
   wall._pai = Array(count);
   const kans = historicalWall.kans;
   historicalWall.baopai.forEach((p, i) => {
@@ -34996,9 +36358,9 @@ function prepareMidhand(resume, rule) {
     const q4 = h.log[0].qipai;
     if (q4.zhuangfeng !== resume.zhuangfeng || q4.jushu !== resume.jushu || q4.changbang !== resume.changbang || q4.lizhibang !== resume.lizhibang || !Array.isArray(q4.shoupai) || q4.shoupai.length !== 4) return null;
     for (const s of q4.shoupai) {
-      if (typeof s !== "string" || import_majiang_core5.default.Shoupai.fromString(s).toString() !== s || s.includes(",") || import_majiang_core5.default.Shoupai.fromString(s)._zimo) return null;
+      if (typeof s !== "string" || import_majiang_core6.default.Shoupai.fromString(s).toString() !== s || s.includes(",") || import_majiang_core6.default.Shoupai.fromString(s)._zimo) return null;
     }
-    const players = Array.from({ length: 4 }, () => new import_majiang_core5.default.Player());
+    const players = Array.from({ length: 4 }, () => new import_majiang_core6.default.Player());
     const replay = new TenhouGame(players, null, rule);
     replay._sync = true;
     replay.delay = () => {
@@ -35035,7 +36397,7 @@ function prepareMidhand(resume, rule) {
       else if (type === "gang" && ["zimo", "gangzimo"].includes(phase) && replay.get_gang_mianzi().includes(d.m)) replay.gang(d.m);
       else if (type === "gangzimo" && (phase === "gang" || phase === "fulou" && replay._gang)) {
         if (/^[mpsz]\d{3}[+=-]\d$/.test(replay._gang) && !h.log[i + 1]?.kaigang) {
-          import_majiang_core5.default.Game.prototype.gangzimo.call(replay);
+          import_majiang_core6.default.Game.prototype.gangzimo.call(replay);
         } else replay.gangzimo();
       } else return null;
       const generated = replay._paipu.log[0];
@@ -35045,7 +36407,7 @@ function prepareMidhand(resume, rule) {
     }
     if (wall.draws.length || wall.rinshan.length || wall.indicators.length || replay._status !== h.phase || !isSafeHandPhase(h.phase, replay.model) || !equal(handPosition(replay), h.position)) return null;
     replay.model.shan = reshuffleRemainingWall(replay.model, rule, wall);
-    return { replay, players, phase: h.phase, log: copy(h.log) };
+    return { replay, players, phase: h.phase, log: copy2(h.log) };
   } catch (_) {
     return null;
   }
@@ -35054,8 +36416,8 @@ function installMidhand(game2, prepared, bridge2) {
   const { replay, players, phase, log: log2 } = prepared;
   Object.assign(replay.model, { title: game2.model.title, player: game2.model.player });
   game2._model = replay.model;
-  for (const key2 of engineKeys) game2[key2] = copy(replay[key2]);
-  game2._paipu.log.push(copy(log2));
+  for (const key2 of engineKeys) game2[key2] = copy2(replay[key2]);
+  game2._paipu.log.push(copy2(log2));
   game2._paipu.defen = game2.model.defen.slice();
   for (const key2 of playerKeys) for (let id2 = 0; id2 < 4; id2++) game2._players[id2][key2] = players[id2][key2];
   for (const p of game2._players) {
@@ -35106,17 +36468,6 @@ function riverTiles(he) {
     out.push({ ...e, index });
   });
   return out;
-}
-
-// src/shell.mjs
-function isShell(bridge2) {
-  const nb2 = bridge2 !== void 0 ? bridge2 : typeof globalThis !== "undefined" ? globalThis.JanLabNative : null;
-  return !!nb2 && (typeof nb2 === "object" || typeof nb2 === "function");
-}
-function shouldRegisterServiceWorker({ bridge: bridge2, hasServiceWorker } = {}) {
-  if (isShell(bridge2)) return false;
-  if (hasServiceWorker !== void 0) return !!hasServiceWorker;
-  return typeof navigator !== "undefined" && !!navigator && "serviceWorker" in navigator;
 }
 
 // src/orientation.mjs
@@ -35635,7 +36986,7 @@ var YAKU_EXAMPLES = {
 };
 
 // src/glossary.mjs
-var esc = (s) => String(s).replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" })[c]);
+var esc2 = (s) => String(s).replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" })[c]);
 var collator = new Intl.Collator("ja");
 var key = (t) => t.yomi.replace(/ー/g, "");
 function sortTermsByYomi(terms = GLOSSARY_TERMS) {
@@ -35643,35 +36994,35 @@ function sortTermsByYomi(terms = GLOSSARY_TERMS) {
 }
 var nameHtml = (n) => {
   const m = String(n).match(/^(.+?)（(.+)）$/);
-  return m ? `${esc(m[1])}<span class="yk-yomi">${esc(m[2])}</span>` : esc(n);
+  return m ? `${esc2(m[1])}<span class="yk-yomi">${esc2(m[2])}</span>` : esc2(n);
 };
 function exampleHtml(row, cols) {
   const name2 = row.name.split("\uFF08")[0], example = YAKU_EXAMPLES[name2];
   if (!example) return "";
-  const groups = example.groups.map((g, i) => `<span class="yk-example-group">${example.openGroup === i ? '<span class="yk-meld-label">\u30DD\u30F3</span>' : ""}${expandGroup(g).map((p) => tileSVG(p, esc(TILE_NAMES2[p]))).join("")}</span>`).join("");
-  return `<tr class="yk-example-row"><td colspan="${cols}"><figure class="yk-example" data-yaku-example="${esc(name2)}"><figcaption>\u4F8B\uFF1A${esc(name2)}\uFF08\u5B8C\u6210\u5F6214\u679A\uFF09</figcaption><div class="yk-example-groups">${groups}</div>${example.note ? `<p>${esc(example.note)}</p>` : ""}</figure></td></tr>`;
+  const groups = example.groups.map((g, i) => `<span class="yk-example-group">${example.openGroup === i ? '<span class="yk-meld-label">\u30DD\u30F3</span>' : ""}${expandGroup(g).map((p) => tileSVG(p, esc2(TILE_NAMES2[p]))).join("")}</span>`).join("");
+  return `<tr class="yk-example-row"><td colspan="${cols}"><figure class="yk-example" data-yaku-example="${esc2(name2)}"><figcaption>\u4F8B\uFF1A${esc2(name2)}\uFF08\u5B8C\u6210\u5F6214\u679A\uFF09</figcaption><div class="yk-example-groups">${groups}</div>${example.note ? `<p>${esc2(example.note)}</p>` : ""}</figure></td></tr>`;
 }
 function renderYakuHtml(groups = YAKU_GROUPS, note = YAKU_NOTE) {
   const parts = groups.map((g) => {
     if (g.title === "\u5F79\u6E80") {
-      const rows2 = g.rows.map((r) => `<tr><td class="yk-name">${nameHtml(r.name)}</td><td>${esc(r.desc)}</td></tr>${exampleHtml(r, 2)}`).join("");
-      return `<h3>${esc(g.title)}</h3><table class="st-table yaku-table yaku-yakuman"><thead><tr><th>\u5F79</th><th>\u8AAC\u660E</th></tr></thead><tbody>${rows2}</tbody></table>`;
+      const rows2 = g.rows.map((r) => `<tr><td class="yk-name">${nameHtml(r.name)}</td><td>${esc2(r.desc)}</td></tr>${exampleHtml(r, 2)}`).join("");
+      return `<h3>${esc2(g.title)}</h3><table class="st-table yaku-table yaku-yakuman"><thead><tr><th>\u5F79</th><th>\u8AAC\u660E</th></tr></thead><tbody>${rows2}</tbody></table>`;
     }
     const rows = g.rows.map((r) => {
-      const open = r.open == null ? '<td class="yk-han yk-no">\u4E0D\u53EF</td>' : `<td class="yk-han">${esc(r.open)}</td>`;
-      return `<tr><td class="yk-name">${nameHtml(r.name)}</td><td class="yk-han">${esc(r.closed)}</td>${open}<td>${esc(r.desc)}</td></tr>${exampleHtml(r, 4)}`;
+      const open = r.open == null ? '<td class="yk-han yk-no">\u4E0D\u53EF</td>' : `<td class="yk-han">${esc2(r.open)}</td>`;
+      return `<tr><td class="yk-name">${nameHtml(r.name)}</td><td class="yk-han">${esc2(r.closed)}</td>${open}<td>${esc2(r.desc)}</td></tr>${exampleHtml(r, 4)}`;
     }).join("");
-    return `<h3>${esc(g.title)}</h3><table class="st-table yaku-table"><thead><tr><th>\u5F79</th><th>\u9580\u524D</th><th>\u526F\u9732</th><th>\u8AAC\u660E</th></tr></thead><tbody>${rows}</tbody></table>`;
+    return `<h3>${esc2(g.title)}</h3><table class="st-table yaku-table"><thead><tr><th>\u5F79</th><th>\u9580\u524D</th><th>\u526F\u9732</th><th>\u8AAC\u660E</th></tr></thead><tbody>${rows}</tbody></table>`;
   });
-  return '<p class="ref-note">\u724C\u753B\u50CF\u306F\u8AAC\u660E\u7528\u306E\u4F8B\u3067\u3059\u3002\u548C\u4E86\u724C\u3092\u542B\u3080\u5B8C\u6210\u5F6214\u679A\u3092\u3001\u7D44\u3054\u3068\u306B\u533A\u5207\u3063\u3066\u3044\u307E\u3059\u3002\u7279\u8A18\u306E\u306A\u3044\u4F8B\u306F\u9CF4\u304B\u305A\u306B\u30C4\u30E2\u548C\u4E86\u3057\u305F\u5F62\u3067\u3001\u307B\u304B\u306E\u5F79\u304C\u91CD\u306A\u308B\u5834\u5408\u3082\u3042\u308A\u307E\u3059\u3002</p>' + parts.join("") + `<p class="ref-note">${esc(note)}</p>`;
+  return '<p class="ref-note">\u724C\u753B\u50CF\u306F\u8AAC\u660E\u7528\u306E\u4F8B\u3067\u3059\u3002\u548C\u4E86\u724C\u3092\u542B\u3080\u5B8C\u6210\u5F6214\u679A\u3092\u3001\u7D44\u3054\u3068\u306B\u533A\u5207\u3063\u3066\u3044\u307E\u3059\u3002\u7279\u8A18\u306E\u306A\u3044\u4F8B\u306F\u9CF4\u304B\u305A\u306B\u30C4\u30E2\u548C\u4E86\u3057\u305F\u5F62\u3067\u3001\u307B\u304B\u306E\u5F79\u304C\u91CD\u306A\u308B\u5834\u5408\u3082\u3042\u308A\u307E\u3059\u3002</p>' + parts.join("") + `<p class="ref-note">${esc2(note)}</p>`;
 }
 function renderGlossaryHtml(terms = GLOSSARY_TERMS) {
-  const items = sortTermsByYomi(terms).map((t) => `<dt>${esc(t.term)}<span class="gl-yomi">${esc(t.yomi)}</span></dt><dd>${esc(t.desc)}</dd>`).join("");
+  const items = sortTermsByYomi(terms).map((t) => `<dt>${esc2(t.term)}<span class="gl-yomi">${esc2(t.yomi)}</span></dt><dd>${esc2(t.desc)}</dd>`).join("");
   return `<p>\u724C\u306E\u540D\u524D\u304C\u5206\u304B\u3089\u306A\u3044\u3068\u304D\u306F <button type="button" class="ref-link" data-ref-link="tiles">\u724C\u306E\u8AAD\u307F\u65B9\u3092\u898B\u308B \u203A</button></p><dl class="gl-list">${items}</dl>`;
 }
 function renderTileReadingHtml() {
-  const cards = (tiles) => `<div class="tile-reading-grid">${tiles.map((t) => `<div class="tile-reading-item">${tileSVG(t.code, esc(TILE_NAMES2[t.code]))}<span class="tile-reading-name">${esc(t.name)}${t.alias ? `\uFF08${esc(t.alias)}\uFF09` : ""}</span><span>${esc(t.reading)}</span></div>`).join("")}</div>`;
-  return "<p>AI\u30B3\u30FC\u30C1\u306E\u300C3\u7D22\u300D\u306F\u4E09\u7D22\uFF08\u30B5\u30F3\u30BD\u30FC\uFF09\u3001\u300C\u767C\u300D\u306F\u30CF\u30C4\u306E\u724C\u3067\u3059\u3002\u3053\u3053\u3067\u306F\u5BFE\u5C40\u3068\u540C\u3058\u7D75\u67C4\u3067\u3001\u724C\u306E\u540D\u524D\u3068\u8AAD\u307F\u65B9\u3092\u78BA\u8A8D\u3067\u304D\u307E\u3059\u3002</p>" + TILE_FAMILIES.map((f) => `<section><h3>${esc(f.title)}</h3><p>${esc(f.note)}</p>${cards(f.tiles)}</section>`).join("") + `<section><h3>\u8D64\u30C9\u30E9\uFF08\u8D64\u30445\u306E\u724C\uFF09</h3><p>\u8D64\u3044\u4E94\u842C\u30FB\u4E94\u7B52\u30FB\u4E94\u7D22\u3082\u3001\u5F62\u3092\u4F5C\u308B\u3068\u304D\u306F\u666E\u901A\u306E5\u3068\u540C\u3058\u724C\u3067\u3059\u3002\u6301\u3063\u3066\u548C\u4E86\u3059\u308B\u30681\u679A\u306B\u3064\u304D1\u7FFB\u5897\u3048\u307E\u3059\u304C\u3001\u30C9\u30E9\u81EA\u4F53\u306F\u5F79\u3067\u306F\u3042\u308A\u307E\u305B\u3093\u3002</p>${cards(RED_TILES)}</section><p><button type="button" class="ref-link" data-ref-link="glossary">\u7528\u8A9E\u8F9E\u5178\u3092\u898B\u308B \u203A</button> <button type="button" class="ref-link" data-ref-link="yaku">\u5F79\u4E00\u89A7\u3092\u898B\u308B \u203A</button></p>`;
+  const cards = (tiles) => `<div class="tile-reading-grid">${tiles.map((t) => `<div class="tile-reading-item">${tileSVG(t.code, esc2(TILE_NAMES2[t.code]))}<span class="tile-reading-name">${esc2(t.name)}${t.alias ? `\uFF08${esc2(t.alias)}\uFF09` : ""}</span><span>${esc2(t.reading)}</span></div>`).join("")}</div>`;
+  return "<p>AI\u30B3\u30FC\u30C1\u306E\u300C3\u7D22\u300D\u306F\u4E09\u7D22\uFF08\u30B5\u30F3\u30BD\u30FC\uFF09\u3001\u300C\u767C\u300D\u306F\u30CF\u30C4\u306E\u724C\u3067\u3059\u3002\u3053\u3053\u3067\u306F\u5BFE\u5C40\u3068\u540C\u3058\u7D75\u67C4\u3067\u3001\u724C\u306E\u540D\u524D\u3068\u8AAD\u307F\u65B9\u3092\u78BA\u8A8D\u3067\u304D\u307E\u3059\u3002</p>" + TILE_FAMILIES.map((f) => `<section><h3>${esc2(f.title)}</h3><p>${esc2(f.note)}</p>${cards(f.tiles)}</section>`).join("") + `<section><h3>\u8D64\u30C9\u30E9\uFF08\u8D64\u30445\u306E\u724C\uFF09</h3><p>\u8D64\u3044\u4E94\u842C\u30FB\u4E94\u7B52\u30FB\u4E94\u7D22\u3082\u3001\u5F62\u3092\u4F5C\u308B\u3068\u304D\u306F\u666E\u901A\u306E5\u3068\u540C\u3058\u724C\u3067\u3059\u3002\u6301\u3063\u3066\u548C\u4E86\u3059\u308B\u30681\u679A\u306B\u3064\u304D1\u7FFB\u5897\u3048\u307E\u3059\u304C\u3001\u30C9\u30E9\u81EA\u4F53\u306F\u5F79\u3067\u306F\u3042\u308A\u307E\u305B\u3093\u3002</p>${cards(RED_TILES)}</section><p><button type="button" class="ref-link" data-ref-link="glossary">\u7528\u8A9E\u8F9E\u5178\u3092\u898B\u308B \u203A</button> <button type="button" class="ref-link" data-ref-link="yaku">\u5F79\u4E00\u89A7\u3092\u898B\u308B \u203A</button></p>`;
 }
 
 // src/first_run_guide.mjs
@@ -35705,12 +37056,12 @@ var GUIDE_SECTIONS = [
     "\u30B9\u30BF\u30FC\u30C8\u753B\u9762\u306E\u300E\u521D\u3081\u3066\u306E\u65B9\u300F\u304B\u3089\u8AAD\u307F\u76F4\u305B\u307E\u3059\u3002"
   ] }
 ];
-var esc2 = (s) => String(s).replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" })[c]);
+var esc3 = (s) => String(s).replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" })[c]);
 function renderGuideHtml(tileHTML2, sections = GUIDE_SECTIONS) {
   return sections.map((s) => {
-    const links = (s.links || []).map((k2) => `<button type="button" class="guide-link" data-guide-link="${k2}">${esc2(LINK_LABEL[k2])} \u203A</button>`).join("");
+    const links = (s.links || []).map((k2) => `<button type="button" class="guide-link" data-guide-link="${k2}">${esc3(LINK_LABEL[k2])} \u203A</button>`).join("");
     const example = s.tileGroups ? '<div class="guide-example"><span class="guide-example-label">\u4F8B</span><div class="guide-example-groups">' + s.tileGroups.map((group) => `<span class="guide-example-group">${group.map((p) => tileHTML2(p, "guide-tile")).join("")}</span>`).join("") + "</div></div>" : "";
-    return `<section class="guide-sec"><h3>${esc2(s.title)}</h3>${s.paras.map((p) => `<p>${esc2(p)}</p>`).join("")}` + example + (links ? `<div class="guide-links">${links}</div>` : "") + "</section>";
+    return `<section class="guide-sec"><h3>${esc3(s.title)}</h3>${s.paras.map((p) => `<p>${esc3(p)}</p>`).join("")}` + example + (links ? `<div class="guide-links">${links}</div>` : "") + "</section>";
   }).join("");
 }
 function shouldShowFirstRunGuide({ historyCount, seen, hasResume }) {
@@ -35733,17 +37084,6 @@ function saveGuideSeen(storage) {
   }
 }
 
-// src/grandfather.mjs
-var GRANDFATHER_KEY = "ml-grandfather-v1";
-function markGrandfathered(storage, versionCode) {
-  if (versionCode !== 11) return;
-  try {
-    if (storage.getItem(GRANDFATHER_KEY) !== null) return;
-    storage.setItem(GRANDFATHER_KEY, "1");
-  } catch (_) {
-  }
-}
-
 // src/freemium.mjs
 var TRIAL_GAMES = 3;
 function completedGames(bundles = [], summaries = []) {
@@ -35759,89 +37099,6 @@ function coachAccess({ grandfathered = false, status = "unavailable", owned = fa
     locked: gate && completed >= TRIAL_GAMES,
     remaining: Math.max(0, TRIAL_GAMES - completed),
     gate
-  };
-}
-function createCoachAccess({ native, storage, onChange = () => {
-}, timeoutMs = 15e3 } = {}) {
-  let grandfathered = false, state = { status: "unavailable", owned: false }, timer;
-  let bridge2;
-  try {
-    const versionCode = Number(native?.getVersionCode?.());
-    grandfathered = versionCode === 11;
-    markGrandfathered(storage, versionCode);
-  } catch (_) {
-  }
-  try {
-    grandfathered = grandfathered || storage.getItem(GRANDFATHER_KEY) !== null;
-  } catch (_) {
-  }
-  try {
-    if (["getCoachBillingState", "restoreCoachPurchases", "purchaseCoachUnlock"].every((k2) => typeof native?.[k2] === "function")) bridge2 = native;
-  } catch (_) {
-  }
-  const pwa = !bridge2;
-  const fail = () => receive({ status: "unavailable", owned: false, outcome: "error" });
-  function receive(raw) {
-    clearTimeout(timer);
-    if (!bridge2) {
-      state = { status: "unavailable", owned: false };
-      onChange();
-      return;
-    }
-    try {
-      const s = typeof raw === "string" ? JSON.parse(raw) : raw;
-      if (!s || !["ready", "loading", "unavailable"].includes(s.status) || typeof s.owned !== "boolean") throw Error("state");
-      state = {
-        status: s.status,
-        owned: s.owned,
-        outcome: s.outcome,
-        price: typeof s.price === "string" && s.price.trim() ? s.price.trim() : void 0
-      };
-    } catch (_) {
-      state = { status: "unavailable", owned: false, outcome: "error" };
-    }
-    if (state.status === "loading") timer = setTimeout(fail, timeoutMs);
-    onChange();
-  }
-  function request(method) {
-    if (!bridge2) return;
-    receive({ status: "loading", owned: state.owned });
-    try {
-      bridge2[method]();
-      receive(bridge2.getCoachBillingState());
-    } catch (_) {
-      fail();
-    }
-  }
-  return {
-    get available() {
-      return !!bridge2;
-    },
-    get pwa() {
-      return pwa;
-    },
-    get state() {
-      return { ...state, grandfathered };
-    },
-    // PWA has no billing, so report the real entitlement as purchased/unlimited
-    // for every completed count. Android keeps the same gate as before.
-    access(completed) {
-      if (pwa) return coachAccess({ status: "ready", owned: true, completed });
-      return coachAccess({ ...state, grandfathered, completed });
-    },
-    receive,
-    start() {
-      request("restoreCoachPurchases");
-    },
-    restore() {
-      request("restoreCoachPurchases");
-    },
-    purchase() {
-      request("purchaseCoachUnlock");
-    },
-    dispose() {
-      clearTimeout(timer);
-    }
   };
 }
 
@@ -35921,8 +37178,8 @@ function simulatedAccess(state) {
   if (!state?.active) return null;
   return coachAccess({ status: "ready", owned: false, grandfathered: false, completed: state.completed });
 }
-function realStateText({ grandfathered = false, status = "unavailable", owned = false, completed = 0, pwa = false } = {}) {
-  if (pwa) return "PWA\uFF08\u5E38\u6642\u30A2\u30F3\u30ED\u30C3\u30AF\uFF09";
+function realStateText({ grandfathered = false, status = "unavailable", owned = false, completed = 0, kind = "play", licensed = false } = {}) {
+  if (kind === "license") return licensed ? "Web\u7248\u30E9\u30A4\u30BB\u30F3\u30B9\uFF1A\u6709\u52B9\uFF08\u7121\u5236\u9650\uFF09" : "Web\u7248\u30E9\u30A4\u30BB\u30F3\u30B9\uFF1A\u672A\u767B\u9332\uFF08\u4F53\u9A13\u30E2\u30FC\u30C9\u30FB\u30B3\u30FC\u30C1\u306A\u3057\uFF09";
   if (grandfathered) return "\u65E2\u5B58\u8CFC\u5165\u8005\u30D5\u30E9\u30B0\u3042\u308A\uFF08\u7121\u5236\u9650\uFF09";
   if (status === "ready" && owned) return "\u8CFC\u5165\u6E08\u307F\uFF08\u7121\u5236\u9650\uFF09";
   return `\u7121\u6599\u30FB\u958B\u59CB${completed}\u5C40`;
@@ -35966,12 +37223,28 @@ var ABOUT_LICENSES = Object.freeze([
     textUrl: "licenses/onnxruntime-common-MIT.txt"
   }),
   Object.freeze({
+    id: "noble",
+    name: "@noble/curves\u30FB@noble/hashes\uFF08\u30E9\u30A4\u30BB\u30F3\u30B9\u30AD\u30FC\u306E\u7F72\u540D\u691C\u8A3C\uFF09",
+    license: "MIT License",
+    copyright: "Copyright (c) 2022 Paul Miller (https://paulmillr.com)",
+    url: "https://github.com/paulmillr/noble-curves",
+    textUrl: "licenses/noble-MIT.txt"
+  }),
+  Object.freeze({
     id: "flatbuffers",
     name: "FlatBuffers\uFF08ONNX \u30E2\u30C7\u30EB\u306E\u30B7\u30EA\u30A2\u30E9\u30A4\u30BA\uFF09",
     license: "Apache License 2.0",
     copyright: "The FlatBuffers project",
     url: "https://github.com/google/flatbuffers",
     textUrl: "licenses/Apache-2.0.txt"
+  }),
+  Object.freeze({
+    id: "guid-typescript",
+    name: "guid-typescript\uFF08ONNX Runtime \u306E\u4E8B\u524D\u30D0\u30F3\u30C9\u30EB\u306B\u542B\u307E\u308C\u308B GUID \u751F\u6210\uFF09",
+    license: "ISC License",
+    copyright: "Copyright (c) nicolas (NicolasDeveloper)",
+    url: "https://github.com/NicolasDeveloper/guid-typescript",
+    textUrl: "licenses/guid-typescript-ISC.txt"
   }),
   Object.freeze({
     id: "long-js",
@@ -36373,308 +37646,6 @@ function withDiscardTempo(Game) {
   };
 }
 
-// src/replay.mjs
-function replaySteps(bundle) {
-  const coached = new Set((bundle.coach || []).map((r) => r.mjaiEventCount));
-  let kyokuIndex = -1;
-  return (bundle.mjai || []).flatMap((e, i) => {
-    if (e.type === "start_kyoku") kyokuIndex++;
-    if (kyokuIndex < 0 || !coached.has(i + 1) && ["start_game", "end_game", "end_kyoku", "reach", "reach_accepted"].includes(e.type)) return [];
-    return [{ eventCount: i + 1, kyokuIndex, type: e.type }];
-  });
-}
-function replayPosition(bundle, eventCount) {
-  return {
-    scene: foldMjaiScene(bundle.mjai, eventCount),
-    record: (bundle.coach || []).find((r) => r.mjaiEventCount === eventCount) || null
-  };
-}
-function resolveClip(clip, bundles) {
-  const bundle = bundles.find((b) => b.meta?.gameId === clip.gameId);
-  if (bundle && bundle.mjai?.length >= clip.eventCount) {
-    const position = replayPosition(bundle, clip.eventCount);
-    if (JSON.stringify(position.scene) === JSON.stringify(clip.scene)) return { bundle, ...position, record: clip.record };
-  }
-  return { bundle: null, scene: clip.scene, record: clip.record };
-}
-function sceneSnapshot(st2, qijia) {
-  const sortKey2 = (p) => "mpsz".indexOf(p[0]) * 100 + (p[1] === "0" ? 5 : +p[1]) * 10 + (p[1] === "0" ? 0 : 1);
-  const seats = st2.players.map((p, actor) => {
-    const id2 = (actor + qijia) % 4, l = (actor - st2.oya + 4) % 4;
-    const closed = p.hand.map(tileFromMjai).sort((a, b) => sortKey2(a) - sortKey2(b));
-    const drawnTile = p.drawn ? tileFromMjai(p.drawn) : null;
-    if (drawnTile) {
-      const i = closed.indexOf(drawnTile);
-      if (i >= 0) closed.push(...closed.splice(i, 1));
-    }
-    return {
-      l,
-      id: id2,
-      pos: id2,
-      name: ["\u3042\u306A\u305F", "AI-1", "AI-2", "AI-3"][id2],
-      defen: st2.scores[actor],
-      wind: "\u6771\u5357\u897F\u5317"[l],
-      dealer: l === 0,
-      closed,
-      drawnTile,
-      closedEntries: closed.map((pai, i) => ({ pai, drawn: !!drawnTile && i === closed.length - 1, action: pai })),
-      fulou: p.melds,
-      lizhi: p.riichi,
-      he: p.pond.map((d) => tileFromMjai(d.pai) + (d.tsumogiri ? "_" : "") + (d.riichi ? "*" : "") + (d.called ? "+" : ""))
-    };
-  });
-  return { seats, center: {
-    zhuangfeng: "ESWN".indexOf(st2.bakaze),
-    jushu: st2.kyoku - 1,
-    changbang: st2.honba,
-    lizhibang: st2.kyotaku,
-    paishu: st2.paishu,
-    baopai: st2.doraMarkers.map(tileFromMjai),
-    lunban: (st2.turnActor - st2.oya + 4) % 4
-  } };
-}
-function foldMjaiScene(events, upto) {
-  const fresh = () => ({ hand: [], melds: [], pond: [], riichi: false, drawn: null });
-  const st2 = {
-    bakaze: "E",
-    kyoku: 1,
-    honba: 0,
-    kyotaku: 0,
-    oya: 0,
-    scores: [25e3, 25e3, 25e3, 25e3],
-    doraMarkers: [],
-    paishu: 70,
-    turn: 0,
-    turnActor: -1,
-    kyokuIndex: -1,
-    players: [fresh(), fresh(), fresh(), fresh()],
-    lastDapai: null
-  };
-  let reachPending = -1;
-  const removeFromHand = (actor, tile2) => {
-    const h = st2.players[actor].hand;
-    let i = h.indexOf(tile2);
-    if (i < 0) {
-      const base = tile2.replace("r", "");
-      i = h.findIndex((t) => t.replace("r", "") === base);
-    }
-    if (i >= 0) h.splice(i, 1);
-  };
-  const mianziFor = (ev2) => {
-    const sym = ["", "-", "=", "+"][(ev2.actor - ev2.target + 4) % 4];
-    const conv = ev2.consumed.map((t) => tileFromMjai(t));
-    const suit = conv[0][0];
-    if (ev2.type === "ankan") return suit + conv.map((c) => c[1]).join("");
-    if (ev2.type === "chi") {
-      const called2 = tileFromMjai(ev2.pai);
-      const digs2 = conv.map((c) => c[1]);
-      digs2.push(called2[1] + "-");
-      const val = (d) => d[0] === "0" ? 5 : +d[0];
-      digs2.sort((a, b) => val(a) - val(b));
-      return suit + digs2.join("");
-    }
-    const digs = conv.map((c) => c[1]).sort();
-    const called = tileFromMjai(ev2.pai)[1];
-    if (ev2.type === "pon") return suit + digs.join("") + called + sym;
-    if (ev2.type === "daiminkan") return suit + digs.join("") + called + sym;
-    return "";
-  };
-  const n = Math.min(upto, events.length);
-  for (let i = 0; i < n; i++) {
-    const ev2 = events[i];
-    switch (ev2.type) {
-      case "start_kyoku":
-        st2.kyokuIndex++;
-        st2.paishu = 70;
-        st2.turn = 0;
-        st2.turnActor = ev2.oya;
-        st2.bakaze = ev2.bakaze;
-        st2.kyoku = ev2.kyoku;
-        st2.honba = ev2.honba;
-        st2.kyotaku = ev2.kyotaku;
-        st2.oya = ev2.oya;
-        st2.scores = ev2.scores.slice();
-        st2.doraMarkers = [ev2.dora_marker];
-        st2.players = ev2.tehais.map((t) => ({ hand: t.slice(), melds: [], pond: [], riichi: false, drawn: null }));
-        reachPending = -1;
-        st2.lastDapai = null;
-        break;
-      case "tsumo":
-        st2.paishu--;
-        st2.turnActor = ev2.actor;
-        st2.players[ev2.actor].hand.push(ev2.pai);
-        st2.players[ev2.actor].drawn = ev2.pai;
-        break;
-      case "reach":
-        reachPending = ev2.actor;
-        break;
-      case "reach_accepted":
-        st2.scores[ev2.actor] -= 1e3;
-        st2.kyotaku += 1;
-        st2.players[ev2.actor].riichi = true;
-        break;
-      case "dahai": {
-        const pl = st2.players[ev2.actor];
-        st2.turn++;
-        st2.turnActor = ev2.actor;
-        if (reachPending === ev2.actor) pl.riichi = true;
-        removeFromHand(ev2.actor, ev2.pai);
-        pl.pond.push({ pai: ev2.pai, tsumogiri: !!ev2.tsumogiri && pl.drawn !== null, riichi: reachPending === ev2.actor, called: false });
-        if (reachPending === ev2.actor) reachPending = -1;
-        pl.drawn = null;
-        st2.lastDapai = { actor: ev2.actor, pai: ev2.pai };
-        break;
-      }
-      case "chi":
-      case "pon":
-      case "daiminkan": {
-        st2.turnActor = ev2.actor;
-        const pl = st2.players[ev2.actor];
-        ev2.consumed.forEach((t) => removeFromHand(ev2.actor, t));
-        const tp = st2.players[ev2.target].pond;
-        if (tp.length) tp[tp.length - 1].called = true;
-        pl.melds.push(mianziFor(ev2));
-        break;
-      }
-      case "ankan":
-        ev2.consumed.forEach((t) => removeFromHand(ev2.actor, t));
-        st2.players[ev2.actor].melds.push(mianziFor(ev2));
-        st2.players[ev2.actor].drawn = null;
-        break;
-      case "kakan": {
-        const pl = st2.players[ev2.actor];
-        removeFromHand(ev2.actor, ev2.pai);
-        const c = tileFromMjai(ev2.pai);
-        const rank = (n2) => n2 === "0" ? "5" : n2;
-        const idx = pl.melds.findIndex((m) => m[0] === c[0] && rank(m[1]) === rank(c[1]) && m.length === 5 && /[+\-=]$/.test(m));
-        if (idx >= 0) pl.melds[idx] += c[1];
-        pl.drawn = null;
-        break;
-      }
-      case "dora":
-        st2.doraMarkers.push(ev2.dora_marker);
-        break;
-      case "hora":
-      case "ryukyoku":
-        if (ev2.type === "hora") st2.kyotaku = 0;
-        if (Array.isArray(ev2.deltas)) ev2.deltas.forEach((d, a) => {
-          st2.scores[a] += d;
-        });
-        break;
-      default:
-        break;
-    }
-  }
-  return st2;
-}
-
-// src/clips.mjs
-var CLIP_LIMIT = 100;
-var CLIP_DB = "mahjong-local-clips";
-var STORE = "clips";
-var copy2 = (x) => JSON.parse(JSON.stringify(x));
-function clipCoachRecord(record) {
-  if (!record) return null;
-  const keys = [
-    "kyokuIndex",
-    "kyoku",
-    "junme",
-    "turn",
-    "mjaiEventCount",
-    "context",
-    "recommended",
-    "actual",
-    "qBest",
-    "pBest",
-    "qActual",
-    "pActual",
-    "qDiff",
-    "probDiff",
-    "agreement",
-    "probabilityMethod",
-    "softmaxTemperature",
-    "shanten",
-    "shantenAfter",
-    "top3",
-    "qValues",
-    "callNotes"
-  ];
-  return copy2(Object.fromEntries(keys.filter((k2) => record[k2] !== void 0).map((k2) => [k2, record[k2]])));
-}
-function makeClip({ meta, eventCount, scene, record = null }, id2 = globalThis.crypto.randomUUID()) {
-  if (!meta?.gameId || !scene?.players || !Number.isInteger(eventCount) || eventCount < 1) throw new Error("\u5C40\u9762\u304C\u3042\u308A\u307E\u305B\u3093");
-  return copy2({
-    v: 1,
-    id: id2,
-    savedAt: (/* @__PURE__ */ new Date()).toISOString(),
-    gameId: meta.gameId,
-    gameDate: meta.startedAt || meta.savedAt,
-    qijia: meta.qijia ?? 0,
-    eventCount,
-    scene,
-    record: clipCoachRecord(record)
-  });
-}
-function clipLabel(clip) {
-  const s = clip.scene;
-  const date = clip.gameDate ? new Date(clip.gameDate).toLocaleString("ja-JP") : "\u65E5\u6642\u4E0D\u660E";
-  const actor = s.turnActor >= 0 ? ` \uFF0F ${["\u3042\u306A\u305F", "AI-1", "AI-2", "AI-3"][(s.turnActor + clip.qijia) % 4]}\u306E\u624B\u756A` : "";
-  return `${date} \uFF0F ${{ E: "\u6771", S: "\u5357", W: "\u897F", N: "\u5317" }[s.bakaze]}${s.kyoku}\u5C40 ${s.honba}\u672C\u5834 \uFF0F ${s.turn ?? 0}\u624B\u76EE${actor}`;
-}
-function checkClipCapacity(count) {
-  if (count >= CLIP_LIMIT) throw new Error("\u30AF\u30EA\u30C3\u30D7\u306F100\u4EF6\u307E\u3067\u3067\u3059\u3002\u4E00\u89A7\u304B\u3089\u524A\u9664\u3057\u3066\u304B\u3089\u767B\u9332\u3057\u3066\u304F\u3060\u3055\u3044\u3002");
-}
-function createClipStore(indexedDB2 = globalThis.indexedDB) {
-  async function transaction(mode, action) {
-    const db2 = await new Promise((resolve, reject) => {
-      const r = indexedDB2.open(CLIP_DB, 1);
-      r.onupgradeneeded = () => r.result.createObjectStore(STORE, { keyPath: "id" });
-      r.onsuccess = () => resolve(r.result);
-      r.onerror = () => reject(r.error);
-    });
-    return new Promise((resolve, reject) => {
-      const tx2 = db2.transaction(STORE, mode), store = tx2.objectStore(STORE);
-      let result, failure;
-      const fail = (e) => {
-        failure = e;
-        tx2.abort();
-      };
-      tx2.oncomplete = () => {
-        db2.close();
-        resolve(result);
-      };
-      tx2.onabort = tx2.onerror = () => {
-        db2.close();
-        reject(failure || tx2.error || new Error("\u30AF\u30EA\u30C3\u30D7\u3092\u4FDD\u5B58\u3067\u304D\u307E\u305B\u3093\u3067\u3057\u305F"));
-      };
-      try {
-        action(store, (value) => {
-          result = value;
-        }, fail);
-      } catch (e) {
-        fail(e);
-      }
-    });
-  }
-  return {
-    list: () => transaction("readonly", (s, done) => {
-      s.getAll().onsuccess = (e) => done(e.target.result.sort((a, b) => b.savedAt.localeCompare(a.savedAt)));
-    }),
-    add: (clip) => transaction("readwrite", (s, done, fail) => {
-      s.count().onsuccess = (e) => {
-        try {
-          checkClipCapacity(e.target.result);
-          s.add(copy2(clip));
-          done(clip.id);
-        } catch (err) {
-          fail(err);
-        }
-      };
-    }),
-    delete: (id2) => transaction("readwrite", (s) => s.delete(id2))
-  };
-}
-
 // src/clip_status.mjs
 var CLIP_MESSAGE_MS = 2500;
 function createClipStatus({
@@ -36727,6 +37698,244 @@ function createClipStatus({
   };
 }
 
+// src/legacy_entitlement.mjs
+function createEntitlement({ onChange = () => {
+} } = {}) {
+  const state = Object.freeze({
+    status: "licensed",
+    key: "",
+    expiresAt: null,
+    daysLeft: null,
+    warning: null,
+    needsOnline: false,
+    lost: null,
+    busy: false,
+    error: null,
+    notice: null,
+    deviceError: null,
+    forced: true,
+    legacy: true
+  });
+  const ready = (async () => {
+    await null;
+    onChange();
+  })();
+  const none = async () => ({ ok: false, code: "legacy" });
+  return {
+    kind: "license",
+    legacy: true,
+    trialGames: 0,
+    available: false,
+    ready,
+    get state() {
+      return state;
+    },
+    access: () => ({ entitled: true, gate: false, locked: false, remaining: 0 }),
+    coachInference: () => true,
+    gameEnded() {
+    },
+    activate: none,
+    refresh: none,
+    maybeCheck: none,
+    async start() {
+      await ready;
+      return null;
+    },
+    clearNotice() {
+    },
+    receive() {
+    },
+    dispose() {
+    }
+  };
+}
+
+// src/license_ui.mjs
+function escHtml(value) {
+  return String(value ?? "").replace(/[&<>"']/g, (c) => ({
+    "&": "&amp;",
+    "<": "&lt;",
+    ">": "&gt;",
+    '"': "&quot;",
+    "'": "&#39;"
+  })[c]);
+}
+var ERROR_TEXT = {
+  bad_key: "\u30AD\u30FC\u306E\u5F62\u5F0F\u304C\u6B63\u3057\u304F\u3042\u308A\u307E\u305B\u3093\u3002\u6587\u5B57\u3092\u78BA\u8A8D\u3057\u3066\u304F\u3060\u3055\u3044",
+  unknown_key: "\u3053\u306E\u30AD\u30FC\u306F\u898B\u3064\u304B\u308A\u307E\u305B\u3093\u3002\u5165\u529B\u3092\u78BA\u8A8D\u3057\u3066\u304F\u3060\u3055\u3044",
+  slot_limit: "\u3053\u306E\u30AD\u30FC\u306F\u4ED6\u306E\u30D6\u30E9\u30A6\u30B6\u3067\u4F7F\u7528\u4E2D\u3067\u3059\u3002\u304A\u554F\u3044\u5408\u308F\u305B\u304F\u3060\u3055\u3044",
+  revoked: "\u3053\u306E\u30AD\u30FC\u306F\u7121\u52B9\u306B\u306A\u3063\u3066\u3044\u307E\u3059",
+  superseded: "\u5225\u306E\u30D6\u30E9\u30A6\u30B6\u3067\u6709\u52B9\u5316\u3055\u308C\u305F\u305F\u3081\u3001\u3053\u306E\u7AEF\u672B\u3067\u306F\u4F7F\u3048\u307E\u305B\u3093",
+  not_activated: "\u3053\u306E\u7AEF\u672B\u306E\u767B\u9332\u304C\u898B\u3064\u304B\u308A\u307E\u305B\u3093\u3002\u3082\u3046\u4E00\u5EA6\u6709\u52B9\u5316\u3057\u3066\u304F\u3060\u3055\u3044",
+  clock_skew: "\u7AEF\u672B\u306E\u6642\u523B\u304C\u305A\u308C\u3066\u3044\u307E\u3059\u3002\u6642\u523B\u3092\u76F4\u3057\u3066\u304B\u3089\u3082\u3046\u4E00\u5EA6\u304A\u8A66\u3057\u304F\u3060\u3055\u3044",
+  network: "\u901A\u4FE1\u3067\u304D\u307E\u305B\u3093\u3067\u3057\u305F\u3002\u63A5\u7D9A\u3092\u78BA\u8A8D\u3057\u3066\u3082\u3046\u4E00\u5EA6\u304A\u8A66\u3057\u304F\u3060\u3055\u3044",
+  device_key: "\u3053\u306E\u7AEF\u672B\u3067\u306F\u6709\u52B9\u5316\u306B\u5FC5\u8981\u306A\u4FDD\u5B58\u9818\u57DF\u304C\u4F7F\u3048\u307E\u305B\u3093",
+  busy: "\u51E6\u7406\u4E2D\u3067\u3059"
+};
+var LOST_TEXT = {
+  revoked: "\u3053\u306E\u30AD\u30FC\u306F\u7121\u52B9\u306B\u306A\u308A\u307E\u3057\u305F\u3002\u4F53\u9A13\u30E2\u30FC\u30C9\u3067\u904A\u3079\u307E\u3059",
+  superseded: "\u5225\u306E\u30D6\u30E9\u30A6\u30B6\u3067\u6709\u52B9\u5316\u3055\u308C\u305F\u305F\u3081\u3001\u3053\u306E\u7AEF\u672B\u306F\u4F53\u9A13\u30E2\u30FC\u30C9\u3067\u3059\u3002\u3082\u3046\u4E00\u5EA6\u6709\u52B9\u5316\u3067\u304D\u307E\u3059",
+  not_activated: "\u3053\u306E\u7AEF\u672B\u306E\u767B\u9332\u304C\u898B\u3064\u304B\u308A\u307E\u305B\u3093\u3002\u3082\u3046\u4E00\u5EA6\u6709\u52B9\u5316\u3057\u3066\u304F\u3060\u3055\u3044"
+};
+function licenseErrorText(code) {
+  return ERROR_TEXT[code] || "\u30E9\u30A4\u30BB\u30F3\u30B9\u3092\u78BA\u8A8D\u3067\u304D\u307E\u305B\u3093\u3067\u3057\u305F\u3002\u3057\u3070\u3089\u304F\u3057\u3066\u304B\u3089\u304A\u8A66\u3057\u304F\u3060\u3055\u3044";
+}
+function dateText(unixSeconds) {
+  const d = new Date(unixSeconds * 1e3);
+  return `${d.getFullYear()}\u5E74${d.getMonth() + 1}\u6708${d.getDate()}\u65E5`;
+}
+function licenseStatusText(state = {}) {
+  if (state.busy) return "\u78BA\u8A8D\u3057\u3066\u3044\u307E\u3059\u2026";
+  if (state.error) return licenseErrorText(state.error);
+  if (state.status === "licensed") {
+    if (state.forced) return "\u30E9\u30A4\u30BB\u30F3\u30B9\u6709\u52B9\uFF08\u30C6\u30B9\u30C8\uFF09";
+    if (state.warning) return `\u30E9\u30A4\u30BB\u30F3\u30B9\u6709\u52B9\u3002\u3042\u3068${state.warning.daysLeft}\u65E5\u4EE5\u5185\u306B\u3001\u4E00\u5EA6\u30AA\u30F3\u30E9\u30A4\u30F3\u3067\u8D77\u52D5\u3057\u3066\u304F\u3060\u3055\u3044`;
+    return `\u30E9\u30A4\u30BB\u30F3\u30B9\u6709\u52B9\uFF08${dateText(state.expiresAt)}\u307E\u3067\u30AA\u30D5\u30E9\u30A4\u30F3\u3067\u4F7F\u3048\u307E\u3059\uFF09`;
+  }
+  if (state.needsOnline) return "\u30E9\u30A4\u30BB\u30F3\u30B9\u306F\u63A5\u7D9A\u6642\u306B\u78BA\u8A8D\u3057\u307E\u3059\u3002\u30AA\u30F3\u30E9\u30A4\u30F3\u3067\u8D77\u52D5\u3057\u3066\u304F\u3060\u3055\u3044";
+  if (state.lost) return LOST_TEXT[state.lost] || "\u4F53\u9A13\u30E2\u30FC\u30C9\u3067\u3059";
+  if (state.deviceError) return licenseErrorText("device_key");
+  return "\u4F53\u9A13\u30E2\u30FC\u30C9\uFF1A\u5BFE\u30B3\u30F3\u30D4\u30E5\u30FC\u30BF\u30FC\u5BFE\u6226\u306F\u7121\u6599\u3067\u3059\u3002\u30B3\u30FC\u30C1\u6A5F\u80FD\u306F\u30E9\u30A4\u30BB\u30F3\u30B9\u30AD\u30FC\u3067\u4F7F\u3048\u307E\u3059";
+}
+function licenseNoticeText(state = {}) {
+  return state.notice === "a2hs" ? "\u30DB\u30FC\u30E0\u753B\u9762\u306B\u8FFD\u52A0\u3059\u308B\u3068\u3001\u30AD\u30FC\u306E\u518D\u5165\u529B\u304C\u4E0D\u8981\u306B\u306A\u308A\u307E\u3059" : "";
+}
+function licenseSummaryText(state = {}) {
+  return state.status === "licensed" ? "\u30E9\u30A4\u30BB\u30F3\u30B9\uFF1A\u6709\u52B9" : "\u30E9\u30A4\u30BB\u30F3\u30B9\uFF1A\u4F53\u9A13\u30E2\u30FC\u30C9";
+}
+function licenseFormHTML(state = {}) {
+  const licensed = state.status === "licensed";
+  const keyShown = state.key ? `<p class="license-key" data-license-key>\u30AD\u30FC\uFF1A<code>${escHtml(state.key)}</code></p>` : "";
+  return `<div class="license-form">
+    <p class="license-state" data-license-state role="status" aria-live="polite">${escHtml(licenseStatusText(state))}</p>
+    <p class="license-notice" data-license-notice role="status"${licenseNoticeText(state) ? "" : " hidden"}>${escHtml(licenseNoticeText(state))}</p>
+    ${keyShown}
+    <label class="license-input-label">\u30E9\u30A4\u30BB\u30F3\u30B9\u30AD\u30FC
+      <input type="text" data-license-input autocomplete="off" autocapitalize="characters" spellcheck="false" maxlength="48" placeholder="A-XXXXX-XXXXX-XXXXX-XXXXX-XXXXX-XXXXX"${state.busy ? " disabled" : ""}></label>
+    <button type="button" data-license-activate${state.busy ? " disabled" : ""}>${licensed ? "\u30AD\u30FC\u3092\u5165\u308C\u66FF\u3048\u308B" : "\u6709\u52B9\u5316\u3059\u308B"}</button>
+  </div>`;
+}
+function licenseSheetHTML(state = {}) {
+  return `<div class="unlock-card license-card"><h2 id="license-title">\u30B3\u30FC\u30C1\u3092\u30A2\u30F3\u30ED\u30C3\u30AF</h2>
+    <p>\u5BFE\u5C40\u4E2D\u306E\u63A8\u5968\u30FB\u7D71\u8A08\u306E\u30B3\u30FC\u30C1\u5206\u6790\u30FB\u4F55\u5207\u308B\u30C9\u30EA\u30EB</p>
+    <div data-license-mount></div>
+    <button type="button" data-license-sheet-close>\u9589\u3058\u308B</button></div>`;
+}
+function createLicenseUi({ license, documentRef = document, settingsPanel, backNav: backNav2 } = {}) {
+  const mounts = [];
+  let sheet = null, sheetFocus = null;
+  function summary() {
+    return documentRef.getElementById("ss-license-summary");
+  }
+  function render2() {
+    const state = license.state;
+    for (const m of mounts) {
+      const input = m.querySelector("[data-license-input]");
+      const typed = input ? input.value : "";
+      const hadFocus = input && documentRef.activeElement === input;
+      const mode = state.status === "licensed" ? "licensed" : "trial";
+      if (m.dataset.mode !== mode || m.dataset.busy !== String(!!state.busy) || m.dataset.key !== state.key) {
+        m.innerHTML = licenseFormHTML(state);
+        m.dataset.mode = mode;
+        m.dataset.busy = String(!!state.busy);
+        m.dataset.key = state.key;
+        const next = m.querySelector("[data-license-input]");
+        if (next) {
+          next.value = typed;
+          if (hadFocus) next.focus();
+        }
+      } else {
+        const st2 = m.querySelector("[data-license-state]");
+        if (st2) st2.textContent = licenseStatusText(state);
+        const note = m.querySelector("[data-license-notice]");
+        if (note) {
+          note.textContent = licenseNoticeText(state);
+          note.hidden = !note.textContent;
+        }
+      }
+    }
+    const sum = summary();
+    if (sum) sum.textContent = licenseSummaryText(state);
+  }
+  function mount2(container) {
+    container.addEventListener("click", async (e) => {
+      if (!e.target.closest?.("[data-license-activate]")) return;
+      const input = container.querySelector("[data-license-input]");
+      const value = input?.value ?? "";
+      if (!value.trim()) {
+        input?.focus();
+        return;
+      }
+      const result = await license.activate(value);
+      const st2 = container.querySelector("[data-license-state]");
+      if (result.ok) {
+        const el2 = container.querySelector("[data-license-input]");
+        if (el2) el2.value = "";
+        if (st2 && result.replaced) st2.textContent = "\u6709\u52B9\u5316\u3057\u307E\u3057\u305F\u3002\u4EE5\u524D\u4F7F\u3063\u3066\u3044\u305F\u7AEF\u672B\u306F\u4F53\u9A13\u30E2\u30FC\u30C9\u306B\u306A\u308A\u307E\u3059";
+        license.clearNotice?.();
+      }
+    });
+    container.addEventListener("keydown", (e) => {
+      if (e.key === "Enter" && e.target.closest?.("[data-license-input]")) container.querySelector("[data-license-activate]")?.click();
+    });
+    mounts.push(container);
+  }
+  function closeSheet() {
+    if (!sheet || sheet.hidden) return;
+    sheet.hidden = true;
+    sheetFocus?.focus?.();
+    backNav2?.dismiss?.("license-sheet");
+  }
+  function openSheet() {
+    if (!sheet || !sheet.hidden) return;
+    sheetFocus = documentRef.activeElement;
+    sheet.hidden = false;
+    render2();
+    sheet.querySelector("[data-license-input]")?.focus();
+    backNav2?.push?.("license-sheet", closeSheet);
+  }
+  function init2() {
+    const row = documentRef.createElement("div");
+    row.className = "ss-license";
+    row.id = "ss-license";
+    row.innerHTML = '<div class="ss-license-head" id="ss-license-summary"></div><div data-license-mount></div>';
+    const aboutRow = settingsPanel?.querySelector(".ss-about-row");
+    if (aboutRow) aboutRow.before(row);
+    else settingsPanel?.append(row);
+    mount2(row.querySelector("[data-license-mount]"));
+    sheet = documentRef.createElement("div");
+    sheet.id = "license-sheet";
+    sheet.className = "unlock-sheet";
+    sheet.hidden = true;
+    sheet.setAttribute("role", "dialog");
+    sheet.setAttribute("aria-modal", "true");
+    sheet.setAttribute("aria-labelledby", "license-title");
+    sheet.innerHTML = licenseSheetHTML();
+    documentRef.body.append(sheet);
+    mount2(sheet.querySelector("[data-license-mount]"));
+    sheet.addEventListener("click", (e) => {
+      if (e.target.closest?.("[data-license-sheet-close]") || e.target === sheet) closeSheet();
+    });
+    sheet.addEventListener("keydown", (e) => {
+      if (e.key === "Escape") {
+        e.stopPropagation();
+        closeSheet();
+      }
+      if (e.key === "Tab") {
+        const items = [...sheet.querySelectorAll("button:not(:disabled), input:not(:disabled)")];
+        const target = e.shiftKey ? items.at(-1) : items[0];
+        if (documentRef.activeElement === (e.shiftKey ? items[0] : items.at(-1))) {
+          e.preventDefault();
+          target?.focus();
+        }
+      }
+    });
+    render2();
+  }
+  init2();
+  return { render: render2, openSheet, closeSheet };
+}
+
 // src/freemium_ui.mjs
 function startFreeLineText({ gate = false, remaining = 0 } = {}) {
   if (!gate) return "";
@@ -36741,7 +37950,7 @@ function startConfirmHTML() {
       <button type="button" id="start-confirm-cancel">\u623B\u308B</button>
     </div></div>`;
 }
-function escHtml(value) {
+function escHtml2(value) {
   return String(value ?? "").replace(/[&<>"']/g, (c) => ({
     "&": "&amp;",
     "<": "&lt;",
@@ -36761,7 +37970,7 @@ function unlockSheetHTML({ price = "" } = {}) {
   const shown = String(price ?? "").trim();
   return `<div class="unlock-card"><h2 id="unlock-title">\u30B3\u30FC\u30C1\u3092\u30A2\u30F3\u30ED\u30C3\u30AF</h2>
     <p>\u5BFE\u5C40\u4E2D\u306E\u63A8\u5968\u30FB\u7D71\u8A08\u306E\u30B3\u30FC\u30C1\u5206\u6790</p>
-    <p class="unlock-price" id="unlock-price"${shown ? "" : " hidden"}>${escHtml(shown)}</p><p>\u8CB7\u3044\u5207\u308A\u30FB\u8FFD\u52A0\u8AB2\u91D1\u306A\u3057\u30FB\u5E83\u544A\u306A\u3057</p>
+    <p class="unlock-price" id="unlock-price"${shown ? "" : " hidden"}>${escHtml2(shown)}</p><p>\u8CB7\u3044\u5207\u308A\u30FB\u8FFD\u52A0\u8AB2\u91D1\u306A\u3057\u30FB\u5E83\u544A\u306A\u3057</p>
     <p id="unlock-status" role="status" aria-live="polite"></p>
     <button type="button" data-coach-purchase>\u30A2\u30F3\u30ED\u30C3\u30AF\u3059\u308B</button>
     <button type="button" data-coach-sheet-close>\u9589\u3058\u308B</button></div>`;
@@ -36769,7 +37978,7 @@ function unlockSheetHTML({ price = "" } = {}) {
 function trialEndHTML({ price = "" } = {}) {
   const shown = String(price ?? "").trim();
   return `<div class="trial-end"><p>\u30B3\u30FC\u30C1\u306E\u7121\u6599\u4F53\u9A13\u306F\u7D42\u4E86\u3057\u307E\u3057\u305F</p>
-    <button type="button" data-coach-unlock>\u30A2\u30F3\u30ED\u30C3\u30AF\u3059\u308B${shown ? `\uFF08${escHtml(shown)}\uFF09` : ""}</button></div>`;
+    <button type="button" data-coach-unlock>\u30A2\u30F3\u30ED\u30C3\u30AF\u3059\u308B${shown ? `\uFF08${escHtml2(shown)}\uFF09` : ""}</button></div>`;
 }
 function analysisUnlockHTML() {
   return '<button type="button" class="analysis-unlock" data-coach-unlock>\u{1F512} \u30B3\u30FC\u30C1\u5206\u6790\u306F\u30A2\u30F3\u30ED\u30C3\u30AF\u3067\u898B\u3089\u308C\u307E\u3059</button>';
@@ -36777,8 +37986,8 @@ function analysisUnlockHTML() {
 
 // src/freemium_start.mjs
 var START_STORAGE_KEY = "ml-free-starts-v1";
-var emptyState = () => ({ v: 1, base: 0, ids: [] });
-function sanitize(value) {
+var emptyState2 = () => ({ v: 1, base: 0, ids: [] });
+function sanitize2(value) {
   if (!value || value.v !== 1 || !Number.isInteger(value.base) || value.base < 0 || !Array.isArray(value.ids)) return null;
   const ids = [];
   for (const id2 of value.ids) {
@@ -36791,13 +38000,13 @@ function readStartState(storage) {
   try {
     raw = storage?.getItem?.(START_STORAGE_KEY) ?? null;
   } catch (_) {
-    return emptyState();
+    return emptyState2();
   }
-  if (!raw) return emptyState();
+  if (!raw) return emptyState2();
   try {
-    return sanitize(JSON.parse(raw)) || emptyState();
+    return sanitize2(JSON.parse(raw)) || emptyState2();
   } catch (_) {
-    return emptyState();
+    return emptyState2();
   }
 }
 function writeStartState(storage, state) {
@@ -36920,102 +38129,6 @@ function statsScopeHTML({
   ])}</div>
     ${baselineNotes.length ? `<div class="st-scope-sec"><h4>AI\u30B3\u30FC\u30C1\u3068\u306E\u6BD4\u8F03</h4>${list(baselineNotes)}</div>` : ""}
   </div>`;
-}
-
-// src/tile_render.mjs
-var HONOR = ["", "\u6771", "\u5357", "\u897F", "\u5317", "\u767D", "\u767C", "\u4E2D"];
-function tileLabel(p) {
-  if (!p || p === "_") return "";
-  const s = p[0], n = p[1];
-  if (s === "z") return HONOR[+n] || "";
-  return (n === "0" ? "5" : n) + { m: "\u842C", p: "\u7B52", s: "\u7D22" }[s];
-}
-function tileHTML(p, cls = "") {
-  if (p === "_") return `<span class="tile back ${cls}" data-pai="_" aria-label="\u4F0F\u305B\u724C">${tileSVG("_")}</span>`;
-  const red = p[1] === "0" ? " red" : "";
-  return `<span class="tile ${red} ${cls}" data-pai="${p}" aria-label="${tileLabel(p)}">${tileSVG(p, tileLabel(p))}</span>`;
-}
-function parseClosed(str) {
-  const closed = (str || "").split(",")[0];
-  const tiles = [];
-  let suit = null;
-  for (const ch of closed) {
-    if ("mpsz".includes(ch)) suit = ch;
-    else if (ch === "_") tiles.push("_");
-    else if (/\d/.test(ch) && suit) tiles.push(suit + ch);
-  }
-  return tiles;
-}
-function mianziTiles(m) {
-  return [...m.slice(1).replace(/[+\-=]/g, "")].map((d) => m[0] + d);
-}
-function mianziParts(m) {
-  const parts = [];
-  for (const ch of m.slice(1)) {
-    if (/[+\-=]/.test(ch)) {
-      if (parts.length) parts[parts.length - 1].called = true;
-    } else parts.push({ pai: m[0] + ch, called: false });
-  }
-  return parts;
-}
-var MELD_SRC = { "-": "kamicha", "=": "toimen", "+": "shimocha" };
-function meldArrangement(m) {
-  const parts = mianziParts(m);
-  const sym = (m.match(/[+\-=]/) || [null])[0];
-  if (parts.length === 4 && !sym) {
-    return { src: "ankan", tiles: parts.map((p, i) => ({ pai: p.pai, called: false, back: i === 0 || i === 3 })) };
-  }
-  if (!sym) return { src: "", tiles: parts.map((p) => ({ ...p, back: false })) };
-  const slot = sym === "-" ? 0 : sym === "=" ? 1 : 2;
-  const ci = parts.findIndex((p) => p.called);
-  const called = parts[ci];
-  const others = parts.filter((_, i) => i !== ci);
-  others.splice(Math.min(slot, others.length), 0, called);
-  return { src: MELD_SRC[sym], tiles: others.map((p) => ({ ...p, back: false })) };
-}
-var SEAT_FRAME = [0, -90, 180, 90];
-var CALLED_LEAN = { kamicha: -90, toimen: 90, shimocha: 90 };
-function meldHTML(m, rel = 0) {
-  const { src, tiles } = meldArrangement(m);
-  const ordered = rel === 1 || rel === 2 ? tiles.slice().reverse() : tiles;
-  const frame = SEAT_FRAME[rel] ?? 0;
-  const html = ordered.map((t) => {
-    const rot = ((frame + (t.called ? CALLED_LEAN[src] ?? 90 : 0)) % 360 + 360) % 360;
-    const rotCls = ` mrot-${rot}${rot === 90 || rot === 270 ? " tile-side" : ""}`;
-    return t.back ? tileHTML("_", `meld-tile${rotCls}`) : tileHTML(t.pai, `meld-tile${t.called ? " called-tile" : ""}${rotCls}`);
-  }).join("");
-  return `<span class="meld${tiles.length === 4 ? " meld-kan" : ""}" data-mianzi="${m}"${src ? ` data-src="${src}"` : ""}>${html}</span>`;
-}
-function kyokuText(k2) {
-  const x = /^([ESWN])(\d)\.(\d+)$/.exec(k2 || "");
-  if (!x) return k2 || "";
-  return `${{ E: "\u6771", S: "\u5357", W: "\u897F", N: "\u5317" }[x[1]]}${x[2]}\u5C40${x[3] !== "0" ? ` ${x[3]}\u672C\u5834` : ""}`;
-}
-function contextLabel(context) {
-  return { zimo: "\u3042\u306A\u305F\u306E\u6253\u724C", dapai: "\u4ED6\u5BB6\u306E\u6253\u724C", fulou: "\u9CF4\u304D\u5F8C", gang: "\u30AB\u30F3" }[context] || context || "-";
-}
-function actionTilesHTML(tiles) {
-  return `<span class="act-tiles">${tiles.map((p) => tileHTML(p, "act-tile")).join("")}</span>`;
-}
-function shoupaiStringHTML(str, markWin = false, doraSet = null) {
-  const parts = String(str).split(",");
-  const tilesOf = (seg) => {
-    const tiles = [];
-    let suit = "";
-    for (const ch of seg) {
-      if ("mpsz".includes(ch)) suit = ch;
-      else if (/\d/.test(ch) && suit) tiles.push(suit + ch);
-    }
-    return tiles;
-  };
-  const isDora = (t) => !!doraSet && (t[1] === "0" || doraSet.has(t[0] + t[1]));
-  const closedTiles = tilesOf(parts[0]);
-  const closed = closedTiles.map((t, i) => `<span class="th-tile${markWin && i === closedTiles.length - 1 ? " win" : ""}${isDora(t) ? " dora" : ""}">${tileSVG(t, tileLabel(t))}</span>`).join("");
-  const melds = parts.slice(1).map((seg) => {
-    const { src, tiles } = meldArrangement(seg);
-    return `<span class="th-meld">${tiles.map((t) => t.back ? `<span class="th-tile">${tileSVG("_", "\u4F0F\u305B\u724C")}</span>` : `<span class="th-tile${t.called ? ` called${src === "kamicha" ? " lean-kamicha" : ""}` : ""}${isDora(t.pai) ? " dora" : ""}">${tileSVG(t.pai, tileLabel(t.pai))}</span>`).join("")}</span>`;
-  }).join("");
-  return `<span class="th-tiles">${closed}</span>${melds}`;
 }
 
 // src/result_panel.mjs
@@ -37476,6 +38589,14 @@ function selectedTileRowHTML({
   return `<div class="sel-info"><span class="r1-subject">\u9078\u629E\u4E2D</span> <b class="r1-name">${escapeHtml2(tile2)}</b> <span class="sel-facts">\u5019\u88DC <b>${escapeHtml2(rank)}</b>\u4F4D\uFF08<b>${escapeHtml2(shanten)}</b>\u5411\u8074\u30FB\u53D7\u5165<b>${escapeHtml2(ukeire)}</b>\u679A\uFF09</span><span class="sel-metric"><span class="r1-mlabel">\u63A8\u5968\u5EA6</span> <b class="prob">${escapeHtml2(prob)}</b></span></div>`;
 }
 
+// src/sel_chip_place.mjs
+function placeSelChipTop({ chipH, anchorTop, maxBottom, riverBottom = 0, gap = 12, riverGap = 2 }) {
+  let top = anchorTop - chipH - gap;
+  if (top < riverBottom + riverGap) top = riverBottom + riverGap;
+  if (top + chipH > maxBottom - 1) top = maxBottom - 1 - chipH;
+  return top;
+}
+
 // src/coach_panel.mjs
 var HTML_ESCAPE3 = { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" };
 var defaultEscape3 = (value) => String(value ?? "").replace(/[&<>"']/g, (ch) => HTML_ESCAPE3[ch]);
@@ -37596,412 +38717,6 @@ function sceneHasAction(scene, actor, action) {
   if (seat.closed.includes(tile2)) return true;
   const base = tile2.replace("0", "5");
   return seat.closed.some((t) => t.replace("0", "5") === base);
-}
-
-// src/drill_engine.mjs
-var import_majiang_core6 = __toESM(require_lib(), 1);
-function drillMaskEvent(ev2, viewer) {
-  if (ev2.type === "start_game") return { ...ev2, id: viewer };
-  if (ev2.type === "start_kyoku") {
-    return {
-      ...ev2,
-      tehais: ev2.tehais.map((h, a) => a === viewer ? h : Array(13).fill("?"))
-    };
-  }
-  if (ev2.type === "tsumo" && ev2.actor !== viewer) return { ...ev2, pai: "?" };
-  return ev2;
-}
-function replayDrillBrain(events, actor, BrainClass = MortalBrain) {
-  const brain = new BrainClass(actor, 4);
-  for (let i = 0; i < events.length; i++) {
-    brain.feed(drillMaskEvent(events[i], actor));
-    if (i < events.length - 1 && brain.pending) brain.consume();
-  }
-  return brain;
-}
-async function inferDrillPosition(ai2, events, actor, BrainClass = MortalBrain) {
-  if (!ai2) throw new Error("AI model is not ready");
-  const brain = replayDrillBrain(events, actor, BrainClass);
-  if (brain.feedErrors) {
-    throw new Error(`drill replay feed errors: ${brain.feedErrors} (${brain.firstError || "unknown"})`);
-  }
-  if (!brain.pending) throw new Error("drill replay did not reach a decision point");
-  brain.consume();
-  return ai2.infer(brain);
-}
-function groupString(tiles) {
-  const groups = { m: [], p: [], s: [], z: [] };
-  for (const t of tiles || []) {
-    if (groups[t[0]]) groups[t[0]].push(t[1]);
-  }
-  return ["m", "p", "s", "z"].filter((s) => groups[s].length).map((s) => s + groups[s].join("")).join("");
-}
-function shoupaiOf(seat) {
-  const arr = (seat?.closed || []).slice();
-  const drawn = seat?.drawnTile || null;
-  if (drawn) {
-    const i = arr.indexOf(drawn);
-    if (i >= 0) arr.splice(i, 1);
-  }
-  let str = groupString(arr);
-  if (seat?.fulou?.length) str += "," + seat.fulou.join(",");
-  const shoupai = import_majiang_core6.default.Shoupai.fromString(str);
-  if (drawn) shoupai.zimo(drawn);
-  return shoupai;
-}
-function sceneShoupaiModel(scene, actor) {
-  if (!scene?.seats?.[actor]) throw new Error(`missing drill seat ${actor}`);
-  const targetSeat = scene.seats[actor];
-  const target = shoupaiOf(targetSeat);
-  const model = {
-    zhuangfeng: scene.center?.zhuangfeng || 0,
-    shoupai: new Array(4),
-    he: new Array(4),
-    shan: { baopai: (scene.center?.baopai || []).slice() }
-  };
-  for (const seat of scene.seats) {
-    model.shoupai[seat.l] = seat === targetSeat ? target : shoupaiOf(seat);
-    model.he[seat.l] = { _pai: (seat.he || []).slice() };
-  }
-  return { shoupai: target, model };
-}
-function normalizedAction(action) {
-  if (action === "5mr") return "5m";
-  if (action === "5pr") return "5p";
-  if (action === "5sr") return "5s";
-  return action;
-}
-function candidateFor(row, qAll) {
-  const action = tileToMjai(row.pai);
-  return qAll.find((c) => c.action === action) || qAll.find((c) => normalizedAction(c.action) === normalizedAction(action)) || null;
-}
-function explainDrillScene(scene, actor, qAll, opts = {}) {
-  const rule = specRule();
-  const { shoupai, model } = sceneShoupaiModel(scene, actor);
-  const rows = analyzeDiscards(shoupai, rule, model);
-  const candidates = Array.isArray(qAll) ? qAll : [];
-  for (const row of rows) row.candidate = candidateFor(row, candidates);
-  const sorted = rows.slice().sort((a, b) => (b.candidate?.q ?? -Infinity) - (a.candidate?.q ?? -Infinity));
-  sorted.floats = rows.floats || [];
-  const recommended = opts.recommended || null;
-  const recRow = recommended ? sorted.find((r) => candidateFor(r, candidates)?.action === recommended || normalizedAction(candidateFor(r, candidates)?.action || "") === normalizedAction(recommended)) || sorted.find((r) => rowMatchesAction(r, recommended, candidates)) : sorted[0] || null;
-  const selected = opts.selected || null;
-  const selRow = selected ? sorted.find((r) => rowMatchesAction(r, selected, candidates)) || null : null;
-  let comparison = null;
-  try {
-    comparison = comparisonOf(sorted, { recPai: recRow?.pai, focusPai: selRow?.pai });
-  } catch (_) {
-    comparison = null;
-  }
-  const minShanten = rows.length ? Math.min(...rows.map((r) => r.shanten)) : null;
-  let safeInfo = null;
-  let explainability = null;
-  let doraNow = 0;
-  try {
-    safeInfo = safeTileInfo(shoupai, model);
-  } catch (_) {
-    safeInfo = null;
-  }
-  try {
-    doraNow = countDora(shoupai, doraSetFromIndicators(model));
-  } catch (_) {
-    doraNow = 0;
-  }
-  try {
-    const qValues = sorted.map((r) => r.candidate).filter(Boolean);
-    explainability = recommended ? explainabilityOf(sorted, { recommended, qValues, context: "zimo" }) : null;
-  } catch (_) {
-    explainability = null;
-  }
-  return {
-    rows: sorted,
-    recRow,
-    selRow,
-    minShanten,
-    ukeire: recRow?.ukeire ?? null,
-    template: recRow ? templateComment(rows, recRow.pai) : null,
-    comparison: comparison?.text || null,
-    directions: rows[0]?.dirBefore || [],
-    doraNow,
-    safeInfo,
-    explainability
-  };
-}
-function rowMatchesAction(row, action, candidates) {
-  const c = candidateFor(row, candidates);
-  return !!c && (c.action === action || normalizedAction(c.action) === normalizedAction(action));
-}
-
-// src/drill_difficulty.mjs
-var DRILL_DIFFICULTY_SAMPLES = 32;
-var DRILL_DIFFICULTY_TIER = "shodan";
-var DRILL_DIFFICULTY_SEED = "drill-difficulty-20261113";
-var DIFFICULTY_LEVELS = [
-  { id: "easy", label: "\u3084\u3055\u3057\u3044", min: 0.8 },
-  { id: "normal", label: "\u3075\u3064\u3046", min: 0.5 },
-  { id: "hard", label: "\u3080\u305A\u304B\u3057\u3044", min: -Infinity }
-];
-function difficultyTier(matchRate) {
-  if (!Number.isFinite(matchRate)) throw new Error(`invalid matchRate: ${matchRate}`);
-  if (matchRate >= 0.8) return "easy";
-  if (matchRate >= 0.5) return "normal";
-  return "hard";
-}
-function difficultyLevel(matchRate) {
-  return DIFFICULTY_LEVELS.find((level) => level.id === difficultyTier(matchRate));
-}
-function difficultySeed(baseSeed, problemId) {
-  const text = `${baseSeed}|${problemId}`;
-  let h = 2166136261;
-  for (let i = 0; i < text.length; i++) {
-    h ^= text.charCodeAt(i);
-    h = Math.imul(h, 16777619);
-  }
-  return h >>> 0;
-}
-var RED_FIVE_BASE = { 34: 4, 35: 13, 36: 22 };
-function tileIndexOf(actionIdx) {
-  if (actionIdx < 0 || actionIdx > 36) return -1;
-  return RED_FIVE_BASE[actionIdx] ?? actionIdx;
-}
-function sampleAgreement({
-  q: q4,
-  mask,
-  recommendedIdx,
-  samples = DRILL_DIFFICULTY_SAMPLES,
-  seed = 0,
-  tierId = DRILL_DIFFICULTY_TIER
-}) {
-  if (!q4 || !mask) throw new Error("q and mask are required");
-  if (!Number.isInteger(recommendedIdx) || recommendedIdx < 0) {
-    throw new Error(`invalid recommendedIdx: ${recommendedIdx}`);
-  }
-  if (!Number.isInteger(samples) || samples < 1) throw new Error(`invalid samples: ${samples}`);
-  const want = tileIndexOf(recommendedIdx);
-  let greedy = -1;
-  for (let j = 0; j < mask.length; j++) {
-    if (mask[j] && (greedy < 0 || q4[j] > q4[greedy])) greedy = j;
-  }
-  const policy = new CpuPolicy({ tierId, styleId: "none", seed });
-  let hits = 0;
-  for (let i = 0; i < samples; i++) {
-    const { actionIdx, dahaiIdx } = policy.choose(null, q4, mask, greedy);
-    const picked = actionIdx === 37 ? dahaiIdx : actionIdx;
-    if (tileIndexOf(picked) === want) hits++;
-  }
-  return hits / samples;
-}
-
-// src/drill_logic.mjs
-var DRILL_SET_SIZE = 10;
-var DRILL_CORRECT_GAP_PT = 10;
-var DRILL_CLOSE_GAP_PT = 30;
-var DRILL_RESULTS_KEY = "ml-drill-results";
-var DRILL_RESULTS_LIMIT = 200;
-var DRILL_T_FIRST_MS = 2e4;
-var DRILL_T_NEXT_MS = 1e4;
-var DRILL_VERDICT_LABELS = { correct: "\u6B63\u89E3", close: "\u60DC\u3057\u3044", wrong: "\u4E0D\u6B63\u89E3" };
-function probOf(probabilities, action) {
-  if (action == null || probabilities == null) return null;
-  if (Array.isArray(probabilities)) {
-    const found = probabilities.find((c) => c && c.action === action);
-    return found && Number.isFinite(found.prob) ? found.prob : null;
-  }
-  const value = probabilities[action];
-  return Number.isFinite(value) ? value : null;
-}
-function judgeDrillAnswer({ selected, recommended, probabilities } = {}) {
-  const selectedProb = probOf(probabilities, selected);
-  const recommendedProb = probOf(probabilities, recommended);
-  if (selected != null && selected === recommended) {
-    return { verdict: "correct", selectedProb, recommendedProb, gapPt: 0 };
-  }
-  if (selectedProb == null || recommendedProb == null) {
-    return { verdict: "wrong", selectedProb, recommendedProb, gapPt: null };
-  }
-  const gapPt = Math.abs(selectedProb - recommendedProb) * 100;
-  let verdict = "wrong";
-  if (gapPt <= DRILL_CORRECT_GAP_PT + 1e-9) verdict = "correct";
-  else if (gapPt <= DRILL_CLOSE_GAP_PT + 1e-9) verdict = "close";
-  return { verdict, selectedProb, recommendedProb, gapPt };
-}
-function verdictLabel(verdict) {
-  return DRILL_VERDICT_LABELS[verdict] || verdict || "";
-}
-function drillDifficulty(problem) {
-  const rate2 = problem?.matchRate;
-  if (!Number.isFinite(rate2)) return null;
-  return difficultyLevel(rate2);
-}
-function drillLocked({ pwa = false, status = "unavailable", owned = false, grandfathered = false } = {}) {
-  if (pwa) return false;
-  if (status !== "ready") return false;
-  return !owned && !grandfathered;
-}
-function drillResultDate(date = /* @__PURE__ */ new Date()) {
-  const d = date instanceof Date ? date : new Date(date);
-  if (!Number.isFinite(d.getTime())) return null;
-  const pad = (n) => String(n).padStart(2, "0");
-  return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}`;
-}
-function readDrillResults(storage) {
-  try {
-    const raw = storage?.getItem?.(DRILL_RESULTS_KEY);
-    const parsed = raw ? JSON.parse(raw) : [];
-    if (!Array.isArray(parsed)) return [];
-    return parsed.filter((r) => r && typeof r.date === "string" && Number.isFinite(r.correct)).map((r) => Number.isFinite(r.total) ? { date: r.date, correct: r.correct, total: r.total } : { date: r.date, correct: r.correct });
-  } catch (_) {
-    return [];
-  }
-}
-function saveDrillResult(storage, record) {
-  if (!record || typeof record.date !== "string" || !Number.isFinite(record.correct)) return false;
-  if (Number.isFinite(record.total) && record.total <= 0) return false;
-  try {
-    const rows = readDrillResults(storage);
-    rows.push(Number.isFinite(record.total) ? { date: record.date, correct: record.correct, total: record.total } : { date: record.date, correct: record.correct });
-    storage?.setItem?.(DRILL_RESULTS_KEY, JSON.stringify(rows.slice(-DRILL_RESULTS_LIMIT)));
-    return true;
-  } catch (_) {
-    return false;
-  }
-}
-function tallyDrillItems(items) {
-  const failed = items.filter((it) => it.judgement?.failed).length;
-  const judged = items.length - failed;
-  return {
-    failed,
-    judged,
-    correct: items.filter((it) => !it.judgement?.failed && it.judgement?.verdict === "correct").length
-  };
-}
-function drillRecordOf(items, date) {
-  const t = tallyDrillItems(items);
-  if (t.judged <= 0) return null;
-  const record = { date: drillResultDate(date), correct: t.correct };
-  if (t.failed > 0) record.total = t.judged;
-  return record;
-}
-function createStreamingDrillSession({
-  total = DRILL_SET_SIZE,
-  key: key2 = "any|any",
-  supply,
-  firstMs = DRILL_T_FIRST_MS,
-  nextMs = DRILL_T_NEXT_MS
-} = {}) {
-  const items = [];
-  const pending2 = /* @__PURE__ */ new Map();
-  const signal = { aborted: false };
-  let skipResolve = null;
-  let skipPromise = new Promise((resolve) => {
-    skipResolve = resolve;
-  });
-  let index = 0;
-  const session = {
-    get key() {
-      return key2;
-    },
-    get items() {
-      return items;
-    },
-    get total() {
-      return total;
-    },
-    get index() {
-      return index;
-    },
-    get problem() {
-      return items[index]?.problem || null;
-    },
-    get data() {
-      return items[index]?.data || null;
-    },
-    get origin() {
-      return items[index]?.origin || null;
-    },
-    get judgement() {
-      return items[index]?.judgement || null;
-    },
-    get answeredCount() {
-      return items.filter((it) => it.judgement).length;
-    },
-    get complete() {
-      return items.length === total && items.every((it) => it.judgement);
-    },
-    get aborted() {
-      return signal.aborted;
-    },
-    get filledCount() {
-      return items.length;
-    },
-    get fallbackCount() {
-      return items.filter((it) => it.origin === "pool" && it.fallback).length;
-    },
-    filled(i) {
-      return !!items[i];
-    },
-    // Slots are filled strictly in order; asking again returns the same promise.
-    fill(i) {
-      if (items[i]) return Promise.resolve(items[i]);
-      if (pending2.has(i)) return pending2.get(i);
-      if (i !== items.length) return Promise.reject(new Error(`slot ${i} requested before slot ${items.length}`));
-      const usedIds = new Set(items.map((it) => it.problem.id));
-      const p = Promise.resolve(supply(i, {
-        deadlineMs: i === 0 ? firstMs : nextMs,
-        usedIds,
-        signal,
-        skip: skipPromise
-      })).then((got) => {
-        pending2.delete(i);
-        if (signal.aborted || !got?.problem) return null;
-        const item = {
-          problem: got.problem,
-          data: got.data,
-          origin: got.origin || "pool",
-          fallback: !!got.fallback,
-          judgement: null
-        };
-        items[i] = item;
-        skipPromise = new Promise((resolve) => {
-          skipResolve = resolve;
-        });
-        return item;
-      }, (e) => {
-        pending2.delete(i);
-        throw e;
-      });
-      pending2.set(i, p);
-      return p;
-    },
-    // "収録済みの問題ではじめる": give up waiting for the current slot.
-    skipWait() {
-      if (pending2.size) skipResolve?.();
-    },
-    answer(judgement) {
-      if (signal.aborted || !items[index] || items[index].judgement) return null;
-      items[index].judgement = judgement;
-      return judgement;
-    },
-    next() {
-      if (index < items.length - 1) index++;
-      return session.problem;
-    },
-    abort() {
-      signal.aborted = true;
-      skipResolve?.();
-    },
-    result(date = /* @__PURE__ */ new Date()) {
-      if (signal.aborted || !session.complete) return null;
-      return drillRecordOf(items, date);
-    }
-  };
-  return session;
-}
-function finalizeDrillSession(session, storage, date = /* @__PURE__ */ new Date()) {
-  const record = session?.result?.(date);
-  if (!record) return null;
-  saveDrillResult(storage, record);
-  return record;
 }
 
 // src/drill_generator.mjs
@@ -39061,7 +39776,7 @@ function saveDrillChoice(storage, choice) {
 
 // src/drill_coach.mjs
 var HTML_ESCAPE4 = { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" };
-var esc3 = (value) => String(value ?? "").replace(/[&<>"']/g, (ch) => HTML_ESCAPE4[ch]);
+var esc4 = (value) => String(value ?? "").replace(/[&<>"']/g, (ch) => HTML_ESCAPE4[ch]);
 function drillCoachHTML({
   problem,
   explain,
@@ -39071,7 +39786,7 @@ function drillCoachHTML({
   cellMoreOpen: cellMoreOpen2 = /* @__PURE__ */ new Set(),
   cmpExpanded = false
 }) {
-  const head = coachHeadHTML(`${esc3(kyokuText(problem.kyoku))} / \u3042\u306A\u305F\u306E\u6253\u724C`);
+  const head = coachHeadHTML(`${esc4(kyokuText(problem.kyoku))} / \u3042\u306A\u305F\u306E\u6253\u724C`);
   const rows = explain?.rows || [];
   const recRow = explain?.recRow;
   if (!recRow || !rows.length) {
@@ -39085,10 +39800,10 @@ function drillCoachHTML({
     recommended: tileLabel(recRow.pai),
     recommendedTileArt: recArt,
     evalPercent: formatEvalPercent(recProb),
-    runnerUpHTML: runnerUpLineHTML(subs, { escapeHtml: esc3 }),
+    runnerUpHTML: runnerUpLineHTML(subs, { escapeHtml: esc4 }),
     after: shantenAfterLabel(recRow.shanten),
-    agreementHTML: agreementLineHTML(agreement, { escapeHtml: esc3 }),
-    escapeHtml: esc3
+    agreementHTML: agreementLineHTML(agreement, { escapeHtml: esc4 }),
+    escapeHtml: esc4
   });
   const compare = candidateCompareHTML({
     sorted: rows,
@@ -39104,17 +39819,17 @@ function drillCoachHTML({
     comparison: explain.comparison ? { text: explain.comparison } : null,
     cmpExpanded,
     cellMoreOpen: cellMoreOpen2,
-    escapeHtml: esc3
+    escapeHtml: esc4
   });
   const conds = explain.explainability?.conditions || [];
   return `<div id="drill-same-coach">${head}${summary}</div>
-    <div id="drill-same-explain">${compare}${conds.length ? explainConditionsHTML(conds, esc3) : ""}</div>`;
+    <div id="drill-same-explain">${compare}${conds.length ? explainConditionsHTML(conds, esc4) : ""}</div>`;
 }
 
 // src/drill_ui.mjs
 var POS_CLASS = ["bottom", "right", "top", "left"];
 var POS_NAME = ["\u3042\u306A\u305F", "AI-1", "AI-2", "AI-3"];
-function esc4(value) {
+function esc5(value) {
   return String(value ?? "").replace(/[&<>"']/g, (c) => ({
     "&": "&amp;",
     "<": "&lt;",
@@ -39127,7 +39842,7 @@ function idLabel(id2) {
   const t = String(id2 ?? "");
   return t.startsWith("gen-") ? `gen-\u2026${t.slice(-4)}` : t;
 }
-function pct(rate2) {
+function pct2(rate2) {
   return Number.isFinite(rate2) ? `${Math.round(rate2 * 100)}%` : "-";
 }
 function displaySeats(scene, actor) {
@@ -39161,12 +39876,12 @@ function seatHTMLFor(seat, isSelf, ctx) {
     const locked = ctx.answered ? " answered" : "";
     const drawn = i === drawnAt ? " drawn" : "";
     return `<button type="button" class="tile hand drill-tile${p[1] === "0" ? " red" : ""}${selected}${locked}${drawn}"
-        data-drill-tile="${esc4(action)}" data-idx="${i}" data-pai="${esc4(p)}"
-        ${ctx.answered ? "disabled" : ""} aria-label="${esc4(tileLabel(p))}">${tileSVG(p, tileLabel(p))}</button>`;
+        data-drill-tile="${esc5(action)}" data-idx="${i}" data-pai="${esc5(p)}"
+        ${ctx.answered ? "disabled" : ""} aria-label="${esc5(tileLabel(p))}">${tileSVG(p, tileLabel(p))}</button>`;
   }).join("") : closed.map(() => tileHTML("_", "opp")).join("");
   const head = `<div class="seat-info${seat.lizhi ? " riichi-on" : ""}">
-      <span class="seat-name">${seat.dealer ? "\u25CF " : ""}${esc4(seat.displayName)}</span>
-      <span class="seat-wind">${esc4(seat.wind)}</span>
+      <span class="seat-name">${seat.dealer ? "\u25CF " : ""}${esc5(seat.displayName)}</span>
+      <span class="seat-wind">${esc5(seat.wind)}</span>
       <span class="seat-score">${Number(seat.defen || 0).toLocaleString()}\u70B9</span>
       ${seat.lizhi ? '<span class="riichi-badge">\u30EA\u30FC\u30C1</span>' : ""}
       ${seat.dpos === ctx.turnPos ? '<span class="turn-badge">\u756A</span>' : ""}
@@ -39183,6 +39898,7 @@ function createDrillUi({
   getRuntime,
   isReady,
   getBilling,
+  getGate,
   backNav: backNav2,
   documentRef = document,
   fetchImpl = fetch,
@@ -39191,7 +39907,9 @@ function createDrillUi({
   getLightRuntime = null,
   getModelId = () => "unknown",
   BrainClass = null,
-  genDelayMs = null
+  genDelayMs = null,
+  onSetFinished = null,
+  sharer: sharer2 = null
 } = {}) {
   const doc = documentRef;
   const win = doc?.defaultView || (typeof window !== "undefined" ? window : null);
@@ -39211,6 +39929,12 @@ function createDrillUi({
   let ready = false;
   let locked = false;
   let record = null;
+  const notifySetFinished = (saved) => {
+    if (saved) try {
+      onSetFinished?.();
+    } catch (_) {
+    }
+  };
   let openGen = 0;
   let sheet = null;
   let sheetOpen = false;
@@ -39299,8 +40023,7 @@ function createDrillUi({
     button.setAttribute("aria-label", locked ? "\u4F55\u5207\u308B\u30C9\u30EA\u30EB\uFF08AI\u30B3\u30FC\u30C1\u3092\u89E3\u9664\u3059\u308B\u3068\u904A\u3079\u307E\u3059\uFF09" : "\u4F55\u5207\u308B\u30C9\u30EA\u30EB");
   }
   function refreshLock() {
-    const state = getBilling?.() || {};
-    locked = drillLocked(state);
+    locked = getGate ? !!getGate() : drillLocked(getBilling?.() || {});
     syncButton();
   }
   function setEnabled(on) {
@@ -39383,7 +40106,7 @@ function createDrillUi({
   function headerHTML({ title = "\u4F55\u5207\u308B\u30C9\u30EA\u30EB", meta = "", progress = "", close: close2 = true } = {}) {
     return `<div class="drill-head">
       ${close2 ? '<button type="button" class="drill-back" data-drill-close aria-label="\u30C9\u30EA\u30EB\u3092\u9589\u3058\u308B">\u2190</button>' : '<span class="drill-back" aria-hidden="true"></span>'}
-      <div class="drill-head-main"><div class="drill-head-title">${esc4(title)}</div>${meta ? `<div class="drill-head-meta">${meta}</div>` : ""}</div>
+      <div class="drill-head-main"><div class="drill-head-title">${esc5(title)}</div>${meta ? `<div class="drill-head-meta">${meta}</div>` : ""}</div>
       ${progress ? `<div class="drill-progress">${progress}</div>` : ""}
     </div>`;
   }
@@ -39402,8 +40125,8 @@ function createDrillUi({
       ${seat(2)}${seat(3)}
       <div class="replay-board drill-board">
         <div class="replay-center drill-center">
-          <div class="round"><span class="round-kyoku">${esc4(centerKyoku(scene))}</span> <span>${esc4(c.changbang || 0)}\u672C\u5834</span></div>
-          <div class="center-meta"><span class="cm-item">\u6B8B\u308A ${esc4(c.paishu ?? "-")}\u679A</span> <span class="cm-item">\u4F9B\u8A17 ${esc4(c.lizhibang || 0)}</span></div>
+          <div class="round"><span class="round-kyoku">${esc5(centerKyoku(scene))}</span> <span>${esc5(c.changbang || 0)}\u672C\u5834</span></div>
+          <div class="center-meta"><span class="cm-item">\u6B8B\u308A ${esc5(c.paishu ?? "-")}\u679A</span> <span class="cm-item">\u4F9B\u8A17 ${esc5(c.lizhibang || 0)}</span></div>
           <div class="dora"><span class="dora-label">\u30C9\u30E9</span>${dora}</div>
         </div>
         ${seats.map((s) => `<div class="board-pond bp-${s.dpos}${s.lizhi ? " riichi-on" : ""}">${pondHTMLFor(s)}</div>`).join("")}
@@ -39421,11 +40144,16 @@ function createDrillUi({
       <div class="drill-set-row"><span>\u3053\u306E\u30BB\u30C3\u30C8\u306E\u9032\u307F\u5177\u5408</span><b>${currentIndex + 1} / ${total}</b></div>
       ${dots}
       <div class="drill-diff-card">
-        <div class="drill-diff-title">\u3053\u306E\u554F\u984C\u306E\u96E3\u6613\u5EA6 ${level ? `<span class="drill-diff-badge diff-${esc4(level.id)}">${esc4(level.label)}</span>` : ""}</div>
-        <p>\u521D\u6BB5\u76F8\u5F53\u306EAI\u304C\u540C\u3058\u724C\u3092\u9078\u3093\u3060\u5272\u5408 ${pct(problem.matchRate)}\u3002\u96E3\u6613\u5EA6\u306F\u8868\u793A\u3068\u4E26\u3073\u9806\u306E\u88DC\u52A9\u3067\u3059\u3002</p>
+        <div class="drill-diff-title">\u3053\u306E\u554F\u984C\u306E\u96E3\u6613\u5EA6 ${level ? `<span class="drill-diff-badge diff-${esc5(level.id)}">${esc5(level.label)}</span>` : ""}</div>
+        <p>\u521D\u6BB5\u76F8\u5F53\u306EAI\u304C\u540C\u3058\u724C\u3092\u9078\u3093\u3060\u5272\u5408 ${pct2(problem.matchRate)}\u3002\u96E3\u6613\u5EA6\u306F\u8868\u793A\u3068\u4E26\u3073\u9806\u306E\u88DC\u52A9\u3067\u3059\u3002</p>
       </div>
       <p class="drill-footnote">10\u554F1\u30BB\u30C3\u30C8\u3002\u56DE\u7B54\u3059\u308B\u3068\u305D\u306E\u5834\u3067\u5224\u5B9A\u3068\u89E3\u8AAC\u304C\u51FA\u3066\u3001\u6700\u5F8C\u306B\u6B63\u89E3\u6570\u3068\u554F\u984C\u3054\u3068\u306E\u4E00\u89A7\u3092\u78BA\u8A8D\u3067\u304D\u307E\u3059\u3002</p>
+      ${shareButtonHTML("question")}
     </section>`;
+  }
+  function shareButtonHTML(which) {
+    if (!sharer2?.canShareImage?.()) return "";
+    return `<button type="button" class="drill-share" data-drill-share="${which}">${which === "question" ? "\u3053\u306E\u554F\u984C\u3092\u753B\u50CF\u3067\u5171\u6709" : "\u7D50\u679C\u3092\u753B\u50CF\u3067\u5171\u6709"}</button>`;
   }
   function judgedPanelHTML(problem, judgement, explain, currentIndex, total, dots, error = null) {
     const level = drillDifficulty(problem);
@@ -39441,13 +40169,13 @@ function createDrillUi({
     });
     return `<section class="drill-panel">
       <div class="drill-verdict ${judgement.verdict}">
-        <span class="drill-verdict-badge">${esc4(verdictLabel(judgement.verdict))}</span>
+        <span class="drill-verdict-badge">${esc5(verdictLabel(judgement.verdict))}</span>
         <span class="drill-verdict-text">${judgement.verdict === "correct" ? "\u63A8\u5968\u3069\u304A\u308A\u306E\u6253\u724C\u3067\u3059" : judgement.verdict === "close" ? "\u63A8\u5968\u306B\u8FD1\u3044\u6253\u724C\u3067\u3059" : "\u63A8\u5968\u3068\u306F\u9055\u3046\u6253\u724C\u3067\u3059"}</span>
-        ${level ? `<span class="drill-diff-badge diff-${esc4(level.id)}">${esc4(level.label)}</span>` : ""}
+        ${level ? `<span class="drill-diff-badge diff-${esc5(level.id)}">${esc5(level.label)}</span>` : ""}
       </div>
       ${error ? '<div class="drill-hint-sub drill-error-note">AI\u306E\u518D\u8A08\u7B97\u306B\u5931\u6557\u3057\u305F\u305F\u3081\u3001\u63A8\u5968\u5EA6\u306E\u6BD4\u8F03\u3068\u300C\u60DC\u3057\u3044\u300D\u306E\u5224\u5B9A\u306F\u51FA\u305B\u307E\u305B\u3093\u3067\u3057\u305F\u3002</div>' : ""}
       <div class="drill-same">${coach2}</div>
-      <div class="drill-note">\u521D\u6BB5\u76F8\u5F53\u306E\u4E00\u81F4\u7387 ${pct(problem.matchRate)}\u30FB\u96E3\u6613\u5EA6 ${level ? esc4(level.label) : "-"}</div>
+      <div class="drill-note">\u521D\u6BB5\u76F8\u5F53\u306E\u4E00\u81F4\u7387 ${pct2(problem.matchRate)}\u30FB\u96E3\u6613\u5EA6 ${level ? esc5(level.label) : "-"}</div>
       <div class="drill-set-row"><span>\u3053\u306E\u30BB\u30C3\u30C8\u306E\u9032\u307F\u5177\u5408</span><b>${currentIndex + 1} / ${total}</b></div>
       ${dots}
       <div class="drill-actions"><button type="button" class="drill-primary" data-drill-next>${currentIndex + 1 >= total ? "\u7D50\u679C\u3092\u898B\u308B" : "\u6B21\u306E\u554F\u984C\u3078"}</button></div>
@@ -39459,7 +40187,7 @@ function createDrillUi({
     const actor = problem.actor;
     const selectedIndex = null;
     setOverlay(`${headerHTML({
-      meta: `${esc4(kyokuText(problem.kyoku))}\u30FB${esc4(problem.junme)}\u5DE1\u76EE`,
+      meta: `${esc5(kyokuText(problem.kyoku))}\u30FB${esc5(problem.junme)}\u5DE1\u76EE`,
       progress: `\u7B2C${session.index + 1}\u554F <small>/ ${session.total}</small>`
     })}
     <div class="drill-scroll">
@@ -39472,7 +40200,7 @@ function createDrillUi({
     const scene = drillScene(session.data, problem);
     const actor = problem.actor;
     setOverlay(`${headerHTML({
-      meta: `${esc4(kyokuText(problem.kyoku))}\u30FB${esc4(problem.junme)}\u5DE1\u76EE`,
+      meta: `${esc5(kyokuText(problem.kyoku))}\u30FB${esc5(problem.junme)}\u5DE1\u76EE`,
       progress: `\u7B2C${session.index + 1}\u554F <small>/ ${session.total}</small>`
     })}
     <div class="drill-scroll">
@@ -39517,10 +40245,10 @@ function createDrillUi({
       const v = it.judgement?.verdict || "wrong";
       const excluded = !!it.judgement?.failed;
       return `<div class="drill-result-row">
-        <div class="drill-result-q"><b>\u7B2C${i + 1}\u554F</b><span>${esc4(kyokuText(it.problem.kyoku))}\u30FB${esc4(it.problem.junme)}\u5DE1\u76EE</span><small>${esc4(idLabel(it.problem.id))}</small></div>
+        <div class="drill-result-q"><b>\u7B2C${i + 1}\u554F</b><span>${esc5(kyokuText(it.problem.kyoku))}\u30FB${esc5(it.problem.junme)}\u5DE1\u76EE</span><small>${esc5(idLabel(it.problem.id))}</small></div>
         <div class="drill-result-tags">
-          ${level ? `<span class="drill-diff-badge diff-${esc4(level.id)}">${esc4(level.label)}</span>` : ""}
-          ${excluded ? '<span class="drill-verdict-badge excluded">\u9664\u5916</span>' : `<span class="drill-verdict-badge ${v}">${esc4(verdictLabel(v))}</span>`}
+          ${level ? `<span class="drill-diff-badge diff-${esc5(level.id)}">${esc5(level.label)}</span>` : ""}
+          ${excluded ? '<span class="drill-verdict-badge excluded">\u9664\u5916</span>' : `<span class="drill-verdict-badge ${v}">${esc5(verdictLabel(v))}</span>`}
         </div>
       </div>`;
     }).join("")}
@@ -39529,6 +40257,7 @@ function createDrillUi({
         <button type="button" class="drill-secondary" data-drill-retry>\u3082\u3046\u4E00\u5EA6</button>
         <button type="button" class="drill-primary" data-drill-start>\u30B9\u30BF\u30FC\u30C8\u3078</button>
       </div>
+      ${shareButtonHTML("result")}
     </div>`);
   }
   function close(fromBack = false) {
@@ -39579,9 +40308,9 @@ function createDrillUi({
   function renderSheet() {
     const c = sheetChoice;
     const scenes = SCENE_CHOICES.map((o) => `<button type="button" class="drill-sc${o.wide ? " wide" : ""}${o.id === c.scene ? " on" : ""}"
-      data-sheet-scene="${o.id}" aria-pressed="${o.id === c.scene}"><b>${esc4(o.label)}</b><i>${esc4(o.note)}</i></button>`).join("");
+      data-sheet-scene="${o.id}" aria-pressed="${o.id === c.scene}"><b>${esc5(o.label)}</b><i>${esc5(o.note)}</i></button>`).join("");
     const diffs = DIFFICULTY_CHOICES.map((o) => `<button type="button" class="${o.id === c.difficulty ? "on" : ""}"
-      data-sheet-diff="${o.id}" aria-pressed="${o.id === c.difficulty}">${esc4(o.label)}</button>`).join("");
+      data-sheet-diff="${o.id}" aria-pressed="${o.id === c.difficulty}">${esc5(o.label)}</button>`).join("");
     const el2 = ensureSheet();
     el2.innerHTML = `<div class="drill-scrim" data-sheet-close></div>
       <div class="drill-sheet-body">
@@ -39590,7 +40319,7 @@ function createDrillUi({
           <button type="button" class="drill-sh-close" data-sheet-close aria-label="\u9589\u3058\u308B">\u2715</button></div>
         <div class="drill-sh-label">\u5834\u9762</div><div class="drill-scenes">${scenes}</div>
         <div class="drill-sh-label">\u96E3\u6613\u5EA6</div><div class="drill-diffs">${diffs}</div>
-        <div class="drill-sum">\u9078\u629E\u4E2D: \u5834\u9762\uFF1A<b>${esc4(sceneLabel(c.scene))}</b>\uFF0F\u96E3\u6613\u5EA6\uFF1A<b>${esc4(diffLabel(c.difficulty))}</b>\uFF0F${DRILL_SET_SIZE}\u554F</div>
+        <div class="drill-sum">\u9078\u629E\u4E2D: \u5834\u9762\uFF1A<b>${esc5(sceneLabel(c.scene))}</b>\uFF0F\u96E3\u6613\u5EA6\uFF1A<b>${esc5(diffLabel(c.difficulty))}</b>\uFF0F${DRILL_SET_SIZE}\u554F</div>
         <div class="drill-sh-status" data-sheet-status></div>
         <button type="button" class="drill-go" data-sheet-go${starting ? " disabled" : ""}>\u306F\u3058\u3081\u308B</button>
       </div>`;
@@ -39650,14 +40379,14 @@ function createDrillUi({
     }
   }
   function chipsHTML(choice) {
-    return `<div class="drill-wait-chips"><span>${esc4(sceneLabel(choice.scene))}</span><span>${esc4(diffLabel(choice.difficulty))}</span></div>`;
+    return `<div class="drill-wait-chips"><span>${esc5(sceneLabel(choice.scene))}</span><span>${esc5(diffLabel(choice.difficulty))}</span></div>`;
   }
   function renderWait(run, slot, choice) {
     const first = slot === 0;
     const k02 = generator?.stats?.kyokus || 0;
     const t02 = Date.now();
     const head = first ? headerHTML() : headerHTML({
-      meta: `${esc4(sceneLabel(choice.scene))}\u30FB${esc4(diffLabel(choice.difficulty))}`,
+      meta: `${esc5(sceneLabel(choice.scene))}\u30FB${esc5(diffLabel(choice.difficulty))}`,
       progress: `\u7B2C${slot + 1}\u554F <small>/ ${run.total}</small>`
     });
     setOverlay(`${head}<div class="drill-scroll drill-single"><div class="drill-wait">
@@ -39727,7 +40456,7 @@ function createDrillUi({
     } catch (e) {
       if (!open || gen !== openGen) return;
       setOverlay(`${headerHTML()}<div class="drill-scroll drill-single"><div class="drill-error">
-        <p>\u554F\u984C\u30C7\u30FC\u30BF\u3092\u8AAD\u307F\u8FBC\u3081\u307E\u305B\u3093\u3067\u3057\u305F\u3002</p><p class="drill-hint-sub">${esc4(e?.message || e)}</p>
+        <p>\u554F\u984C\u30C7\u30FC\u30BF\u3092\u8AAD\u307F\u8FBC\u3081\u307E\u305B\u3093\u3067\u3057\u305F\u3002</p><p class="drill-hint-sub">${esc5(e?.message || e)}</p>
         <button type="button" class="drill-secondary" data-drill-close>\u623B\u308B</button></div></div>`);
     }
   }
@@ -39762,7 +40491,7 @@ function createDrillUi({
       explain: null
     };
     setOverlay(`${headerHTML({
-      meta: `${esc4(kyokuText(problem.kyoku))}\u30FB${esc4(problem.junme)}\u5DE1\u76EE`,
+      meta: `${esc5(kyokuText(problem.kyoku))}\u30FB${esc5(problem.junme)}\u5DE1\u76EE`,
       progress: `\u7B2C${session.index + 1}\u554F <small>/ ${session.total}</small>`
     })}
     <div class="drill-scroll">
@@ -39787,7 +40516,10 @@ function createDrillUi({
     if (!open || session !== run) return;
     busy = false;
     session.answer(entry.judgement);
-    if (session.complete && !record) record = finalizeDrillSession(session, storage, now());
+    if (session.complete && !record) {
+      record = finalizeDrillSession(session, storage, now());
+      notifySetFinished(record);
+    }
     renderJudged(entry);
     holdGate(300);
   }
@@ -39795,7 +40527,10 @@ function createDrillUi({
     if (!session || busy) return;
     const run = session;
     if (run.index + 1 >= run.total) {
-      if (!record) record = finalizeDrillSession(run, storage, now());
+      if (!record) {
+        record = finalizeDrillSession(run, storage, now());
+        notifySetFinished(record);
+      }
       renderResult();
       return;
     }
@@ -39823,9 +40558,35 @@ function createDrillUi({
       if (gen === openGen) busy = false;
     }
   }
+  function shareCurrent(which) {
+    if (!sharer2 || !session) return;
+    if (which === "question") {
+      const problem = session.problem;
+      sharer2.shareCard(buildQuestionCard({
+        kyoku: problem.kyoku,
+        junme: problem.junme,
+        scene: drillScene(session.data, problem),
+        actor: problem.actor
+      }));
+      return;
+    }
+    const tally = tallyDrillItems(session.items);
+    const byDiff = { easy: 0, normal: 0, hard: 0 };
+    const byVerdict = { correct: 0, close: 0, wrong: 0 };
+    for (const it of session.items) {
+      const level = drillDifficulty(it.problem);
+      if (level && byDiff[level.id] != null) byDiff[level.id]++;
+      if (it.judgement && !it.judgement.failed && byVerdict[it.judgement.verdict] != null) byVerdict[it.judgement.verdict]++;
+    }
+    sharer2.shareCard(buildResultCard({ correct: record ? record.correct : 0, total: tally.judged, byVerdict, byDiff }));
+  }
   function onClick(e) {
-    const target = e.target?.closest?.("[data-drill-tile], [data-drill-close], [data-drill-next], [data-drill-retry], [data-drill-start], [data-drill-skip]");
+    const target = e.target?.closest?.("[data-drill-share], [data-drill-tile], [data-drill-close], [data-drill-next], [data-drill-retry], [data-drill-start], [data-drill-skip]");
     if (!target) return;
+    if (target.matches("[data-drill-share]")) {
+      shareCurrent(target.dataset.drillShare);
+      return;
+    }
     if (target.matches("[data-drill-tile]")) {
       answerTile(target.dataset.drillTile, Number(target.dataset.idx));
       return;
@@ -39896,7 +40657,7 @@ function createDrillUi({
 // src/drill_stats.mjs
 var DRILL_STATS_ROWS = 5;
 var DRILL_STATS_UNLOCK_HTML = '<button type="button" class="analysis-unlock" data-coach-unlock>\u{1F512} \u30C9\u30EA\u30EB\u6210\u7E3E\u306F\u30A2\u30F3\u30ED\u30C3\u30AF\u3067\u898B\u3089\u308C\u307E\u3059</button>';
-var escHtml2 = (s) => String(s).replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" })[c]);
+var escHtml3 = (s) => String(s).replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" })[c]);
 function drillStatsSectionHTML(rows, { locked = false } = {}) {
   const list = Array.isArray(rows) ? rows : [];
   if (!list.length) return "";
@@ -39907,7 +40668,7 @@ function drillStatsSectionHTML(rows, { locked = false } = {}) {
   const body = recent.map((r) => {
     const total = Number.isFinite(r.total) ? r.total : DRILL_SET_SIZE;
     const excluded = DRILL_SET_SIZE - total;
-    return `<tr><td>${escHtml2(r.date)}</td><td class="st-num">${r.correct}/${total} \u6B63\u89E3</td><td class="st-den">${excluded > 0 ? `${excluded}\u554F\u9664\u5916` : ""}</td></tr>`;
+    return `<tr><td>${escHtml3(r.date)}</td><td class="st-num">${r.correct}/${total} \u6B63\u89E3</td><td class="st-den">${excluded > 0 ? `${excluded}\u554F\u9664\u5916` : ""}</td></tr>`;
   }).join("");
   return `<div class="st-section drill-stats"><h3>\u30C9\u30EA\u30EB\u6210\u7E3E</h3>
     <table class="st-table"><thead><tr><th>\u65E5\u4ED8</th><th>\u7D50\u679C</th><th></th></tr></thead><tbody>${body}</tbody></table>
@@ -39917,11 +40678,21 @@ function drillStatsSectionHTML(rows, { locked = false } = {}) {
 
 // src/main.js
 var backNav = createBackNav({ win: window });
-var billing = createCoachAccess({
+var billing = createEntitlement({
   native: globalThis.JanLabNative,
-  storage: { getItem: (key2) => localStorage.getItem(key2), setItem: (key2, value) => localStorage.setItem(key2, value) },
-  onChange: refreshCoachAccess
+  storage: {
+    getItem: (key2) => localStorage.getItem(key2),
+    setItem: (key2, value) => localStorage.setItem(key2, value),
+    removeItem: (key2) => localStorage.removeItem(key2)
+  },
+  onChange: refreshCoachAccess,
+  isPlaying: () => !!S.started && !S.finished
 });
+var reviewPrompt = createReviewPrompt({
+  native: globalThis.JanLabNative,
+  storage: { getItem: (key2) => localStorage.getItem(key2), setItem: (key2, value) => localStorage.setItem(key2, value) }
+});
+var sharer = createSharer({ native: globalThis.JanLabNative });
 var simStorage = {
   getItem: (key2) => sessionStorage.getItem(key2),
   setItem: (key2, value) => sessionStorage.setItem(key2, value),
@@ -39936,6 +40707,8 @@ function currentSimState() {
 }
 var billingHistoryReady = Promise.resolve();
 var gameTrialEligible = true;
+var gameCoachRuns = true;
+var licenseUi = null;
 var drillUi = null;
 var sessionCompletions = /* @__PURE__ */ new Map();
 var fitDirty = true;
@@ -40539,17 +41312,17 @@ function clearResumeSnapshot() {
   S.resumeAvailable = null;
 }
 function reconcileLegacyResumeStart() {
-  if (billing.pwa) return false;
+  if (billing.trialGames === 0) return false;
   const s = resumeAvailable;
   if (!s || !s.gameId || s.startCounted) return false;
   const completed = completedCoachHistory().length;
   const state = syncStartFloor(startStorage, completed);
   if (hasStart(state, s.gameId)) {
     s.startCounted = true;
-    s.trialEligible = s.trialEligible ?? startCount(state, completed) - 1 < TRIAL_GAMES;
+    s.trialEligible = s.trialEligible ?? startCount(state, completed) - 1 < billing.trialGames;
   } else {
     const total = startCount(state, completed);
-    s.trialEligible = total < TRIAL_GAMES;
+    s.trialEligible = total < billing.trialGames;
     s.startCounted = true;
     noteStart(startStorage, s.gameId, { completed });
   }
@@ -40695,7 +41468,7 @@ function decisionButtonsHTML() {
       b.push(act("riichi", riichiArmed ? "\u30EA\u30FC\u30C1\u89E3\u9664" : "\u30EA\u30FC\u30C1", "", `riichi${riichiArmed ? " armed" : ""}`));
     }
     if (o.canPingju) b.push(act("daopai", "\u4E5D\u7A2E\u4E5D\u724C", "", "minor"));
-    const prompt = riichiArmed ? `\u30EA\u30FC\u30C1\u3059\u308B\u724C\u3092\u9078\u3093\u3067\u304F\u3060\u3055\u3044\uFF08\u91D1\u8272\u306E\u724C\u3002\u3084\u3081\u308B\u5834\u5408\u306F\u300C\u30EA\u30FC\u30C1\u89E3\u9664\u300D\uFF09${riichiNotice ? `<span class="riichi-error">${escHtml3(riichiNotice)}</span>` : ""}` : selectedAction ? "\u3082\u3046\u4E00\u5EA6\u30BF\u30C3\u30D7\u3067\u6253\u724C\u3057\u307E\u3059" : "\u724C\u3092\u30BF\u30C3\u30D7\u3067\u9078\u629E\uFF08\u3082\u3046\u4E00\u5EA6\u30BF\u30C3\u30D7\u3067\u6253\u724C\uFF09";
+    const prompt = riichiArmed ? `\u30EA\u30FC\u30C1\u3059\u308B\u724C\u3092\u9078\u3093\u3067\u304F\u3060\u3055\u3044\uFF08\u91D1\u8272\u306E\u724C\u3002\u3084\u3081\u308B\u5834\u5408\u306F\u300C\u30EA\u30FC\u30C1\u89E3\u9664\u300D\uFF09${riichiNotice ? `<span class="riichi-error">${escHtml4(riichiNotice)}</span>` : ""}` : selectedAction ? "\u3082\u3046\u4E00\u5EA6\u30BF\u30C3\u30D7\u3067\u6253\u724C\u3057\u307E\u3059" : "\u724C\u3092\u30BF\u30C3\u30D7\u3067\u9078\u629E\uFF08\u3082\u3046\u4E00\u5EA6\u30BF\u30C3\u30D7\u3067\u6253\u724C\uFF09";
     b.push(`<div class="action-status prompt${riichiArmed && riichiNotice ? " riichi-error" : ""}">${prompt}</div>`);
   } else if (pending.kind === "dapai") {
     if (o.canHule) b.push(act("hule", "\u30ED\u30F3", "", "win"));
@@ -40741,20 +41514,20 @@ function coachHTML(replayRec, opts = {}) {
   if (!replay && !coachEnabled) return head() + '<div class="hint">AI\u30B3\u30FC\u30C1 OFF\uFF08\u5B9F\u6226\u5F62\u5F0F\uFF09</div>';
   let rec = replay ? replayRec : currentCoach?.record;
   if (!replay && AUTO && coach?.records?.length) rec = coach.records[coach.records.length - 1];
-  if (!replay && !rec && coachMissing && (pending || preparingDecision)) return head(escHtml3(liveHeadCtx())) + '<div class="hint">\u3053\u306E\u624B\u756A\u306F\u30B3\u30FC\u30C1\u306E\u8A55\u4FA1\u3092\u53D6\u5F97\u3067\u304D\u307E\u305B\u3093\u3067\u3057\u305F\uFF08\u63A8\u5968\u306A\u3057\uFF09\u3002</div>';
+  if (!replay && !rec && coachMissing && (pending || preparingDecision)) return head(escHtml4(liveHeadCtx())) + '<div class="hint">\u3053\u306E\u624B\u756A\u306F\u30B3\u30FC\u30C1\u306E\u8A55\u4FA1\u3092\u53D6\u5F97\u3067\u304D\u307E\u305B\u3093\u3067\u3057\u305F\uFF08\u63A8\u5968\u306A\u3057\uFF09\u3002</div>';
   if (!replay && !AUTO && (preparingDecision || pending?.kind === "zimo" || pending?.kind === "fulou") && !selectedAction) {
     const memo0 = east4Memo();
     S.east4Memo = memo0;
-    return `${head(escHtml3(liveHeadCtx()))}<div class="hint">\u724C\u3092\u9078\u3076\u3068\u8A55\u4FA1\u3092\u8868\u793A\u3057\u307E\u3059\uFF08\u9078\u629E\u3057\u305F\u724C\u3092\u3082\u3046\u4E00\u5EA6\u30BF\u30C3\u30D7\u3067\u6253\u724C\uFF09\u3002</div>${memo0 ? `<div class="east4-memo">${memo0}</div>` : ""}`;
+    return `${head(escHtml4(liveHeadCtx()))}<div class="hint">\u724C\u3092\u9078\u3076\u3068\u8A55\u4FA1\u3092\u8868\u793A\u3057\u307E\u3059\uFF08\u9078\u629E\u3057\u305F\u724C\u3092\u3082\u3046\u4E00\u5EA6\u30BF\u30C3\u30D7\u3067\u6253\u724C\uFF09\u3002</div>${memo0 ? `<div class="east4-memo">${memo0}</div>` : ""}`;
   }
-  if (!rec) return head(escHtml3(liveHeadCtx())) + '<div class="hint">\u3042\u306A\u305F\u306E\u624B\u756A\u3067\u63A8\u5968\u3092\u8868\u793A\u3057\u307E\u3059</div>';
+  if (!rec) return head(escHtml4(liveHeadCtx())) + '<div class="hint">\u3042\u306A\u305F\u306E\u624B\u756A\u3067\u63A8\u5968\u3092\u8868\u793A\u3057\u307E\u3059</div>';
   const best = rec.top3?.[0];
   const isReaction = rec.context === "dapai" || rec.context === "gang";
   const subs = (isReaction ? (rec.qValues || []).map((c, i) => ({ ...c, rank: i + 1 })) : (rec.top3 || []).map((c, i) => ({ ...c, rank: i + 1 }))).filter((c) => c.action !== best?.action).slice(0, isReaction ? 8 : 2);
   const top3 = subs.map((c) => `<div class="qrow"><span class="qname">${c.rank}\u4F4D ${actionLabel(c.action, rec)}</span><span class="prob">${formatPercent(c.prob)}</span></div>`).join("");
   const runnerUps = subs.map((c) => ({ name: actionLabel(c.action, rec), percent: formatPercent(c.prob) }));
-  const callNotes = (rec.callNotes || []).map((n) => `<div class="hint">${actionLabel(n.action, rec)}\u5F8C: \u6700\u826F\u306E\u6253\u724C\u3067${n.shanten === 0 ? "\u30C6\u30F3\u30D1\u30A4" : `${escHtml3(n.shanten)}\u5411\u8074`}\u30FB\u53D7\u5165${escHtml3(n.ukeire)}\u679A</div>`).join("");
-  const agr = !replay && !AUTO ? agreementLineHTML(seat0?.agreement, { escapeHtml: escHtml3 }) : "";
+  const callNotes = (rec.callNotes || []).map((n) => `<div class="hint">${actionLabel(n.action, rec)}\u5F8C: \u6700\u826F\u306E\u6253\u724C\u3067${n.shanten === 0 ? "\u30C6\u30F3\u30D1\u30A4" : `${escHtml4(n.shanten)}\u5411\u8074`}\u30FB\u53D7\u5165${escHtml4(n.ukeire)}\u679A</div>`).join("");
+  const agr = !replay && !AUTO ? agreementLineHTML(seat0?.agreement, { escapeHtml: escHtml4 }) : "";
   const memo = replay ? null : east4Memo();
   if (!replay) S.east4Memo = memo;
   const showSubs = subs.length > 0 && (!sheet || isReaction);
@@ -40762,25 +41535,25 @@ function coachHTML(replayRec, opts = {}) {
   const recTileArt = recTile ? `<span class="rec-tile" aria-hidden="true">${tileSVG(recTile, "")}</span>` : "";
   const after = shantenAfterLabel(rec.shantenAfter != null ? rec.shantenAfter : rec.shanten);
   const headingContext = replay ? rec.context : currentCoach?.context || rec.context;
-  const headHTML = head(`${escHtml3(kyokuText(rec.kyoku))} / ${escHtml3(coachHeadingLabel(rec, headingContext, replay))}`);
+  const headHTML = head(`${escHtml4(kyokuText(rec.kyoku))} / ${escHtml4(coachHeadingLabel(rec, headingContext, replay))}`);
   if (sheet) {
     return `${headHTML}
     <div class="rec">\u63A8\u5968: <b>${actionLabel(rec.recommended, rec)}</b>${recTileArt}
       <span class="prob eval">\u63A8\u5968\u5EA6\uFF1A${formatEvalPercent(best?.prob ?? rec.pBest)}</span></div>
     ${showSubs ? `<div class="top3"><div class="hint">\u5168\u5019\u88DC</div>${top3}</div>` : ""}${callNotes}
-    ${after != null ? `<div class="after-state">\u6253\u724C\u5F8C\uFF1A${escHtml3(after)}</div>` : ""}
+    ${after != null ? `<div class="after-state">\u6253\u724C\u5F8C\uFF1A${escHtml4(after)}</div>` : ""}
     <details class="prob-def"><summary>\u63A8\u5968\u5EA6\u3068\u306F \u24D8</summary><div class="prob-def-body">\u63A8\u5968\u5EA6\u306F\u3001AI\u30B3\u30FC\u30C1\u306E\u8A55\u4FA1\u3092\u5019\u88DC\u5168\u4F53\u306B\u5BFE\u3059\u308B\u5272\u5408\uFF08\uFF05\uFF09\u3067\u8868\u3057\u305F\u3082\u306E\u3067\u3059\u3002</div></details>${agr}${memo ? `<div class="east4-memo">${memo}</div>` : ""}`;
   }
   return headHTML + coachSummaryHTML({
     recommended: actionLabel(rec.recommended, rec),
     recommendedTileArt: recTileArt,
     evalPercent: formatEvalPercent(best?.prob ?? rec.pBest),
-    runnerUpHTML: showSubs ? runnerUpLineHTML(runnerUps, { label: isReaction ? "\u5168\u5019\u88DC" : "\u6B21\u70B9", escapeHtml: escHtml3 }) : "",
+    runnerUpHTML: showSubs ? runnerUpLineHTML(runnerUps, { label: isReaction ? "\u5168\u5019\u88DC" : "\u6B21\u70B9", escapeHtml: escHtml4 }) : "",
     callNotesHTML: callNotes,
     after,
     agreementHTML: agr,
     memo,
-    escapeHtml: escHtml3
+    escapeHtml: escHtml4
   });
 }
 function isFinalKyokuContext() {
@@ -40948,7 +41721,7 @@ function explainHTML(opts = {}) {
     comparison,
     cmpExpanded,
     rowTags,
-    escapeHtml: escHtml3
+    escapeHtml: escHtml4
   }) + `${verdictHTML}${stats}${probeSectionHTML(rec, "current")}`;
 }
 var coachSheetOpen = false;
@@ -41007,7 +41780,7 @@ function probeResultHTML(rec) {
   const probed = !!rec.probe;
   let h = "";
   if (conds.length) {
-    h += explainConditionsHTML(conds, escHtml3);
+    h += explainConditionsHTML(conds, escHtml4);
   } else if (probed && !rec.explainability?.outOfScope) {
     h += '<div class="probe-none">\u8AAC\u660E\u3067\u304D\u308B\u6761\u4EF6\u306F\u898B\u3064\u304B\u308A\u307E\u305B\u3093\u3067\u3057\u305F</div>';
   }
@@ -41017,7 +41790,7 @@ function probeResultHTML(rec) {
     h += `<div class="probe-dirs"><div class="hint">\u65B9\u91DD\u5225\u306E\u6700\u5584\u624B\uFF08\u63A8\u5968\u3068\u7570\u306A\u308B\u65B9\u91DD\u306E\u307F\uFF09</div>${dirs.map((d) => {
       const bp = probOf2(d.bestAction);
       const diff = bp != null && baseProb != null ? bp - baseProb : null;
-      return `<div class="probe-dir">${escHtml3(d.label)}\u3092\u6B8B\u3059\u6700\u5584\u306F ${tileLabel(d.bestPai)}${bp != null ? `\uFF08\u63A8\u5968\u5EA6 ${formatPercent(bp)}${diff != null ? `\u3001\u63A8\u5968\u3068\u306E\u5DEE ${formatPercent(diff)}` : ""}\uFF09` : ""}</div>`;
+      return `<div class="probe-dir">${escHtml4(d.label)}\u3092\u6B8B\u3059\u6700\u5584\u306F ${tileLabel(d.bestPai)}${bp != null ? `\uFF08\u63A8\u5968\u5EA6 ${formatPercent(bp)}${diff != null ? `\u3001\u63A8\u5968\u3068\u306E\u5DEE ${formatPercent(diff)}` : ""}\uFF09` : ""}</div>`;
     }).join("")}</div>`;
   }
   if (probed && !flips.length && !dirs.length) {
@@ -41160,7 +41933,7 @@ function reviewHTML(records) {
       <div class="review-none">\u30B3\u30FC\u30C1\u3068\u7570\u306A\u308B\u9078\u629E\u306F\u3042\u308A\u307E\u305B\u3093\u3067\u3057\u305F\u3002</div></div>`;
   }
   const body = rows.map((r) => `<tr class="review-row">
-      <td>${escHtml3(kyokuText(r.kyoku) || "-")} / ${escHtml3(r.junme ?? "-")}\u5DE1\u76EE</td><td>${escHtml3(contextLabel(r.context))}</td>
+      <td>${escHtml4(kyokuText(r.kyoku) || "-")} / ${escHtml4(r.junme ?? "-")}\u5DE1\u76EE</td><td>${escHtml4(contextLabel(r.context))}</td>
       <td>${actionLabel(r.recommended, r)}<br><span class="prob">${formatPercent(r.pBest)}</span></td>
       <td>${actionLabel(r.actual, r)}<br><span class="prob">${formatPercent(r.pActual)}</span></td>
       <td><span class="prob">${formatPercent(r.probDiff)}</span></td>
@@ -41245,18 +42018,28 @@ function jumpReplayKyoku(delta) {
   }
   renderSceneViewer();
 }
+function replayTableHTML(scene, qijia) {
+  const snap = sceneSnapshot(scene, qijia), c = snap.center;
+  const byPos = Object.fromEntries(snap.seats.map((s) => [s.pos, s]));
+  const seat = (pos) => `<div class="seat replay-seat-${["bottom", "right", "top", "left"][pos]} pos-${["bottom", "right", "top", "left"][pos]}${byPos[pos].lizhi ? " seat-riichi" : ""}">${seatHTML(byPos[pos], pos === 0, true, c.lunban)}</div>`;
+  const mini = (s) => `<div class="center-player pos-${s.pos}${s.l === c.lunban ? " active" : ""}"><span class="cp-wind">${s.wind}</span><span class="cp-name">${s.name}</span><b>${s.defen.toLocaleString()}</b></div>`;
+  return `<div class="replay-table">${seat(2)}${seat(3)}
+      <div class="replay-board"><div class="replay-center">
+        <div class="center-players">${[2, 3, 1, 0].map((p) => mini(byPos[p])).join("")}</div>
+        <div class="round"><span class="round-kyoku">${escHtml4("\u6771\u5357\u897F\u5317"[c.zhuangfeng])}${escHtml4(c.jushu + 1)}\u5C40</span> <span>${escHtml4(c.changbang)}\u672C\u5834</span></div><div class="center-meta"><span class="cm-item">\u6B8B\u308A ${escHtml4(c.paishu)}\u679A</span> <span class="cm-item">\u4F9B\u8A17 ${escHtml4(c.lizhibang)}</span></div>
+        <div class="dora"><span class="dora-label">\u30C9\u30E9\u8868\u793A</span>${c.baopai.map((p) => tileHTML(p, "dora-tile")).join("")}</div></div>
+      ${snap.seats.map((s) => `<div class="board-pond bp-${s.pos}${s.lizhi ? " riichi-on" : ""}">${pondHTML(s, scene.lastDapai ? (scene.lastDapai.actor - scene.oya + 4) % 4 : -1)}</div>`).join("")}</div>
+      ${seat(1)}<div class="replay-self-area">${seat(0)}</div></div>`;
+}
 function renderReplayViewer() {
   const v = sceneViewer, { scene, record } = replayCurrent();
   const qijia = v.bundle?.meta?.qijia ?? v.clip?.qijia ?? 0;
-  const snap = sceneSnapshot(scene, qijia), c = snap.center;
-  const byPos = Object.fromEntries(snap.seats.map((s) => [s.pos, s]));
-  const round = `${escHtml3("\u6771\u5357\u897F\u5317"[c.zhuangfeng])}${escHtml3(c.jushu + 1)}\u5C40 ${escHtml3(c.changbang)}\u672C\u5834`;
-  const seat = (pos) => `<div class="seat replay-seat-${["bottom", "right", "top", "left"][pos]} pos-${["bottom", "right", "top", "left"][pos]}${byPos[pos].lizhi ? " seat-riichi" : ""}">${seatHTML(byPos[pos], pos === 0, true, c.lunban)}</div>`;
-  const mini = (s) => `<div class="center-player pos-${s.pos}${s.l === c.lunban ? " active" : ""}"><span class="cp-wind">${s.wind}</span><span class="cp-name">${s.name}</span><b>${s.defen.toLocaleString()}</b></div>`;
+  const c = sceneSnapshot(scene, qijia).center;
+  const round = `${escHtml4("\u6771\u5357\u897F\u5317"[c.zhuangfeng])}${escHtml4(c.jushu + 1)}\u5C40 ${escHtml4(c.changbang)}\u672C\u5834`;
   const nav = !!v.bundle, index = v.index ?? 0;
   const currentKyoku = v.steps?.[index].kyokuIndex;
   $("scene-viewer").innerHTML = `<div class="sv-card replay-card" role="dialog" aria-modal="true" aria-label="\u5BFE\u5C40\u306E\u518D\u751F">
-    <div class="sv-head"><div class="sv-title">\u5BFE\u5C40\u306E\u518D\u751F \u2015 ${round} \uFF0F ${escHtml3(scene.turn)}\u624B\u76EE${record ? ` \u30FB ${escHtml3(contextLabel(record.context))}` : ""}</div>
+    <div class="sv-head"><div class="sv-title">\u5BFE\u5C40\u306E\u518D\u751F \u2015 ${round} \uFF0F ${escHtml4(scene.turn)}\u624B\u76EE${record ? ` \u30FB ${escHtml4(contextLabel(record.context))}` : ""}</div>
     <div class="sv-nav"><button type="button" data-scene-close>\u9589\u3058\u308B</button></div></div>
     <div class="sv-nav replay-nav">
       <button type="button" data-replay-prev-kyoku ${!nav || !v.steps.some((s) => s.kyokuIndex < currentKyoku) ? "disabled" : ""}>\u524D\u306E\u5C40</button>
@@ -41266,13 +42049,7 @@ function renderReplayViewer() {
       <button type="button" data-replay-next-kyoku ${!nav || !v.steps.some((s) => s.kyokuIndex > currentKyoku) ? "disabled" : ""}>\u6B21\u306E\u5C40</button>
     </div>
     <div class="hint">${nav ? `\u5C40\u9762 ${index + 1} / ${v.steps.length} \u30FB \u95B2\u89A7\u5C02\u7528` : "\u5143\u306E\u5BFE\u5C40\u30D0\u30F3\u30C9\u30EB\u304C\u306A\u3044\u305F\u3081\u3001\u4FDD\u5B58\u3057\u305F\u5C40\u9762\u3060\u3051\u3092\u8868\u793A\u3057\u3066\u3044\u307E\u3059\u3002"}</div>
-    <div class="replay-table">${seat(2)}${seat(3)}
-      <div class="replay-board"><div class="replay-center">
-        <div class="center-players">${[2, 3, 1, 0].map((p) => mini(byPos[p])).join("")}</div>
-        <div class="round"><span class="round-kyoku">${escHtml3("\u6771\u5357\u897F\u5317"[c.zhuangfeng])}${escHtml3(c.jushu + 1)}\u5C40</span> <span>${escHtml3(c.changbang)}\u672C\u5834</span></div><div class="center-meta"><span class="cm-item">\u6B8B\u308A ${escHtml3(c.paishu)}\u679A</span> <span class="cm-item">\u4F9B\u8A17 ${escHtml3(c.lizhibang)}</span></div>
-        <div class="dora"><span class="dora-label">\u30C9\u30E9\u8868\u793A</span>${c.baopai.map((p) => tileHTML(p, "dora-tile")).join("")}</div></div>
-      ${snap.seats.map((s) => `<div class="board-pond bp-${s.pos}${s.lizhi ? " riichi-on" : ""}">${pondHTML(s, scene.lastDapai ? (scene.lastDapai.actor - scene.oya + 4) % 4 : -1)}</div>`).join("")}</div>
-      ${seat(1)}<div class="replay-self-area">${seat(0)}</div></div>
+    ${replayTableHTML(scene, qijia)}
     ${record ? `<section class="replay-coach clip-panel">${clipButtonHTML()}${coachHTML(record)}<div class="clip-status" role="status"></div></section>` : ""}
     ${!record ? `<div class="replay-clip-tools clip-panel">${clipButtonHTML()}<div class="clip-status" role="status"></div></div>` : ""}
     </div>`;
@@ -41410,6 +42187,31 @@ function stepSceneViewer(delta) {
 }
 function renderSceneViewer() {
   if (sceneViewer?.replay) renderReplayViewer();
+  else if (sceneViewer?.trialSummary) renderTrialSummary();
+}
+function renderTrialSummary() {
+  const summary = sceneViewer.trialSummary, worst = summary.worst, rec = worst?.record;
+  $("scene-viewer").innerHTML = trialSummaryHTML({
+    summary,
+    price: currentBillingPrice(),
+    labelOf: actionLabel,
+    boardHTML: worst ? replayTableHTML(worst.scene, worst.qijia) : "",
+    coachHTML: rec ? coachHTML(rec) : "",
+    explain: worst ? explainWorst(worst) : null,
+    kyokuLabel: rec ? `${kyokuText(rec.kyoku)} ${rec.junme ?? "-"}\u5DE1\u76EE` : ""
+  });
+  $("scene-viewer").style.display = "flex";
+  fitReplayBoard();
+  $("scene-viewer").querySelector("[data-ts-close]")?.focus();
+}
+function openTrialSummary() {
+  stopReplay();
+  const wasOpen = !!sceneViewer;
+  markTrialSummaryShown(localStorage);
+  sceneViewer = { trialSummary: aggregateTrial(readTrialState(localStorage)) };
+  clipStatus.clear();
+  renderSceneViewer();
+  if (!wasOpen) backNav.push("scene", closeSceneViewer);
 }
 function agreementFromRecords(records) {
   const judged = (records || []).filter((r) => r && r.actual != null && r.agreement != null);
@@ -41634,7 +42436,7 @@ function historyItemLabel(bundle) {
     const score = `${Number(x.defen).toLocaleString()}${ranked ? "" : "\u70B9"}`;
     return `<span class="history-standing"><span class="history-standing-who">${who}</span><span class="history-standing-score">${score}</span></span>`;
   }).join("");
-  const agr = m.agreement?.total ? `\u4E00\u81F4 ${escHtml3(m.agreement.agree)}/${escHtml3(m.agreement.total)} (${escHtml3(Math.round(m.agreement.rate * 100))}%)` : "\u4E00\u81F4 -";
+  const agr = m.agreement?.total ? `\u4E00\u81F4 ${escHtml4(m.agreement.agree)}/${escHtml4(m.agreement.total)} (${escHtml4(Math.round(m.agreement.rate * 100))}%)` : "\u4E00\u81F4 -";
   const length = m.gameLength === "hanchan" || m.gameLength == null && m.rule?.["\u5834\u6570"] === 2 ? "\u534A\u8358" : "\u6771\u98A8";
   const partialTag = m.status === "partial" ? "\u3010\u4E2D\u65AD\u3011 " : "";
   const mainLine = [
@@ -41642,8 +42444,8 @@ function historyItemLabel(bundle) {
     m.mode === "auto" ? "\u30AA\u30FC\u30C8" : "\u624B\u52D5",
     length,
     m.model?.name || m.model?.coach || "-"
-  ].map((t) => `<span class="history-part">${escHtml3(t)}</span>`).join(" / ");
-  return `<span class="history-line history-line-main">${mainLine}</span><span class="history-line history-line-standings">${standings}</span><span class="history-line history-line-agreement">${agr} / \u5916\u3057 ${escHtml3(m.reviewCount ?? 0)}\u4EF6</span>`;
+  ].map((t) => `<span class="history-part">${escHtml4(t)}</span>`).join(" / ");
+  return `<span class="history-line history-line-main">${mainLine}</span><span class="history-line history-line-standings">${standings}</span><span class="history-line history-line-agreement">${agr} / \u5916\u3057 ${escHtml4(m.reviewCount ?? 0)}\u4EF6</span>`;
 }
 var historyImportMsg = "";
 var historyManageOpen = false;
@@ -41670,12 +42472,12 @@ async function importLogText(text) {
 function renderHistoryPanel() {
   const el2 = $("history");
   if (!el2) return;
-  const items = historyCache.map((bundle) => `<div class="history-item" data-game-id="${escHtml3(bundle.meta.gameId)}">
+  const items = historyCache.map((bundle) => `<div class="history-item" data-game-id="${escHtml4(bundle.meta.gameId)}">
       <div class="history-meta">${historyItemLabel(bundle)}</div>
       <div class="history-actions">
-        <button type="button" class="history-replay" data-game-id="${escHtml3(bundle.meta.gameId)}">\u518D\u751F</button>
-        <button type="button" class="history-download" data-game-id="${escHtml3(bundle.meta.gameId)}">\u30C0\u30A6\u30F3\u30ED\u30FC\u30C9</button>
-        <button type="button" class="history-delete" data-game-id="${escHtml3(bundle.meta.gameId)}">\u524A\u9664</button>
+        <button type="button" class="history-replay" data-game-id="${escHtml4(bundle.meta.gameId)}">\u518D\u751F</button>
+        <button type="button" class="history-download" data-game-id="${escHtml4(bundle.meta.gameId)}">\u30C0\u30A6\u30F3\u30ED\u30FC\u30C9</button>
+        <button type="button" class="history-delete" data-game-id="${escHtml4(bundle.meta.gameId)}">\u524A\u9664</button>
       </div>
     </div>`).join("");
   const hasHistory = historyCache.length > 0;
@@ -42132,14 +42934,15 @@ function updateSelChip() {
       const anchorTop = ar && ar.top < t.top ? ar.top : t.top;
       const areaH = a.height / scale;
       const chipH = chip.offsetHeight || 22;
-      const actionsTop = ar ? (ar.top - a.top) / scale : Infinity;
-      let top = (anchorTop - a.top) / scale - chipH - 12;
+      const handTop = Math.min(...[...document.querySelectorAll("#seat-bottom .tile.hand")].map((h) => h.getBoundingClientRect().top));
+      const inner = ar && act.firstElementChild ? act.firstElementChild.getBoundingClientRect().top : null;
       const ownRiver = document.querySelector("#board .bp-0");
-      if (ownRiver) {
-        const riverBottom = (ownRiver.getBoundingClientRect().bottom - a.top) / scale + 2;
-        if (top < riverBottom) top = riverBottom;
-      }
-      if (ar && top + chipH > actionsTop - 2) top = (ar.bottom - a.top) / scale + 2;
+      const top = placeSelChipTop({
+        chipH,
+        anchorTop: (anchorTop - a.top) / scale,
+        maxBottom: (Math.min(inner ?? Infinity, Number.isFinite(handTop) ? handTop : Infinity) - a.top) / scale,
+        riverBottom: ownRiver ? (ownRiver.getBoundingClientRect().bottom - a.top) / scale : 0
+      });
       chip.style.bottom = Math.max(0, areaH - top - chipH) + "px";
     }
   }
@@ -42355,12 +43158,25 @@ function showEnd(paipu) {
   audio.stopGame();
   clearResumeSnapshot();
   S.finished = true;
+  billing.gameEnded();
   S.defen = paipu.defen;
   gameEnded = true;
   kyokuResult = null;
   const bundle = buildGameBundle(paipu);
   sessionCompletions.set(bundle.meta.gameId, { meta: bundle.meta });
-  const trialEnded = currentCoachAccess().locked;
+  const trialEnded = currentCoachAccess().locked && billing.trialGames > 0;
+  const trialGame = billing.kind === "play" && billing.trialGames > 0 && currentCoachAccess().gate && gameTrialEligible && !AUTO && !bundle.meta.simulated;
+  if (trialGame) {
+    try {
+      noteTrialGame(localStorage, digestGame({
+        gameId: bundle.meta.gameId,
+        records: coach?.records || [],
+        sceneOf: (rec) => ({ scene: foldMjaiScene(bridge.events, rec.mjaiEventCount), qijia: QIJIA })
+      }));
+    } catch (e) {
+      S.errors.push("trial-summary/digest: " + (e?.message || e));
+    }
+  }
   lastBundle = bundle;
   S.lastBundle = bundle;
   S.gameBundleMeta = bundle.meta;
@@ -42426,8 +43242,23 @@ function showEnd(paipu) {
   $("dl-bundle").addEventListener("click", () => downloadJson(`mahjong-local_${bundle.meta.gameId}.json`, bundle));
   $("open-history-end").addEventListener("click", openHistory);
   $("again").addEventListener("click", returnToStart);
+  if (trialGame && trialEnded && trialSummaryDue({
+    kind: billing.kind,
+    trialGames: billing.trialGames,
+    eligible: gameTrialEligible,
+    locked: true,
+    simulated: false,
+    auto: AUTO,
+    state: readTrialState(localStorage)
+  })) {
+    guarded("trial-summary/open", openTrialSummary);
+  }
   const savePromise = saveFinishedGame(bundle);
   schedulePendingSwReload(savePromise);
+  if (!AUTO && !bundle.meta.simulated) {
+    savePromise.then(() => reviewPrompt.gameFinished({ center: certifiedRankDisplay(summariesCache)?.center })).catch(() => {
+    });
+  }
   render();
 }
 var returningToStart = false;
@@ -42498,6 +43329,7 @@ async function returnToStart() {
   $("end").innerHTML = "";
   closeSceneViewer();
   $("start-screen").hidden = false;
+  billing.gameEnded();
   resetFitScale();
   $("suspendBtn").disabled = false;
   refreshResumeOffer();
@@ -42584,11 +43416,11 @@ function askConfirm({ title, message, okLabel = "\u524A\u9664\u3059\u308B", canc
   return new Promise((resolve) => {
     confirmResolve = resolve;
     el2.innerHTML = `<div class="start-confirm-card">
-      <h2 id="confirm-dialog-title">${escHtml3(title)}</h2>
-      <p>${escHtml3(message)}</p>
+      <h2 id="confirm-dialog-title">${escHtml4(title)}</h2>
+      <p>${escHtml4(message)}</p>
       <div class="start-confirm-actions">
-        <button type="button" id="confirm-dialog-ok">${escHtml3(okLabel)}</button>
-        <button type="button" id="confirm-dialog-cancel">${escHtml3(cancelLabel)}</button>
+        <button type="button" id="confirm-dialog-ok">${escHtml4(okLabel)}</button>
+        <button type="button" id="confirm-dialog-cancel">${escHtml4(cancelLabel)}</button>
       </div></div>`;
     el2.hidden = false;
     $("confirm-dialog-ok")?.addEventListener("click", () => resolveConfirm(true));
@@ -42655,6 +43487,7 @@ async function startGame(userGesture = false) {
 }
 async function startGameInner(session) {
   await billingHistoryReady;
+  await billing.ready;
   const sim = currentSimState();
   const completed = completedCoachHistory().length;
   const startState = syncStartFloor(startStorage, completed);
@@ -42670,7 +43503,8 @@ async function startGameInner(session) {
   });
   const resume = resumeRequest;
   resumeRequest = null;
-  gameTrialEligible = resume ? resume.trialEligible ?? (trialCount > 0 && trialCount - 1 < TRIAL_GAMES) : trialCount < TRIAL_GAMES;
+  gameTrialEligible = resume ? resume.trialEligible ?? (trialCount > 0 && trialCount - 1 < billing.trialGames) : billing.trialGames === 0 ? realAccessAtStart.entitled : trialCount < billing.trialGames;
+  gameCoachRuns = AUTO || billing.coachInference(realAccessAtStart);
   if (resume) {
     gameLength = resume.gameLength === "tonpuu" ? "tonpuu" : "hanchan";
     const ls2 = $("lengthSel");
@@ -42736,7 +43570,7 @@ async function startGameInner(session) {
     const coachBrain = new MortalBrain((4 - QIJIA) % 4, 4);
     bridge.registerCoach(coachBrain);
     coach = new Coach(bridge, ai);
-    const human = new HumanPlayer(sessionUi, coach, () => {
+    const human = new HumanPlayer(sessionUi, gameCoachRuns ? coach : null, () => {
       const s = {
         noCall: $("autoNoCall").checked,
         autoWin: $("autoWin").checked,
@@ -42792,7 +43626,7 @@ async function startGameInner(session) {
     }
     return notes;
   };
-  coach.shantenProvider = (context) => displayShanten(seat0.shoupai, seat0._rule, seat0.model, context, currentDecisionRows);
+  coach.shantenProvider = (context, recInfo) => displayShanten(seat0.shoupai, seat0._rule, seat0.model, context, currentDecisionRows, recInfo);
   coach.statisticsProvider = (rec) => statisticalNoteForCoach(seat0.shoupai, seat0._rule, seat0.model, rec, currentDecisionRows);
   coach.explainabilityProvider = (rec) => {
     if (rec.context === "dapai" || rec.context === "gang") {
@@ -43038,7 +43872,7 @@ var statsUi = {
   mmSort: "diff",
   mmFilter: "all"
 };
-var escHtml3 = (s) => String(s ?? "").replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" })[c]);
+var escHtml4 = (s) => String(s ?? "").replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" })[c]);
 async function loadAiBaseline() {
   if (aiBaseline) return aiBaseline;
   try {
@@ -43171,7 +44005,7 @@ function statsRowHTML(r, m, ideal, showBaseline, lowSample) {
       <td class="st-num st-base">${showBaseline ? fmtMetric(r.fmt, idealV ?? null) : "\u2015"}</td>
       <td class="st-num">${showBaseline ? fmtDiff(r.fmt, m.v, idealV ?? null) : "\u2015"}</td>
       <td class="st-den">n=${m.n ?? 0}</td>
-    </tr>${open ? `<tr class="st-desc"><td colspan="5">${escHtml3(r.d)}</td></tr>` : ""}`;
+    </tr>${open ? `<tr class="st-desc"><td colspan="5">${escHtml4(r.d)}</td></tr>` : ""}`;
 }
 function statsSectionHTML(sec, agg, baseline, showBaseline, lowSample) {
   const measured = [];
@@ -43193,7 +44027,7 @@ function statsSectionHTML(sec, agg, baseline, showBaseline, lowSample) {
 function yakuTableHTML(title, yakuCounts, total) {
   const entries = Object.entries(yakuCounts || {}).sort((a, b) => b[1] - a[1]).slice(0, 12);
   if (!entries.length || !total) return "";
-  const rows = entries.map(([name2, n]) => `<tr><td>${escHtml3(name2)}</td><td class="st-num">${n}\u56DE</td><td class="st-num">${(n / total * 100).toFixed(1)}%</td></tr>`).join("");
+  const rows = entries.map(([name2, n]) => `<tr><td>${escHtml4(name2)}</td><td class="st-num">${n}\u56DE</td><td class="st-num">${(n / total * 100).toFixed(1)}%</td></tr>`).join("");
   return `<div class="st-section"><h3>${title}</h3>
     <table class="st-table"><thead><tr><th>\u5F79</th><th>\u56DE\u6570</th><th>\u5272\u5408</th></tr></thead><tbody>${rows}</tbody></table></div>`;
 }
@@ -43260,7 +44094,7 @@ function renderStatsView() {
   const sel = selectSummaries(summariesCache, statsUi);
   const agg = aggregateMetrics(sel.picked);
   const analysisLocked = liveCoachLocked();
-  const trialIds = new Set(completedCoachHistory().slice(0, TRIAL_GAMES).map((s) => s.gameId));
+  const trialIds = new Set(completedCoachHistory().slice(0, billing.trialGames).map((s) => s.gameId));
   const analysisPicked = analysisLocked ? summariesCache.filter((s) => s.eligible && trialIds.has(s.gameId)) : sel.picked;
   const coachAgg = aggregateCoach(analysisPicked);
   const pickedIds = new Set(analysisPicked.map((s) => s.gameId));
@@ -43283,8 +44117,8 @@ function renderStatsView() {
       ${statsSelectFieldHTML("\u30B3\u30FC\u30C1\u8868\u793A", "st-coach-display", options(statsUi.coachDisplay, [["all", "\u3059\u3079\u3066"], ["on", "\u6709\u308A"], ["off", "\u7121\u3057"], ["unknown", "\u8A18\u9332\u306A\u3057"]]))}
       ${statsSelectFieldHTML("\u4F7F\u7528\u30E2\u30C7\u30EB", "st-model", options(statsUi.modelId, [["all", "\u3059\u3079\u3066"], ...MODELS.map((m) => [m.id, modelProductLabel(m.id)]), ["unknown", "\u8A18\u9332\u306A\u3057"]]))}
       <div class="st-cpu-row">
-        ${statsMultiFieldHTML("tier", "\u76F8\u624B\u306E\u5F37\u3055", CPU_TIERS, statsUi.cpuTiers, statsUi.cpuOpen.tier, escHtml3)}
-        ${statsMultiFieldHTML("style", "\u76F8\u624B\u306E\u30BF\u30A4\u30D7", CPU_STYLES, statsUi.cpuStyles, statsUi.cpuOpen.style, escHtml3)}
+        ${statsMultiFieldHTML("tier", "\u76F8\u624B\u306E\u5F37\u3055", CPU_TIERS, statsUi.cpuTiers, statsUi.cpuOpen.tier, escHtml4)}
+        ${statsMultiFieldHTML("style", "\u76F8\u624B\u306E\u30BF\u30A4\u30D7", CPU_STYLES, statsUi.cpuStyles, statsUi.cpuOpen.style, escHtml4)}
       </div>
     </div>
     ${statsScopeHTML({
@@ -43299,7 +44133,7 @@ function renderStatsView() {
     lowSample,
     currentModelProduct: modelProductLabel(S.modelId),
     differentModel: !!(baseline?.modelId && baseline.modelId !== S.modelId),
-    escapeHtml: escHtml3
+    escapeHtml: escHtml4
   })}`;
   if (!sel.picked.length) {
     html += '<div class="st-empty">\u3053\u306E\u6761\u4EF6\u3067\u96C6\u8A08\u3067\u304D\u308B\u5BFE\u5C40\uFF08\u5B8C\u4E86\uFF09\u306F\u3042\u308A\u307E\u305B\u3093\u3002\u6761\u4EF6\u3092\u5909\u66F4\u3059\u308B\u304B\u3001\u5BFE\u5C40\u3092\u7D42\u3048\u308B\u3068\u7D71\u8A08\u304C\u8868\u793A\u3055\u308C\u307E\u3059\u3002</div>';
@@ -43349,6 +44183,19 @@ function renderStatsView() {
       if (changed && el2.style.display !== "none") renderStatsView();
     }).catch(() => {
     });
+  }
+  const certEl = el2.querySelector("[data-cert-rank]:not([data-cert-pending])");
+  const certDisplay = certEl && sharer.canShareImage() ? certifiedRankDisplay(summariesCache) : null;
+  if (certDisplay) {
+    const b = document.createElement("button");
+    b.type = "button";
+    b.className = "st-chip";
+    b.dataset.certShare = "";
+    b.textContent = "\u753B\u50CF\u3067\u5171\u6709";
+    b.addEventListener("click", () => {
+      sharer.shareCard(buildCertCard(certDisplay));
+    });
+    certEl.append(b);
   }
   const rangeSel = el2.querySelector("#st-range");
   if (rangeSel) rangeSel.addEventListener("change", () => {
@@ -43400,8 +44247,8 @@ function statsMismatchListHTML(rows) {
     const r = row;
     const date = savedAt ? new Date(savedAt).toLocaleDateString("ja-JP") : "";
     return `<div class="review-item">
-      <span>${escHtml3(kyokuText(r.kyoku))} ${escHtml3(r.junme ?? "-")}\u5DE1\u76EE\uFF08${escHtml3(contextLabel(r.context))}\uFF09${date ? " \u30FB " + date : ""}</span>
-      <span>\u63A8\u5968: ${escHtml3(actionLabel(r.recommended, r))} \uFF0F \u3042\u306A\u305F: ${escHtml3(actionLabel(r.actual, r))}</span>
+      <span>${escHtml4(kyokuText(r.kyoku))} ${escHtml4(r.junme ?? "-")}\u5DE1\u76EE\uFF08${escHtml4(contextLabel(r.context))}\uFF09${date ? " \u30FB " + date : ""}</span>
+      <span>\u63A8\u5968: ${escHtml4(actionLabel(r.recommended, r))} \uFF0F \u3042\u306A\u305F: ${escHtml4(actionLabel(r.actual, r))}</span>
       <span class="review-diff">\u63A8\u5968\u5EA6\u5DEE ${r.probDiff != null ? (r.probDiff * 100).toFixed(1) + "%" : "-"}</span>
     </div>`;
   }).join("");
@@ -43674,6 +44521,16 @@ function initAudioControls() {
     backNav.push("about", hideAbout);
   };
   $("ss-about-btn")?.addEventListener("click", (e) => openAbout(e.currentTarget));
+  $("ss-review-btn")?.addEventListener("click", () => {
+    if (!openExternalUrl(PLAY_STORE_URL)) window.open(PLAY_STORE_URL, "_blank", "noopener,noreferrer");
+  });
+  const inviteBtn = $("ss-invite-btn");
+  if (inviteBtn) {
+    inviteBtn.hidden = !sharer.canShareText();
+    inviteBtn.addEventListener("click", () => {
+      sharer.shareInvite();
+    });
+  }
   $("about-close")?.addEventListener("click", closeAbout);
   $("about-body")?.addEventListener("click", (e) => {
     const simModeButton = e.target.closest?.("[data-sim-mode]");
@@ -43880,13 +44737,10 @@ function initStartScreen() {
     getModelId: () => S.modelId,
     BrainClass: MortalBrain,
     isReady: () => !!(ai && S.ready && !S.modelSwapping),
-    getBilling: () => ({
-      pwa: billing.pwa,
-      status: billing.state.status,
-      owned: billing.state.owned,
-      grandfathered: billing.state.grandfathered
-    }),
-    backNav
+    getGate: () => billing.access(0).gate,
+    backNav,
+    sharer,
+    onSetFinished: () => reviewPrompt.drillSetFinished({ total: drillQuestionTotal(readDrillResults(localStorage)) })
   });
   S.drill = drillUi;
   drillUi.setEnabled(!!(ai && S.ready && !S.modelSwapping));
@@ -43990,7 +44844,10 @@ function realFreemiumState() {
     status: state.status,
     owned: state.owned,
     grandfathered: state.grandfathered,
-    pwa: billing.pwa,
+    pwa: billing.kind === "license",
+    // legacy test field: value only, nothing reads it for logic
+    kind: billing.kind,
+    licensed: billing.access(0).entitled,
     completed,
     starts: startCount(readStartState(startStorage), completed)
   };
@@ -44030,10 +44887,12 @@ function applySimMode(mode) {
 }
 function liveCoachLocked() {
   const access = currentCoachAccess();
+  if (S.started && !S.finished && !gameCoachRuns) return true;
   return access.gate && (S.started && !S.finished ? !gameTrialEligible : access.locked);
 }
 function refreshCoachAccess() {
   const state = billing.state;
+  if (billing.kind === "play") reviewPrompt.noteBilling(state);
   const simulated = currentSimState().active;
   const status = $("unlock-status");
   if (status) status.textContent = simulated ? "\u30B7\u30DF\u30E5\u30EC\u30FC\u30B7\u30E7\u30F3\u4E2D\u306F\u8CFC\u5165\u3067\u304D\u307E\u305B\u3093" : state.status === "loading" ? "\u78BA\u8A8D\u4E2D\u2026" : state.owned || state.grandfathered ? "\u30A2\u30F3\u30ED\u30C3\u30AF\u6E08\u307F\u3067\u3059" : state.outcome === "purchasing" ? "\u8CFC\u5165\u624B\u7D9A\u304D\u4E2D\u2026" : state.outcome === "cancelled" ? "\u8CFC\u5165\u3092\u30AD\u30E3\u30F3\u30BB\u30EB\u3057\u307E\u3057\u305F" : state.outcome === "pending" ? "\u304A\u652F\u6255\u3044\u306E\u5B8C\u4E86\u3092\u5F85\u3063\u3066\u3044\u307E\u3059" : state.status === "unavailable" ? "\u78BA\u8A8D\u3067\u304D\u307E\u305B\u3093\u3067\u3057\u305F\u3002\u30B3\u30FC\u30C1\u306F\u305D\u306E\u307E\u307E\u4F7F\u3048\u307E\u3059" : state.outcome === "restored" ? "\u8CFC\u5165\u306F\u898B\u3064\u304B\u308A\u307E\u305B\u3093\u3067\u3057\u305F" : "";
@@ -44047,6 +44906,7 @@ function refreshCoachAccess() {
   }
   const restore = $("coach-restore");
   if (restore) restore.hidden = !billing.available;
+  licenseUi?.render();
   if (!currentCoachAccess().locked) document.querySelector(".trial-end")?.remove();
   if (S.started) render();
   if ($("stats-view")?.style.display === "flex") renderStatsView();
@@ -44062,7 +44922,6 @@ function closeUnlockSheet() {
   backNav.dismiss("unlock");
 }
 function openUnlockSheet() {
-  if (billing.pwa) return;
   const sheet = $("coach-unlock-sheet");
   if (!sheet || !sheet.hidden) return;
   unlockFocus = document.activeElement;
@@ -44072,8 +44931,14 @@ function openUnlockSheet() {
   backNav.push("unlock", closeUnlockSheet);
 }
 function initCoachBilling() {
-  const purchaseUi = !billing.pwa;
-  if (purchaseUi) {
+  document.addEventListener("click", (e) => {
+    if (!e.target.closest?.("[data-coach-unlock]")) return;
+    if (billing.kind === "license") licenseUi?.openSheet();
+    else openUnlockSheet();
+  });
+  if (billing.kind === "license") {
+    licenseUi = createLicenseUi({ license: billing, settingsPanel: $("ss-settings-panel"), backNav });
+  } else {
     const sheet = document.createElement("div");
     sheet.id = "coach-unlock-sheet";
     sheet.className = "unlock-sheet";
@@ -44096,7 +44961,6 @@ function initCoachBilling() {
       billing.restore();
     });
     document.addEventListener("click", (e) => {
-      if (e.target.closest?.("[data-coach-unlock]")) openUnlockSheet();
       if (e.target.closest?.("[data-coach-sheet-close]") || e.target === sheet) closeUnlockSheet();
       if (e.target.closest?.("[data-coach-purchase]")) {
         if (!currentSimState().active) billing.purchase();
@@ -44125,7 +44989,9 @@ function initCoachBilling() {
     return {
       ...sim.active ? { status: "ready", owned: false, grandfathered: false } : billing.state,
       ...access,
-      pwa: billing.pwa,
+      pwa: billing.kind === "license",
+      // legacy test field: value only
+      kind: billing.kind,
       completed: real.completed,
       starts: real.starts,
       real,
@@ -44778,6 +45644,51 @@ document.addEventListener("DOMContentLoaded", () => {
   installScrollHints();
   init();
 });
+
+// src/legacy_notice.mjs
+var LEGACY_NOTICE = {
+  title: "Web\u7248\u306F\u65B0\u3057\u3044\u5834\u6240\u306B\u79FB\u308A\u307E\u3057\u305F",
+  url: "https://app.mnolab.dev",
+  lines: [
+    "\u8A18\u9332\uFF08\u7D71\u8A08\u30FB\u8A8D\u5B9A\u6BB5\u4F4D\u30FB\u5BFE\u5C40\u5C65\u6B74\uFF09\u306F\u65B0\u3057\u3044\u5834\u6240\u3078\u5F15\u304D\u7D99\u304C\u308C\u307E\u305B\u3093",
+    "\u3053\u306E\u30DA\u30FC\u30B8\u306F\u4ECA\u5F8C\u66F4\u65B0\u3055\u308C\u307E\u305B\u3093\u3002\u304A\u624B\u3059\u304D\u306E\u3068\u304D\u306B\u79FB\u884C\u3092\u304A\u9858\u3044\u3057\u307E\u3059"
+  ]
+};
+function mountLegacyNotice(root) {
+  const doc = root?.ownerDocument;
+  if (!doc || root.querySelector("#ss-legacy-notice")) return null;
+  const card = doc.createElement("div");
+  card.className = "ss-card";
+  card.id = "ss-legacy-notice";
+  card.setAttribute("role", "note");
+  card.style.borderColor = "#ffd97a";
+  const title = doc.createElement("div");
+  title.className = "ss-card-title";
+  title.style.cssText = "color:#ffd97a;font-size:14px;font-weight:800";
+  title.textContent = LEGACY_NOTICE.title;
+  const link = doc.createElement("a");
+  link.href = LEGACY_NOTICE.url;
+  link.textContent = LEGACY_NOTICE.url;
+  link.target = "_blank";
+  link.rel = "noopener";
+  link.style.cssText = "display:block;margin-bottom:6px;color:#9fd0ff;font-weight:700;word-break:break-all";
+  card.append(title, link);
+  for (const t of LEGACY_NOTICE.lines) {
+    const p = doc.createElement("div");
+    p.style.cssText = "font-size:12.5px;line-height:1.5;color:#e8eef5;margin-top:3px";
+    p.textContent = t;
+    card.append(p);
+  }
+  const first = root.querySelector(".ss-brand");
+  if (first) first.after(card);
+  else root.prepend(card);
+  return card;
+}
+
+// src/legacy_entry.mjs
+var mount = () => mountLegacyNotice(document.querySelector("#start-screen .ss-scroll"));
+if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", mount);
+else mount();
 /*! Bundled license information:
 
 @kobalab/majiang-core/lib/index.js:

@@ -328,6 +328,9 @@
 }
 .drill-primary { border: 1px solid #2a7; background: #0e7a52; color: #fff; }
 .drill-secondary { border: 1px solid rgba(255, 255, 255, .24); background: #0d3a2a; color: #dfe; }
+.drill-share { margin-top: 8px; width: 100%; padding: 8px; border-radius: 10px; border: 1px solid rgba(255, 255, 255, .24); background: transparent; color: #dfe; font-size: 13px; }
+.drill-share[hidden] { display: none; }
+.drill-share:active { filter: brightness(1.14); }
 .drill-primary:active, .drill-secondary:active { filter: brightness(1.14); }
 
 /* Result screen */
