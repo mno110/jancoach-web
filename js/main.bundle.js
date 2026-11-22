@@ -45654,6 +45654,136 @@ var LEGACY_NOTICE = {
     "\u3053\u306E\u30DA\u30FC\u30B8\u306F\u4ECA\u5F8C\u66F4\u65B0\u3055\u308C\u307E\u305B\u3093\u3002\u304A\u624B\u3059\u304D\u306E\u3068\u304D\u306B\u79FB\u884C\u3092\u304A\u9858\u3044\u3057\u307E\u3059"
   ]
 };
+// src/legacy_migrate.mjs
+const MIGRATE_API = "https://api.mnolab.dev/v1/migrate/issue";
+const MIGRATE_NEW_SITE = "https://jancoach.mnolab.dev";
+const MIGRATE_STORE_KEY = "jc-migrate-code";
+const MIGRATE_TEXT = {
+  button: "\u79FB\u884C\u30B3\u30FC\u30C9\u3092\u767A\u884C\u3059\u308B",
+  busy: "\u767A\u884C\u3057\u3066\u3044\u307E\u3059\u2026",
+  guide: "\u65B0\u3057\u3044\u5834\u6240\u306E\u8A2D\u5B9A\u753B\u9762\u3067\u3053\u306E\u30B3\u30FC\u30C9\u3092\u5165\u529B\u3057\u3066\u304F\u3060\u3055\u3044",
+  copy: "\u30B3\u30FC\u30C9\u3092\u30B3\u30D4\u30FC",
+  copied: "\u30B3\u30D4\u30FC\u3057\u307E\u3057\u305F",
+  copyFailed: "\u30B3\u30D4\u30FC\u3067\u304D\u307E\u305B\u3093\u3067\u3057\u305F\u3002\u30B3\u30FC\u30C9\u3092\u9577\u62BC\u3057\uFF08\u9078\u629E\uFF09\u3057\u3066\u30B3\u30D4\u30FC\u3057\u3066\u304F\u3060\u3055\u3044",
+  open: "\u65B0\u3057\u3044\u5834\u6240\u3092\u958B\u304F",
+  closed: "\u79FB\u884C\u30B3\u30FC\u30C9\u306E\u53D7\u4ED8\u306F\u7D42\u4E86\u3057\u307E\u3057\u305F",
+  failed: "\u767A\u884C\u3067\u304D\u307E\u305B\u3093\u3067\u3057\u305F\u3002\u901A\u4FE1\u72B6\u6CC1\u3092\u78BA\u8A8D\u3057\u3066\u3001\u3082\u3046\u4E00\u5EA6\u304A\u8A66\u3057\u304F\u3060\u3055\u3044"
+};
+const BTN = "display:block;box-sizing:border-box;width:100%;min-height:40px;margin-top:8px;padding:8px 12px;border:1px solid #ffd97a;border-radius:8px;font-size:13px;font-weight:800;text-align:center;text-decoration:none;cursor:pointer;";
+const BTN_MAIN = `${BTN}background:#ffd97a;color:#1b2430;`;
+const BTN_SUB = `${BTN}background:transparent;color:#ffd97a;`;
+function mountMigrateIssue(card, deps = {}) {
+  const doc = card?.ownerDocument;
+  if (!doc) return null;
+  const T = MIGRATE_TEXT;
+  const doFetch = deps.fetch || ((...a) => globalThis.fetch(...a));
+  const storage = deps.storage !== void 0 ? deps.storage : (() => {
+    try {
+      return globalThis.localStorage;
+    } catch (_) {
+      return null;
+    }
+  })();
+  const load = () => {
+    try {
+      return storage?.getItem(MIGRATE_STORE_KEY) || null;
+    } catch (_) {
+      return null;
+    }
+  };
+  const save = (v) => {
+    try {
+      storage?.setItem(MIGRATE_STORE_KEY, v);
+    } catch (_) {
+    }
+  };
+  const box = doc.createElement("div");
+  box.id = "ss-legacy-migrate";
+  box.style.cssText = "margin-top:8px";
+  const say = (text, color) => {
+    const p = doc.createElement("div");
+    p.setAttribute("role", "status");
+    p.style.cssText = `font-size:12.5px;line-height:1.5;margin-top:6px;color:${color || "#e8eef5"}`;
+    p.textContent = text;
+    return p;
+  };
+  const clear = () => {
+    if (box.replaceChildren) box.replaceChildren();
+    else box.children.length = 0;
+  };
+  const button = (text, style) => {
+    const b = doc.createElement("button");
+    b.type = "button";
+    b.style.cssText = style;
+    b.textContent = text;
+    return b;
+  };
+  const showCode = (code) => {
+    clear();
+    const codeEl = doc.createElement("div");
+    codeEl.id = "ss-legacy-migrate-code";
+    codeEl.style.cssText = "margin-top:8px;padding:10px;border-radius:8px;background:#101820;border:1px solid #3a4a5c;color:#fff;font-family:ui-monospace,Menlo,Consolas,monospace;font-size:16px;font-weight:700;letter-spacing:.04em;text-align:center;word-break:break-all;user-select:all;-webkit-user-select:all";
+    codeEl.textContent = code;
+    const copy = button(T.copy, BTN_MAIN);
+    const note = say("");
+    copy.addEventListener("click", async () => {
+      let done = false;
+      try {
+        const cb = deps.clipboard || globalThis.navigator?.clipboard;
+        if (cb?.writeText) {
+          await cb.writeText(code);
+          done = true;
+        }
+      } catch (_) {
+      }
+      note.textContent = done ? T.copied : T.copyFailed;
+    });
+    const open = doc.createElement("a");
+    open.href = MIGRATE_NEW_SITE;
+    open.target = "_blank";
+    open.rel = "noopener";
+    open.style.cssText = BTN_SUB;
+    open.textContent = T.open;
+    box.append(say(T.guide), codeEl, copy, note, open);
+  };
+  const showClosed = () => {
+    clear();
+    box.append(say(T.closed, "#ffd97a"));
+  };
+  const showIssue = (message) => {
+    clear();
+    const b = button(T.button, BTN_MAIN);
+    b.addEventListener("click", async () => {
+      b.disabled = true;
+      b.textContent = T.busy;
+      let res = null;
+      try {
+        const r = await doFetch(MIGRATE_API, { method: "POST", cache: "no-store" });
+        res = await r.json();
+      } catch (_) {
+        res = null;
+      }
+      if (res?.ok === true && typeof res.key === "string" && res.key) {
+        save(res.key);
+        showCode(res.key);
+        return;
+      }
+      if (res?.code === "closed") {
+        showClosed();
+        return;
+      }
+      showIssue(T.failed);
+    });
+    box.append(b);
+    if (message) box.append(say(message, "#ffb4a8"));
+  };
+  const saved = load();
+  if (saved) showCode(saved);
+  else showIssue();
+  card.append(box);
+  return box;
+}
+
 function mountLegacyNotice(root) {
   const doc = root?.ownerDocument;
   if (!doc || root.querySelector("#ss-legacy-notice")) return null;
@@ -45679,6 +45809,7 @@ function mountLegacyNotice(root) {
     p.textContent = t;
     card.append(p);
   }
+  mountMigrateIssue(card);
   const first = root.querySelector(".ss-brand");
   if (first) first.after(card);
   else root.prepend(card);

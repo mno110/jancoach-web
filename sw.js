@@ -5,7 +5,7 @@
 // forever because the cache name was a constant and this file was copied
 // verbatim, so its bytes never changed and the browser never saw an SW
 // update):
-//   - build.mjs stamps content hashes into 0ad41c47fbb8 / 9c84b741fe3f
+//   - build.mjs stamps content hashes into 0049f69113fe / 9c84b741fe3f
 //     below, so ANY change to the app files (or the models) changes this
 //     file's bytes and the cache names. The browser then installs the new
 //     SW, precaches into the new caches, and activate() drops old caches.
@@ -18,7 +18,7 @@
 //     screen (P1, 2026-11-10), so an update never aborts a game.
 //   - Navigations are network-first (fall back to cache when offline), so
 //     the HTML shell itself can never get stuck on a stale copy.
-const APP_VER = '0ad41c47fbb8';
+const APP_VER = '0049f69113fe';
 const MODEL_VER = '9c84b741fe3f';
 const APP_CACHE = 'mahjong-local-app-' + APP_VER;
 const MODEL_CACHE = 'mahjong-local-models-' + MODEL_VER;
