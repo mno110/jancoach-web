@@ -45739,7 +45739,7 @@ function mountMigrateIssue(card, deps = {}) {
       note.textContent = done ? T.copied : T.copyFailed;
     });
     const open = doc.createElement("a");
-    open.href = MIGRATE_NEW_SITE;
+    open.href = `${MIGRATE_NEW_SITE}/?migrate=${encodeURIComponent(code)}`;
     open.target = "_blank";
     open.rel = "noopener";
     open.style.cssText = BTN_SUB;
